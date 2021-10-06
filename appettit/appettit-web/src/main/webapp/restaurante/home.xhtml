@@ -1,0 +1,1415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Restaurante</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+
+			<a class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
+				class="appettit-logo" src="/appettit-web/resources/images/logobg.svg"
+				alt="Appettit"></img></a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Men&uacute; </a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item" href="#">Productos</a> <a
+								class="dropdown-item" href="#">Promociones</a>
+						</div></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Clientes </a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item" href="#">Pedidos</a> <a
+								class="dropdown-item" href="#">Reclamos</a> <a
+								class="dropdown-item" href="#">Calificar</a>
+						</div></li>
+					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
+				</ul>
+			</div>
+			</nav>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+
+			<div class="content-wrapper">
+				<div class="row mb-3">
+					<!-- Estado -->
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						<div class="card">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+										<c:choose>
+										    <c:when test="#{HomeRestaurante.abierto}">
+										        <button class="btn btn-success" type="button">Cerrar 
+												Restaurante</button>
+										    </c:when>
+										    <c:otherwise>
+										        <button class="btn btn-warning" type="button">Abrir
+												Restaurante</button>
+										    </c:otherwise>
+										</c:choose>
+										
+										
+										
+											
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<h5 class="card-title mb-3 pt-1">&Uacute;ltima
+												Actualizaci&oacute;n:
+												<h:outputText value="#{HomeRestaurante.fechaHora}"/> 
+											</h5>
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Caliificacion -->
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title mb-3 font-weight-bold">
+									<span class="pr-3">Rapidez</span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star "></span> <span class="fa fa-star"></span>
+								</h5>
+
+								<h5 class="card-title mb-3 font-weight-bold">3.9 en 30
+									calificaciones</h5>
+								<div id="canvas-holderCalA">
+									<canvas id="chart_CalA" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title mb-3 font-weight-bold">
+									<span class="pr-3">Comida</span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star "></span> <span class="fa fa-star"></span>
+								</h5>
+
+								<h5 class="card-title mb-3 font-weight-bold">3.7 en 30
+									calificaciones</h5>
+								<div id="canvas-holderCalB">
+									<canvas id="chart_CalB" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title mb-3 font-weight-bold">
+									<span class="pr-3">Servicio</span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star"></span>
+								</h5>
+
+								<h5 class="card-title mb-3 font-weight-bold">4.0 en 30
+									calificaciones</h5>
+								<div id="canvas-holderCalC">
+									<canvas id="chart_CalC" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title mb-3 font-weight-bold">
+									<span class="pr-3">General</span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star text-warning"></span> <span
+										class="fa fa-star"></span> <span class="fa fa-star"></span>
+								</h5>
+
+								<h5 class="card-title mb-3 font-weight-bold">3.8 en 30
+									calificaciones</h5>
+								<div id="canvas-holderCalD">
+									<canvas id="chart_CalD" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- Graficas Totales -->
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de ventas</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<i class="fas fa-arrow-up"> 1.0%</i>
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h5 class="card-title mb-3 font-weight-bold">$ 172.800</h5>
+								<div id="canvas-holderA">
+									<canvas id="chart_CardA" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de clientes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<i class="fas fa-arrow-down"> 1.0%</i>
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h5 class="card-title mb-3 font-weight-bold">189</h5>
+								<div id="canvas-holderB">
+									<canvas id="chart_CardB" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de &oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<i class="fas fa-arrow-up"> 1.0%</i>
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h5 class="card-title mb-3 font-weight-bold">153</h5>
+								<div id="canvas-holderC">
+									<canvas id="chart_CardC" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Promedio de
+											&oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<i class="fas fa-arrow-up"> 3.0%</i>
+											</h6>
+										</div>
+									</div>
+								</div>
+
+								<h5 class="card-title mb-3 font-weight-bold">21</h5>
+								<div id="canvas-holderD">
+									<canvas id="chart_CardD" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="card-title mb-3">Pedidos Recientes</h5>
+									</div>
+
+									<div class="col-md-6 justify-content-md-end">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<button type="button" class="btn btn-primary">Ver
+												todos</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th scope="col">Detalle</th>
+											<th scope="col">Precio</th>
+											<th scope="col">C&oacute;digo</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><img
+												src="/codigo-web/resources/images/food/pizza.jpg" alt="">
+													Pizza</img></td>
+											<td>$ 180</td>
+											<td>1234</td>
+										</tr>
+										<tr>
+											<td><img
+												src="/codigo-web/resources/images/food/french-fries.jpg"
+												alt=""> Papas fr&iacute;tas</img></td>
+											<td>$ 90</td>
+											<td>1235</td>
+										</tr>
+										<tr>
+											<td><img
+												src="/codigo-web/resources/images/food/cereals.jpg" alt="">
+													Desayuno de cereales</img></td>
+											<td>$ 70</td>
+											<td>1236</td>
+										</tr>
+										<tr>
+											<td><img
+												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
+												alt=""> Chivito</img></td>
+											<td>$ 180</td>
+											<td>1231</td>
+										</tr>
+									</tbody>
+
+								</table>
+
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Reclamos</h5>
+							</div>
+							<div class="card-body">
+
+								<h6 class="card-title mb-3 font-weight-bold">8 de 153
+									pedidos (5.22%)</h6>
+								<div id="canvas-holderF">
+									<canvas id="chart_CardF" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
+
+							</div>
+							<div class="card-body">
+								<h6 class="card-title mb-3 font-weight-bold">153 pedidos</h6>
+								<div id="canvas-holderE">
+									<canvas id="chart_CardE" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Tendencias</h5>
+							</div>
+							<div class="card-body">
+								<div class="row mb-3">
+									<div
+										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+										<div class="card">
+											<img class="card-img-top"
+												src="/codigo-web/resources/images/food/pizza.jpg"
+												alt="pizza"></img>
+											<div class="card-body"></div>
+											<div class="card-footer bg-transparent">
+												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Pizza</h5>
+													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
+													<h6 class="card-subtitle mb-2 text-danger">$1800</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div
+										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+										<div class="card">
+											<img class="card-img-top"
+												src="/codigo-web/resources/images/food/food-4.jpg"
+												alt="Hamburguesa"></img>
+											<div class="card-body"></div>
+											<div class="card-footer bg-transparent">
+												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Hamburguesa</h5>
+													<h5 class="card-title mb-3 pt-1 text-success">$220</h5>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-danger">11</h6>
+													<h6 class="card-subtitle mb-2 text-danger">$2420</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div
+										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+										<div class="card">
+											<img class="card-img-top"
+												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
+												alt="Chivito"></img>
+											<div class="card-body"></div>
+											<div class="card-footer bg-transparent">
+												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Chivito</h5>
+													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-danger">15</h6>
+													<h6 class="card-subtitle mb-2 text-danger">$2700</h6>
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div
+										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+										<div class="card">
+											<img class="card-img-top"
+												src="/codigo-web/resources/images/food/food-3.jpg"
+												alt="Ensalada"></img>
+											<div class="card-body"></div>
+											<div class="card-footer bg-transparent">
+												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Ensalada</h5>
+													<h5 class="card-title mb-3 pt-1 text-success">$190</h5>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+												</div>
+												<div class="d-flex flex-row">
+													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
+													<h6 class="card-subtitle mb-2 text-danger">$1900</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Pedidos</h5>
+							</div>
+							<div class="card-body scroll">
+								<table class="table table-hover">
+									<thead class="table-dark">
+										<tr>
+											<th scope="col">Orden</th>
+											<th scope="col">Detalle</th>
+											<th scope="col">Cliente</th>
+											<th scope="col">Barrio</th>
+											<th scope="col">Estado</th>
+											<th scope="col">Hora del pedido</th>
+											<th scope="col">Precio</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>21</td>
+											<td>Papas fritas</td>
+											<td>Juan Perez</td>
+											<td>Cord&oacute;n</td>
+											<td><span class="text-white badge bg-warning">Confirmado</span></td>
+											<td>19:00</td>
+											<td>$ 90</td>
+										</tr>
+										<tr>
+											<td>22</td>
+											<td>Pizza</td>
+											<td>Andrea Lopez</td>
+											<td>Cord&oacute;n</td>
+											<td><span class="text-white badge bg-success">Enviado</span></td>
+											<td>19:00</td>
+											<td>$ 180</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-9 col-lg-9 col-md-9 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Zonas de influencia</h5>
+							</div>
+							<div class="card-body">
+								<div id="map"
+									class="leflet-map leaflet-container leaflet-fade-anim border">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Comentarios</h5>
+							</div>
+							<div class="card-body">
+
+								<div class="list-group">
+									<a href="#"
+										class="list-group-item list-group-item-action"
+										aria-current="true">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">Juan Perez</h5>
+											<small>15/09/2021</small>
+										</div>
+										<p class="mb-1">Buen servicio</p> 
+										<small>
+											<span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star "></span> <span class="fa fa-star"></span>
+										</small>
+										
+									</a> <a href="#" class="list-group-item list-group-item-action">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">Ignacio Mart&iacute;nez</h5>
+											<small class="text-muted">15/09/2021</small>
+										</div>
+										<p class="mb-1">La comida estaba fr&iacute;a. y
+											llegaron a las 2 horas.</p>
+										<small>
+											<span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star"></span> <span
+												class="fa fa-star"></span> <span
+												class="fa fa-star "></span> <span class="fa fa-star"></span>
+										</small>
+									</a>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<section class="section" id="main_section">
+	<div></div>
+
+	</section>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script>
+		const opCal = {
+			indexAxis: 'y',
+			responsive: true,
+			plugins: {
+	  		    	legend: {
+		  		        display: false
+		  		    },
+	  		      	title: {
+	  		        	display: false
+	  		      	}
+	  		    },
+  		    scales: {
+		     		x: {
+		     			ticks: {
+		                	display: false
+		          	 	},
+		          	 	grid: {
+	  		              	display: false,
+	  		          	},
+		         	},
+		     		y: {
+	     				ticks: {
+	                  		display: true
+	          	 		},
+	          	 		grid: {
+	  		             	display: false,
+		  		        },
+	         		},
+  		     },  
+  		    
+		};
+
+		const colorCal = ['rgb(40,167,69)', 'rgb(0,123,255)', 'rgb(23,162,184)', 'rgb(247,187,7)', 'rgb(213,51,67)' ];
+		const colorCalG = ['rgba(40,167,69,0.5)', 'rgba(0,123,255, 0.5)', 'rgba(23,162,184, 0.5)', 'rgba(247,187,7, 0.5)', 'rgba(213,51,67, 0.5)' ]; 
+		const labelsCal = ['5', '4', '3', '2', '1'];
+		const labelsT = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+		const colorT = 'rgb(242, 162, 44)';
+		const colorTC = 'rgba(242, 162, 44, 0.5)';
+		const colorSec = 'rgb(0, 128, 55)';
+		const colorSecC = 'rgba(0, 128, 55, 0.5)';
+
+			
+		const op = {
+	  		    responsive: true,
+	  		    scales: {
+  		     		x: {
+  		           		ticks: {
+  		                	display: false
+  		          	 	},
+	  		          	grid: {
+	  		              display: true,
+	  		          	},
+	  		         },
+  		     		y: {
+	           			ticks: {
+	                  		display: false
+	          	 		},
+	          	 	 	grid: {
+	  		              display: true,
+	  		          	},
+		         	},
+	  		     },  
+	  		    plugins: {
+	  		    	legend: {
+		  		        display: false
+		  		    },
+	  		      	title: {
+	  		        	display: false
+	  		      	}
+	  		    }
+			};
+
+		const dataCardA = {
+				  labels: labelsT,
+				  datasets: [
+				    {
+				      label: 'Total',
+				      data: [13000, 13500, 14000, 12300, 45000, 60000, 15000],
+				      borderColor: colorT,
+				      backgroundColor: colorT,
+				      fill: true
+				    },
+				  ]
+				};
+		
+		const dataCardB = {
+				  labels: labelsT,
+				  datasets: [
+				    {
+				      label: 'Total',
+				      data: [15, 13, 18, 23, 47, 45, 28],
+				      borderColor: colorT,
+				      backgroundColor: colorTC,
+				      fill: true
+				    },
+				  ]
+				};
+		
+		const dataCardC = {
+				  labels: labelsT,
+				  datasets: [
+				    {
+				      label: 'Total',
+				      data: [16, 13, 18, 23, 12, 28, 43],
+				      borderColor: colorT,
+				      backgroundColor: colorT,
+				      fill: true
+				    },
+				  ]
+				};
+				
+		const dataCardD = {
+		  labels: labelsT,
+		  datasets: [
+		    {
+		      label: 'Total',
+		      data: [16, 13, 18, 23, 12, 28, 43],
+		      borderColor: colorT,
+		      backgroundColor: colorTC,
+		      fill: true
+		    },
+		  ]
+		};
+
+		//const dataR = [12, 8, 6, 3, 1];
+		//const dataC = [10, 8, 8, 2, 2];
+		//const dataS = [10, 12, 6, 2, 0];
+		
+		const dataR = <h:outputText value="#{HomeBeanRestaurant.rapidez}" />;
+		const dataC = <h:outputText value="#{HomeBeanRestaurant.comida}"/>;
+		const dataS = <h:outputText value="#{HomeBeanRestaurant.servicio}"/>;
+			
+		const dataRapidez = {
+				  labels: labelsCal,
+				  datasets: [
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Total',
+					    data: dataR,
+					    backgroundColor: colorCal,
+					    fill: true
+				    },
+				  ]
+				};
+				
+		const dataComida = {
+				  labels: labelsCal,
+				  datasets: [
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Total',
+					    data: dataC,
+					    backgroundColor: colorCal,
+					    fill: true
+				    },
+				  ]
+				};
+
+		const dataServicio = {
+				  labels: labelsCal,
+				  datasets: [
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Total',
+					    data: dataS,
+					    backgroundColor: colorCal,
+					    fill: true
+				    },
+				  ]
+				};
+		
+		const dataGral = {
+				  labels: labelsCal,
+				  datasets: [
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Rapidez',
+					    data: dataR,
+					    borderColor: colorCal,
+					    backgroundColor: colorCalG,
+					    fill: true,
+				    },
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Comida',
+					    data: dataC,
+					    borderColor: colorCal,
+					    backgroundColor: colorCal,
+					    fill: true,
+				    },
+				    {
+				    	indexAxis: 'y', 
+					    label: 'Servicio',
+					    data: dataS,
+					    borderColor: colorCal,
+					    backgroundColor: colorCalG,
+					    fill: true
+				    },
+				  ]
+				};
+
+
+		
+		const configRapidez = {
+				  type: 'bar',
+				  data: dataRapidez,
+				  options: opCal,
+				};
+
+		const configComida = {
+				  type: 'bar',
+				  data: dataComida,
+				  options: opCal,
+				};
+
+		const configServico = {
+				  type: 'bar',
+				  data: dataServicio,
+				  options: opCal,
+				};
+
+		const configGral = {
+				type: 'bar',
+				  data: dataGral,
+				  
+				  options: {
+					  indexAxis: 'y',
+					  
+						responsive: true,
+						 plugins: {
+				  		    	legend: {
+					  		        display: false
+					  		    },
+				  		      	title: {
+				  		        	display: false
+				  		      	}
+				  		    },
+			  		    scales: {
+					     		x: {
+					     			stacked: true,
+					     			ticks: {
+					                	display: false
+					          	 	},
+					          	 	grid: {
+				  		              	display: false,
+				  		          	},
+					         	},
+					     		y: {
+					     			stacked: true,
+				     				ticks: {
+				                  		display: true
+				          	 		},
+				          	 		grid: {
+				  		             	display: false,
+					  		        },
+				         		},
+			  		     },  
+					  }
+				};
+		
+		const configCardA = {
+		  		  type: 'line',
+		  		  data: dataCardA,
+		  		  options: op,
+		  		};
+
+		const configCardB = {
+		  		  type: 'line',
+		  		  data: dataCardB,
+		  		  options: op,
+		  		};
+
+		const configCardC = {
+		  		  type: 'line',
+		  		  data: dataCardC,
+		  		  options: op,
+		  		};
+			
+	    const configCardD = {
+	  		  type: 'line',
+	  		  data: dataCardD,
+	  		  options: op,
+	  		};
+	
+	    var configCardE = {
+	            type: 'doughnut',
+	            data: {
+	                datasets: [{
+	                    data: [50, 103],
+	                    backgroundColor: [colorSec, colorT],
+	                    label: 'Forma de Pago'
+	                }],
+	                labels: [
+	                    "PayPal",
+	                    "Contado",
+	                ]
+	            },
+	            options: {
+	                responsive: true,
+	                maintainAspectRatio: false,
+	                cutoutPercentage: 40, 
+	                plugins: {
+		  		    	legend: {
+			  		        display: true,
+			  		      position: 'right',
+			  		    },
+		  		      	title: {
+		  		        	display: false
+		  		      	}
+		  		    },
+	                animation: {
+	                    animateScale: true,
+	                    animateRotate: true
+	                }
+	            }
+	        };  
+
+	    var configCardF = {
+	            type: 'doughnut',
+	            data: {
+	                datasets: [{
+	                    data: [5.22, 94.78],
+	                    backgroundColor: [colorCal[4], colorTC],
+	                    label: 'Forma de Pago'
+	                }],
+	                labels: [
+	                    "Reclamos",
+	                    "Sin reclamos",
+	                ]
+	            },
+	            options: {
+	                responsive: true,
+	                maintainAspectRatio: false,
+	                cutout: 80, 
+	                plugins: {
+		  		    	legend: {
+			  		        display: false,
+			  		      position: 'right',
+			  		    },
+		  		      	title: {
+		  		        	display: false
+		  		      	}
+		  		    },
+	                animation: {
+	                    animateScale: true,
+	                    animateRotate: true
+	                }
+	            }
+	        };  
+	    
+	/* MAPA */
+	var lat = -34.86157;
+	var lon = -56.17938;
+	var mapa;
+
+	var clientes = [[-34.8685793867382,-56.1666772418927], 
+		[-34.904447014089,-56.1364071695224], 
+		[-34.8920277462827,-56.1673987917113], 
+		[-34.9125050077636,-56.1592193138076], 
+		[-34.8577816624118,-56.1925822556417], 
+		[-34.827301,-56.155347], 
+		[-34.7896855333476,-56.3522229560966], 
+		[-34.891636029208,-56.1942381410699], 
+		[-34.90427,-56.174925], 
+		[-34.889453,-56.174507], 
+		[-34.9006609066321,-56.1690749781576], 
+		[-34.9055426395798,-56.1440867124887], 
+		[-34.9199667,-56.1509167], 
+		[-34.86271,-56.156323], 
+		[-34.9177097502991,-56.1621084981648], 
+		[-34.911887853902,-56.1785965990917], 
+		[-34.906906,-56.202353], 
+		[-34.8875600288936,-56.1369664488933], 
+		[-34.7969576233743,-56.0671394212686], 
+		[-31.614,-57.9837], 
+		[-34.9062478161379,-56.1943101316714], 
+		[-34.8678940647344,-56.1978405715199], 
+		[-34.8325,-56.1867], 
+		[-34.8956729616843,-56.1374505315029], 
+		[-34.8935249305801,-56.1944321266965], 
+		[-34.850828,-56.118703], 
+		[-34.9053752918583,-56.1826489382767], 
+		[-34.8986228983928,-56.1722516808433], 
+		[-34.9068390346587,-56.1922551660829], 
+		[-34.860517,-56.201988], 
+		[-34.7989689777763,-56.0820303977091], 
+		[-34.860232,-56.138962], 
+		[-34.9030844936483,-56.1307227643963], 
+		[-34.8933387631279,-56.1297583554971], 
+		[-34.905,-56.183055], 
+		[-34.8956612306044,-56.1427777458449], 
+		[-34.907667,-56.15325], 
+		[-34.8971077609802,-56.0788674940846], 
+		[-34.882131,-56.145218], 
+		[-34.9098989988808,-56.1309878222145], 
+		[-34.9167215589056,-56.1572490499596], 
+		[-34.9099277593359,-56.1540156544011], 
+		[-34.9106630546056,-56.1687977156023], 
+		[-34.8091048387373,-56.1020785872994], 
+		[-34.868194,-56.159639], 
+		[-34.862969,-56.153599], 
+		[-34.8439958890651,-56.2201823945059], 
+		[-34.824444,-56.25888], 
+		[-34.898515,-56.147588], 
+		[-34.91271066068,-56.183204895596], 
+		[-34.8338648877266,-56.2238296631995], 
+		[-34.830888335699,-56.3091774584886], 
+		[-34.8905217537788,-56.0998064184809], 
+		[-34.8673139,-56.1859111], 
+		[-34.784206,-56.074317], 
+		[-34.88852,-56.172185], 
+		[-34.8811065976228,-56.0814076971681], 
+		[-34.8236111241059,-56.2208347220696], 
+		[-34.9012390474394,-56.1800456638233], 
+		[-34.8948460988663,-56.1926596040587], 
+		[-34.879356,-56.078184], 
+		[-34.8825658082175,-56.1945129387496], 
+		[-34.8945908988488,-56.1830170528233], 
+		[-34.7873130994667,-56.245669157091], 
+		[-34.8742795637931,-56.2306779369547], 
+		[-34.8782322235503,-56.266704077998], 
+		[-34.905536,-56.201011], 
+		[-34.859564,-56.029415], 
+		[-34.8712264072569,-56.1653478835935], 
+		[-34.905,-56.2031], 
+		[-34.8750629792419,-56.1131850643326], 
+		[-34.8741920113239,-56.1675016967335], 
+		[-34.8702341030261,-56.2839750702054], 
+		[-34.8912183623084,-56.1946562180788], 
+		[-34.906183,-56.204088], 
+		[-34.8871204978129,-56.1795254462468], 
+		[-34.8487065205488,-56.2479156063379], 
+		[-34.890675,-56.134712], 
+		[-34.9016514997422,-56.1893247084991], 
+		[-34.9067683967174,-56.1858085590573], 
+		[-34.8934471830766,-56.1627433355608], 
+		[-34.894948695338,-56.1538387959944], 
+		[-34.9039806603598,-56.1799558691614], 
+		[-34.9185425938769,-56.1665475305114], 
+		[-34.8826936123275,-56.0411364898931], 
+		[-34.8184264190787,-56.0973716315599], 
+		[-34.787003,-56.070758], 
+		[-34.863513,-56.197363], 
+		[-34.9026852501664,-56.1361166162752], 
+		[-34.8680523738585,-56.1721406787256], 
+		[-34.8657146125059,-56.1220467350481], 
+		[-34.8871554765388,-56.1490262958404], 
+		[-34.8855317950554,-56.184068925086], 
+		[-34.86691,-56.082295], 
+		[-34.8785209894816,-56.2048234871661], 
+		[-34.874838,-56.25134], 
+		[-34.816227,-56.2602819], 
+		[-34.8726387762469,-56.2053758155034], 
+		[-34.9131011167774,-56.172841570654], 
+		[-34.8709625153476,-56.249530103361], 
+		[-34.909892,-56.130922], 
+		[-34.901247,-56.189893], 
+		[-34.861311,-56.152272], 
+		[-34.824157,-56.117431], 
+		[-34.9077409894614,-56.202973675246], 
+		[-34.824275,-56.200928], 
+		[-34.878917,-56.166194], 
+		[-34.905004521177,-56.2032087793926], 
+		[-34.924812,-56.157261], 
+		[-34.9004582769463,-56.1646882325458], 
+		[-34.8639317968486,-56.1547992717309], 
+		[-34.8383775924678,-56.1710416886918], 
+		[-34.9103896604499,-56.1480503800926], 
+		[-34.8867362672055,-56.1220544617067], 
+		[-34.9112193954895,-56.1492467422019], 
+		[-34.9027059237272,-56.1713927276698], 
+		[-34.8230957243023,-56.1665599345684], 
+		[-34.818333,-56.277778], 
+		[-34.902783593373,-56.1630058972094], 
+		[-34.8944793355319,-56.105647968307], 
+		[-34.8613402336698,-56.2324928005332], 
+		[-34.907628,-56.149294], 
+		[-34.8420961314209,-56.2074073258635], 
+		[-34.901789,-56.137111], 
+		[-34.796314,-56.118347], 
+		[-34.906801,-56.202547], 
+		[-34.854913,-56.182332], 
+		[-34.869279,-56.040722], 
+		[-34.8370177580767,-56.1624475952895], 
+		[-34.9068038103529,-56.1629395413023], 
+		[-34.8792391445626,-56.0700160945443], 
+		[-34.8536578348126,-56.1403871101552], 
+		[-34.8903459358041,-56.0956589798543], 
+		[-34.9070735396678,-56.2032168261396], 
+		[-34.8702127399249,-56.2009572962724], 
+		[-34.881842,-56.258117], 
+		[-34.8839791603139,-56.1750634665294], 
+		[-34.8027805284655,-56.2468551396301], 
+		[-34.9064453004382,-56.2052070105173], 
+		[-34.899264712107,-56.1602690980654], 
+		[-34.8551767781825,-56.2751345827602], 
+		[-34.850494,-56.275472], 
+		[-34.9029698606958,-56.1368383665548], 
+		[-34.8625919512684,-56.1330433381448], 
+		[-34.884129,-56.159329], 
+		[-34.907288,-56.196779], 
+		[-34.89611438429,-56.1225699348345], 
+		[-34.9104946945214,-56.198961087311], 
+		[-34.9072841537298,-56.2004120634395], 
+		[-34.905344,-56.195831], 
+		[-34.9083801174737,-56.2025122300483], 
+		[-34.848147,-56.220863], 
+		[-34.8964446855498,-56.0964091511851], 
+		[-34.8069741467777,-56.2279281749457], 
+		[-34.840996,-56.142345], 
+		[-34.906302,-56.183013], 
+		[-34.8210634197552,-56.1723960303986], 
+		[-34.8749404142946,-56.0390702877978], 
+		[-34.9101903010756,-56.1580346221023], 
+		[-34.861883,-56.204284], 
+		[-34.9064861717461,-56.190836203145], 
+		[-34.8109697820719,-56.2342775814536], 
+		[-34.9176188228558,-56.153262967876], 
+		[-34.8292043946224,-56.2088758743133], 
+		[-34.867381,-56.192894], 
+		[-34.897029,-56.18103], 
+		[-34.8953807274849,-56.1724459279172], 
+		[-34.9079281486255,-56.1903896249197], 
+		[-34.9019476950821,-56.1373677855258], 
+		[-34.9003659927875,-56.1905820263088], 
+		[-34.9044530310125,-56.1888960357757], 
+		[-34.8890212727113,-56.2611520513147], 
+		[-34.881206,-56.084339], 
+		[-34.9336834650687,-56.1608691242238], 
+		[-34.881992,-56.117501], 
+		[-34.8489403506197,-56.3662091551986], 
+		[-34.8046389958044,-56.1391165616695], 
+		[-34.8580474890619,-56.2185801703085], 
+		[-34.85787453828,-56.1818586856303], 
+		[-34.8755386266293,-56.0696310538413], 
+		[-34.905742277985,-56.1995997897948], 
+		[-34.8912075480914,-56.1870900064127], 
+		[-34.832374458841,-56.1231518987596], 
+		[-34.8804392917211,-56.1491663546929], 
+		[-34.8429361395887,-56.208691861816], 
+		[-34.8747858165782,-56.1715715001027], 
+		[-34.9024128985938,-56.1924172781129], 
+		[-34.788919,-56.0714], 
+		[-34.908181,-56.212547], 
+		[-34.874523,-56.250976], 
+		[-34.89064,-56.17451], 
+		[-34.891177,-56.18288], 
+		[-34.8850365295299,-56.0582305024623], 
+		[-34.861642,-56.202586], 
+		[-34.8546663609398,-56.1959363884712], 
+		[-34.920131,-56.146569], 
+		[-34.905715,-56.190274], 
+		[-34.8980095561324,-56.16555929762], 
+		[-34.914303,-56.151206], 
+		[-34.8905190426036,-56.0553846639694], 
+		[-34.910499576694,-56.2075941862258], 
+		[-34.8708616477748,-56.1865613723701], 
+		[-34.891837,-56.251593], 
+		[-34.8931778,-56.188419], 
+		[-34.890713,-56.177836], 
+		[-34.868812,-56.169877], 
+		[-34.8951911536516,-56.1915703768057], 
+		[34.861591,-56.203965], 
+		[-34.8854315614781,-56.1950386096732], 
+		[-34.9187838257746,-56.155579857661], 
+		[-34.899783,-56.155594], 
+		[-34.8481993678415,-56.1653396119295], 
+		[-34.8980121298753,-56.1908702617457], 
+		[-34.8860237240088,-56.2492323661898], 
+		[-34.8916805310561,-56.1945328195129], 
+		[-34.9080248368076,-56.1859909899172], 
+		[-34.8720157878094,-56.0979116978214], 
+		[-34.9201133216893,-56.1466058142645], 
+		[-34.9016491802678,-56.1928154797803], 
+		[-34.8787701679011,-56.165731503562], 
+		[-34.8633208997483,-56.2057390045767], 
+		[-34.8217378151965,-56.1405535304856], 
+		[-34.8691303572241,-56.2366720740563], 
+		[-34.8765541440201,-56.1864907343749], 
+		[-34.806975,-56.227939], 
+		[-34.8218339064679,-56.1560837493864], 
+		[-34.8066389,-56.0908556], 
+		[-34.8314652987328,-56.1774569281925], 
+		[-34.8553271478661,-56.209951834945], 
+		[-34.8744146180772,-56.176915884398], 
+		[-34.9044264449112,-56.1674715930169], 
+		[-34.2264,-58.0541], 
+		[-34.8620360257922,-56.3320944295601], 
+		[-34.8351074983363,-56.2362212598949], 
+		[-34.933736,-56.160886], 
+		[-34.9055010701097,-56.1580093283069], 
+		[-34.857944,-56.218428], 
+		[-34.900472,-56.174972], 
+		[-34.8242689477732,-56.2009138747934], 
+		[-34.7873274102789,-56.0628577732549], 
+		[-34.890618,-56.188164], 
+		[-34.90815,-56.184271], 
+		[-34.8958968982498,-56.1844463473401], 
+		[-34.9092190324773,-56.1630874659413], 
+		[-34.8768207817774,-56.2077540390114], 
+		[-34.8287563109573,-56.354361485947], 
+		[-34.8741802687061,-56.1948718303495], 
+		[-34.8745403637807,-56.1537294877709], 
+		[-34.9062364545696,-56.2129610004406], 
+		[-34.903301,-56.205651], 
+		[-34.8352558610313,-56.2717629595341], 
+		[-34.9099096645463,-56.1462810362282], 
+		[-34.8914452608336,-56.0688721871312], 
+		[-34.893872860773,-56.1764954352494], 
+		[-34.904581,-56.185303], 
+		[-34.8900765286249,-56.1271532159992], 
+		[-34.8845049655703,-56.2752927033185], 
+		[-34.8750085852352,-56.1393261430741], 
+		[-34.797185,-56.144669], 
+		[-34.8900680816299,-56.1909573240005], 
+		[-34.8074209729702,-56.2080969080244], 
+		[-34.8980932943379,-56.163076594761], 
+		[-34.8812477590908,-56.0843818217972], 
+		[-34.8998068995939,-56.1556490168002], 
+		[-34.8912591740438,-56.1131848977573], 
+		[-34.8942579129026,-56.1890495531923], 
+		[-34.8195403080176,-56.1958429804694], 
+		[-34.901231,-56.205743], 
+		[-34.790778,-56.072389], 
+		[-34.907222,-56.214165], 
+		[-34.8948,-56.1624], 
+		[-34.8559230695646,-56.1696914344128], 
+		[-34.9021682085357,-56.184786497672], 
+		[-34.785767,-56.074633], 
+		[-34.9128472740897,-56.1567790999586], 
+		[-34.8793590823639,-56.1332788909104], 
+		[-34.831017,-56.109795], 
+		[-34.897298,-56.155299], 
+		[-34.890553,-56.175623], 
+		[-34.8938591768744,-56.1666107513329], 
+		[-34.904407,-56.198187], 
+		[-34.875186611939,-56.200531062927], 
+		[-34.8496294367771,-56.1734147934262], 
+		[-34.8996155130956,-56.1729029040401], 
+		[-34.7509574806969,-56.1658879904054], 
+		[-34.8331437130145,-56.2513366283769], 
+		[-34.9023809509394,-56.1497407293056], 
+		[-34.78871,-56.0724], 
+		[-34.9033049087037,-56.2023800214501], 
+		[-34.903802,-56.135108], 
+		[-34.8707013490546,-56.1339105352945], 
+		[-34.9027639355902,-56.134555349373], 
+		[-34.8373647947728,-56.1476444159021], 
+		[-34.860843,-56.201478], 
+		[-34.8318101612505,-56.2184632891903], 
+		[-34.8938863376407,-56.1478128680132], 
+		[-34.8537198785837,-56.1187841037162], 
+		[-34.908904,-56.196842], 
+		[-34.8790262974659,-56.1469517256284], 
+		[-34.8906509400336,-56.1887904794799], 
+		[-34.8902698470434,-56.2919821054946], 
+		[-34.803592,-56.284451], 
+		[-34.9143606862258,-56.1514093337369], 
+		[-34.8212083,-56.172408], 
+		[-34.891117,-56.187097], 
+		[-34.8600555392154,-56.203450809174], 
+		[-34.8764594882063,-56.0550084201319], 
+		[-34.9046720947699,-56.1976838596118], 
+		[-34.7695350099273,-56.123888073165], 
+		[-34.8989,-56.1822], 
+		[-34.9061988452819,-56.1926536570821], 
+		[-34.7296441810606,-56.2857803539558], 
+		[-34.890336,-56.190964], 
+		[-34.9090251084139,-56.1930774813166], 
+		[-33.1205,-58.3299], 
+		[-34.8863148124998,-56.1540900418378], 
+		[-34.820051,-56.119303], 
+		[-34.8400397936443,-56.1992058389047], 
+		[-34.8788283085191,-56.1563936672784], 
+		[-34.7965781715789,-56.1946553797368], 
+		[-34.7985071687595,-56.2208277120558], 
+		[-34.8627,-56.156323], 
+		[-34.9056776950905,-56.1998004868341], 
+		[-34.9079549641544,-56.1786095432725], 
+		[-34.9180662298008,-56.1577001295193], 
+		[-34.83878,-56.239091], 
+		[-34.854347,-56.234008], 
+		[-34.862142,-56.202833], 
+		[-34.8949922561165,-56.1633163124301], 
+		[-34.822716,-56.15635], 
+		[-34.90275,-56.162894], 
+		[-34.854319,-56.155196], 
+		[-34.8943690184539,-56.1135988086055], 
+		[-34.9007748667247,-56.1747255044142], 
+		[-34.9054267952128,-56.2086806001106], 
+		[-34.9074460939682,-56.1705985217226], 
+		[-34.8844168430481,-56.1587972143858], 
+		[-34.8899839402248,-56.1603830914665], 
+		[-34.906104867224,-56.1372520678326], 
+		[-34.8717427280944,-56.2210832937124], 
+		[-34.902278,-56.206114], 
+		[-34.907087,-56.209499], 
+		[-34.906428,-56.205211], 
+		[-34.802983352449,-56.173660155219], 
+		[-34.919682,-56.169787], 
+		[-34.908286,-56.157591], 
+		[-34.8633817394476,-56.1789615775534], 
+		[-34.906075,-56.213022], 
+		[-34.839674,-56.257618], 
+		[-34.867839,-56.159816], 
+		[-34.882615321596,-56.1656102648071], 
+		[-34.8387311007601,-56.1240102483507], 
+		[-34.8871756939295,-56.1662773954889], 
+		[-34.906824,-56.206362], 
+		[-34.889490059623,-56.0859360079291], 
+		[-34.9241545673557,-56.1585880497039], 
+		[-34.80971,-56.28964], 
+		[-34.8925334715433,-56.119492501723], 
+		[-34.8825063086683,-56.1518669431797], 
+		[-34.9209475057399,-56.1535016969178], 
+		[-34.8851779005668,-56.1007249643444], 
+		[-34.8057763467913,-56.2230879255207], 
+		[-34.8893122711939,-56.171447877651], 
+		[-34.903978,-56.179439], 
+		[-34.8414997137315,-56.1433105079307], 
+		[-34.907527,-56.189497], 
+		[-34.8926,-56.1671], 
+		[-34.9022509696331,-56.1960152325839], 
+		[-34.9079382277607,-56.2073897166022], 
+		[-34.9040259384525,-56.1952358517082], 
+		[-34.9235138175497,-56.1601429973982], 
+		[-34.8618127978838,-56.1686326866824], 
+		[-34.905861,-56.199486], 
+		[-34.9033869053303,-56.1790952154493], 
+		[-34.9076969856487,-56.1533166962313], 
+		[-34.8702955067853,-56.143797129482], 
+		[-34.8869606650998,-56.1833716054553], 
+		[-34.902881,-56.191216], 
+		[-34.9152281853527,-56.1638425376654], 
+		[-34.7882926390638,-56.1356685376376], 
+		[-34.903391145688,-56.1403722605435], 
+		[-34.8493676262823,-56.1326939581757], 
+		[-34.8945095800872,-56.1528172595297], 
+		[-34.861383,-56.259612], 
+		[-34.7673310145567,-56.2844143104451], 
+		[-34.9047456884383,-56.2076301787183], 
+		[-34.82559,-56.2368], 
+		[-34.848793,-56.203296]];
+		
+	var mapa = L.map('map').setView([lat, lon], 11);
+
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(mapa);
+
+	var addressPoints = clientes.map(function (p) { return [p[0], p[1]]; });
+
+	var heat = L.heatLayer(addressPoints, {radius: 50});
+	mapa.addLayer(heat);
+
+		  
+	window.onload = function() {
+			var ctxCalA = document.getElementById("chart_CalA").getContext("2d");
+			  window.myGraphA = new Chart(ctxCalA, configRapidez);
+
+			  var ctxCalB = document.getElementById("chart_CalB").getContext("2d");
+			  window.myGraphB = new Chart(ctxCalB, configComida);
+
+			var ctxCalC = document.getElementById("chart_CalC").getContext("2d");
+			window.myGraphC = new Chart(ctxCalC, configServico);
+
+			var ctxCalD = document.getElementById("chart_CalD").getContext("2d");
+			window.myGraphD = new Chart(ctxCalD, configGral);
+			
+			var ctxCardA = document.getElementById("chart_CardA").getContext("2d");
+			  window.myGraphA = new Chart(ctxCardA, configCardA);
+			
+			var ctxCardB = document.getElementById("chart_CardB").getContext("2d");
+			  window.GraphB = new Chart(ctxCardB, configCardB);
+
+			var ctxCardC = document.getElementById("chart_CardC").getContext("2d");
+			  window.GraphC = new Chart(ctxCardC, configCardC);
+				  	
+			var ctxCardD = document.getElementById("chart_CardD").getContext("2d");
+			window.GraphD = new Chart(ctxCardD, configCardD);
+
+			var ctxCardE = document.getElementById("chart_CardE").getContext("2d");
+			window.GraphE = new Chart(ctxCardE, configCardE);
+
+			var ctxCardF = document.getElementById("chart_CardF").getContext("2d");
+			window.GraphF = new Chart(ctxCardF, configCardF);
+			
+		};
+
+
+	</script>
+</h:body>
+</html>

@@ -1,0 +1,177 @@
+@charset "ISO-8859-1";
+
+/*
+@media (min-width: 768px){
+	.container, .container-md, .container-sm {
+	    max-width: 100%;
+	}
+	
+}
+
+@media (min-width: 576px){
+	.container, .container-sm {
+	    max-width: 100%;
+	}
+}
+*/
+.appettit-logo{
+	width: 60px;
+}
+
+.bg-light {
+    background-color: #f2a22c!important;
+}
+
+.navbar-toggler {
+    font-size: 2.25rem;
+}
+
+.container, .container-md, .container-sm {
+    max-width: 100%;
+}
+
+
+.container-scroller {
+	display: flex;
+	position: relative;
+}
+
+.container-scroller {
+	overflow: hidden;
+}
+
+.main-panel {
+	transition: width 0.25s ease, margin 0.25s ease;
+	width: 100%;
+	min-height: calc(100vh - 148px);
+	padding-top: 148px;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+}
+
+.top-header {
+	font-size: 12px;
+	transition: -webkit-transform .2s ease;
+	transition: transform .2s ease;
+	transition: transform .2s ease, -webkit-transform .2s ease;
+	-webkit-transform-origin: top;
+	transform-origin: top;
+	font-weight: 600;
+}
+
+/*Datepicker*/
+.ui-datepicker-trigger{
+	width: 2rem !important;
+	height: 2rem !important;
+}
+
+.ui-datatable, ui-widget{
+	font-size: 0.9rem !important;
+}
+
+.ui-datatable .ui-datatable-data > tr > td {
+ padding: 0.5rem 0.5rem !important;
+}
+
+.ui-datatable tbody td {
+white-space: nowrap !important;
+}
+
+#map_add, #map_upd, #map_view{
+	width: 436px !important;
+	height: 320px !important;
+	
+}
+
+.justify-content-between {
+    -ms-flex-pack: justify!important;
+    justify-content: space-between!important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #fff;
+}
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: #008037;
+}
+
+.nav-item .nav-link {
+    font-weight: 600;
+}
+
+.text-secondary {
+    color: #008037 !important;
+}
+
+a.text-secondary:focus, a.text-secondary:hover {
+    color: #f2a22c !important;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #f2a22c;
+}
+
+.dropdown-menu {
+    border: 1px solid #008037;
+}
+
+.list-group-item {
+    background-color: #fff;
+    border: 0px;
+}
+.list-group-item-action:focus, .list-group-item-action:hover {
+    z-index: 1;
+    color: #fff;
+    text-decoration: none;
+    background-color: #f2a22c;
+}
+
+.ms-chart-label{
+	position: absolute;
+	right: 1rem;
+	border-radius: 25px;
+	color: #fff;
+	padding: 0.25rem 0.75rem;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color:  #f2a22c;
+    border-color: #008037;
+}
+
+
+.btn-primary.focus, .btn-primary:focus {
+   	background-color: #008037;
+    border-color: #f2a22c;
+    box-shadow: 0 0 0 0.2rem rgb(242 162 44 / 50%);
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #008037;
+    border-color: #f2a22c;;
+}
+
+table img {
+    max-width: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.scroll {
+    overflow-y: auto;
+}
+
+.card{
+	height: 100%;
+}
+
+.leflet-map {
+    height: 25rem;
+    position: relative;
+}
