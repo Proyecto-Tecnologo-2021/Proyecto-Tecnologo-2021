@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 
@@ -16,5 +18,8 @@ public interface IDepartamentoService {
 	public List<DepartamentoDTO> listar() throws AppettitException;
 	public DepartamentoDTO buscarPorId(Long id) throws AppettitException;
 	public List<DepartamentoDTO> buscarPorNombre(String nombre) throws AppettitException;
+	
+	public CiudadDTO crearCiudad(CiudadDTO ciudadDTO) throws AppettitException;
+	public LocalidadDTO crearLocalidad(LocalidadDTO localidadDTO) throws AppettitException;
 	
 }

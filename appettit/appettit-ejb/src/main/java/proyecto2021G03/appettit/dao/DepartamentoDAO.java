@@ -9,7 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import proyecto2021G03.appettit.entity.Ciudad;
 import proyecto2021G03.appettit.entity.Departamento;
+import proyecto2021G03.appettit.entity.Localidad;
 
 @Singleton
 public class DepartamentoDAO implements IDepartamentoDAO {
@@ -20,7 +22,10 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 
 	@Override
 	public Departamento crear(Departamento departamento) {
-		em.persist(departamento);
+		//em.persist(departamento);
+		em.merge(departamento);
+		
+		
 		return departamento;
 	}
 
@@ -68,6 +73,18 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 		}
 		return departamentos;
 		
+	}
+
+	@Override
+	public Ciudad crearCiudad(Ciudad ciudad) {
+		em.persist(ciudad);
+		return ciudad;
+	}
+
+	@Override
+	public Localidad crearLocalidad(Localidad localidad) {
+		em.persist(localidad);
+		return localidad;
 	}
 
 }

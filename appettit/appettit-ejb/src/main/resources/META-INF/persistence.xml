@@ -49,18 +49,21 @@
       </properties>
 	</persistence-unit>
 	<persistence-unit name="mongo-ogm" transaction-type="JTA">
-      <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
-      <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    	<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+		<class>proyecto2021G03.appettit.entity.Imagen</class>
+      	<exclude-unlisted-classes>false</exclude-unlisted-classes>
       
-      <properties>
-         <property name="hibernate.ogm.datastore.database" value="appettitIMG"/>
-         <property name="hibernate.ogm.datastore.create_database" value="true" />
-         <property name="hibernate.ogm.datastore.host" value=" cluster0-shard-00-02.ap6pz.mongodb.net:27017, cluster0-shard-00-01.ap6pz.mongodb.net:27017, cluster0-shard-00-00.ap6pz.mongodb.net:27017"/>
-         <property name="hibernate.ogm.datastore.provider" value="mongodb"/>
-         <property name="hibernate.ogm.datastore.username" value="admin"/>
-         <property name="hibernate.ogm.datastore.password" value="fnz1G8MJuO2QULl5"/>
-         <property name="hibernate.ogm.mongodb.authentication_mechanism" value="SCRAM_SHA_1"/>
-         <property name="hibernate.ogm.mongodb.driver.sslEnabled" value="true"/>
-      </properties>
+		<properties>
+		   <property name="hibernate.ogm.datastore.provider" value="mongodb"/>
+		   <property name="hibernate.ogm.datastore.host" value="cluster0-shard-00-00.ap6pz.mongodb.net:27017,cluster0-shard-00-01.ap6pz.mongodb.net:27017,cluster0-shard-00-02.ap6pz.mongodb.net:27017"/>
+
+		   <property name="hibernate.ogm.datastore.database" value="appettitIMG"/>
+		   <property name="hibernate.ogm.datastore.create_database" value="true" />
+
+		   <property name="hibernate.ogm.datastore.username" value="admin"/>
+		   <property name="hibernate.ogm.datastore.password" value="fnz1G8MJuO2QULl5"/>
+		   <property name="hibernate.ogm.mongodb.authentication_mechanism" value="SCRAM_SHA_1"/>
+		   <property name="hibernate.ogm.mongodb.driver.sslEnabled" value="true"/>
+		</properties>
    </persistence-unit>
 </persistence>

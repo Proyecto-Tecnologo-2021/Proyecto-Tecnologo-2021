@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="appettit">
+        <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/" source-path="/appettit-ejb/src/main/java"/>
+        <wb-resource deploy-path="/" source-path="/appettit-web/src/main/java"/>
+        <wb-resource deploy-path="/" source-path="/appettit-web/src/test/java"/>
+        <property name="java-output-path" value="/appettit/bin"/>
+    </wb-module>
+</project-modules>

@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import proyecto2021G03.appettit.entity.Ciudad;
 import proyecto2021G03.appettit.entity.Departamento;
+import proyecto2021G03.appettit.entity.Localidad;
 
 
 @Local
@@ -17,5 +19,8 @@ public interface IDepartamentoDAO {
 	public Departamento buscarPorId(Long id);
 	public List<Departamento> buscarPorNombre(String nombre);
 	
+	public Ciudad crearCiudad(Ciudad ciudad);
+	
+	public Localidad crearLocalidad(Localidad localidad);
 
 }

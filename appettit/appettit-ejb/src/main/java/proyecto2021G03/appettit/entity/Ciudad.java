@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class Ciudad implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Id
@@ -55,6 +56,6 @@ public class Ciudad implements Serializable {
 
 
 	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	private Polygon geometry;
+	private MultiPolygon geometry;
 
 }

@@ -14,7 +14,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +35,7 @@ public class Localidad implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Id
@@ -57,7 +57,7 @@ public class Localidad implements Serializable{
 	private Ciudad ciudad;
 	
 	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	private Polygon geometry;
+	private MultiPolygon geometry;
 
 
 }

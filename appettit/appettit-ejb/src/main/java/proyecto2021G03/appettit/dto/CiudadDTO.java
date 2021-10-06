@@ -16,12 +16,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DepartamentoDTO {
+public class CiudadDTO {
 
 	private Long id;
+	private Long id_departamento;
 	private String nombre;
 	private MultiPolygon geometry;
 	
-	private List<CiudadDTO> ciudades;
+	private List<LocalidadDTO> localidades;
 	
 }
