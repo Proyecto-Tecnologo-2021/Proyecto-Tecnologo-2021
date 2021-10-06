@@ -3,9 +3,12 @@ package proyecto2021G03.appettit.entity;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -48,8 +51,10 @@ public class Restaurante extends Usuario {
 	private Boolean abiertoAutom;
 	
 	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	private MultiPolygon arera;
+	private MultiPolygon areaentrega;
 	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="id_direccion", referencedColumnName="id")
 	private Direccion direccion;
 
 }

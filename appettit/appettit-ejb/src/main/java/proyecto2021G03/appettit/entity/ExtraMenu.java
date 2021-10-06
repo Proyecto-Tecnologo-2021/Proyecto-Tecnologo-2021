@@ -31,9 +31,6 @@ public class ExtraMenu implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private Long id_producto;
-	private Long id_restaurante;
-	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumns( {
 		@JoinColumn(name="id_producto", referencedColumnName="id", insertable=false, updatable=false),
