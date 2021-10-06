@@ -2,17 +2,13 @@
 
 Proyecto Grupo 03 - 2021 Tecnólogo en Informática – C.E.T.P - UdelaR.
 
-[Appettit - Azure](https://bondisuy.web.elasticloud.uy/bondisuy-web/Bondisuy)
+[Appettit - Azure]()
 
 ## Contenido
 1. [Descripción](#descripción)
 2. [Despliegue](#despliegue)
-	- [Local con aplicaciones instaladas](#local-con-aplicaciones-instaladas)
-	- [Con Docker-Compose](#con-docker-compose)
-	- [Publicación de capas en Geoserver](#publicación-de-capas-en-geoserver)
-3. [Datos de prueba](#datos-de-prueba)
-4. [Screenshots](#screenshots)
-5. [Tecnologías](#tecnologías)
+3. [Screenshots](#screenshots)
+4. [Tecnologías](#tecnologías)
 
 ## Descripción
 
