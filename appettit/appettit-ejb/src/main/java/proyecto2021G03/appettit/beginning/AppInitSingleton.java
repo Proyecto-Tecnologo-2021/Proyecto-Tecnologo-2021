@@ -21,7 +21,6 @@ import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.converter.ImagenConverter;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
-import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.entity.Imagen;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -49,7 +48,9 @@ public class AppInitSingleton {
 	    
 	    byte[] bimg = null;
 	    
-	    Imagen imagen = new Imagen("1", bimg); 
+	    Imagen imagen = new Imagen();
+	    imagen.setImagen(bimg);
+	    
         
         try {
             geom = fromText.read(polygon);
@@ -64,9 +65,6 @@ public class AppInitSingleton {
 		try {
 			departamentoService.crear(departamentoDTO);
 			imagenService.crear(imagenConverter.fromEntity(imagen));
-			
-			
-			//departamentoService.crearLocalidad(localidadDTO);
 			
 		} catch (AppettitException e) {
 			// TODO Auto-generated catch block

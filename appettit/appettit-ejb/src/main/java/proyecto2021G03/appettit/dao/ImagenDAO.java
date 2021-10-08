@@ -5,13 +5,15 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 
 import proyecto2021G03.appettit.entity.Imagen;
 
 @Singleton
 public class ImagenDAO implements IImagenDAO {
 	
-	@PersistenceContext(name = "mongo-omg") 
+	@PersistenceContext(unitName = "mongo-ogm")
+	@PersistenceUnit(unitName = "mongo-ogm") 
 	private EntityManager em;	
 
 	@Override

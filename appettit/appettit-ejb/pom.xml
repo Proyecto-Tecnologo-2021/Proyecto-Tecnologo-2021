@@ -116,34 +116,27 @@
 		    <version>5.4.1.Final</version>
 		</dependency>
 
-<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver -->
-<dependency>
-    <groupId>org.mongodb</groupId>
-    <artifactId>mongodb-driver</artifactId>
-    <version>3.12.10</version>
-</dependency>
+	<!-- https://mvnrepository.com/artifact/org.hibernate.ogm/hibernate-ogm-bom -->
+	<dependency>
+	    <groupId>org.hibernate.ogm</groupId>
+	    <artifactId>hibernate-ogm-bom</artifactId>
+	    <version>5.4.1.Final</version>
+	    <type>pom</type>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.hibernate.ogm/hibernate-ogm-mongodb -->
+	<dependency>
+	    <groupId>org.hibernate.ogm</groupId>
+	    <artifactId>hibernate-ogm-mongodb</artifactId>
+	    <version>5.4.1.Final</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.mongodb</groupId>
+	    <artifactId>mongodb-driver-sync</artifactId>
+	    <version>4.3.3</version>
+	</dependency>
 
-<!-- https://mvnrepository.com/artifact/org.mongodb/bson -->
-<dependency>
-    <groupId>org.mongodb</groupId>
-    <artifactId>bson</artifactId>
-    <version>4.3.3</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-core -->
-<dependency>
-    <groupId>org.mongodb</groupId>
-    <artifactId>mongodb-driver-core</artifactId>
-    <version>4.3.3</version>
-</dependency>
-		
-<!--
-		 <dependency>
-	        <groupId>org.mongodb</groupId>
-	        <artifactId>mongodb-driver-sync</artifactId>
-	        <version>4.3.2</version>
-	    </dependency>
--->
         
         <!-- Lombok -->
 		<dependency>
