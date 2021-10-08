@@ -68,8 +68,17 @@ public class CategoriaService implements ICategoriaService{
 
 	@Override
 	public void eliminar(Long id) throws AppettitException {
-		// TODO Auto-generated method stub
-		
+		/* Se valida que exista la enfermedad */
+		Categoria categoria= cDAO.listarPorId(id);
+		if(categoria == null) {
+			throw new AppettitException("La categoria indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		} else {
+			try {
+				cDAO.eliminar(categoria);
+			} catch (Exception e) {
+				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+			}
+		}
 	}
 
 	public boolean existeNombreCategoria (String nombre) {

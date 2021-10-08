@@ -18,7 +18,7 @@ public class CategoriaDAO implements ICategoriaDAO{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Categoria> listar() {
-		Query consulta = em.createQuery("SELECT e FROM Categoria c");
+		Query consulta = em.createQuery("SELECT c FROM Categoria c");
 		return consulta.getResultList();
 	}
 
