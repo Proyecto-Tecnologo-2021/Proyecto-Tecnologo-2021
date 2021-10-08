@@ -22,8 +22,8 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 
 	@Override
 	public Departamento crear(Departamento departamento) {
-		//em.persist(departamento);
-		em.merge(departamento);
+		em.persist(departamento);
+		//em.merge(departamento);
 		
 		
 		return departamento;
@@ -31,7 +31,7 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 
 	@Override
 	public Departamento editar(Departamento departamento) {
-		em.persist(departamento);
+		em.merge(departamento);
 		return departamento;
 	}
 

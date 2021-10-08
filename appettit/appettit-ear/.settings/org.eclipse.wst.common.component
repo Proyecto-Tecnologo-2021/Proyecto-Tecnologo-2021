@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                    
+                        
+    
     
     
     
     <wb-module deploy-name="appettit">
-                                        
+                                                
+        
         
         
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
-                                        
+                                                
+        
         
         
         
@@ -122,13 +125,13 @@
         <dependent-module archiveName="asm-util.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/ow2/asm/asm-util/5.2/asm-util-5.2.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="mongodb-driver-sync.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/mongodb-driver-sync/4.3.2/mongodb-driver-sync-4.3.2.jar">
+        <dependent-module archiveName="mongodb-driver.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/mongodb-driver/3.12.10/mongodb-driver-3.12.10.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="bson.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/bson/4.3.2/bson-4.3.2.jar">
+        <dependent-module archiveName="bson.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/bson/4.3.3/bson-4.3.3.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="mongodb-driver-core.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/mongodb-driver-core/4.3.2/mongodb-driver-core-4.3.2.jar">
+        <dependent-module archiveName="mongodb-driver-core.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/mongodb/mongodb-driver-core/4.3.3/mongodb-driver-core-4.3.3.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="bcrypt.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/at/favre/lib/bcrypt/0.9.0/bcrypt-0.9.0.jar">
@@ -152,12 +155,14 @@
         <dependent-module archiveName="appettit-web.war" deploy-path="/" handle="module:/resource/appettit-web/appettit-web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-                                    
+                                            
+    
     
     
     
     </wb-module>
-                
+                    
+
 
 
 
