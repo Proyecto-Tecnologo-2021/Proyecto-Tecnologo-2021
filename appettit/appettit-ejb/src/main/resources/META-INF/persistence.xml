@@ -16,9 +16,6 @@
         http://xmlns.jcp.org/xml/ns/persistence
         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 	<persistence-unit name="postgreSQL">
-		<!-- If you are running in a production environment, add a managed data 
-			source, this configuration uses the JakartaEE default data source is just 
-			for development and testing! -->
 		<jta-data-source>java:/Proyecto2021G03</jta-data-source>
 		<class>proyecto2021G03.appettit.entity.Ciudad</class>
 		<class>proyecto2021G03.appettit.entity.Localidad</class>
@@ -42,8 +39,6 @@
 			<property name="wildfly.jpa.default-unit" value="true"/>
 				
 				<property name="hibernate.show_sql" value="false" />
-				
-<!-- 				<property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
  				<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 				<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
 
