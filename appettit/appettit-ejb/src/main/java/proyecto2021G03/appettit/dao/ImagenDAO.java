@@ -18,7 +18,7 @@ public class ImagenDAO implements IImagenDAO {
 
 	@Override
 	public Imagen crear(Imagen imagen) {
-		//em.persist(imagen);
+		em.persist(imagen);
 		
 		return imagen;
 	}

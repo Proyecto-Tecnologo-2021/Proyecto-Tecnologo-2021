@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
@@ -33,7 +34,8 @@ public class Imagen implements Serializable {
 	  @GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
-		private byte[] imagen;
+	
+	private byte[] imagen;
 	
 
 

@@ -53,7 +53,7 @@
 		   <property name="hibernate.ogm.datastore.provider" value="mongodb"/>
 		   <property name="hibernate.ogm.datastore.host" value="cluster0-shard-00-00.ap6pz.mongodb.net:27017,cluster0-shard-00-01.ap6pz.mongodb.net:27017,cluster0-shard-00-02.ap6pz.mongodb.net:27017"/>
 
-		   <property name="hibernate.ogm.datastore.database" value="appettitIMG"/>
+		   <property name="hibernate.ogm.datastore.database" value="appetitIMG"/>
 		   <property name="hibernate.ogm.datastore.create_database" value="true" />
 
 		   <property name="hibernate.ogm.datastore.username" value="admin"/>
