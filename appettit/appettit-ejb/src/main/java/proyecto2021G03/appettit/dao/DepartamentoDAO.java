@@ -23,8 +23,6 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 	@Override
 	public Departamento crear(Departamento departamento) {
 		em.persist(departamento);
-		//em.merge(departamento);
-		
 		
 		return departamento;
 	}
@@ -56,11 +54,12 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Departamento> buscarPorNombre(String nombre) {
-		String query = "SELECT _d.id, _d.nombre from Departamento _d " + 
+		String query = "SELECT _d from Departamento _d " + 
 				   "where nombre = :nombre ";
 	
 		Query q = em.createQuery(query).setParameter("nombre",nombre);
 		
+		/*
 		List<Object[]> datos =  q.getResultList();
 		List<Departamento> departamentos = new ArrayList<Departamento>();
 		Iterator<Object[]> it = datos.iterator();
@@ -71,7 +70,8 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 		     eq.setNombre(line[1].toString());
 		     departamentos.add(eq);
 		}
-		return departamentos;
+		*/
+		return q.getResultList();
 		
 	}
 

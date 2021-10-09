@@ -36,7 +36,5 @@ public class Imagen implements Serializable {
 	
 	
 	private byte[] imagen;
-	
-
 
 }
