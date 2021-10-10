@@ -9,7 +9,7 @@
 
 <h:head>
 	<meta charset="ISO-8859-1"></meta>
-	<title>Appetit-Administrador</title>
+	<title>Appetit-Administradores</title>
 
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
@@ -47,7 +47,7 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="#">Restaurantes</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
-					<li class="nav-item"><a class="nav-link" href="administradores.xhtml">Adminsitradores</a></li>
+					<li class="nav-item"><a class="nav-link active" href="#">Adminsitradores</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
 				</ul>
 			</div>
@@ -58,376 +58,60 @@
 
 	<div class="main-panel">
 		<div class="container">
+			<div class="wrapper pt-3">
+				<h3>Lista de Administradores</h3>
+				<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+				<div class="card">
+					Columnas habilitadas <b>name</b>, <b>country</b>, <b>date</b>, <b>status</b>
+					and <b>activity</b>.
 
-			<div class="content-wrapper">
-				<div class="row mb-3 pt-3">
-					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
-						<div class="card">
-							<div class="card-header">
-								<div class="row">
-									<div class="col-md-6">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-											<h5 class="card-title mb-3 pt-1">
-												Restaurantes a autorizar: 
-												<h:outputText value="#{HomeRestaurante.fechaHora}" />
-											</h5>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<h5 class="card-title mb-3 pt-1">
-												&Uacute;ltima Actualizaci&oacute;n:
-												<h:outputText value="#{HomeRestaurante.fechaHora}" />
-											</h5>
-										</div>
-									</div>
-
-
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Graficas Totales -->
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-8">
-										<h6 class="card-title mb-3 pt-1">Total de ventas</h6>
-									</div>
-									<div class="col-md-4">
-										<div class="ms-chart-label bg-dark">
-											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
-											</h6>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12"></div>
-								</div>
-								<h5 class="card-title mb-3 font-weight-bold">$ 172.800</h5>
-								<div id="canvas-holderA">
-									<canvas id="chart_CardA" />
-								</div>
-							</div>
+					<h:form id="form">
+						<div class="p-mt-3 p-mb-5">
+							<p:inputText id="template"
+								value="#{dtColumnsView.columnTemplate}" size="50"
+								styleClass="p-mr-2" />
+							<p:commandButton update="customers"
+								action="#{dtColumnsView.updateColumns}" value="Actualizar"
+								process="@parent" icon="pi pi-refresh"
+								oncomplete="PF('customersTable').clearFilters()" />
 						</div>
 
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-8">
-										<h6 class="card-title mb-3 pt-1">Total de clientes</h6>
-									</div>
-									<div class="col-md-4">
-										<div class="ms-chart-label bg-dark">
-											<h6>
-												<i class="fas fa-arrow-down"> 1.0%</i>
-											</h6>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12"></div>
-								</div>
-								<h5 class="card-title mb-3 font-weight-bold">189</h5>
-								<div id="canvas-holderB">
-									<canvas id="chart_CardB" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-8">
-										<h6 class="card-title mb-3 pt-1">Total de &oacute;rdenes</h6>
-									</div>
-									<div class="col-md-4">
-										<div class="ms-chart-label bg-dark">
-											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
-											</h6>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12"></div>
-								</div>
-								<h5 class="card-title mb-3 font-weight-bold">153</h5>
-								<div id="canvas-holderC">
-									<canvas id="chart_CardC" />
-								</div>
-							</div>
-						</div>
+						<p:dataTable id="customers" var="customer"
+							value="#{dtColumnsView.customers}" widgetVar="customersTable"
+							filteredValue="#{dtColumnsView.filteredCustomers}">
 
-					</div>
-					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-8">
-										<h6 class="card-title mb-3 pt-1">Promedio de
-											&oacute;rdenes</h6>
-									</div>
-									<div class="col-md-4">
-										<div class="ms-chart-label bg-dark">
-											<h6>
-												<i class="fas fa-arrow-up"> 3.0%</i>
-											</h6>
-										</div>
-									</div>
-								</div>
+							<p:columns value="#{dtColumnsView.columns}" var="column"
+								headerText="#{column.header}" field="#{column.property}">
+								<f:facet name="filter">
+									<p:datePicker selectionMode="range"
+										onchange="PF('customersTable').filter()"
+										rendered="#{column.type eq 'date'}" />
+									<p:selectOneMenu onchange="PF('customersTable').filter()"
+										rendered="#{column.type eq 'enum'}">
+										<f:selectItem itemValue="#{null}" itemLabel="" />
+										<f:selectItems value="#{column.klazz.enumConstants}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:columns>
 
-								<h5 class="card-title mb-3 font-weight-bold">21</h5>
-								<div id="canvas-holderD">
-									<canvas id="chart_CardD" />
-								</div>
-							</div>
-						</div>
-					</div>
+						</p:dataTable>
+					</h:form>
+				</div>
+				</div>	
+			</div>
+			<div class="col-12 d-flex flex-row-reverse">
+				<div class="p-2">
+					<div class="btn-group" data-toggle="buttons">
+						<a class="btn btn-secondary" href="javascript:addAdmin();"
+							role="button" title="Agregar Administrador"><i
+							class="fas fa-plus"></i> </a> <a class="btn btn-secondary"
+							href="javascript:delAdministrador();" role="button"
+							title="Eliminar Administrador"><i class="fas fa-minus"></i> </a>
+						<a class="btn btn-secondary" href="javascript:updAdministrador();"
+							role="button" title="Modificar Administrador"><i
+							class="fas fa-pen"></i> </a>
 
-					<div
-						class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<div class="row">
-									<div class="col-md-6">
-										<h5 class="card-title mb-3">Top 5 de Restaurantes</h5>
-									</div>
 
-									<div class="col-md-6 justify-content-md-end">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<button type="button" class="btn btn-primary">Ver
-												todos</button>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="card-body">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Restaurante</th>
-											<th scope="col">Total Venta</th>
-											<th scope="col">Califiaci&oacute;n</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/pizza.jpg" alt="">
-													Restaurante 1</img></td>
-											<td>$ 1800</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/french-fries.jpg"
-												alt=""> Restaurante 2</img></td>
-											<td>$ 1700</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/cereals.jpg" alt="">
-													Restaunate 3</img></td>
-											<td>$ 1500</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt=""> Reataurante 56</img></td>
-											<td>$ 1240</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span></td>
-										</tr>
-									</tbody>
-
-								</table>
-
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3 pt-1">Reclamos</h5>
-							</div>
-							<div class="card-body">
-
-								<h6 class="card-title mb-3 font-weight-bold">8 de 153
-									pedidos (5.22%)</h6>
-								<div id="canvas-holderF">
-									<canvas id="chart_CardF" />
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
-
-							</div>
-							<div class="card-body">
-								<h6 class="card-title mb-3 font-weight-bold">153 pedidos</h6>
-								<div id="canvas-holderE">
-									<canvas id="chart_CardE" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
-
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Tendencias</h5>
-							</div>
-							<div class="card-body">
-								<div class="row mb-3">
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/pizza.jpg"
-												alt="pizza"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
-												</div>
-
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Pizza</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$1800</h6>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/food-4.jpg"
-												alt="Hamburguesa"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
-												</div>
-											
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Hamburguesa</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$220</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">11</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$2420</h6>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt="Chivito"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 2</h5>
-												</div>
-											
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Chivito</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">15</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$2700</h6>
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/food-3.jpg"
-												alt="Ensalada"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 56</h5>
-												</div>
-												
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Ensalada</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$190</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$1900</h6>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
-										*Per&iacute;odo de an&aacute;lisis -</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
