@@ -31,11 +31,10 @@
 	<div class="navigation w-100">
 		<div class="container">
 
-			<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-
-			<a class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
-				class="appettit-logo" src="/appettit-web/resources/images/logobg.svg"
-				alt="Appettit"></img></a>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+				class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
+				class="appettit-logo"
+				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
 
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarSupportedContent"
@@ -46,23 +45,9 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> Men&uacute; </a>
-						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item" href="#">Productos</a> <a
-								class="dropdown-item" href="#">Promociones</a>
-						</div></li>
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> Clientes </a>
-						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item" href="#">Pedidos</a> <a
-								class="dropdown-item" href="#">Reclamos</a> <a
-								class="dropdown-item" href="#">Calificar</a>
-						</div></li>
+					<li class="nav-item"><a class="nav-link" href="#">Restaurantes</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Adminsitradores</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
 				</ul>
 			</div>
@@ -75,35 +60,24 @@
 		<div class="container">
 
 			<div class="content-wrapper">
-				<div class="row mb-3">
-					<!-- Estado -->
+				<div class="row mb-3 pt-3">
 					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
 						<div class="card">
 							<div class="card-header">
 								<div class="row">
 									<div class="col-md-6">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-										<c:choose>
-										    <c:when test="#{HomeRestaurante.abierto}">
-										        <button class="btn btn-success" type="button">Cerrar 
-												Restaurante</button>
-										    </c:when>
-										    <c:otherwise>
-										        <button class="btn btn-warning" type="button">Abrir
-												Restaurante</button>
-										    </c:otherwise>
-										</c:choose>
-										
-										
-										
-											
+											<h5 class="card-title mb-3 pt-1">
+												Restaurantes a autorizar: 
+												<h:outputText value="#{HomeRestaurante.fechaHora}" />
+											</h5>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<h5 class="card-title mb-3 pt-1">&Uacute;ltima
-												Actualizaci&oacute;n:
-												<h:outputText value="#{HomeRestaurante.fechaHora}"/> 
+											<h5 class="card-title mb-3 pt-1">
+												&Uacute;ltima Actualizaci&oacute;n:
+												<h:outputText value="#{HomeRestaurante.fechaHora}" />
 											</h5>
 										</div>
 									</div>
@@ -113,89 +87,6 @@
 							</div>
 						</div>
 					</div>
-					<!-- Caliificacion -->
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Rapidez</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star "></span> <span class="fa fa-star"></span>
-								</h5>
-
-								<h5 class="card-title mb-3 font-weight-bold">3.9 en 30
-									calificaciones</h5>
-								<div id="canvas-holderCalA">
-									<canvas id="chart_CalA" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Comida</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star "></span> <span class="fa fa-star"></span>
-								</h5>
-
-								<h5 class="card-title mb-3 font-weight-bold">3.7 en 30
-									calificaciones</h5>
-								<div id="canvas-holderCalB">
-									<canvas id="chart_CalB" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Servicio</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star"></span>
-								</h5>
-
-								<h5 class="card-title mb-3 font-weight-bold">4.0 en 30
-									calificaciones</h5>
-								<div id="canvas-holderCalC">
-									<canvas id="chart_CalC" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">General</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star"></span> <span class="fa fa-star"></span>
-								</h5>
-
-								<h5 class="card-title mb-3 font-weight-bold">3.8 en 30
-									calificaciones</h5>
-								<div id="canvas-holderCalD">
-									<canvas id="chart_CalD" />
-								</div>
-							</div>
-						</div>
-					</div>
-
 
 					<!-- Graficas Totales -->
 					<div
@@ -303,13 +194,14 @@
 							</div>
 						</div>
 					</div>
+
 					<div
 						class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-header">
 								<div class="row">
 									<div class="col-md-6">
-										<h5 class="card-title mb-3">Pedidos Recientes</h5>
+										<h5 class="card-title mb-3">Top 5 de Restaurantes</h5>
 									</div>
 
 									<div class="col-md-6 justify-content-md-end">
@@ -325,39 +217,54 @@
 								<table class="table table-hover">
 									<thead>
 										<tr>
-											<th scope="col">Detalle</th>
-											<th scope="col">Precio</th>
-											<th scope="col">C&oacute;digo</th>
+											<th scope="col">Restaurante</th>
+											<th scope="col">Total Venta</th>
+											<th scope="col">Califiaci&oacute;n</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
 											<td><img
 												src="/codigo-web/resources/images/food/pizza.jpg" alt="">
-													Pizza</img></td>
-											<td>$ 180</td>
-											<td>1234</td>
+													Restaurante 1</img></td>
+											<td>$ 1800</td>
+											<td><span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star"></span> <span class="fa fa-star"></span>
+											</td>
 										</tr>
 										<tr>
 											<td><img
 												src="/codigo-web/resources/images/food/french-fries.jpg"
-												alt=""> Papas fr&iacute;tas</img></td>
-											<td>$ 90</td>
-											<td>1235</td>
+												alt=""> Restaurante 2</img></td>
+											<td>$ 1700</td>
+											<td><span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star"></span> <span class="fa fa-star"></span>
+											</td>
 										</tr>
 										<tr>
 											<td><img
 												src="/codigo-web/resources/images/food/cereals.jpg" alt="">
-													Desayuno de cereales</img></td>
-											<td>$ 70</td>
-											<td>1236</td>
+													Restaunate 3</img></td>
+											<td>$ 1500</td>
+											<td><span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star"></span> <span class="fa fa-star"></span>
+											</td>
 										</tr>
 										<tr>
 											<td><img
 												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt=""> Chivito</img></td>
-											<td>$ 180</td>
-											<td>1231</td>
+												alt=""> Reataurante 56</img></td>
+											<td>$ 1240</td>
+											<td><span class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star text-warning"></span> <span
+												class="fa fa-star"></span> <span class="fa fa-star"></span></td>
 										</tr>
 									</tbody>
 
@@ -416,6 +323,10 @@
 											<div class="card-body"></div>
 											<div class="card-footer bg-transparent">
 												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
+												</div>
+
+												<div class="d-flex flex-row">
 													<h5 class="mr-auto card-title mb-3 pt-1">Pizza</h5>
 													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
 												</div>
@@ -439,6 +350,10 @@
 											<div class="card-body"></div>
 											<div class="card-footer bg-transparent">
 												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
+												</div>
+											
+												<div class="d-flex flex-row">
 													<h5 class="mr-auto card-title mb-3 pt-1">Hamburguesa</h5>
 													<h5 class="card-title mb-3 pt-1 text-success">$220</h5>
 												</div>
@@ -461,6 +376,10 @@
 												alt="Chivito"></img>
 											<div class="card-body"></div>
 											<div class="card-footer bg-transparent">
+												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 2</h5>
+												</div>
+											
 												<div class="d-flex flex-row">
 													<h5 class="mr-auto card-title mb-3 pt-1">Chivito</h5>
 													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
@@ -486,6 +405,10 @@
 											<div class="card-body"></div>
 											<div class="card-footer bg-transparent">
 												<div class="d-flex flex-row">
+													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 56</h5>
+												</div>
+												
+												<div class="d-flex flex-row">
 													<h5 class="mr-auto card-title mb-3 pt-1">Ensalada</h5>
 													<h5 class="card-title mb-3 pt-1 text-success">$190</h5>
 												</div>
@@ -500,111 +423,11 @@
 											</div>
 										</div>
 									</div>
-
+									<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+										*Per&iacute;odo de an&aacute;lisis -</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div
-						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Pedidos</h5>
-							</div>
-							<div class="card-body scroll">
-								<table class="table table-hover">
-									<thead class="table-dark">
-										<tr>
-											<th scope="col">Orden</th>
-											<th scope="col">Detalle</th>
-											<th scope="col">Cliente</th>
-											<th scope="col">Barrio</th>
-											<th scope="col">Estado</th>
-											<th scope="col">Hora del pedido</th>
-											<th scope="col">Precio</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>21</td>
-											<td>Papas fritas</td>
-											<td>Juan Perez</td>
-											<td>Cord&oacute;n</td>
-											<td><span class="text-white badge bg-warning">Confirmado</span></td>
-											<td>19:00</td>
-											<td>$ 90</td>
-										</tr>
-										<tr>
-											<td>22</td>
-											<td>Pizza</td>
-											<td>Andrea Lopez</td>
-											<td>Cord&oacute;n</td>
-											<td><span class="text-white badge bg-success">Enviado</span></td>
-											<td>19:00</td>
-											<td>$ 180</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-9 col-lg-9 col-md-9 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Zonas de influencia</h5>
-							</div>
-							<div class="card-body">
-								<div id="map"
-									class="leflet-map leaflet-container leaflet-fade-anim border">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Comentarios</h5>
-							</div>
-							<div class="card-body">
-
-								<div class="list-group">
-									<a href="#"
-										class="list-group-item list-group-item-action"
-										aria-current="true">
-										<div class="d-flex w-100 justify-content-between">
-											<h5 class="mb-1">Juan Perez</h5>
-											<small>15/09/2021</small>
-										</div>
-										<p class="mb-1">Buen servicio</p> 
-										<small>
-											<span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star "></span> <span class="fa fa-star"></span>
-										</small>
-										
-									</a> <a href="#" class="list-group-item list-group-item-action">
-										<div class="d-flex w-100 justify-content-between">
-											<h5 class="mb-1">Ignacio Mart&iacute;nez</h5>
-											<small class="text-muted">15/09/2021</small>
-										</div>
-										<p class="mb-1">La comida estaba fr&iacute;a. y
-											llegaron a las 2 horas.</p>
-										<small>
-											<span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span
-												class="fa fa-star"></span> <span
-												class="fa fa-star "></span> <span class="fa fa-star"></span>
-										</small>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
-						*Per&iacute;odo de an&aacute;lisis - 
 					</div>
 				</div>
 			</div>
