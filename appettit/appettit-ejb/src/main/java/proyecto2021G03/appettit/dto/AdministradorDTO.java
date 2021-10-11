@@ -1,6 +1,10 @@
 package proyecto2021G03.appettit.dto;
 
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +23,17 @@ public class AdministradorDTO extends Usuario {
 			String token, String tokenFireBase) {
 		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+	    fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+	    if (type.getSuperclass() != null) {
+	        getAllFields(fields, type.getSuperclass());
+	    }
+
+	    return fields;
 	}
 
 }

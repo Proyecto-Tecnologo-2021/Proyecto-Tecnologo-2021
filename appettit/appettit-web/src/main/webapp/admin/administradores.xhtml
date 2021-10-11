@@ -47,7 +47,7 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="#">Restaurantes</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
-					<li class="nav-item"><a class="nav-link active" href="#">Adminsitradores</a></li>
+					<li class="nav-item"><a class="nav-link active" href="#">Administradores</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
 				</ul>
 			</div>
@@ -62,7 +62,8 @@
 				<h3>Lista de Administradores</h3>
 				<div class="card">
 					<div class="card-header">
-						Columnas habilitadas <b>nombre</b>, <b>username</b>, <b>correo</b> y <b>telefono</b>.
+						Columnas habilitadas <b>nombre</b>, <b>username</b>, <b>correo</b>
+						y <b>telefono</b>.
 					</div>
 					<h:form id="formAdmin">
 						<div class="p-mt-3 p-mb-5">
@@ -70,14 +71,28 @@
 								size="50" styleClass="p-mr-2" />
 							<p:commandButton update="administradores"
 								action="#{beanAdmin.updateColumns}" value="Actualizar"
-								process="@parent" icon="pi pi-refresh"
+								process="@parent" icon="pi pi-refresh" class="btn"
 								oncomplete="PF('adminsTable').clearFilters()" />
 						</div>
 
 						<p:dataTable id="administradores" var="administradores"
 							value="#{beanAdmin.administradores}" widgetVar="adminsTable"
-							filteredValue="#{beanAdmin.filteredAdm}">
-
+							filteredValue="#{beanAdmin.filteredAdm}" rows="10"
+							paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+							
+							<div class="p-mt-3 p-mb-5">
+								<f:facet name="header">
+									<p:outputPanel>
+										<h:outputText value="Buscar:" />
+										<p:inputText id="globalFilter"
+											onkeyup="PF('adminsTable').filter()" style="width:150px"
+											placeholder="Palabra clave" />
+									</p:outputPanel>
+								</f:facet>
+							</div>
 							<p:columns value="#{beanAdmin.columns}" var="column"
 								headerText="#{column.header}" field="#{column.property}">
 								<f:facet name="filter">

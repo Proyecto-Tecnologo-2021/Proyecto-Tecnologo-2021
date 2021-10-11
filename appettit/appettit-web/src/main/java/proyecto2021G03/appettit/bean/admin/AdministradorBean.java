@@ -50,7 +50,6 @@ public class AdministradorBean implements Serializable {
 	private List<ColumnModel> columns;
 	private List<AdministradorDTO> filteredAdm;
 
-	private String strbuscar;
 	private Long id;
 	private String nombre;
 	private String username;
@@ -71,7 +70,7 @@ public class AdministradorBean implements Serializable {
 			administradores = usrSrv.listarAdminsitradores();
 			columnTemplate = "nombre username correo telefono";
 			
-			validColumns = Stream.of(AdministradorDTO.class.getFields())
+			validColumns = Stream.of(AdministradorDTO.class.getSuperclass().getDeclaredFields())
 					.collect(Collectors.toMap(Field::getName, Field::getType));
 			createDynamicColumns();
 
@@ -98,7 +97,7 @@ public class AdministradorBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		} finally {
-			//clearParam();
+			clearParam();
 			try {
 				administradores = usrSrv.listarAdminsitradores();
 			} catch (AppettitException e) {
@@ -127,7 +126,7 @@ public class AdministradorBean implements Serializable {
 
 	public void updateColumns() {
 		// reset table state
-		UIComponent table = FacesContext.getCurrentInstance().getViewRoot().findComponent(":form:administradores");
+		UIComponent table = FacesContext.getCurrentInstance().getViewRoot().findComponent(":formAdmin:administradores");
 		table.setValueExpression("sortBy", null);
 
 		// update columns
@@ -174,6 +173,18 @@ public class AdministradorBean implements Serializable {
 				type = "enum";
 			}
 		}
+	}
+	
+	private void clearParam() {
+		this.id = null;
+		this.nombre = null;
+		this.password = null;
+		this.correo = null;
+		this.telefono = null;
+		this.username = null;
+		this.token = null;
+		this.tokenFireBase = null;
+		
 	}
 
 }
