@@ -25,15 +25,4 @@ public class AdministradorDTO extends Usuario {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
-	public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-	    fields.addAll(Arrays.asList(type.getDeclaredFields()));
-
-	    if (type.getSuperclass() != null) {
-	        getAllFields(fields, type.getSuperclass());
-	    }
-
-	    return fields;
-	}
-
 }

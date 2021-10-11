@@ -30,7 +30,6 @@
 		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
 	<div class="navigation w-100">
 		<div class="container">
-
 			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
 				class="navbar-brand" href="/appettit-web/admin/home.xhtml"><img
 				class="appettit-logo"
@@ -59,58 +58,73 @@
 	<div class="main-panel">
 		<div class="container">
 			<div class="wrapper pt-3">
-				<h3>Lista de Administradores</h3>
 				<div class="card">
-					<div class="card-header">
-						Columnas habilitadas <b>nombre</b>, <b>username</b>, <b>correo</b>
-						y <b>telefono</b>.
-					</div>
-					<h:form id="formAdmin">
-						<div class="p-mt-3 p-mb-5">
-							<p:inputText id="template" value="#{beanAdmin.columnTemplate}"
-								size="50" styleClass="p-mr-2" />
-							<p:commandButton update="administradores"
-								action="#{beanAdmin.updateColumns}" value="Actualizar"
-								process="@parent" icon="pi pi-refresh" class="btn"
-								oncomplete="PF('adminsTable').clearFilters()" />
-						</div>
-
-						<p:dataTable id="administradores" var="administradores"
-							value="#{beanAdmin.administradores}" widgetVar="adminsTable"
+					<h:form>
+						<p:dataTable var="admin" value="#{beanAdmin.administradores}"
+							widgetVar="adminsTable" emptyMessage="No existen registros"
+							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
 							filteredValue="#{beanAdmin.filteredAdm}" rows="10"
 							paginator="true"
+							rowKey="#{admin.id}"
+							selectionMode="single"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
 							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
-							
-							<div class="p-mt-3 p-mb-5">
-								<f:facet name="header">
-									<p:outputPanel>
-										<h:outputText value="Buscar:" />
-										<p:inputText id="globalFilter"
-											onkeyup="PF('adminsTable').filter()" style="width:150px"
-											placeholder="Palabra clave" />
-									</p:outputPanel>
-								</f:facet>
-							</div>
-							<p:columns value="#{beanAdmin.columns}" var="column"
-								headerText="#{column.header}" field="#{column.property}">
-								<f:facet name="filter">
-									<p:datePicker selectionMode="range"
-										onchange="PF('adminsTable').filter()"
-										rendered="#{column.type eq 'date'}" />
-									<p:selectOneMenu onchange="PF('adminsTable').filter()"
-										rendered="#{column.type eq 'enum'}">
-										<f:selectItem itemValue="#{null}" itemLabel="" />
-										<f:selectItems value="#{column.klazz.enumConstants}" />
-									</p:selectOneMenu>
-								</f:facet>
-							</p:columns>
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de Administradores</h5>
+										</div>
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('adminsTable').filter()" style="width:10rem"
+												placeholder="Palabra clave" />
+											<p:commandButton value="Buscar" update="@form"
+												action="#{dtFilterView.toggleGlobalFilter()}"
+												class="btn btn-primary" />
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="Id" sortBy="#{admin.id}">
+								<h:outputText value="#{admin.id}" />
+							</p:column>
+
+							<p:column headerText="Nombre" sortBy="#{admin.nombre}"
+								filterBy="#{admin.nombre}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{admin.nombre}" />
+							</p:column>
+
+							<p:column headerText="UserName" sortBy="#{admin.username}"
+								filterBy="#{admin.username}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{admin.username}" />
+							</p:column>
+
+							<p:column headerText="Correo" sortBy="#{admin.correo}"
+								filterBy="#{admin.correo}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{admin.correo}" />
+							</p:column>
+
+							<p:column headerText="Tel&eacute;fono" sortBy="#{admin.telefono}"
+								filterBy="#{admin.telefono}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{admin.telefono}" />
+							</p:column>
 
 						</p:dataTable>
 					</h:form>
 				</div>
 			</div>
+
 			<div class="col-12 d-flex flex-row-reverse">
 				<div class="p-2">
 					<div class="btn-group" data-toggle="buttons">
@@ -172,7 +186,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Infomraci&oacute;n</h5>
+					<h5 class="modal-title" id="errorModalLabel">Informaci&oacute;n</h5>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true"> &times; </span>
