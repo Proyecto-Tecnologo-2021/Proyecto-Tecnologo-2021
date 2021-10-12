@@ -1,10 +1,6 @@
 package proyecto2021G03.appettit.dto;
 
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
