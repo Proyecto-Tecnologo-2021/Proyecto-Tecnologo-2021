@@ -1,13 +1,7 @@
-package proyecto2021G03.appettit.entity;
+package proyecto2021G03.appettit.dto;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 
@@ -16,23 +10,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.dto.EstadoRegistro;
+import proyecto2021G03.appettit.entity.Usuario;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@DiscriminatorValue("restaurante")
-public class Restaurante extends Usuario {
+@AllArgsConstructor
+public class RestauranteDTO extends Usuario  {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Builder
-	public Restaurante(Long id, String nombre, String username, String password, String telefono, String correo,
+	public RestauranteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
 			LocalDateTime horarioApertura, LocalDateTime horarioCierre, Boolean abierto, Boolean abiertoAutom,
-			MultiPolygon areaentrega, Direccion direccion) {
+			MultiPolygon areaentrega, DireccionDTO direccion) {
 		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
 		
 		this.rut = rut;
@@ -53,12 +45,6 @@ public class Restaurante extends Usuario {
 	private LocalDateTime horarioCierre;
 	private Boolean abierto;
 	private Boolean abiertoAutom;
-	
-	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
 	private MultiPolygon areaentrega;
-	
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id_direccion", referencedColumnName="id")
-	private Direccion direccion;
-
+	private DireccionDTO direccion;
 }

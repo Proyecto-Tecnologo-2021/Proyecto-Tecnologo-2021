@@ -1,4 +1,4 @@
-package proyecto2021G03.appettit.bean;
+package proyecto2021G03.appettit.bean.restaurante;
 
 import java.io.Serializable;
 import java.text.DateFormat;

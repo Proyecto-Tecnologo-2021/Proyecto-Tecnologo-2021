@@ -34,7 +34,6 @@ public class AdministradorBean implements Serializable {
 
 	static Logger logger = Logger.getLogger(AdministradorBean.class);
 
-	private String columnTemplate;
 	private List<AdministradorDTO> administradores;
 	
 	private Long id;

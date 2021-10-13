@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import proyecto2021G03.appettit.entity.Administrador;
+import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 
 @Local
@@ -27,5 +28,9 @@ public interface IUsuarioDAO {
 	public List<Administrador> buscarPorNombreAdministrador(String nombre);
 	public Administrador crearAdministrador(Administrador administrador);
 	
+	/*RESTAURANTE*/
+	public List<Restaurante> listarRestaurantes();
+	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
+	public Restaurante crearRestaurante(Restaurante restaurante);
 	
 }
