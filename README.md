@@ -12,7 +12,7 @@ Proyecto Grupo 03 - 2021 Tecnólogo en Informática – C.E.T.P - UdelaR.
 
 ## Descripción
 
-Appetit es un sistema de gestión de pedidos a restaurantes que permitirá a los restaurantes aceptados ofrecer sus servicios y a los clientes registrados realizar(o cancelar) pedidos, calificar y reportar posibles incidentes. A su vez, la plataforma será gestionada por un usuario Administrador. Estos tres conceptos (Restaurante, Cliente y Administrador) componen los diferentres tipos de usuario que integran el sistema.
+Appetit es un sistema de gestión de pedidos a restaurantes que permitirá a los restaurantes aceptados ofrecer sus servicios y a los clientes registrados realizar(o cancelar) pedidos, calificar y reportar posibles incidentes. A su vez, la plataforma será gestionada por un usuario Administrador. Estos tres conceptos (Restaurante, Cliente y Administrador) componen los diferentres tipos de usuario que integran el sistema.a
 
 
 ## Datos de prueba
