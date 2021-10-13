@@ -1,0 +1,33 @@
+<resources>
+    <!--GRAL-->
+    <string name="app_name">PCAppettit</string>
+    <string name="login_welcome">¡Bienvenido!</string>
+    <string name="google_login">Ingresar con Google</string>
+    <string name="appettit_login">Ingresar de otra forma</string>
+    <string name="appettit_logout">Salir</string>
+    <string name="alert_btn_positive">Si</string>
+    <string name="alert_btn_negative">No</string>
+    <string name="alert_btn_neutral">OK</string>
+
+    <!--CONNECTION MESSAGES-->
+    <string name="err_conectividad">Error de conectiviad. No existe conexión de red disponible.</string>
+    <string name="err_recuperarpag">Error de conectiviad. No se puede conectar con el servicio.</string>
+    <string name="registros_err">Error del tipo de dato retornado</string>
+
+    <!--VIEW INFO -->
+    <string name="info_title">Información</string>
+
+    <!-- ACCESS-->
+    <string name="access_title_err">Error de Permisos</string>
+    <string name="access_msg_err">¿Desea Asignar los permisos?</string>
+    <string name="text_load">Cargando…</string>
+    <string name="text_load_btn">Reintentar</string>
+    <string name="text_load_btn_main">Ir a Activiad Principal</string>
+
+
+    <!--LOGIN-->
+    <string name="login_mail">Correo</string>
+    <string name="login_pass">Contraseña</string>
+    <string name="login_input">Ingresar</string>
+
+</resources>
