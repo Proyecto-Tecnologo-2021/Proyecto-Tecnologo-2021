@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.business;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -127,8 +129,18 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public List<RestauranteDTO> listarRestaurantes() throws AppettitException {
+		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>(); 
 		try {
-			return usrConverter.fromRestaurante(usrDAO.listarRestaurantes());
+			
+			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.listarRestaurantes()).iterator();
+			while (it.hasNext()) {
+				RestauranteDTO res = it.next();
+				res.setCalificacion(calificcionRestaurante(res));
+				restaurantes.add(res);
+			}
+			
+			return restaurantes;
+			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -136,8 +148,16 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException {
+		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
 		try {
-			return usrConverter.fromRestaurante(usrDAO.buscarPorNombreRestaurante(nombre));
+			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.buscarPorNombreRestaurante(nombre)).iterator();
+			while (it.hasNext()) {
+				RestauranteDTO res = it.next();
+				res.setCalificacion(calificcionRestaurante(res));
+				restaurantes.add(res);
+			}
+			
+			return restaurantes;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

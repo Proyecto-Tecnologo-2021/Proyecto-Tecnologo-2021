@@ -38,7 +38,7 @@ public class ClasificacionPedido implements Serializable {
 	private Integer rapidez; 
 	private Integer comida;
 	private Integer servicio;
-	private Integer cometario;
+	private String comentario;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_pedido", referencedColumnName="id", insertable=false, updatable=false)

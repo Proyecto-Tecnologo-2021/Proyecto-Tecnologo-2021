@@ -1,20 +1,22 @@
 package proyecto2021G03.appettit.dao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
-import vacunasuy.componentecentral.dto.ReporteEvolucionTiempoDTO;
 
 @Singleton
 public class UsuarioDAO implements IUsuarioDAO {
@@ -140,21 +142,69 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return restaurante;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "restaurante");
+		Query consulta = em
+				.createNativeQuery("SELECT"
+						+ "	c.cla, "
+						+ "	COUNT(CASE c.cla = cp.comida"
+						+ "		  WHEN TRUE THEN cp.comida"
+						+ "			ELSE NULL"
+						+ "		  END) AS comida,"
+						+ "	COUNT(CASE c.cla = cp.rapidez"
+						+ "		  WHEN TRUE THEN cp.rapidez"
+						+ "			ELSE NULL"
+						+ "		  END) AS rapidez,"
+						+ "	COUNT(CASE c.cla = cp.servicio"
+						+ "		  WHEN TRUE THEN cp.servicio"
+						+ "			ELSE NULL"
+						+ "		  END) AS servicio"
+						+ " FROM clasificacionespedidos cp"
+						+ " JOIN pedidos p ON p.id = cp.id_pedido"
+						+ "				AND p.id_restaurante = :id_restaurante"
+						+ " RIGHT JOIN generate_series(1, 5, 1) AS c(cla) ON 1=1"
+						+ " GROUP BY c.cla"
+						+ "");
+		
+		consulta.setParameter("id_restaurante", restauranteDTO.getId());
 
-		CalificacionRestauranteDTO calificacion = new CalificacionRestauranteDTO();
+		
+		List<Object[]> datos = consulta.getResultList();
+		Integer rapidez = 0; 
+		Integer comida = 0;
+		Integer servicio = 0;
+		Integer general = 0;
+		Integer trapidez = 0; 
+		Integer tcomida = 0;
+		Integer tservicio = 0;
+		Integer tgeneral = 0;
+		
+		
 		Iterator<Object[]> it = datos.iterator();
 		while (it.hasNext()) {
 			Object[] line = it.next();
-			ReporteEvolucionTiempoDTO eq = new ReporteEvolucionTiempoDTO();
-			eq.setFecha(line[0].toString());
-			eq.setCantidad(Integer.valueOf(line[1].toString()));
-			reportefinal.add(eq);
+			comida += Integer.valueOf(line[0].toString()) * Integer.valueOf(line[1].toString());
+			rapidez += Integer.valueOf(line[0].toString()) * Integer.valueOf(line[2].toString()); 
+			servicio += Integer.valueOf(line[0].toString()) * Integer.valueOf(line[3].toString());
+			general += Integer.valueOf(line[0].toString()) * (Integer.valueOf(line[1].toString()) + Integer.valueOf(line[2].toString()) + Integer.valueOf(line[3].toString()));
+			tcomida += Integer.valueOf(line[1].toString());
+			trapidez += Integer.valueOf(line[2].toString()); 
+			tservicio += Integer.valueOf(line[3].toString());
+			tgeneral += (Integer.valueOf(line[1].toString()) + Integer.valueOf(line[2].toString()) + Integer.valueOf(line[3].toString()));
+			
 		}
-		return reportefinal;
-	
+		if(tcomida != 0)
+			comida = comida/tcomida;
+		if(trapidez != 0)
+			rapidez = rapidez/trapidez;
+		if(tservicio != 0)
+			servicio = servicio/tservicio;
+		if(tgeneral != 0)
+			general = general/tgeneral;
+		
+		return new CalificacionRestauranteDTO(rapidez, comida, servicio, general);
+				  	
 	}
 
 }
