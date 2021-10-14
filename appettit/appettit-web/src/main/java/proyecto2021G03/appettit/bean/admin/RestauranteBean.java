@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -35,8 +36,10 @@ public class RestauranteBean implements Serializable {
 	static Logger logger = Logger.getLogger(RestauranteBean.class);
 
 	private List<RestauranteDTO> restaurantes;
+	private List<RestauranteDTO> filterRestaurantes;
 	
 	private Long id;
+	private boolean globalFilterOnly;
 	
 	@EJB
 	IUsuarioService usrSrv;
@@ -53,5 +56,20 @@ public class RestauranteBean implements Serializable {
 		}
 	}
 
+	public void toggleGlobalFilter() {
+		setGlobalFilterOnly(!isGlobalFilterOnly());
+	}
+	
+	public boolean isGlobalFilterOnly() {
+		return globalFilterOnly;
+	}
+
+	public void setGlobalFilterOnly(boolean globalFilterOnly) {
+		this.globalFilterOnly = globalFilterOnly;
+	}
+
+	public EstadoRegistro[] getRestauranteEstado() {
+        return EstadoRegistro.values();
+    }
 
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DireccionDTO {
+public class DireccionDTO implements Comparable<Object>{
 
 	private Long id;
 	private String calle;
@@ -23,5 +23,11 @@ public class DireccionDTO {
 	private String referencias;
 	private LocalidadDTO barrio;
 	private Point geometry;
+	private int quantity;
 
+
+	@Override
+	public int compareTo(Object o) {
+		return (((DireccionDTO) o).getCalle() + " " + ((DireccionDTO) o).getNumero()).compareTo(this.getCalle() + " " + this.getNumero());
+	}
 }

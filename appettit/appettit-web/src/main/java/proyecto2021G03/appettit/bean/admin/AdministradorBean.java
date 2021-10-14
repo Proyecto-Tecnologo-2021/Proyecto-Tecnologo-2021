@@ -35,7 +35,8 @@ public class AdministradorBean implements Serializable {
 	static Logger logger = Logger.getLogger(AdministradorBean.class);
 
 	private List<AdministradorDTO> administradores;
-	
+	private List<AdministradorDTO> filterAdministradores;
+
 	private Long id;
 	private String nombre;
 	private String username;
@@ -44,8 +45,7 @@ public class AdministradorBean implements Serializable {
 	private String correo;
 	private String token;
 	private String tokenFireBase;
-	private boolean globalFilterOnly;	
-	
+	private boolean globalFilterOnly;
 
 	@EJB
 	IUsuarioService usrSrv;
@@ -54,7 +54,7 @@ public class AdministradorBean implements Serializable {
 	public void init() {
 		try {
 			administradores = usrSrv.listarAdminsitradores();
-			
+
 		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -63,14 +63,15 @@ public class AdministradorBean implements Serializable {
 	}
 
 	public void addAdministrador() {
-		
+
 		logger.info("addAdministrador 'nombre': " + nombre);
-		
-		AdministradorDTO adminDTO = new AdministradorDTO(null, nombre, username, password, telefono, correo, null, null);
-	
+
+		AdministradorDTO adminDTO = new AdministradorDTO(null, nombre, username, password, telefono, correo, null,
+				null);
+
 		try {
 			adminDTO = usrSrv.crear(adminDTO);
-			
+
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Administrador " + adminDTO.getCorreo() + " creado con éxito.", null));
 		} catch (AppettitException e) {
@@ -87,7 +88,7 @@ public class AdministradorBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 			}
 		}
-		
+
 	}
 
 	private void clearParam() {
@@ -99,19 +100,19 @@ public class AdministradorBean implements Serializable {
 		this.username = null;
 		this.token = null;
 		this.tokenFireBase = null;
-		
+
 	}
-	
+
 	public void toggleGlobalFilter() {
-        setGlobalFilterOnly(!isGlobalFilterOnly());
-    }
-	
-	 public boolean isGlobalFilterOnly() {
-	        return globalFilterOnly;
-	    }
-	
+		setGlobalFilterOnly(!isGlobalFilterOnly());
+	}
+
+	public boolean isGlobalFilterOnly() {
+		return globalFilterOnly;
+	}
+
 	public void setGlobalFilterOnly(boolean globalFilterOnly) {
-        this.globalFilterOnly = globalFilterOnly;
-    }
+		this.globalFilterOnly = globalFilterOnly;
+	}
 
 }

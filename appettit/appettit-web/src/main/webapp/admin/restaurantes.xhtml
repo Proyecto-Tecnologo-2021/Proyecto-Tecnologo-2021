@@ -9,7 +9,7 @@
 
 <h:head>
 	<meta charset="ISO-8859-1"></meta>
-	<title>Appetit-Administradores</title>
+	<title>Appetit-Restautrantes</title>
 
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
@@ -44,9 +44,10 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link" href="restaurantes.xhtml">Restaurantes</a></li>
+					<li class="nav-item"><a class="nav-link  active" href="#">Restaurantes</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
-					<li class="nav-item"><a class="nav-link active" href="#">Administradores</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="administradores.xhtml">Administradores</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
 				</ul>
 			</div>
@@ -60,12 +61,13 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form>
-						<p:dataTable var="admin" value="#{beanAdmin.administradores}"
-							widgetVar="adminsTable" emptyMessage="No existen Administradores"
-							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
-							filteredValue="#{beanAdmin.filterAdministradores}" rows="10"
-							paginator="true"
-							rowKey="#{admin.id}"
+						<p:dataTable var="restaurante"
+							value="#{beanAdminRestaurante.restaurantes}"
+							widgetVar="restaurantesTable"
+							emptyMessage="No existen Restaurantes"
+							globalFilterOnly="#{beanAdminRestaurante.globalFilterOnly}"
+							filteredValue="#{beanAdminRestaurante.filterRestaurantes}"
+							rows="10" paginator="true" rowKey="#{restaurante.id}"
 							selectionMode="single"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
@@ -75,16 +77,16 @@
 								<div class="row">
 									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-											<h5>Lista de Administradores</h5>
+											<h5>Lista de Restaurantes</h5>
 										</div>
 									</div>
 									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 											<p:inputText id="globalFilter"
-												onkeyup="PF('adminsTable').filter()" style="width:10rem"
-												placeholder="Palabra clave" />
+												onkeyup="PF('restaurantesTable').filter()"
+												style="width:10rem" placeholder="Palabra clave" />
 											<p:commandButton value="Buscar" update="@form"
-												action="#{dtFilterView.toggleGlobalFilter()}"
+												action="#{beanAdminRestaurante.toggleGlobalFilter()}"
 												class="btn btn-primary" />
 										</div>
 									</div>
@@ -92,38 +94,114 @@
 
 							</f:facet>
 
-							<p:column headerText="Id" sortBy="#{admin.id}">
-								<h:outputText value="#{admin.id}" />
+							<p:column headerText="Id" sortBy="#{restaurante.id}">
+								<h:outputText value="#{restaurante.id}" />
 							</p:column>
 
-							<p:column headerText="Nombre" sortBy="#{admin.nombre}"
-								filterBy="#{admin.nombre}">
+							<p:column headerText="Nombre" sortBy="#{restaurante.nombre}"
+								filterBy="#{restaurante.nombre}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{admin.nombre}" />
+									value="#{restaurante.nombre}" />
 							</p:column>
 
-							<p:column headerText="UserName" sortBy="#{admin.username}"
-								filterBy="#{admin.username}">
+							<p:column headerText="Direcci&oacute;n"
+								sortBy="#{restaurante.direccion}"
+								filterBy="#{restaurante.direccion.calle}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{admin.username}" />
+									value="#{restaurante.direccion.calle} #{restaurante.direccion.numero}" />
 							</p:column>
 
-							<p:column headerText="Correo" sortBy="#{admin.correo}"
-								filterBy="#{admin.correo}">
+							<p:column headerText="Tel&eacute;fono"
+								sortBy="#{restaurante.telefono}"
+								filterBy="#{restaurante.telefono}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{admin.correo}" />
+									value="#{restaurante.telefono}" />
 							</p:column>
 
-							<p:column headerText="Tel&eacute;fono" sortBy="#{admin.telefono}"
-								filterBy="#{admin.telefono}">
-								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{admin.telefono}" />
+
+							<p:column field="status" headerText="Estado"
+								filterMatchMode="exact">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{beanAdminRestaurante.restauranteEstado}" />
+									</p:selectOneMenu>
+								</f:facet>
+
+								<span
+									class="restaurante-badge status-#{restaurante.estado.name().toLowerCase()}">#{restaurante.estado.toString()}</span>
+							</p:column>
+
+							<p:column headerText="Calificacion"
+								sortBy="#{restaurante.calificacion.general}">
+								<p:rating readonly="true"
+									value="#{restaurante.calificacion.general}" style="height: .5rem"/>
+							</p:column>
+	
+							<p:column style="width:3rem;text-align: center">
+								<p:commandButton update=":form:productDetail"
+									oncomplete="PF('productDialog').show()" icon="pi pi-search"
+									title="View">
+									<f:setPropertyActionListener value="#{product}"
+										target="#{dtSelectionView.selectedProduct}" />
+								</p:commandButton>
 							</p:column>
 
 						</p:dataTable>
+
+						<p:dialog header="Product Info" widgetVar="productDialog"
+							modal="true" showEffect="fade" hideEffect="fade"
+							resizable="false">
+							<p:outputPanel id="productDetail" style="text-align:center;">
+								<p:column
+									rendered="#{not empty dtSelectionView.selectedProduct}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-top">
+												<div>
+													<i class="pi pi-tag product-category-icon" /> <span
+														class="product-category">#{dtSelectionView.selectedProduct.category}</span>
+												</div>
+												<span
+													class="product-badge status-#{dtSelectionView.selectedProduct.inventoryStatus.name().toLowerCase()}">#{dtSelectionView.selectedProduct.inventoryStatus.text}</span>
+											</div>
+											<div class="product-grid-item-content">
+												<p:graphicImage
+													name="demo/images/product/#{dtSelectionView.selectedProduct.image}" />
+												<div class="product-name">#{dtSelectionView.selectedProduct.name}</div>
+												<div class="product-description">#{dtSelectionView.selectedProduct.description}</div>
+												<p:rating readonly="true"
+													value="#{dtSelectionView.selectedProduct.rating}" />
+											</div>
+											<div class="product-grid-item-bottom">
+												<h:outputText
+													value="#{dtSelectionView.selectedProduct.price}"
+													styleClass="product-price">
+													<f:convertNumber currencySymbol="$" type="currency" />
+												</h:outputText>
+												<p:commandButton value="Add To Cart"
+													icon="pi pi-shopping-cart"
+													disabled="#{dtSelectionView.selectedProduct.inventoryStatus == 'OUTOFSTOCK'}">
+													<f:setPropertyActionListener
+														value="#{dtSelectionView.selectedProduct}"
+														target="#{dtSelectionView.selectedProduct}" />
+												</p:commandButton>
+											</div>
+										</div>
+									</div>
+								</p:column>
+							</p:outputPanel>
+						</p:dialog>
+
 					</h:form>
 				</div>
 			</div>
+
+
+
 
 			<div class="col-12 d-flex flex-row-reverse">
 				<div class="p-2">
