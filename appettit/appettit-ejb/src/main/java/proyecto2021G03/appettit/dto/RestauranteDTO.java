@@ -10,16 +10,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.entity.Usuario;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestauranteDTO extends Usuario  {
+public class RestauranteDTO extends UsuarioDTO  {
 
-	private static final long serialVersionUID = 1L;
-	
 	@Builder
 	public RestauranteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
@@ -47,4 +44,6 @@ public class RestauranteDTO extends Usuario  {
 	private Boolean abiertoAutom;
 	private MultiPolygon areaentrega;
 	private DireccionDTO direccion;
+	private CalificacionRestauranteDTO calificacion;
+	
 }

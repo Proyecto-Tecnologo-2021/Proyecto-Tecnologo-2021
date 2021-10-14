@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.dao;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -7,9 +9,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
+import vacunasuy.componentecentral.dto.ReporteEvolucionTiempoDTO;
 
 @Singleton
 public class UsuarioDAO implements IUsuarioDAO {
@@ -133,6 +138,23 @@ public class UsuarioDAO implements IUsuarioDAO {
 		em.persist(restaurante);
 
 		return restaurante;
+	}
+
+	@Override
+	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) {
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "restaurante");
+
+		CalificacionRestauranteDTO calificacion = new CalificacionRestauranteDTO();
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			ReporteEvolucionTiempoDTO eq = new ReporteEvolucionTiempoDTO();
+			eq.setFecha(line[0].toString());
+			eq.setCantidad(Integer.valueOf(line[1].toString()));
+			reportefinal.add(eq);
+		}
+		return reportefinal;
+	
 	}
 
 }

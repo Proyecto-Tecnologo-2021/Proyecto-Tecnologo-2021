@@ -4,9 +4,12 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
+import proyecto2021G03.appettit.exception.AppettitException;
 
 @Local
 public interface IUsuarioDAO {
@@ -32,5 +35,5 @@ public interface IUsuarioDAO {
 	public List<Restaurante> listarRestaurantes();
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
 	public Restaurante crearRestaurante(Restaurante restaurante);
-	
+	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO);
 }

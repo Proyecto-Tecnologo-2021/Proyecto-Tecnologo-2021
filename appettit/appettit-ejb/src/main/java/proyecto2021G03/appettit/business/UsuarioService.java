@@ -9,6 +9,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -141,5 +142,16 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+
+	@Override
+	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
+		Restaurante usuario = (Restaurante) usrDAO.buscarPorId(restauranteDTO.getId());
+		if (usuario == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			return usrDAO.calificcionRestaurante(restauranteDTO);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	}
 
 }
