@@ -37,6 +37,7 @@ public class RestauranteBean implements Serializable {
 
 	private List<RestauranteDTO> restaurantes;
 	private List<RestauranteDTO> filterRestaurantes;
+	private RestauranteDTO selRestaurante;
 	
 	private Long id;
 	private boolean globalFilterOnly;

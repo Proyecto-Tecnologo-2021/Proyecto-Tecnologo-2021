@@ -143,21 +143,21 @@
 	
 							<p:column style="width:3rem;text-align: center">
 								<p:commandButton update=":form:productDetail"
-									oncomplete="PF('productDialog').show()" icon="pi pi-search"
+									oncomplete="PF('restauranteDialog').show()" icon="pi pi-search"
 									title="View">
-									<f:setPropertyActionListener value="#{product}"
-										target="#{dtSelectionView.selectedProduct}" />
+									<f:setPropertyActionListener value="#{srest}"
+										target="#{beanAdminRestaurante.selRestaurante}" />
 								</p:commandButton>
 							</p:column>
 
 						</p:dataTable>
 
-						<p:dialog header="Product Info" widgetVar="productDialog"
+						<p:dialog header="Informaci&oacute;n Restaurante" widgetVar="restauranteDialog"
 							modal="true" showEffect="fade" hideEffect="fade"
 							resizable="false">
-							<p:outputPanel id="productDetail" style="text-align:center;">
+							<p:outputPanel id="restauranteDetail" style="text-align:center;">
 								<p:column
-									rendered="#{not empty dtSelectionView.selectedProduct}">
+									rendered="#{not empty beanAdminRestaurante.selRestaurante}">
 									<div class="product">
 										<div class="product-grid-item card" style="margin-bottom: 0">
 											<div class="product-grid-item-top">
