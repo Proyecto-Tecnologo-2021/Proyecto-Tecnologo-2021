@@ -90,6 +90,37 @@ public class AdministradorBean implements Serializable {
 		}
 
 	}
+	
+	/*ACTUALIZAR*/
+	public void updAdministrador() {
+
+		logger.info("updAdministrador 'nombre': " + nombre);
+
+		AdministradorDTO adminDTO = new AdministradorDTO(id, nombre, username, password, telefono, correo, null,
+				null);
+
+		try {
+			adminDTO = usrSrv.crear(adminDTO);
+
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Administrador " + adminDTO.getCorreo() + " creado con éxito.", null));
+		} catch (AppettitException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+		} finally {
+			clearParam();
+			try {
+				administradores = usrSrv.listarAdminsitradores();
+			} catch (AppettitException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			}
+		}
+
+	}
+	
 
 	private void clearParam() {
 		this.id = null;

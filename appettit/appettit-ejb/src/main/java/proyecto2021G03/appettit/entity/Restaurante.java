@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.entity;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.CascadeType;
@@ -46,6 +45,8 @@ public class Restaurante extends Usuario {
 		this.areaentrega = areaentrega;
 		this.direccion = direccion;
 		this.id_imagen = id_imagen;
+		
+		
 	}
 	
 	private String rut;

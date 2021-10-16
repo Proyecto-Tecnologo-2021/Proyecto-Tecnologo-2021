@@ -44,7 +44,8 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link" href="restaurantes.xhtml">Restaurantes</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="restaurantes.xhtml">Restaurantes</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
 					<li class="nav-item"><a class="nav-link active" href="#">Administradores</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
@@ -64,9 +65,7 @@
 							widgetVar="adminsTable" emptyMessage="No existen Administradores"
 							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
 							filteredValue="#{beanAdmin.filterAdministradores}" rows="10"
-							paginator="true"
-							rowKey="#{admin.id}"
-							selectionMode="single"
+							paginator="true" rowKey="#{admin.id}" selectionMode="single"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
 							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
@@ -84,7 +83,7 @@
 												onkeyup="PF('adminsTable').filter()" style="width:10rem"
 												placeholder="Palabra clave" />
 											<p:commandButton value="Buscar" update="@form"
-												action="#{dtFilterView.toggleGlobalFilter()}"
+												action="#{beanAdmin.toggleGlobalFilter()}"
 												class="btn btn-primary" />
 										</div>
 									</div>
@@ -124,7 +123,9 @@
 					</h:form>
 				</div>
 			</div>
-
+			<div class="col-12">
+				<p:growl id="messages" showDetail="true" />
+			</div>
 			<div class="col-12 d-flex flex-row-reverse">
 				<div class="p-2">
 					<div class="btn-group" data-toggle="buttons">
@@ -291,37 +292,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-12">
-
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddTelefono" for="addTelefono" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddCorreo" for="addCorreo" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddName" for="addName" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddUserName" for="addUserName" />
-							</p>
-						</div>
+						
 						<div class="col-12">
 							<div class="col-12 d-flex flex-row">
 								<h:commandButton class="btn btn-primary"
@@ -347,38 +318,7 @@
 	<script type="text/javascript">
 		var $ds = jQuery.noConflict();
 		
-		$ds(document).ready(function() {
-			var err = $ds('#general_error_msj_1 li'); 
-			var info = $ds('#general_error_msj_2 li');
-			var info2 = $ds('#general_error_msj_3 li');
-
-			var errAddTelefono = $ds("span[id*='errAddTelefono']"); 	
-			var errAddCorreo = $ds("span[id*='errAddCorreo']");
-			var errAddName = $ds("span[id*='errAddName']");
-			var errAddUserName = $ds("span[id*='errAddUserName']");
-			
-			if(errAddTelefono.html().length > 0 || 
-					errAddCorreo.html().length > 0 ||
-					errAddName.html().length > 0 ||
-					errAddUserName.html().length >0){
-				addAdmin();
-			}
-
-			if(err.length>0 &amp;&amp; $ds(err).css("display")!= "none"){
-				$ds('#error_usuario').modal('show');
-			}
-
-			if(info.length>0 &amp;&amp; $ds(info).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}	
-
-			if(info2.length>0 &amp;&amp; $ds(info2).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}
-
-			
-		});
-		
+				
 		function addAdmin(){
 			$ds('#addUsuario').modal('show');
 		}

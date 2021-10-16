@@ -16,10 +16,10 @@ public class ImagenService implements IImagenService {
 
 	@EJB
 	public IImagenDAO imagenDAO;
-	
+
 	@EJB
 	public ImagenConverter imagenConverter;
-	
+
 	@Override
 	public ImagenDTO crear(ImagenDTO imagenDTO) throws AppettitException {
 		Imagen imagen = imagenConverter.fromDTO(imagenDTO);

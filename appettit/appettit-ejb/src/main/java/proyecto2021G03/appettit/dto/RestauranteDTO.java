@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.dto;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -21,7 +20,7 @@ public class RestauranteDTO extends UsuarioDTO  {
 	public RestauranteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
 			LocalTime horarioApertura, LocalTime horarioCierre, Boolean abierto, Boolean abiertoAutom,
-			MultiPolygon areaentrega, DireccionDTO direccion) {
+			MultiPolygon areaentrega, DireccionDTO direccion, String id_imagen) {
 		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
 		
 		this.rut = rut;
@@ -33,6 +32,7 @@ public class RestauranteDTO extends UsuarioDTO  {
 		this.abiertoAutom = abiertoAutom;
 		this.areaentrega = areaentrega;
 		this.direccion = direccion;
+		this.id_imagen = id_imagen;
 	}
 	
 	private String rut;
@@ -45,5 +45,6 @@ public class RestauranteDTO extends UsuarioDTO  {
 	private MultiPolygon areaentrega;
 	private DireccionDTO direccion;
 	private CalificacionRestauranteDTO calificacion;
+	private String id_imagen;
 	
 }

@@ -92,6 +92,7 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.abiertoAutom(e.getAbiertoAutom())
 				.areaentrega(e.getAreaentrega())
 				.direccion(direccionConverter.fromEntity(e.getDireccion()))
+				.id_imagen(e.getId_imagen())
 				.build();
 	}
 
@@ -115,6 +116,7 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.abiertoAutom(d.getAbiertoAutom())
 				.areaentrega(d.getAreaentrega())
 				.direccion(direccionConverter.fromDTO(d.getDireccion()))
+				.id_imagen(d.getId_imagen())
 				.build();
 	}
 	

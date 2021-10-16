@@ -48,129 +48,128 @@
 	<div class="main-panel">
 		<div class="container">
 			<div class="content-wrapper">
-				<div class="row mb-3">
-					<!-- Estado -->
-					<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
-						<h:form class="addusuario-form">
-							<div class="col-12">
-								<div class="col-12 d-flex flex-row">
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addName" value="Nombre" />
+				<h:form class="addusuario-form">
+					<div class="row mb-3 pt-3">
+						<div class="col-xl-4 col-lg-4 col-md-4 pb-3 pt-3">
+							<div class="card">
+								<div class="cadr-body">
+									<div class="col-12 mb-1 text-center">
+										<p:outputPanel layout="block" id="personPicture">
+											<c:choose>
+												<c:when test="#{empty beanAddRestaurante.imageAsByteArray}">
+													<p:graphicImage name="images/user/restaurante.png"
+														class="rounded img-thumbnail" />
+												</c:when>
+												<c:otherwise>
+													<p:graphicImage value="#{beanAddRestaurante.imageAsByteArray}"
+														class="rounded img-thumbnail" />
+												</c:otherwise>
+											</c:choose>
+										</p:outputPanel>
 									</div>
-									<div class="col-9  mb-3 mr-0 pr-0">
-										<h:inputText type="text" class="form-control" id="addName"
-											required="true" name="addName"
-											value="#{beanAddRestaurante.nombre}">
-										</h:inputText>
-									</div>
-								</div>
-								<div class="col-12 d-flex flex-row">
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addRUT" value="RUT" />
-									</div>
-									<div class="col-9  mb-3 mr-0 pr-0">
-										<h:inputText type="text" class="form-control" id="addRUT"
-											required="true" name="addRUT"
-											value="#{beanAddRestaurante.rut}">
-										</h:inputText>
-									</div>
-								</div>
 
-								<div class="col-12 d-flex flex-row">
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addCorreo" value="Correo" />
+									<div class="col-12 mb-3 text-center">
+										<div class="card">
+											<p:fileUpload fileUploadListener="#{beanAddRestaurante.uploadFile}"
+												mode="advanced" update="personPicture messages" sizeLimit="2097152"
+												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" auto="true" />
+										</div>
 									</div>
-									<div class="col-9  mb-3 mr-0 pr-0">
-										<h:inputText type="text" class="form-control" id="addCorreo"
-											required="true" name="addCorreo"
-											value="#{beanAddRestaurante.correo}">
-											<f:passThroughAttribute name="type" value="email" />
-										</h:inputText>
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addName" value="Nombre" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputText type="text" class="form-control" id="addName"
+												required="true" name="addName"
+												value="#{beanAddRestaurante.nombre}">
+											</h:inputText>
+										</div>
 									</div>
-								</div>
-								<div class="col-12 d-flex flex-row">
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addTelefono" value="Tel&eacute;fono" />
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addRUT" value="RUT" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputText type="text" class="form-control" id="addRUT"
+												required="true" name="addRUT"
+												value="#{beanAddRestaurante.rut}">
+											</h:inputText>
+										</div>
 									</div>
-									<div class="col-9  mb-3 mr-0 pr-0">
-										<h:inputText type="text" class="form-control" id="addTelefono"
-											required="true" name="addCorreo"
-											value="#{beanAddRestaurante.telefono}">
-											<f:passThroughAttribute name="type" value="tel" />
-										</h:inputText>
-									</div>
-								</div>
-								<div class="col-12 d-flex flex-row">
 
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addHoraApertura" value="Horario (HH:mm)" />
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addCorreo" value="Correo" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputText type="text" class="form-control" id="addCorreo"
+												required="true" name="addCorreo"
+												value="#{beanAddRestaurante.correo}">
+												<f:passThroughAttribute name="type" value="email" />
+											</h:inputText>
+										</div>
 									</div>
-									<div class="col-9  mb-3">
-										<div class="row">
-											<div class="col-6  mb-6 mr-0 pr-0">
-												<p:datePicker id="addHoraApertura"
-													value="#{beanAddRestaurante.horarioApertura}"
-													pattern="HH:mm" />
-											</div>
-											<div class="col-6  mb-6 mr-0 pr-0">
-												<p:datePicker id="addHoraCierre"
-													value="#{beanAddRestaurante.horarioCierre}" pattern="HH:mm" />
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addTelefono" value="Tel&eacute;fono" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputText type="text" class="form-control"
+												id="addTelefono" required="true" name="addCorreo"
+												value="#{beanAddRestaurante.telefono}">
+												<f:passThroughAttribute name="type" value="tel" />
+											</h:inputText>
+										</div>
+									</div>
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addHoraApertura" value="Horario (HH:mm)" />
+										</div>
+										<div class="col-8  mb-3">
+											<div class="row flex-row">
+												<div class="col-6  mb-6 mr-0 pr-0 align-self-start">
+													<p:datePicker id="addHoraApertura"
+														value="#{beanAddRestaurante.horarioApertura}"
+														pattern="HH:mm" />
+												</div>
+												<div class="col-6 mb-6 mr-0 pr-0 align-self-end">
+													<p:datePicker id="addHoraCierre"
+														value="#{beanAddRestaurante.horarioCierre}"
+														pattern="HH:mm" />
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col-12 d-flex flex-row">
-									<div class="col-3  mb-3">
-										<p:outputLabel for="addPassword" value="Contrase&ntilde;a" />
-									</div>
-									<div class="col-9  mb-3 mr-0 pr-0">
-										<h:inputSecret type="text" class="form-control"
-											id="addPassword" required="true" name="addPassword"
-											value="#{beanAddRestaurante.password}">
-										</h:inputSecret>
-									</div>
-								</div>
-							</div>
-							<div class="col-12">
 
-								<p>
-									<h:message
-										style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-										id="errAddTelefono" for="addTelefono" />
-								</p>
-								<p>
-									<h:message
-										style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-										id="errAddCorreo" for="addCorreo" />
-								</p>
-								<p>
-									<h:message
-										style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-										id="errAddName" for="addName" />
-								</p>
-								<p>
-									<h:message
-										style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-										id="errAddUserName" for="addUserName" />
-								</p>
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addPassword" value="Contrase&ntilde;a" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputSecret type="text" class="form-control"
+												id="addPassword" required="true" name="addPassword"
+												value="#{beanAddRestaurante.password}">
+											</h:inputSecret>
+										</div>
+									</div>
+									<div class="col-12">
+										<p:growl id="messages" showDetail="true" />
+									</div>
+								</div>
 							</div>
-							<div class="col-12">
+						</div>
+						<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+							<div class="card">
 								<div class="col-12 d-flex flex-row">
 									<h:commandButton class="btn btn-primary"
-										action="#{beanAddRestaurante.addREs()}" value="CREAR" />
+										action="#{beanAddRestaurante.addRestaurante()}" value="CREAR" />
 								</div>
 							</div>
-						</h:form>
+						</div>
 					</div>
-				</div>
+				</h:form>
 			</div>
 		</div>
 	</div>
@@ -257,42 +256,12 @@
 
 	<script type="text/javascript">
 		var $ds = jQuery.noConflict();
-		
-		$ds(document).ready(function() {
-			var err = $ds('#general_error_msj_1 li'); 
-			var info = $ds('#general_error_msj_2 li');
-			var info2 = $ds('#general_error_msj_3 li');
-
-			var errAddTelefono = $ds("span[id*='errAddTelefono']"); 	
-			var errAddCorreo = $ds("span[id*='errAddCorreo']");
-			var errAddName = $ds("span[id*='errAddName']");
-			var errAddUserName = $ds("span[id*='errAddUserName']");
-			
-			if(errAddTelefono.html().length > 0 || 
-					errAddCorreo.html().length > 0 ||
-					errAddName.html().length > 0 ||
-					errAddUserName.html().length >0){
-				addAdmin();
-			}
-
-			if(err.length>0 &amp;&amp; $ds(err).css("display")!= "none"){
-				$ds('#error_usuario').modal('show');
-			}
-
-			if(info.length>0 &amp;&amp; $ds(info).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}	
-
-			if(info2.length>0 &amp;&amp; $ds(info2).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}
-
-			
-		});
-		
+				
 		function addAdmin(){
 			$ds('#addUsuario').modal('show');
 		}
+			    
+
 
 		
 	</script>

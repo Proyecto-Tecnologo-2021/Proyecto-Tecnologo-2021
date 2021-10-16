@@ -175,3 +175,39 @@ table img {
     height: 25rem;
     position: relative;
 }
+
+.p-datepicker > input{
+	height: calc(1.5em + .5rem + 2px);
+	width: 100%;
+}
+
+
+.p-datepicker-panel .ui-timepicker .ui-icon {
+    text-indent: 0 !important;
+}
+
+body .ui-datepicker .ui-picker-up .ui-icon:before {
+    content: "\e903";
+}
+
+body .ui-datepicker .ui-picker-down .ui-icon:before {
+    content: "\e902";
+}
+
+.ui-datepicker .ui-icon {
+    overflow: visible !important;
+}
+
+#messages_container{
+	z-index: 1100 !important;
+}
+
+.img-thumbnail {
+    width: auto;
+    height: 9rem;
+}
+
+.ui-fileupload-content{
+	display: none !important;
+}
+

@@ -1,7 +1,8 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.util.EscapeUtils;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 
@@ -20,11 +25,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
-import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
+import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -59,23 +65,27 @@ public class RestauranteAddBean implements Serializable {
 	private MultiPolygon areaentrega;
 	private DireccionDTO direccion;
 	private CalificacionRestauranteDTO calificacion;
+	private String id_imagen;
+	private ImagenDTO imagen;
+	private UploadedFile imgfile;
 
 	@EJB
 	IUsuarioService usrSrv;
 
+	@EJB
+	IImagenService imgSrv;
+
 	@PostConstruct
 	public void init() {
-		this.estado = EstadoRegistro.PENDIENTE;
-		this.bloqueado = true;
-		this.abierto = false;
-		this.abiertoAutom = true;
+		clearParam();
 	}
 
 	public void addRestaurante() {
 
 		logger.info("addRestaurante 'nombre': " + nombre);
-		RestauranteDTO restDTO = new RestauranteDTO(null, nombre, username, password, telefono, correo, null,
-				null, rut, estado, bloqueado, horarioApertura, horarioCierre, abierto, abiertoAutom, areaentrega, direccion);
+		RestauranteDTO restDTO = new RestauranteDTO(null, nombre, username, password, telefono, correo, null, null, rut,
+				estado, bloqueado, horarioApertura, horarioCierre, abierto, abiertoAutom, areaentrega, direccion,
+				id_imagen);
 
 		try {
 			restDTO = usrSrv.crearRestaurante(restDTO);
@@ -90,7 +100,7 @@ public class RestauranteAddBean implements Serializable {
 			clearParam();
 		}
 	}
-	
+
 	private void clearParam() {
 		this.id = null;
 		this.nombre = null;
@@ -110,8 +120,33 @@ public class RestauranteAddBean implements Serializable {
 		this.areaentrega = null;
 		this.direccion = null;
 		this.calificacion = null;
+		this.imagen = null;
+		this.id_imagen = null;
+		//this.imgfile = null;
 
 	}
 
 
+	public byte[] getImageAsByteArray() throws IOException {
+		
+		logger.info("EN getImageAsByteArray");
+		if (imgfile != null) {
+			logger.info(imgfile.getFileName());
+			
+			InputStream is = imgfile.getInputStream();
+			byte[] array = new byte[is.available()];
+			is.read(array);
+			return array;
+		} else {
+			return null;
+		}
+	}
+	
+	
+	public void uploadFile(FileUploadEvent event)
+    {
+		imgfile = event.getFile();
+		
+		logger.info("En upload " + imgfile.getFileName());
+    }
 }
