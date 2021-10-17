@@ -13,10 +13,14 @@
 
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
-	<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
-/>
+	<link rel="stylesheet"
+		href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css" />
+
+	<!-- Load Esri Leaflet Geocoder from CDN -->
+	<link rel="stylesheet"
+		href="https://unpkg.com/esri-leaflet-geocoder@3.1.1/dist/esri-leaflet-geocoder.css"
+		integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+		crossorigin="" />
 
 	<style>
 .selected {
@@ -44,15 +48,18 @@
 				aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<h5>Crear Restaurante</h5>
+			</div>
 			</nav>
 		</div>
 	</div>
 	</header>
 
-	<div class="main-panel">
+	<div class="main-panel" style="padding-top: 64px !important;">
 		<div class="container">
 			<div class="content-wrapper">
-				<h:form class="addusuario-form">
+				<h:form class="addusuario-form" autocomplete="off">
 					<div class="row mb-3 pt-3">
 						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
 						<div class="col-xl-4 col-lg-4 col-md-4 pb-3 pt-3">
@@ -70,12 +77,6 @@
 														image="#{beanAddRestaurante.image}"
 														initialCoords="0,0,100,100" minSize="100,100"
 														maxSize="250,250" />
-
-													<p:outputPanel id="cropped">
-														<p:graphicImage cache="false"
-															rendered="#{not empty beanAddRestaurante.croppedImage}"
-															value="#{beanAddRestaurante.cropped}" />
-													</p:outputPanel>
 												</h:panelGrid>
 											</h:panelGrid>
 										</p:outputPanel>
@@ -90,6 +91,19 @@
 											update="messages cropperPanel" auto="true"
 											listener="#{beanAddRestaurante.handleFileUpload}" />
 									</div>
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addName" value="Nombre" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0">
+											<h:inputText type="text" class="form-control" id="addName"
+												required="true" name="addName"
+												value="#{beanAddRestaurante.nombre}">
+											</h:inputText>
+										</div>
+									</div>
+
 
 									<div class="col-12 d-flex flex-row">
 										<div class="col-4  mb-3">
@@ -168,8 +182,36 @@
 						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
 							<div class="card">
 								<div class="card-body">
+									<div class="col-12 mb-1">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addAddress" value="Direcci&oacute;n" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<h:inputHidden id="addPoint" name="addPoint"
+												value="#{beanAddRestaurante.point}">
+											</h:inputHidden >
+											<h:inputHidden id="addMultipolygon"
+												name="addMultiPolygon"
+												value="#{beanAddRestaurante.multiPolygon}">
+											</h:inputHidden>
+											<h:inputHidden  id="addAddressNumber" name="addAddressNumber"
+												value="#{beanAddRestaurante.direccion.numero}">
+											</h:inputHidden> 
+
+											<h:inputText type="text" class="form-control" id="addAddress"
+												required="true" name="addAddress"
+												value="#{beanAddRestaurante.direccion.calle}"
+												>
+											</h:inputText>
+										</div>
+									</div>
+
+									<div class="col-12 mb-1">Definir Direci&oacute;n y zona
+										de reparto</div>
+									<div class="col-12 mb-1">
 										<div id="map"
-										class="leflet-map leaflet-container leaflet-fade-anim border">
+											class="leflet-map leaflet-container leaflet-fade-anim border">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -181,13 +223,13 @@
 							<div class="card">
 								<div class="col-12 d-flex flex-row">
 									<p:commandButton value="CREAR"
-										action="#{beanAddRestaurante.crop}" update="cropped messages"
-										styleClass="btn btn-primary" />
+										action="#{beanAddRestaurante.addRestaurante}"
+										update="messages" styleClass="btn btn-primary" />
 								</div>
 							</div>
 						</div>
 					</div>
-					
+
 				</h:form>
 
 			</div>
@@ -196,19 +238,30 @@
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
 
+	<!-- Load Esri Leaflet from CDN -->
+	<script src="https://unpkg.com/esri-leaflet@3.0.3/dist/esri-leaflet.js"
+		integrity="sha512-kuYkbOFCV/SsxrpmaCRMEFmqU08n6vc+TfAVlIKjR1BPVgt75pmtU9nbQll+4M9PN2tmZSAgD1kGUCKL88CscA=="
+		crossorigin=""></script>
+
 	<script
-		src="https://unpkg.com/leaflet-geosearch@3.3.2/dist/geosearch.umd.js"></script>
-	<script
-		src="/appettit-web/resources/js/appetitmap.js"></script>
+		src="https://unpkg.com/esri-leaflet-geocoder@3.1.1/dist/esri-leaflet-geocoder.js"
+		integrity="sha512-enHceDibjfw6LYtgWU03hke20nVTm+X5CRi9ity06lGQNtC9GkBNl/6LoER6XzSudGiXy++avi1EbIg9Ip4L1w=="
+		crossorigin=""></script>
+
+	<script src="/appettit-web/resources/js/appetitmap.js"></script>
+
+	<script src="/appettit-web/resources/js/Leaflet.SelectAreaFeature.js"></script>
+
+	<script src="/appettit-web/resources/js/proj4js-combined.js"></script>
+	<script src="/appettit-web/resources/js/defs/EPSG32721.js"></script>
 
 	<script type="text/javascript">
 		var $ds = jQuery.noConflict();
-
 		
 		/*Add mapa*/
 		initMap();
 		getLocation();
-		//initMapSelectRegion();	
+		initMapSelectRegion();	
 		
 		
 	</script>
