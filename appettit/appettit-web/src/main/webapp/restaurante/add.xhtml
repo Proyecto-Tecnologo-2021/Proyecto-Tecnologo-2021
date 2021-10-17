@@ -13,6 +13,10 @@
 
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+	<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
+/>
 
 	<style>
 .selected {
@@ -50,42 +54,43 @@
 			<div class="content-wrapper">
 				<h:form class="addusuario-form">
 					<div class="row mb-3 pt-3">
+						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
 						<div class="col-xl-4 col-lg-4 col-md-4 pb-3 pt-3">
 							<div class="card">
 								<div class="cadr-body">
 									<div class="col-12 mb-1 text-center">
-										<p:outputPanel layout="block" id="personPicture">
-											<c:choose>
-												<c:when test="#{empty beanAddRestaurante.imageAsByteArray}">
-													<p:graphicImage name="images/user/restaurante.png"
-														class="rounded img-thumbnail" />
-												</c:when>
-												<c:otherwise>
-													<p:graphicImage value="#{beanAddRestaurante.imageAsByteArray}"
-														class="rounded img-thumbnail" />
-												</c:otherwise>
-											</c:choose>
+										<p:outputPanel id="cropperPanel">
+											<h:panelGrid columns="1"
+												rendered="#{not empty beanAddRestaurante.imgfile}">
+
+												<h:panelGrid columns="2" cellpadding="7">
+
+													<p:imageCropper value="#{beanAddRestaurante.croppedImage}"
+														id="imageCropper" cache="false"
+														image="#{beanAddRestaurante.image}"
+														initialCoords="0,0,100,100" minSize="100,100"
+														maxSize="250,250" />
+
+													<p:outputPanel id="cropped">
+														<p:graphicImage cache="false"
+															rendered="#{not empty beanAddRestaurante.croppedImage}"
+															value="#{beanAddRestaurante.cropped}" />
+													</p:outputPanel>
+												</h:panelGrid>
+											</h:panelGrid>
 										</p:outputPanel>
 									</div>
 
 									<div class="col-12 mb-3 text-center">
-										<div class="card">
-											<p:fileUpload fileUploadListener="#{beanAddRestaurante.uploadFile}"
-												mode="advanced" update="personPicture messages" sizeLimit="2097152"
-												allowTypes="/(\.|\/)(gif|jpe?g|png)$/" auto="true" />
-										</div>
+										<p:fileUpload mode="advanced" multiple="false"
+											label="Cargar Imagen" sizeLimit="2097152"
+											allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+											invalidSizeMessage="Tama&ntilde;o m&acute;ximo 2MB"
+											invalidFileMessage="Formatos soportados: gif | jpg | jpeg | png"
+											update="messages cropperPanel" auto="true"
+											listener="#{beanAddRestaurante.handleFileUpload}" />
 									</div>
-									<div class="col-12 d-flex flex-row">
-										<div class="col-4  mb-3">
-											<p:outputLabel for="addName" value="Nombre" />
-										</div>
-										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
-											<h:inputText type="text" class="form-control" id="addName"
-												required="true" name="addName"
-												value="#{beanAddRestaurante.nombre}">
-											</h:inputText>
-										</div>
-									</div>
+
 									<div class="col-12 d-flex flex-row">
 										<div class="col-4  mb-3">
 											<p:outputLabel for="addRUT" value="RUT" />
@@ -160,109 +165,51 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
+							<div class="card">
+								<div class="card-body">
+										<div id="map"
+										class="leflet-map leaflet-container leaflet-fade-anim border">
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
+						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
+						<div class="col-xl-10 col-lg-10 col-md-10 pb-3 pt-3">
 							<div class="card">
 								<div class="col-12 d-flex flex-row">
-									<h:commandButton class="btn btn-primary"
-										action="#{beanAddRestaurante.addRestaurante()}" value="CREAR" />
+									<p:commandButton value="CREAR"
+										action="#{beanAddRestaurante.crop}" update="cropped messages"
+										styleClass="btn btn-primary" />
 								</div>
 							</div>
 						</div>
 					</div>
+					
 				</h:form>
+
 			</div>
 		</div>
 	</div>
-
-	<!-- Modal ERROR -->
-	<div class="modal fade" id="error_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Error</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-minus-circle display-3" style="color: #cc0000"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-							<!--Displays only Error Messages-->
-							<h:messages globalOnly="true" styleClass="mystyle" layout="list"
-								id="general_error_msj_1" infoStyle="display:none"
-								warnStyle="display:none" />
-
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal INFO -->
-	<div class="modal fade" id="info_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Informaci&oacute;n</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-info-circle display-3" style="color: #F1C40F"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-
-							<!--Displays only Warning Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_2" errorStyle="display:none"
-								infoStyle="display:none" />
-
-							<!--Displays only Info Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_3" errorStyle="display:none"
-								warnStyle="display:none" />
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
 
+	<script
+		src="https://unpkg.com/leaflet-geosearch@3.3.2/dist/geosearch.umd.js"></script>
+	<script
+		src="/appettit-web/resources/js/appetitmap.js"></script>
+
 	<script type="text/javascript">
 		var $ds = jQuery.noConflict();
-				
-		function addAdmin(){
-			$ds('#addUsuario').modal('show');
-		}
-			    
 
-
+		
+		/*Add mapa*/
+		initMap();
+		getLocation();
+		//initMapSelectRegion();	
+		
 		
 	</script>
 </h:body>

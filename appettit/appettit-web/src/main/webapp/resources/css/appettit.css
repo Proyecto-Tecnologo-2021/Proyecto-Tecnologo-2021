@@ -157,8 +157,8 @@ a.text-secondary:focus, a.text-secondary:hover {
     border-color: #f2a22c !important;
 }
 
-table img {
-    max-width: 30px;
+.img_list_data {
+    max-width: 32px;
     border-radius: 50%;
     margin-right: 5px;
 }
@@ -202,12 +202,13 @@ body .ui-datepicker .ui-picker-down .ui-icon:before {
 	z-index: 1100 !important;
 }
 
-.img-thumbnail {
-    width: auto;
-    height: 9rem;
-}
-
 .ui-fileupload-content{
-	display: none !important;
+	display: nonne !important;
 }
 
+/*
+.cropper-container {
+	width: 250px !important;
+	height:250px !important; 
+}
+*/

@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -7,17 +8,18 @@ import java.time.LocalTime;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.jboss.logging.Logger;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.CroppedImage;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
-import org.primefaces.util.EscapeUtils;
-
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
@@ -35,7 +37,7 @@ import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanAddRestaurante")
-@SessionScoped
+@RequestScoped
 @Getter
 @Setter
 @AllArgsConstructor
@@ -68,6 +70,7 @@ public class RestauranteAddBean implements Serializable {
 	private String id_imagen;
 	private ImagenDTO imagen;
 	private UploadedFile imgfile;
+	private CroppedImage croppedImage;
 
 	@EJB
 	IUsuarioService usrSrv;
@@ -83,6 +86,9 @@ public class RestauranteAddBean implements Serializable {
 	public void addRestaurante() {
 
 		logger.info("addRestaurante 'nombre': " + nombre);
+		
+		crop();
+		
 		RestauranteDTO restDTO = new RestauranteDTO(null, nombre, username, password, telefono, correo, null, null, rut,
 				estado, bloqueado, horarioApertura, horarioCierre, abierto, abiertoAutom, areaentrega, direccion,
 				id_imagen);
@@ -122,8 +128,9 @@ public class RestauranteAddBean implements Serializable {
 		this.calificacion = null;
 		this.imagen = null;
 		this.id_imagen = null;
-		//this.imgfile = null;
-
+		this.imgfile = null;
+		this.croppedImage = null;
+		
 	}
 
 
@@ -143,10 +150,68 @@ public class RestauranteAddBean implements Serializable {
 	}
 	
 	
-	public void uploadFile(FileUploadEvent event)
-    {
-		imgfile = event.getFile();
-		
-		logger.info("En upload " + imgfile.getFileName());
+	public void handleFileUpload(FileUploadEvent event) {
+        this.imgfile = null;
+        this.croppedImage = null;
+        UploadedFile file = event.getFile();
+        if (file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
+            this.imgfile = file;
+            FacesMessage msg = new FacesMessage("Exito", this.imgfile.getFileName() + " fue cargado.");
+            //FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
+
+    public void crop() {
+        if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
+            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+            //        "Fall&oacute; recorte."));
+        }
+        else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito",
+                    "Recorte exitoso."));
+        }
+    }
+
+    public StreamedContent getImage() {
+        return DefaultStreamedContent.builder()
+                .contentType(imgfile == null ? null : imgfile.getContentType())
+                .stream(() -> {
+                    if (imgfile == null
+                            || imgfile.getContent() == null
+                            || imgfile.getContent().length == 0) {
+                        return null;
+                    }
+
+                    try {
+                        return new ByteArrayInputStream(imgfile.getContent());
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .build();
+    }
+
+    public StreamedContent getCropped() {
+        return DefaultStreamedContent.builder()
+                .contentType(imgfile == null ? null : imgfile.getContentType())
+                .stream(() -> {
+                    if (croppedImage == null
+                            || croppedImage.getBytes() == null
+                            || croppedImage.getBytes().length == 0) {
+                        return null;
+                    }
+
+                    try {
+                        return new ByteArrayInputStream(this.croppedImage.getBytes());
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .build();
+    }
+    
 }
