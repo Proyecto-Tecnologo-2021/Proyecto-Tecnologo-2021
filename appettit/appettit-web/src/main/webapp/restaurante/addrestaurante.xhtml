@@ -164,15 +164,27 @@
 
 									<div class="col-12 d-flex flex-row">
 										<div class="col-4  mb-3">
-											<p:outputLabel for="addPassword" value="Contrase&ntilde;a" />
+											<p:outputLabel for="addPassword1" value="Contrase&ntilde;a" />
 										</div>
 										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
-											<h:inputSecret type="text" class="form-control"
-												id="addPassword" required="true" name="addPassword"
-												value="#{beanAddRestaurante.password}">
-											</h:inputSecret>
+											<p:password type="text" class="form-control" id="addPassword1"
+												required="true" name="addPassword1"
+												value="#{beanAddRestaurante.password}" feedback="true"
+												promptLabel="Ingresa tu contras&ntilde;ea" weakLabel="D&eacute;bil"
+												goodLabel="Buena" strongLabel="Fuerte" match="addPassword2"/>
 										</div>
 									</div>
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addPassword2" value="Contrase&ntilde;a" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+											<p:password type="text" class="form-control" id="addPassword2"
+												required="true" name="addPassword2"
+												value="#{beanAddRestaurante.password}" />
+										</div>
+									</div>
+
 									<div class="col-12">
 										<p:growl id="messages" showDetail="true" />
 									</div>
@@ -189,19 +201,17 @@
 										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
 											<h:inputHidden id="addPoint" name="addPoint"
 												value="#{beanAddRestaurante.point}">
-											</h:inputHidden >
-											<h:inputHidden id="addMultipolygon"
-												name="addMultiPolygon"
+											</h:inputHidden>
+											<h:inputHidden id="addMultipolygon" name="addMultiPolygon"
 												value="#{beanAddRestaurante.multiPolygon}">
 											</h:inputHidden>
-											<h:inputHidden  id="addAddressNumber" name="addAddressNumber"
+											<h:inputHidden id="addAddressNumber" name="addAddressNumber"
 												value="#{beanAddRestaurante.direccion.numero}">
-											</h:inputHidden> 
+											</h:inputHidden>
 
 											<h:inputText type="text" class="form-control" id="addAddress"
 												required="true" name="addAddress"
-												value="#{beanAddRestaurante.direccion.calle}"
-												>
+												value="#{beanAddRestaurante.direccion.calle}">
 											</h:inputText>
 										</div>
 									</div>

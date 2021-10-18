@@ -20,8 +20,12 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +39,7 @@ import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanAddRestaurante")
@@ -73,7 +78,10 @@ public class RestauranteAddBean implements Serializable {
 	private CroppedImage croppedImage;
 	private String point;
 	private String multiPolygon;
-
+	Geometry geom;
+    Point gpoint;
+    
+	
 	@EJB
 	IUsuarioService usrSrv;
 
@@ -82,10 +90,13 @@ public class RestauranteAddBean implements Serializable {
 	
 	@EJB
 	IGeoService geoSrv;
+	
+	WKTReader fromText;
 
 	@PostConstruct
 	public void init() {
 		clearParam();
+		fromText = new WKTReader(new GeometryFactory(new PrecisionModel(), 32721));
 	}
 
 	public void addRestaurante() {
@@ -97,10 +108,11 @@ public class RestauranteAddBean implements Serializable {
 			try {
 				byte[] bimg = getImageAsByteArray();
 				if (bimg != null) {
-					imagen = new ImagenDTO(null, bimg);
+					imagen = new ImagenDTO();
+					imagen.setImagen(bimg);
 					imgSrv.crear(imagen);	
 				} else {
-					logger.info("IMAGEN NULLA");
+					logger.info("IMAGEN NULA");
 					
 				}
 				
@@ -109,6 +121,23 @@ public class RestauranteAddBean implements Serializable {
 			}
 			
 			
+			try {
+				geom = fromText.read(point);
+				gpoint = (com.vividsolutions.jts.geom.Point) geom;
+				
+				LocalidadDTO ldto = geoSrv.localidadPorPunto(gpoint); 
+				
+				if(ldto != null) {
+					direccion.setGeometry(gpoint);
+					direccion.setBarrio(ldto);
+				} else {
+					logger.info("IMAGEN NULA");
+				}
+				
+			} catch (ParseException e) {
+				logger.info(e.getMessage().trim());
+			}
+		    
 			
 			logger.info(nombre);
 			logger.info(password);
@@ -127,7 +156,6 @@ public class RestauranteAddBean implements Serializable {
 			logger.info(direccion.getNumero());
 			logger.info(imagen.getId());	
 			
-		
 			
 		
 		//RestauranteDTO restDTO = new RestauranteDTO(null, nombre, username, password, telefono, correo, null, null, rut,

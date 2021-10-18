@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -20,8 +21,16 @@ public class GeoDAO implements IGeoDAO {
 	
 	@Override
 	public Localidad localidadPorPunto(Point point) {
-		// TODO Auto-generated method stub
-		return null;
+		String strpoint = "POINT(" + point.getX() + " " + point.getY() +")";
+		
+		Query consulta = em.createNativeQuery("SELECT _l.* "
+				+ " FROM localidades _l"
+				+ " WHERE ST_Contains(geom,ST_GeomFromText('" + strpoint + "', 32721))");
+		
+		
+		Localidad localidad = (Localidad) consulta.getResultList().get(0);
+		
+		return localidad;
 	}
 
 	@Override

@@ -63,9 +63,11 @@ function initMap() {
 
 			results.clearLayers();
 
+			var proj32721 = toProj32721(result.latlng.lat, result.latlng.lng);
+			var strPOINT = 'POINT(' + proj32721['x'] +' ' + proj32721['y'] + ')'; 
+
 			updateLatLng(result.latlng.lat, result.latlng.lng);
-			//console.log(result);
-			$mj("input[id*='addPoint']").val(toProj32721(result.latlng.lat, result.latlng.lng));
+			$mj("input[id*='addPoint']").val(strPOINT);
 			$mj("input[id*='addAddress']").val(result.address.ShortLabel);
 			$mj("input[id*='addAddressNumber']").val(result.address.AddNum);
 
@@ -79,10 +81,11 @@ function initMap() {
 		results.clearLayers();
 		for (var i = data.results.length - 1; i >= 0; i--) {
 
-			//console.log(data.results[i]);
+			var proj32721 = toProj32721(data.results[i].latlng.lat, data.results[i].latlng.lng);
+			var strPOINT = 'POINT(' + proj32721['x'] +' ' + proj32721['y'] + ')';
 
 			updateLatLng(data.results[i].latlng.lat, data.results[i].latlng.lng);
-			$mj("input[id*='addPoint']").val(toProj32721(data.results[i].latlng.lat, data.results[i].latlng.lng));
+			$mj("input[id*='addPoint']").val(strPOINT);
 			$mj("input[id*='addAddress']").val(data.results[i].properties.ShortLabel);
 			$mj("input[id*='addAddressNumber']").val(data.results[i].properties.AddNum);
 						

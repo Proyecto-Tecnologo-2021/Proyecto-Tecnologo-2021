@@ -3,6 +3,7 @@ package proyecto2021G03.appettit.dao;
 import java.util.List;
 
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
@@ -15,10 +16,14 @@ public class ImagenDAO implements IImagenDAO {
 	@PersistenceContext(unitName = "mongo-ogm")
 	@PersistenceUnit(unitName = "mongo-ogm") 
 	private EntityManager em;	
-
+	
 	@Override
 	public Imagen crear(Imagen imagen) {
-		em.persist(imagen);
+		em.getTransaction().begin();
+		//em.persist(imagen);
+		String id = saveImage(imagen);
+		em.getTransaction().commit();
+		imagen.setId(id);
 		
 		return imagen;
 	}
@@ -46,5 +51,11 @@ public class ImagenDAO implements IImagenDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@TransactionAttribute
+    public String saveImage(Imagen imagen){
+        em.persist(imagen);
+        return imagen.getId();
+    }
 
 }

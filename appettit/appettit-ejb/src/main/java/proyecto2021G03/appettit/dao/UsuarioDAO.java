@@ -1,17 +1,12 @@
 package proyecto2021G03.appettit.dao;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
-
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
