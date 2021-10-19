@@ -54,4 +54,13 @@ public class ImagenService implements IImagenService {
 		return null;
 	}
 
+	@Override
+	public ImagenDTO buscarPorIdentificador(String identificador) throws AppettitException {
+		try {
+			return imagenConverter.fromEntity(imagenDAO.buscarPorIdentificador(identificador));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
 }

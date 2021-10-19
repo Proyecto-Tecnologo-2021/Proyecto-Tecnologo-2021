@@ -17,6 +17,7 @@ public class ImagenConverter extends AbstractConverter<Imagen, ImagenDTO> {
 		if(e == null) return null;
 		return ImagenDTO.builder()
 				.id(e.getId())
+				.identificador(e.getIdentificador())
 				.imagen(e.getImagen())
 				.build();
 	}
@@ -26,6 +27,7 @@ public class ImagenConverter extends AbstractConverter<Imagen, ImagenDTO> {
 		if(d == null) return null;
 		return Imagen.builder()
 				.id(d.getId())
+				.identificador(d.getIdentificador())
 				.imagen(d.getImagen())
 				.build();
 	}

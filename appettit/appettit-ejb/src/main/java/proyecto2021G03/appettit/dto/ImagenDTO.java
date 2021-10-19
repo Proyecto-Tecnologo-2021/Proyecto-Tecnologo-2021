@@ -14,6 +14,7 @@ import lombok.Setter;
 public class ImagenDTO {
 
 	private String id;
+	private String identificador;
 	private byte[] imagen;
 
 }

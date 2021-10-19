@@ -19,11 +19,7 @@ public class ImagenDAO implements IImagenDAO {
 	
 	@Override
 	public Imagen crear(Imagen imagen) {
-		em.getTransaction().begin();
-		//em.persist(imagen);
-		String id = saveImage(imagen);
-		em.getTransaction().commit();
-		imagen.setId(id);
+		em.persist(imagen);
 		
 		return imagen;
 	}
@@ -40,16 +36,19 @@ public class ImagenDAO implements IImagenDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Imagen> listar() {
 		
-		return null;
+		List<Imagen> imagenes = em.createQuery("select i "
+				+ "from Imagen i ")
+		        .getResultList();
+		return imagenes;
 	}
 
 	@Override
 	public Imagen buscarPorId(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return em.find(Imagen.class, id);
 	}
 	
 	@TransactionAttribute
@@ -57,5 +56,17 @@ public class ImagenDAO implements IImagenDAO {
         em.persist(imagen);
         return imagen.getId();
     }
+
+	@Override
+	public Imagen buscarPorIdentificador(String identificador) {
+		Imagen imagen =  em.createQuery("select i "
+				+ "from Imagen i "
+				+ "where identificador = :identificador", Imagen.class)
+				.setParameter("identificador", identificador)
+				.getSingleResult();
+		
+		
+		return imagen;
+	}
 
 }

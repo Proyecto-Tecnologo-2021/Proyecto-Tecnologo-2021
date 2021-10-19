@@ -12,5 +12,6 @@ public interface IImagenService {
 	public void eliminar(String id) throws AppettitException;
 	public List<ImagenDTO> listar() throws AppettitException;
 	public ImagenDTO buscarPorId(String id) throws AppettitException;
+	public ImagenDTO buscarPorIdentificador(String id) throws AppettitException;
 	
 }

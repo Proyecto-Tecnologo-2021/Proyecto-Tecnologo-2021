@@ -108,13 +108,15 @@ public class RestauranteAddBean implements Serializable {
 			try {
 				byte[] bimg = getImageAsByteArray();
 				if (bimg != null) {
+					String identificador = "restaurante." + this.getCorreo().trim() + "." + this.getTelefono().trim();
+					
 					imagen = new ImagenDTO();
+					imagen.setIdentificador(identificador);
 					imagen.setImagen(bimg);
 					imgSrv.crear(imagen);	
-				} else {
-					logger.info("IMAGEN NULA");
 					
-				}
+					imagen = imgSrv.buscarPorIdentificador(identificador);
+				} 
 				
 			} catch (IOException e) {
 				logger.info(e.getMessage().trim());
@@ -131,7 +133,7 @@ public class RestauranteAddBean implements Serializable {
 					direccion.setGeometry(gpoint);
 					direccion.setBarrio(ldto);
 				} else {
-					logger.info("IMAGEN NULA");
+					logger.info("Localidad vacia");
 				}
 				
 			} catch (ParseException e) {

@@ -5,9 +5,12 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+//import com.vividsolutions.jts.geom.Point;
 
-import com.vividsolutions.jts.geom.Point;
+import org.jboss.logging.Logger;
+
+//Geometry Object is from the following import
+import com.vividsolutions.jts.geom.*;
 
 import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.entity.Restaurante;
@@ -15,20 +18,21 @@ import proyecto2021G03.appettit.entity.Restaurante;
 @Singleton
 public class GeoDAO implements IGeoDAO {
 
+	static Logger logger = Logger.getLogger(GeoDAO.class);
+	
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;	
     
 	
 	@Override
 	public Localidad localidadPorPunto(Point point) {
-		String strpoint = "POINT(" + point.getX() + " " + point.getY() +")";
+		 
+		Localidad localidad =  em.createQuery("select l "
+				+ "from Localidad l "
+				+ "where contains(l.geometry, :point) = true", Localidad.class)
+				.setParameter("point", (com.vividsolutions.jts.geom.Point) point)
+				.getSingleResult();
 		
-		Query consulta = em.createNativeQuery("SELECT _l.* "
-				+ " FROM localidades _l"
-				+ " WHERE ST_Contains(geom,ST_GeomFromText('" + strpoint + "', 32721))");
-		
-		
-		Localidad localidad = (Localidad) consulta.getResultList().get(0);
 		
 		return localidad;
 	}

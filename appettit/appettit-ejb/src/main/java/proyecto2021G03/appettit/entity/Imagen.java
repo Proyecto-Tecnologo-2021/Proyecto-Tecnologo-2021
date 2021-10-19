@@ -34,6 +34,7 @@ public class Imagen implements Serializable {
 	  @GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
+	private String identificador;
 	
 	private byte[] imagen;
 

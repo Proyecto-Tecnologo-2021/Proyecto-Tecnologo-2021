@@ -14,6 +14,6 @@ public interface IImagenDAO {
 	public void eliminar (Imagen imagen);
 	public List<Imagen> listar();
 	public Imagen buscarPorId(String id);
-	
+	public Imagen buscarPorIdentificador(String identificador);
 
 }

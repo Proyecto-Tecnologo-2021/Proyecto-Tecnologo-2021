@@ -48,7 +48,7 @@
 				aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<div class="collapse navbar-collapse text-white" id="navbarSupportedContent">
 				<h5>Crear Restaurante</h5>
 			</div>
 			</nav>
@@ -167,11 +167,12 @@
 											<p:outputLabel for="addPassword1" value="Contrase&ntilde;a" />
 										</div>
 										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
-											<p:password type="text" class="form-control" id="addPassword1"
-												required="true" name="addPassword1"
+											<p:password type="text" class="form-control"
+												id="addPassword1" required="true" name="addPassword1"
 												value="#{beanAddRestaurante.password}" feedback="true"
-												promptLabel="Ingresa tu contras&ntilde;ea" weakLabel="D&eacute;bil"
-												goodLabel="Buena" strongLabel="Fuerte" match="addPassword2"/>
+												promptLabel="Ingresa tu contras&ntilde;ea"
+												weakLabel="D&eacute;bil" goodLabel="Buena"
+												strongLabel="Fuerte" match="addPassword2" />
 										</div>
 									</div>
 									<div class="col-12 d-flex flex-row">
@@ -179,8 +180,8 @@
 											<p:outputLabel for="addPassword2" value="Contrase&ntilde;a" />
 										</div>
 										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
-											<p:password type="text" class="form-control" id="addPassword2"
-												required="true" name="addPassword2"
+											<p:password type="text" class="form-control"
+												id="addPassword2" required="true" name="addPassword2"
 												value="#{beanAddRestaurante.password}" />
 										</div>
 									</div>
@@ -194,11 +195,13 @@
 						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
 							<div class="card">
 								<div class="card-body">
-									<div class="col-12 mb-1">
+									<div class="col-12 mb-3">Definir Direci&oacute;n y zona
+										de reparto</div>
+									<div class="col-12 d-flex flex-row">
 										<div class="col-4  mb-3">
 											<p:outputLabel for="addAddress" value="Direcci&oacute;n" />
 										</div>
-										<div class="col-8  mb-3 mr-0 pr-0 input-group-sm">
+										<div class="col-8  mb-3 mr-0 pr-0">
 											<h:inputHidden id="addPoint" name="addPoint"
 												value="#{beanAddRestaurante.point}">
 											</h:inputHidden>
@@ -215,9 +218,6 @@
 											</h:inputText>
 										</div>
 									</div>
-
-									<div class="col-12 mb-1">Definir Direci&oacute;n y zona
-										de reparto</div>
 									<div class="col-12 mb-1">
 										<div id="map"
 											class="leflet-map leaflet-container leaflet-fade-anim border">
