@@ -2,22 +2,25 @@
 .classpath
 .project
 .settings/
-appettit-ear/.project
-appettit-ear/.settings
-appettit-web/.project
-appettit-web/.settings
-appettit-ejb/.project
-appettit-ejb/.settings
+/appettit-ear/.project
+/appettit-ear/.settings
+/appettit-web/.project
+/appettit-web/.settings
+/appettit-ejb/.project
+/appettit-ejb/.settings
 
 # IntelliJ
 .idea/
 *.iml
-appettit-ear/target
-appettit-ejb/target
-appettit-web/target
+/appettit-ear/target
+/appettit-ejb/target
+/appettit-web/target
+*.ipr
+*.iws
+.idea/
+atlassian-ide-plugin.xml
 
 # JAVA
-
 # Compiled class file
 *.class
 
@@ -58,5 +61,39 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 
-# Mac
-*.DS_Store
+# Directories #
+build/
+bin/
+target/
+libs/
+tmp/
+node_modules/
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+*.db
+rebel.xml
+
+######################
+# Windows
+######################
+ 
+# Windows image file caches
+Thumbs.db 
+ 
+# Folder config file
+Desktop.ini
+ 
+######################
+# OSX
+######################
+ 
+.DS_Store
+.svn
+ 
+# Thumbnails
+._*
+
+
