@@ -1,9 +1,6 @@
 package proyecto2021G03.appettit.dto;
 
 import lombok.*;
-import proyecto2021G03.appettit.entity.Producto;
-
-import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor

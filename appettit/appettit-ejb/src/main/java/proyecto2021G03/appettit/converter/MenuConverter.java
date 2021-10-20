@@ -13,6 +13,9 @@ public class MenuConverter extends AbstractConverter<Menu, MenuDTO> {
     ProductoConverter productoConverter;
     @EJB
     ExtraMenuConverter extraMenuConverter;
+    
+    @EJB
+    UsuarioConverter usrConverter;
 
     @Override
     public  MenuDTO fromEntity(Menu menu) {
@@ -25,7 +28,7 @@ public class MenuConverter extends AbstractConverter<Menu, MenuDTO> {
                 .descripcion(menu.getDescripcion())
                 .precioSimple(menu.getPrecioSimple())
                 .precioTotal(menu.getPrecioTotal())
-                .restaurante(menu.getRestaurante())
+                .restaurante(usrConverter.fromRestaurante(menu.getRestaurante()))
                 .extras(extraMenuConverter.fromEntity(menu.getExtras()))
                 .productos(productoConverter.fromEntity(menu.getProductos()))
                 .build();
@@ -43,7 +46,7 @@ public class MenuConverter extends AbstractConverter<Menu, MenuDTO> {
                 .descripcion(menuDTO.getDescripcion())
                 .precioSimple(menuDTO.getPrecioSimple())
                 .precioTotal(menuDTO.getPrecioTotal())
-                .restaurante(menuDTO.getRestaurante())
+                .restaurante(usrConverter.fromRestauranteDTO(menuDTO.getRestaurante()))
                 .extras(extraMenuConverter.fromDTO(menuDTO.getExtras()))
                 .productos(productoConverter.fromDTO(menuDTO.getProductos()))
                 .build();

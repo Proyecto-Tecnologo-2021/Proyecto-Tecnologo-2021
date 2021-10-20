@@ -3,7 +3,6 @@ package proyecto2021G03.appettit.dto;
 import lombok.*;
 import proyecto2021G03.appettit.entity.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,11 +20,11 @@ public class PedidoDTO {
     private String motivo;
     private LocalDateTime fecha;
     private Double total;
-    private Restaurante restaurante;
+    private RestauranteDTO restaurante;
     private Cliente cliente;
-    private List<Menu> menus;
-    private List<Promocion> promociones;
-    private Direccion entrega;
-    private Reclamo reclamo;
+    private List<MenuDTO> menus;
+    private List<PromocionDTO> promociones;
+    private DireccionDTO entrega;
+    private ReclamoDTO reclamo;
 
 }

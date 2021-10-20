@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.business;
 
-import proyecto2021G03.appettit.dto.ExtraMenuDTO;
 import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 

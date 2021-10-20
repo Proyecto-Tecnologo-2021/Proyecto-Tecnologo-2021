@@ -3,9 +3,7 @@ package proyecto2021G03.appettit.business;
 import proyecto2021G03.appettit.converter.MenuConverter;
 import proyecto2021G03.appettit.dao.IMenuDao;
 import proyecto2021G03.appettit.dto.MenuDTO;
-import proyecto2021G03.appettit.entity.ExtraMenu;
 import proyecto2021G03.appettit.entity.Menu;
-import proyecto2021G03.appettit.entity.Producto;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;

@@ -48,14 +48,11 @@ public class Promocion implements Serializable {
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
 	private Restaurante restaurante;
 
-
 	private String descripcion;
 	private Double descuento;
 	private Double precio;
 	
 	@OneToMany
 	private List<Menu> menus;
-
-	
 
 }

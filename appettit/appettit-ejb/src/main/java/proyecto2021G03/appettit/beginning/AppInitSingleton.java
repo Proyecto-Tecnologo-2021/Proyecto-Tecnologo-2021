@@ -65,8 +65,9 @@ public class AppInitSingleton implements Serializable {
 			geom = fromText.read(polygon);
 			multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
 			DepartamentoDTO departamentoDTO = new DepartamentoDTO((long) 1001, "MONTEVIDEO", multiPolygon, ciudades);
+			DepartamentoDTO departamentoDTO2 = new DepartamentoDTO((long) 1002, "MONTEVIDEO", multiPolygon, ciudades);
 			departamentoService.crear(departamentoDTO);
-			
+			departamentoService.crear(departamentoDTO2);
 			
 			List<DepartamentoDTO> deptoDTO =  departamentoService.buscarPorNombre("MONTEVIDEO");
 			
