@@ -36,8 +36,8 @@ public class ProductoService implements IProductoService{
 	}
 
 	@Override
-	public Producto listarPorId(Long id) {
-		return pDAO.listarPorId(id);
+	public ProductoDTO listarPorId(Long id) {
+		return pConverter.fromEntity(pDAO.listarPorId(id));
 	}
 
 	@Override

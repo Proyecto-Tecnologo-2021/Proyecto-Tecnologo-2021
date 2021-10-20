@@ -13,7 +13,7 @@ import proyecto2021G03.appettit.exception.AppettitException;
 public interface IProductoService {
 
 	public List<ProductoDTO> listar() throws AppettitException;
-	public Producto listarPorId(Long id);
+	public ProductoDTO listarPorId(Long id);
 	public ProductoDTO crear(ProductoCrearDTO ccDTO)throws AppettitException;
 	public ProductoDTO editar(Long id, ProductoCrearDTO ccDTO)throws AppettitException;
 	public void eliminar(Long id)throws AppettitException;
