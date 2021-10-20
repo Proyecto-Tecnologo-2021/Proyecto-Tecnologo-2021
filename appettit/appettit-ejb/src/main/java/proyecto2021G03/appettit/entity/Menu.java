@@ -59,6 +59,6 @@ public class Menu implements Serializable {
 	@OneToMany
 	private List<ExtraMenu> extras;
 	
-	private Imagen imagen;
+	private String id_imagen;
 	
 }

@@ -12,10 +12,7 @@ import javax.persistence.*;
 
 public class ExtraMenuDTO {
 
-
     private Long id;
-
     private ProductoDTO producto;
-
     private Double precio;
 }
