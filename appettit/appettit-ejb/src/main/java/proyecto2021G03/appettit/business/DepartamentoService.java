@@ -5,12 +5,14 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import proyecto2021G03.appettit.converter.CiudadConverter;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.dao.IDepartamentoDAO;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.entity.Ciudad;
 import proyecto2021G03.appettit.entity.Departamento;
 import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -26,6 +28,9 @@ public class DepartamentoService implements IDepartamentoService {
 	
 	@EJB
 	public LocalidadConverter localidadConverter;
+	
+	@EJB
+	public CiudadConverter ciudadConverter;
 
 	@Override
 	public DepartamentoDTO crear(DepartamentoDTO departamentoDTO) throws AppettitException {
@@ -100,8 +105,12 @@ public class DepartamentoService implements IDepartamentoService {
 
 	@Override
 	public CiudadDTO crearCiudad(CiudadDTO ciudadDTO) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		Ciudad ciudad = ciudadConverter.fromDTO(ciudadDTO);
+		try {
+			return ciudadConverter.fromEntity(departamentoDAO.crearCiudad(ciudad));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override

@@ -46,9 +46,8 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 		List<Departamento> departamentos = new ArrayList<Departamento>();
 
 		try {
-			List<PGobject> data = em.createQuery("select d from Departamento d ", org.postgresql.util.PGobject.class).getResultList();
-			logger.info("data DAO Depto: " + data.size());
-			//departamentos = em.createQuery("select d from Departamento d ", Departamento.class).getResultList();
+			departamentos = em.createQuery("select d from Departamento d ", Departamento.class).getResultList();
+			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 		}
