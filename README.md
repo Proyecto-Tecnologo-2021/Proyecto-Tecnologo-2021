@@ -39,3 +39,13 @@ Usuario por defecto en backoffice:
 - [Azure](https://azure.microsoft.com/)
 - Firebase
 - MongoDB Atlas
+
+### Configuración servidor WildFly 
+Para que no se prensenten problemas con las geometrías en Hibernate se deben agregar las siguientes librerías en WildFly de forma manual.
+Origen de la copia:
+MAVEN_PATH/repository/org/hibernate/hibernate-spatial/5.0.12.Final/hibernate-spatial-5.0.12.Final.jar
+MAVEN_PATH/repository/org/geolatte/geolatte-geom/1.0.6/geolatte-geom-1.0.6.jar
+MAVEN_PATH/repository/com/vividsolutions/jts/1.13/jts-1.13.jar
+
+Directorio destino:
+WILDFLY_PATH/modules/system/layers/base/org/hibernate/main/

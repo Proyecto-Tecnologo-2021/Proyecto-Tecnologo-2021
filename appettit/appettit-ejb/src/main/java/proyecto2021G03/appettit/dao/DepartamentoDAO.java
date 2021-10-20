@@ -1,11 +1,13 @@
 package proyecto2021G03.appettit.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import org.jboss.logging.Logger;
+import org.postgresql.util.PGobject;
 
 import proyecto2021G03.appettit.entity.Ciudad;
 import proyecto2021G03.appettit.entity.Departamento;
@@ -14,14 +16,15 @@ import proyecto2021G03.appettit.entity.Localidad;
 @Singleton
 public class DepartamentoDAO implements IDepartamentoDAO {
 
+	static Logger logger = Logger.getLogger(DepartamentoDAO.class);
+
 	@PersistenceContext(name = "Proyecto2021G03")
-	private EntityManager em;	
-    
+	private EntityManager em;
 
 	@Override
 	public Departamento crear(Departamento departamento) {
 		em.persist(departamento);
-		
+
 		return departamento;
 	}
 
@@ -37,11 +40,20 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Departamento> listar() {
-		Query consulta = em.createQuery("SELECT d FROM Departamento d");
-		return consulta.getResultList();
+
+		List<Departamento> departamentos = new ArrayList<Departamento>();
+
+		try {
+			List<PGobject> data = em.createQuery("select d from Departamento d ", org.postgresql.util.PGobject.class).getResultList();
+			logger.info("data DAO Depto: " + data.size());
+			//departamentos = em.createQuery("select d from Departamento d ", Departamento.class).getResultList();
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+
+		return departamentos;
 	}
 
 	@Override
@@ -49,28 +61,22 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 		return em.find(Departamento.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Departamento> buscarPorNombre(String nombre) {
-		String query = "SELECT _d from Departamento _d " + 
-				   "where nombre = :nombre ";
-	
-		Query q = em.createQuery(query).setParameter("nombre",nombre);
-		
-		/*
-		List<Object[]> datos =  q.getResultList();
+
 		List<Departamento> departamentos = new ArrayList<Departamento>();
-		Iterator<Object[]> it = datos.iterator();
-		while(it.hasNext()){
-		     Object[] line = it.next();
-		     Departamento eq = new Departamento();
-		     eq.setId(Long.valueOf(line[0].toString()));
-		     eq.setNombre(line[1].toString());
-		     departamentos.add(eq);
+
+		try {
+
+			departamentos = em
+					.createQuery("select d " + "from Departamento d " + "where nombre =:nombre", Departamento.class)
+					.setParameter("nombre", nombre).getResultList();
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
 		}
-		*/
-		return q.getResultList();
-		
+
+		return departamentos;
+
 	}
 
 	@Override

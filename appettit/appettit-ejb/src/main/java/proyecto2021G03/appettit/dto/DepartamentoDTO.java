@@ -3,6 +3,7 @@ package proyecto2021G03.appettit.dto;
 
 import java.util.List;
 
+
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
