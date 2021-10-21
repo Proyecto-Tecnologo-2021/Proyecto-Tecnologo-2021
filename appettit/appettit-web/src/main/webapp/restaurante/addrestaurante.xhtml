@@ -48,7 +48,8 @@
 				aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse text-white" id="navbarSupportedContent">
+			<div class="collapse navbar-collapse text-white"
+				id="navbarSupportedContent">
 				<h5>Crear Restaurante</h5>
 			</div>
 			</nav>
@@ -198,7 +199,7 @@
 									<div class="col-12 mb-3">Definir Direcci&oacute;n y zona
 										de reparto</div>
 									<div class="col-12 d-flex flex-row">
-										<div class="col-4  mb-3">
+										<div class="col-4  mb-1">
 											<p:outputLabel for="addAddress" value="Direcci&oacute;n" />
 										</div>
 										<div class="col-8  mb-3 mr-0 pr-0">
@@ -211,21 +212,46 @@
 											<h:inputHidden id="addAddressNumber" name="addAddressNumber"
 												value="#{beanAddRestaurante.direccion.numero}">
 											</h:inputHidden>
+											<h:inputHidden id="addDeliveryArea" name="addDeliveryArea"
+												value="#{beanAddRestaurante.strareaentrega}">
+											</h:inputHidden>
 
-											<h:inputText type="text" class="form-control" id="addAddress"
-												required="true" name="addAddress"
+
+											<h:inputHidden id="addAddress" required="true"
+												name="addAddress"
 												value="#{beanAddRestaurante.direccion.calle}">
-											</h:inputText>
+											</h:inputHidden>
+											<h6 id="textAddAdress"></h6>
 										</div>
+									</div>
+									<div class="col-12 d-flex flex-row">
+									<div class="col-4  mb-1">
+										<button type="button" onclick="zonaReparto()"
+											class="btn btn-secondary" title="Definir zona de reparto">
+											<i class="fas fa-draw-polygon"></i> Zona Reparto
+										</button>
+									</div>
+									<div class="col-7 mb-1 d-flex flex-row-reverse">
+										<button type="button" onclick="confirmarZonaReparto()"
+											class="btn btn-success" title="Confirmar zona de reparto">
+											<i class="far fa-check-circle"></i>
+										</button>
+									</div>
+									<div class="col-1 mb-1 d-flex flex-row-reverse">
+										<button type="button" onclick="cleanZonaReparto()"
+											class="btn btn-warning" title="Limpiar zona de reparto">
+											<i class="fas fa-recycle"></i>
+										</button>
+									</div>
 									</div>
 									<div class="col-12 mb-1">
 										<div id="map"
 											class="leflet-map leaflet-container leaflet-fade-anim border">
 										</div>
+
 									</div>
 								</div>
 							</div>
-
 						</div>
 						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
 						<div class="col-xl-1 col-lg-1 col-md-1 pb-3 pt-3"></div>
@@ -239,12 +265,11 @@
 							</div>
 						</div>
 					</div>
-
 				</h:form>
-
 			</div>
 		</div>
 	</div>
+
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
 
@@ -270,9 +295,8 @@
 		
 		/*Add mapa*/
 		initMap();
+//		initMapSelectRegion();
 		getLocation();
-		initMapSelectRegion();	
-		
 		
 	</script>
 </h:body>

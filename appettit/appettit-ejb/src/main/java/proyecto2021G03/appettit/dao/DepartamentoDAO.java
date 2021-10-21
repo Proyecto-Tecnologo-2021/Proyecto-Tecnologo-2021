@@ -7,8 +7,6 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.jboss.logging.Logger;
-import org.postgresql.util.PGobject;
-
 import proyecto2021G03.appettit.entity.Ciudad;
 import proyecto2021G03.appettit.entity.Departamento;
 import proyecto2021G03.appettit.entity.Localidad;
