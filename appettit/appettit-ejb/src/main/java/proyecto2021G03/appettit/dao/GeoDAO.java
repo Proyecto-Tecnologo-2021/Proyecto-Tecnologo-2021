@@ -6,12 +6,9 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-//import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Point;
 
 import org.jboss.logging.Logger;
-
-//Geometry Object is from the following import
-import com.vividsolutions.jts.geom.*;
 
 import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.entity.Menu;
@@ -30,18 +27,23 @@ public class GeoDAO implements IGeoDAO {
 	@Override
 	public Localidad localidadPorPunto(Point point) {
 		Localidad localidad = null;
-		
-		try {
+		//try {
 			localidad =  em.createQuery("select l "
 					+ "from Localidad l "
 					+ "where contains(l.geometry, :point) = true", Localidad.class)
 					.setParameter("point", point)
 					.getSingleResult();
 			
-		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
-		}
+		///} catch (Exception e) {
+			//logger.error(e.getLocalizedMessage());
+			logger.error(point.getGeometryType());
+			logger.error(point.getSRID());
+			logger.error(point.getCoordinates().toString());
+		
 			
+		//}
+			
+		
 		
 		return localidad;
 	}

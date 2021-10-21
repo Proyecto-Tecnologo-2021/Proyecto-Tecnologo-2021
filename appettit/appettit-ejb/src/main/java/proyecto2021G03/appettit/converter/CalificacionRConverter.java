@@ -1,11 +1,11 @@
 package proyecto2021G03.appettit.converter;
 
-import proyecto2021G03.appettit.dao.CalificacionRDAO;
+import javax.ejb.Singleton;
+
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.CategoriaDTO;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
 
+@Singleton
 public class CalificacionRConverter extends AbstractConverter<ClasificacionPedido, CalificacionPedidoDTO>{
     @Override
     public CalificacionPedidoDTO fromEntity(ClasificacionPedido clasificacionPedido) {

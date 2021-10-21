@@ -282,6 +282,29 @@
 							</div>
 							<div class="col-12 d-flex flex-row">
 								<div class="col-3  mb-3">
+									<p:outputLabel for="addPassword1" value="Contrase&ntilde;a" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0 input-group-sm">
+									<p:password type="text" class="form-control" id="addPassword1"
+										required="true" name="addPassword1"
+										value="#{beanAdmin.password}" feedback="true"
+										promptLabel="Ingresa tu contras&ntilde;ea"
+										weakLabel="D&eacute;bil" goodLabel="Buena"
+										strongLabel="Fuerte" match="addPassword2" />
+								</div>
+							</div>
+							<div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
+									<p:outputLabel for="addPassword2" value="Contrase&ntilde;a" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0 input-group-sm">
+									<p:password type="text" class="form-control" id="addPassword2"
+										required="true" name="addPassword2"
+										value="#{beanAdmin.password}" />
+								</div>
+							</div>
+							<!-- <div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
 									<p:outputLabel for="addPassword" value="Contrase&ntilde;a" />
 								</div>
 								<div class="col-9  mb-3 mr-0 pr-0">
@@ -290,9 +313,9 @@
 										value="#{beanAdmin.password}">
 									</h:inputSecret>
 								</div>
-							</div>
+							</div> -->
 						</div>
-						
+
 						<div class="col-12">
 							<div class="col-12 d-flex flex-row">
 								<h:commandButton class="btn btn-primary"

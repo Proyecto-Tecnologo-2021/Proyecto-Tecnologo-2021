@@ -15,10 +15,11 @@ import proyecto2021G03.appettit.exception.AppettitException;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import java.util.List;
-@Singleton
 
+@Singleton
 public class CalificacionRService implements ICalificacionRService{
-    @EJB
+
+	@EJB
     public ICalificacionRDao iCalificacionRDao;
 
     @EJB

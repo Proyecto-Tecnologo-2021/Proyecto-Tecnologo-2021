@@ -17,6 +17,7 @@ import lombok.Setter;
 public class DireccionDTO implements Comparable<Object>{
 
 	private Long id;
+	private String alias;
 	private String calle;
 	private Integer numero;
 	private String apartamento;

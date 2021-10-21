@@ -162,7 +162,14 @@
 											</div>
 										</div>
 									</div>
-
+									<div class="col-12 d-flex flex-row">
+										<div class="col-6  mb-3">
+											<p:outputLabel for="addAutoApertura" value="Apertura Automat&iacute;ca" />
+										</div>
+										<div class="col-4  mb-3">
+											<p:selectBooleanCheckbox value="#{beanAddRestaurante.abiertoAutom}" id="addAutoApertura"/>
+										</div>
+									</div>
 									<div class="col-12 d-flex flex-row">
 										<div class="col-4  mb-3">
 											<p:outputLabel for="addPassword1" value="Contrase&ntilde;a" />
@@ -206,9 +213,6 @@
 											<h:inputHidden id="addPoint" name="addPoint"
 												value="#{beanAddRestaurante.point}">
 											</h:inputHidden>
-											<h:inputHidden id="addMultipolygon" name="addMultiPolygon"
-												value="#{beanAddRestaurante.multiPolygon}">
-											</h:inputHidden>
 											<h:inputHidden id="addAddressNumber" name="addAddressNumber"
 												value="#{beanAddRestaurante.direccion.numero}">
 											</h:inputHidden>
@@ -225,24 +229,27 @@
 										</div>
 									</div>
 									<div class="col-12 d-flex flex-row">
-									<div class="col-4  mb-1">
-										<button type="button" onclick="zonaReparto()"
-											class="btn btn-secondary" title="Definir zona de reparto">
-											<i class="fas fa-draw-polygon"></i> Zona Reparto
-										</button>
-									</div>
-									<div class="col-7 mb-1 d-flex flex-row-reverse">
-										<button type="button" onclick="confirmarZonaReparto()"
-											class="btn btn-success" title="Confirmar zona de reparto">
-											<i class="far fa-check-circle"></i>
-										</button>
-									</div>
-									<div class="col-1 mb-1 d-flex flex-row-reverse">
-										<button type="button" onclick="cleanZonaReparto()"
-											class="btn btn-warning" title="Limpiar zona de reparto">
-											<i class="fas fa-recycle"></i>
-										</button>
-									</div>
+										<div class="col-4  mb-1">
+											<button type="button" id="defZonaReparto"
+												onclick="zonaReparto('defZonaReparto')"
+												class="btn btn-secondary" title="Definir zona de reparto">
+												<i class="fas fa-draw-polygon"></i> Zona Reparto
+											</button>
+										</div>
+										<div class="col-7 mb-1 d-flex flex-row-reverse">
+											<button type="button" id="confZonaReparto"
+												onclick="confirmarZonaReparto('defZonaReparto')"
+												class="btn btn-success" title="Confirmar zona de reparto">
+												<i class="far fa-check-circle"></i>
+											</button>
+										</div>
+										<div class="col-1 mb-1 d-flex flex-row-reverse">
+											<button type="button" id="clrZonaReparto"
+												onclick="cleanZonaReparto()" class="btn btn-warning"
+												title="Limpiar zona de reparto">
+												<i class="fas fa-recycle"></i>
+											</button>
+										</div>
 									</div>
 									<div class="col-12 mb-1">
 										<div id="map"

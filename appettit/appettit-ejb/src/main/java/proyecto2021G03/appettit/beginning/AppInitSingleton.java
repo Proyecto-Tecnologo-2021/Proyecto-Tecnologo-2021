@@ -107,6 +107,16 @@ public class AppInitSingleton implements Serializable {
 
 			parseLocalidad();
 			
+			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
+			
+			if(ldto != null) { 
+				logger.info("Localidad: " + ldto.getNombre()); 
+			}else {
+				logger.info("No existen Localidades"); 
+			}		
+					
+			
+			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 		}
@@ -118,13 +128,13 @@ public class AppInitSingleton implements Serializable {
 		String linea;
 		String[] data;
 		List<CiudadDTO> ciudades = new ArrayList<CiudadDTO>();
-		
+
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader
-				.getResource("META-INF/gis/departamentos.csv");
+		URL resource = classLoader.getResource("META-INF/gis/departamentos.csv");
 		File deptoFile = new File(resource.getFile());
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
 
 		while ((linea = bufferedReader.readLine()) != null) {
 			data = linea.split(";");
@@ -148,13 +158,13 @@ public class AppInitSingleton implements Serializable {
 		String linea;
 		String[] data;
 		List<LocalidadDTO> localidades = new ArrayList<LocalidadDTO>();
-		
+
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader
-				.getResource("META-INF/gis/ciudades.csv");
+		URL resource = classLoader.getResource("META-INF/gis/ciudades.csv");
 		File deptoFile = new File(resource.getFile());
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
 
 		while ((linea = bufferedReader.readLine()) != null) {
 			data = linea.split(";");
@@ -178,13 +188,13 @@ public class AppInitSingleton implements Serializable {
 
 		String linea;
 		String[] data;
-		
+
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader
-				.getResource("META-INF/gis/localidades.csv");
+		URL resource = classLoader.getResource("META-INF/gis/localidades.csv");
 		File deptoFile = new File(resource.getFile());
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
 
 		while ((linea = bufferedReader.readLine()) != null) {
 			data = linea.split(";");
@@ -202,7 +212,7 @@ public class AppInitSingleton implements Serializable {
 		}
 
 		bufferedReader.close();
-		
+
 		logger.info("Localidades ingresadas");
 	}
 

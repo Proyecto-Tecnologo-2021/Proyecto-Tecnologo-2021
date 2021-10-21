@@ -54,8 +54,8 @@ public class Localidad implements Serializable{
     })
 	private Ciudad ciudad;
 	
-	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	//@Column(name="geom")
+	//@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
+	@Column(name = "geom")
 	private MultiPolygon geometry;
 
 

@@ -17,6 +17,7 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 		if(e == null) return null;
 		return DireccionDTO.builder()
 				.id(e.getId())
+				.alias(e.getAlias())
 				.calle(e.getCalle())
 				.numero(e.getNumero())
 				.apartamento(e.getApartamento())
@@ -30,6 +31,7 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 		if(d == null) return null;
 		return Direccion.builder()
 				.id(d.getId())
+				.alias(d.getAlias())
 				.calle(d.getCalle())
 				.numero(d.getNumero())
 				.apartamento(d.getApartamento())

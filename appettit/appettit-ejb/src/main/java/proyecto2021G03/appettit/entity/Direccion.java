@@ -34,7 +34,7 @@ public class Direccion implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	private String alias;
 	private String calle;
 	private Integer numero;
 	private String apartamento;

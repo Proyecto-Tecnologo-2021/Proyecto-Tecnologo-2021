@@ -138,16 +138,11 @@ function toProj32721(lat, lon) {
 
 	var proj4326 = new Proj4js.Proj('EPSG:4326');    //source coordinates will be in Longitude/Latitude
 	var proj32721 = new Proj4js.Proj('EPSG:32721');     //destination coordinates in LCC, south of France
-
 	var coordinates = L.Projection.LonLat.project(L.latLng(lat, lon));
 
-	//console.log(coordinates);
-
 	var point = new Proj4js.Point(coordinates.x, coordinates.y);   //any object will do as long as it has 'x' and 'y' properties
-	//console.log(point)
 	var point32721 = Proj4js.transform(proj4326, proj32721, point);      //do the transformation.  x and y are modified in place
 
-	//	console.log(point32721);
 	return point32721;
 }
 
@@ -199,13 +194,18 @@ function initMapSelectRegion() {
 
 }
 
-function zonaReparto() {
+function zonaReparto(buttonId) {
 	if (selectarea == null || (!selectarea._enabled)) {
-		
+		$mj('#' + buttonId ).removeClass( "btn-secondary" );
+		$mj('#' + buttonId ).addClass( "btn-primary" );
+
 		selectarea = map.selectAreaFeature.enable();
 		selectarea.options.color = '#008037';
 		selectarea.options.weight = 3;
 	} else {
+		$mj('#' + buttonId ).removeClass( "btn-primary" );
+		$mj('#' + buttonId ).addClass( "btn-secondary" );
+
 		selectarea.disable();
 
 	}
@@ -216,11 +216,41 @@ function cleanZonaReparto(){
 	selectarea.removeAllArea();
 }
 
-function confirmarZonaReparto(){
+function confirmarZonaReparto(buttonId){
 	if (selectarea != null ) {
 		console.log(selectarea);
-		console.log(selectarea.getFeaturesSelected('all'));
-		$mj("input[id*='addDeliveryArea']").val(selectarea.getFeaturesSelected('all'));		
+
+		var polygons = selectarea._area_pologon_layers;
+		var multiPolygon = 'MULTIPOLYGON(('
+
+		for (var pol=0; pol < polygons.length; pol++){
+			multiPolygon += '(';
+			var latlngs = polygons[pol]._latlngs[0]; //Me quedo con el array en la posicion 0
+			
+			//console.log(latlngs);
+			
+			var fpoint = toProj32721(latlngs[0].lat, latlngs[0].lng);
+			
+			for(var pt=0; pt<latlngs.length; pt++){
+				var point = latlngs[pt];
+				
+				var proj32721 = toProj32721(point.lat, point.lng);
+				multiPolygon += proj32721['x'] + ' ' + proj32721['y'] +', ';
+
+			}
+			
+			multiPolygon += fpoint['x'] + ' ' + fpoint['y'] + ')';
+		}	
+
+		multiPolygon += '))'
+
+
+		$mj("input[id*='addDeliveryArea']").val(multiPolygon);
+	
+		
+		$mj('#' + buttonId ).removeClass( "btn-primary" );
+		$mj('#' + buttonId ).addClass( "btn-secondary" );
+		
 		selectarea.disable();
 	}
 	

@@ -2,10 +2,7 @@ package proyecto2021G03.appettit.converter;
 
 
 import proyecto2021G03.appettit.dto.ExtraMenuDTO;
-import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.entity.ExtraMenu;
-import proyecto2021G03.appettit.entity.Producto;
-
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 

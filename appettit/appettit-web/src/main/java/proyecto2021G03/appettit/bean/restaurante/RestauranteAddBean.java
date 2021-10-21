@@ -19,7 +19,6 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
@@ -35,11 +34,12 @@ import lombok.Setter;
 import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.converter.GeoConverter;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanAddRestaurante")
@@ -57,31 +57,20 @@ public class RestauranteAddBean implements Serializable {
 
 	private Long id;
 	private String nombre;
-	private String username;
 	private String password;
 	private String telefono;
 	private String correo;
-	private String token;
-	private String tokenFireBase;
 	private String rut;
-	private EstadoRegistro estado;
-	private Boolean bloqueado;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
-	private Boolean abierto;
 	private Boolean abiertoAutom;
-	private MultiPolygon areaentrega;
 	private DireccionDTO direccion;
-	private CalificacionRestauranteDTO calificacion;
 	private ImagenDTO imagen;
 	private UploadedFile imgfile;
 	private CroppedImage croppedImage;
 	private String point;
-	private String multiPolygon;
 	private String strareaentrega;
-	Geometry geom;
-    Point gpoint;
-    
+	
 	
 	@EJB
 	IUsuarioService usrSrv;
@@ -92,17 +81,25 @@ public class RestauranteAddBean implements Serializable {
 	@EJB
 	IGeoService geoSrv;
 	
+	@EJB
+	GeoConverter geoConverter;
+	
 	WKTReader fromText;
 
 	@PostConstruct
 	public void init() {
 		clearParam();
 		fromText = new WKTReader(new GeometryFactory(new PrecisionModel(), 32721));
+		
+		
 	}
 
 	public void addRestaurante() {
-
-		
+		String id_imagen = null;
+	    Point gpoint;
+	    MultiPolygon areaentrega = null;
+		Boolean loadImg = null; 
+	    	
 		try {
 			crop();
 			
@@ -117,31 +114,66 @@ public class RestauranteAddBean implements Serializable {
 					imgSrv.crear(imagen);	
 					
 					imagen = imgSrv.buscarPorIdentificador(identificador);
+					id_imagen = imagen.getId();
+					loadImg = true;
 				} 
 				
 			} catch (IOException e) {
 				logger.info(e.getMessage().trim());
+				loadImg = false;
 			}
 			
 			
 			try {
-				geom = fromText.read(point);
-				gpoint = (com.vividsolutions.jts.geom.Point) geom;
 				
-				LocalidadDTO ldto = geoSrv.localidadPorPunto(gpoint); 
+				logger.info(point);
+				
+				if (!strareaentrega.equals("")) {
+					areaentrega = geoConverter.strToMultiPolygon(strareaentrega);
+						
+				}
+				
+				
+				gpoint = geoConverter.strToPoint(point);
+				LocalidadDTO ldto = geoSrv.localidadPorPunto(point); 
 				
 				if(ldto != null) {
 					direccion.setGeometry(gpoint);
 					direccion.setBarrio(ldto);
+					
+					RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, null, rut,
+							EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, areaentrega, direccion,
+							id_imagen);
+
+					
+					restDTO = usrSrv.crearRestaurante(restDTO);
+
+					if(loadImg) {
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Restaurante " + restDTO.getCorreo() + " creado con éxito.", null));
+						
+					}else {
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Restaurante " + restDTO.getCorreo() + " creado con éxito.", null));
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+								"No fue posible cargar la imagen."));
+					}
+						
+						FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
+					
 				} else {
+					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+		                    "Direcci\00F3n incorrecta."));
 					logger.info("Localidad vacia");
 				}
 				
 			} catch (ParseException e) {
 				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 			}
 		    
-			
+			/*
 			logger.info(nombre);
 			logger.info(password);
 			logger.info(telefono);
@@ -158,19 +190,13 @@ public class RestauranteAddBean implements Serializable {
 			logger.info(direccion.getCalle());
 			logger.info(direccion.getNumero());
 			logger.info(imagen.getId());	
-			
-			
+			*/
 		
-		//RestauranteDTO restDTO = new RestauranteDTO(null, nombre, username, password, telefono, correo, null, null, rut,
-		//		estado, bloqueado, horarioApertura, horarioCierre, abierto, abiertoAutom, areaentrega, direccion,
-		//		id_imagen);
-
-		
-		//	restDTO = usrSrv.crearRestaurante(restDTO);
-
-		//	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-		//			"Restaurante " + restDTO.getCorreo() + " creado con éxito.", null));
 		} catch (AppettitException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+		} catch (IOException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
@@ -186,19 +212,11 @@ public class RestauranteAddBean implements Serializable {
 		this.password = null;
 		this.correo = null;
 		this.telefono = null;
-		this.username = null;
-		this.token = null;
-		this.tokenFireBase = null;
 		this.rut = null;
-		this.estado = EstadoRegistro.PENDIENTE;
-		this.bloqueado = true;
 		this.horarioApertura = null;
 		this.horarioCierre = null;
-		this.abierto = false;
 		this.abiertoAutom = true;
-		this.areaentrega = null;
 		this.direccion = new DireccionDTO();
-		this.calificacion = null;
 		this.imagen = null;
 		this.imgfile = null;
 		this.croppedImage = null;
@@ -223,17 +241,11 @@ public class RestauranteAddBean implements Serializable {
         UploadedFile file = event.getFile();
         if (file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
             this.imgfile = file;
-            //FacesMessage msg = new FacesMessage("Exito", this.imgfile.getFileName() + " fue cargado.");
-            //FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
     public void crop() {
-        if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
-            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-            //        "Fall&oacute; recorte."));
-        }
-        else {
+        if (!(this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito",
                     "Recorte exitoso."));
         }
