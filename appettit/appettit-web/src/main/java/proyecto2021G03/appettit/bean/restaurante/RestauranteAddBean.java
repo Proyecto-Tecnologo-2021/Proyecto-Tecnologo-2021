@@ -78,6 +78,7 @@ public class RestauranteAddBean implements Serializable {
 	private CroppedImage croppedImage;
 	private String point;
 	private String multiPolygon;
+	private String strareaentrega;
 	Geometry geom;
     Point gpoint;
     
