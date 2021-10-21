@@ -1,11 +1,13 @@
 package proyecto2021G03.appettit.business;
 
-import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.ClasificacionClienteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.util.List;
 
+import javax.ejb.Local;
+
+@Local
 public interface IClasificacionCService {
 
     public List<ClasificacionClienteDTO> listar() throws AppettitException;

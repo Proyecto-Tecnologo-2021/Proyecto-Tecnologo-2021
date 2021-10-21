@@ -1,10 +1,11 @@
 package proyecto2021G03.appettit.converter;
 
-import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
+import javax.ejb.Singleton;
+
 import proyecto2021G03.appettit.dto.ClasificacionClienteDTO;
 import proyecto2021G03.appettit.entity.ClasificacionCliente;
-import proyecto2021G03.appettit.entity.ClasificacionPedido;
 
+@Singleton
 public class ClasificacionClienteConverter extends AbstractConverter<ClasificacionCliente, ClasificacionClienteDTO>{
 
 

@@ -1,22 +1,17 @@
 package proyecto2021G03.appettit.business;
 
 import proyecto2021G03.appettit.converter.CalificacionRConverter;
-import proyecto2021G03.appettit.converter.CategoriaConverter;
 import proyecto2021G03.appettit.dao.ICalificacionRDao;
-import proyecto2021G03.appettit.dao.ICategoriaDAO;
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
-import proyecto2021G03.appettit.entity.ExtraMenu;
-import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+
 import java.util.List;
 
-@Singleton
+@Stateless
 public class CalificacionRService implements ICalificacionRService{
 
 	@EJB

@@ -7,10 +7,11 @@ import proyecto2021G03.appettit.entity.ClasificacionCliente;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import java.util.List;
-@Singleton
+import javax.ejb.Stateless;
 
+import java.util.List;
+
+@Stateless
 public class ClasificacionCService implements IClasificacionCService{
 
     @EJB
