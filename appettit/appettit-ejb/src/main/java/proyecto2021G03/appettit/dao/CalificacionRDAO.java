@@ -1,10 +1,8 @@
 package proyecto2021G03.appettit.dao;
 
+import org.jboss.logging.Logger;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.entity.Categoria;
-import proyecto2021G03.appettit.entity.ClasificacionPedido;
-import proyecto2021G03.appettit.entity.ClasificacionPedidoId;
-import proyecto2021G03.appettit.entity.Pedido;
+import proyecto2021G03.appettit.entity.*;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
@@ -16,29 +14,46 @@ import java.util.List;
 public class CalificacionRDAO implements ICalificacionRDao {
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
+    static Logger logger = Logger.getLogger(CalificacionRDAO.class);
 
     @Override
-    public List<CalificacionRestauranteDTO> listar() {
+    public List<ClasificacionPedido> listar() {
         Query consulta = em.createQuery("SELECT c FROM ClasificacionPedido c");
         return consulta.getResultList();
     }
 
     @Override
-    public CalificacionRestauranteDTO listarPorId(Long id) {
-       return null;    }
+    public ClasificacionPedido listarPorId(Long id) {
+        ClasificacionPedido clasificacion = null;
 
-    @Override
-    public CalificacionRestauranteDTO crear(ClasificacionPedido clasificacionPedido) {
-        return null;
+        try {
+            clasificacion =  em.createQuery("select c "
+                            + "from ClasificacionPedido c "
+                            + "where id_pedido = :id", ClasificacionPedido.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+        }
+        return clasificacion;
     }
 
     @Override
-    public CalificacionRestauranteDTO editar(ClasificacionPedido clasificacionPedido) {
-        return null;
+    public ClasificacionPedido crear(ClasificacionPedido clasificacionPedido) {
+        em.persist(clasificacionPedido);
+   return clasificacionPedido;
+    }
+
+    @Override
+    public ClasificacionPedido editar(ClasificacionPedido clasificacionPedido) {
+
+        em.persist(clasificacionPedido);
+        return clasificacionPedido;
     }
 
     @Override
     public void eliminar(ClasificacionPedido clasificacionPedido) {
-
+em.remove(clasificacionPedido);
     }
 }
