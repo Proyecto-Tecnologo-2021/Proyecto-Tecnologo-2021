@@ -7,8 +7,11 @@ import proyecto2021G03.appettit.entity.Menu;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
 import java.util.List;
 
+@Stateless
 public class MenuService implements IMenuService{
     @EJB
     IMenuDao iMenuDao;

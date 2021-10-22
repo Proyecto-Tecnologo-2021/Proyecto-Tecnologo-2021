@@ -60,7 +60,7 @@
 		<div class="container">
 			<div class="wrapper pt-3">
 				<div class="card">
-					<h:form>
+					<h:form id="form">
 						<p:dataTable var="restaurante"
 							value="#{beanAdminRestaurante.restaurantes}"
 							widgetVar="restaurantesTable"
@@ -132,7 +132,7 @@
 								</f:facet>
 
 								<span
-									class="restaurante-badge status-#{restaurante.estado.name().toLowerCase()}">#{restaurante.estado.toString()}</span>
+									class="restaurante-badge status-#{restaurante.estado.toString().toLowerCase()}">#{restaurante.estado.toString()}</span>
 							</p:column>
 
 							<p:column headerText="Calificacion"
@@ -145,14 +145,14 @@
 							<p:column style="width:3rem;text-align: center">
 								<p:commandButton update=":form:restauranteDetail"
 									oncomplete="PF('restauranteDialog').show()" icon="pi pi-search"
-									title="View">
-									<f:setPropertyActionListener value="#{srest}"
+									title="Ver">
+									<f:setPropertyActionListener value="#{restaurante}"
 										target="#{beanAdminRestaurante.selRestaurante}" />
 								</p:commandButton>
 							</p:column>
-
 						</p:dataTable>
-
+						
+			
 						<p:dialog header="Informaci&oacute;n Restaurante"
 							widgetVar="restauranteDialog" modal="true" showEffect="fade"
 							hideEffect="fade" resizable="false">
