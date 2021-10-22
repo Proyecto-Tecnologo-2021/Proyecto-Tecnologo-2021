@@ -138,11 +138,12 @@
 							<p:column headerText="Calificacion"
 								sortBy="#{restaurante.calificacion.general}">
 								<p:rating readonly="true"
-									value="#{restaurante.calificacion.general}" style="height: .5rem"/>
+									value="#{restaurante.calificacion.general}"
+									style="height: .5rem" />
 							</p:column>
-	
+
 							<p:column style="width:3rem;text-align: center">
-								<p:commandButton update=":form:productDetail"
+								<p:commandButton update=":form:restauranteDetail"
 									oncomplete="PF('restauranteDialog').show()" icon="pi pi-search"
 									title="View">
 									<f:setPropertyActionListener value="#{srest}"
@@ -152,10 +153,11 @@
 
 						</p:dataTable>
 
-						<p:dialog header="Informaci&oacute;n Restaurante" widgetVar="restauranteDialog"
-							modal="true" showEffect="fade" hideEffect="fade"
-							resizable="false">
+						<p:dialog header="Informaci&oacute;n Restaurante"
+							widgetVar="restauranteDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
 							<p:outputPanel id="restauranteDetail" style="text-align:center;">
+
 								<p:column
 									rendered="#{not empty beanAdminRestaurante.selRestaurante}">
 									<div class="product">
@@ -163,18 +165,22 @@
 											<div class="product-grid-item-top">
 												<div>
 													<i class="pi pi-tag product-category-icon" /> <span
-														class="product-category">#{dtSelectionView.selectedProduct.category}</span>
+														class="product-category">#{beanAdminRestaurante.selRestaurante.nombre}</span>
 												</div>
 												<span
-													class="product-badge status-#{dtSelectionView.selectedProduct.inventoryStatus.name().toLowerCase()}">#{dtSelectionView.selectedProduct.inventoryStatus.text}</span>
+													class="product-badge status-#{beanAdminRestaurante.selRestaurante.bloqueado.toLowerCase()}">#{beanAdminRestaurante.selRestaurante.bloqueado?Bloqueado:Habilitado}</span>
 											</div>
 											<div class="product-grid-item-content">
+
 												<p:graphicImage
-													name="demo/images/product/#{dtSelectionView.selectedProduct.image}" />
-												<div class="product-name">#{dtSelectionView.selectedProduct.name}</div>
-												<div class="product-description">#{dtSelectionView.selectedProduct.description}</div>
-												<p:rating readonly="true"
-													value="#{dtSelectionView.selectedProduct.rating}" />
+													value="#{beanAdminRestaurante.selRestaurante.imagen.imagen}" />
+
+
+												<div class="product-grid-item-bottom">
+													<div class="product-name">Cantidad de men&uacute;s</div>
+													<div class="product-description">"#{beanAdminRestaurante.menuRestaurante.size()}"</div>
+												</div>
+
 											</div>
 											<div class="product-grid-item-bottom">
 												<h:outputText
@@ -182,17 +188,18 @@
 													styleClass="product-price">
 													<f:convertNumber currencySymbol="$" type="currency" />
 												</h:outputText>
-												<p:commandButton value="Add To Cart"
+												<p:commandButton value="Habilitar"
 													icon="pi pi-shopping-cart"
-													disabled="#{dtSelectionView.selectedProduct.inventoryStatus == 'OUTOFSTOCK'}">
+													disabled="#{beanAdminRestaurante.menuRestaurante.size() == 0}">
 													<f:setPropertyActionListener
-														value="#{dtSelectionView.selectedProduct}"
-														target="#{dtSelectionView.selectedProduct}" />
+														value="#{beanAdminRestaurante.selRestaurante}"
+														target="#{beanAdminRestaurante.selRestaurante}" />
 												</p:commandButton>
 											</div>
 										</div>
 									</div>
 								</p:column>
+
 							</p:outputPanel>
 						</p:dialog>
 

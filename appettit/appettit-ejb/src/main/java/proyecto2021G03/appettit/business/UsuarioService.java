@@ -12,12 +12,14 @@ import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.FileManagement;
 
 @Stateless
 public class UsuarioService implements IUsuarioService {
@@ -27,6 +29,9 @@ public class UsuarioService implements IUsuarioService {
 
 	@EJB
 	public UsuarioConverter usrConverter;
+
+	@EJB
+	IImagenService imgSrv;
 
 	@Override
 	public void eliminar(Long id) throws AppettitException {
@@ -99,13 +104,13 @@ public class UsuarioService implements IUsuarioService {
 			} else {
 				/* Se encripta la contraseña */
 				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
-				
+
 				return usrConverter.fromAdministrador(usrDAO.crearAdministrador(usuario));
 			}
 
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	
+		}
 	}
 
 	@Override
@@ -118,29 +123,40 @@ public class UsuarioService implements IUsuarioService {
 			} else {
 				/* Se encripta la contraseña */
 				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
-				
+
 				return usrConverter.fromRestaurante(usrDAO.crearRestaurante(usuario));
 			}
 
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	
+		}
 	}
 
 	@Override
 	public List<RestauranteDTO> listarRestaurantes() throws AppettitException {
-		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>(); 
+		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
 		try {
-			
+
 			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.listarRestaurantes()).iterator();
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
 				res.setCalificacion(calificcionRestaurante(res));
+				ImagenDTO img = new ImagenDTO();
+
+				if (!(res.getId_imagen() == null || res.getId_imagen().equals(""))) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+				} else {
+					img = imgSrv.buscarPorId(res.getId_imagen());
+				}
+				res.setImagen(img);
 				restaurantes.add(res);
 			}
-			
+
 			return restaurantes;
-			
+
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -150,13 +166,25 @@ public class UsuarioService implements IUsuarioService {
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException {
 		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
 		try {
-			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.buscarPorNombreRestaurante(nombre)).iterator();
+			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.buscarPorNombreRestaurante(nombre))
+					.iterator();
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
 				res.setCalificacion(calificcionRestaurante(res));
 				restaurantes.add(res);
+				ImagenDTO img = new ImagenDTO();
+
+				if (!(res.getId_imagen() == null || res.getId_imagen().equals(""))) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+				} else {
+					img = imgSrv.buscarPorId(res.getId_imagen());
+				}
+				res.setImagen(img);
 			}
-			
+
 			return restaurantes;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -172,6 +200,7 @@ public class UsuarioService implements IUsuarioService {
 			return usrDAO.calificcionRestaurante(restauranteDTO);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	}
+		}
+	}
 
 }

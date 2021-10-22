@@ -20,8 +20,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserBean;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("HomeRestaurante")
@@ -30,7 +32,6 @@ import proyecto2021G03.appettit.exception.AppettitException;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class HomeRestauranteBean implements Serializable{
 
 	static Logger logger = Logger.getLogger(HomeRestauranteBean.class);
@@ -46,16 +47,26 @@ public class HomeRestauranteBean implements Serializable{
 	IDepartamentoService departamentoService;
 	
 	
+	
 	@PostConstruct
 	public void init() {
-		logger.info("Dentro de init");
 		try {
 			departamentos = departamentoService.listar();
 			abierto = false;
 			
-			Date fechaBase = new Date();
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			fechaHora = dateFormat.format(fechaBase);
+			UserBean userBean = new UserBean();
+			
+			UsuarioDTO usuarioDTO = userBean.getUserSession();
+			
+			if(usuarioDTO==null) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));	
+			}else {
+				Date fechaBase = new Date();
+				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				fechaHora = dateFormat.format(fechaBase);
+			}
+			
 
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());

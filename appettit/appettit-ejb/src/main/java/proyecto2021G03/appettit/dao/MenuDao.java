@@ -1,46 +1,64 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.ExtraMenu;
 import proyecto2021G03.appettit.entity.Menu;
-import proyecto2021G03.appettit.entity.Producto;
-
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.jboss.logging.Logger;
+
+import java.util.ArrayList;
 import java.util.List;
 
- @Singleton
-public class MenuDao implements IMenuDao{
+@Singleton
+public class MenuDao implements IMenuDao {
 
-    @PersistenceContext(name = "Proyecto2021G03")
-    private EntityManager em;
+	static Logger logger = Logger.getLogger(MenuDao.class);
 
-    @Override
-    public List<Menu> listar() {
-        Query consulta = em.createQuery("SELECT m FROM Menu m");
-        return consulta.getResultList();
-    }
+	@PersistenceContext(name = "Proyecto2021G03")
+	private EntityManager em;
 
-    @Override
-    public Menu listarPorId(Long id) {return em.find(Menu.class, id);
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Menu> listar() {
+		Query consulta = em.createQuery("SELECT m FROM Menu m");
+		return consulta.getResultList();
+	}
 
-    }
+	@Override
+	public Menu listarPorId(Long id) {
+		return em.find(Menu.class, id);
 
-    @Override
-    public Menu crear(Menu menu) {
-        em.persist(menu);
-        return menu;
-    }
+	}
 
-    @Override
-    public Menu editar(Menu menu) {
-        em.persist(menu);
-        return menu;
-    }
+	@Override
+	public Menu crear(Menu menu) {
+		em.persist(menu);
+		return menu;
+	}
 
-    @Override
-    public void eliminar(Menu menu) {
-        em.remove(menu);
-    }
+	@Override
+	public Menu editar(Menu menu) {
+		em.persist(menu);
+		return menu;
+	}
+
+	@Override
+	public void eliminar(Menu menu) {
+		em.remove(menu);
+	}
+
+	@Override
+	public List<Menu> listarPorRestaurate(Long id) {
+		List<Menu> menus = new ArrayList<Menu>();
+		try {
+			menus = em.createQuery("select m " + "from Menu d " + "where id_restaurante =:id", Menu.class)
+					.setParameter("id", id).getResultList();
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+
+		return menus;
+	}
 }

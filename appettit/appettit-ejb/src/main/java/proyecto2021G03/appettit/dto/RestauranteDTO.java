@@ -47,5 +47,6 @@ public class RestauranteDTO extends UsuarioDTO  {
 	private DireccionDTO direccion;
 	private CalificacionRestauranteDTO calificacion;
 	private String id_imagen;
+	private ImagenDTO imagen;
 	
 }

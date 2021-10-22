@@ -148,10 +148,6 @@ public class AppInitSingleton implements Serializable {
 			String nombre = data[2].trim();
 			String polygon = data[3].trim();
 
-			//geom = fromText.read(polygon);
-			//multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
-
-			//departamentoService.crearCiudad(new CiudadDTO(id, idDepto, nombre, multiPolygon, localidades));
 			departamentoService.crearCiudad(new CiudadDTO(id, idDepto, nombre, polygon, localidades));
 
 		}

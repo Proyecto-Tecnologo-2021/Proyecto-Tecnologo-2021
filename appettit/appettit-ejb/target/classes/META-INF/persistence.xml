@@ -67,6 +67,8 @@
 		   <property name="hibernate.ogm.datastore.password" value="fnz1G8MJuO2QULl5"/>
 		   <property name="hibernate.ogm.mongodb.authentication_mechanism" value="SCRAM_SHA_1"/>
 		   <property name="hibernate.ogm.mongodb.driver.sslEnabled" value="true"/>
+		   <!--   Create database on startup -->
+		   <property name="hibernate.hbm2ddl.auto" value="create"/>
 		   
 		   <property name="hibernate.show_sql" value="true" />
 		</properties>

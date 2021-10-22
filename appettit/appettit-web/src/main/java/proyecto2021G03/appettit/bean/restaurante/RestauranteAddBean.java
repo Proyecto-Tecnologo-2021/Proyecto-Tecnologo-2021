@@ -101,7 +101,7 @@ public class RestauranteAddBean implements Serializable {
 
 	public void addRestaurante() {
 		String id_imagen = null;
-		Boolean loadImg = null; 
+		Boolean loadImg = false; 
 	    	
 		try {
 			crop();
@@ -166,24 +166,6 @@ public class RestauranteAddBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 			}
 		    
-			/*
-			logger.info(nombre);
-			logger.info(password);
-			logger.info(telefono);
-			logger.info(correo);
-			logger.info(rut);
-			logger.info(estado);
-			logger.info(bloqueado);
-			logger.info(horarioApertura.toString());
-			logger.info(horarioCierre.toString());
-			logger.info(abierto);
-			logger.info(abiertoAutom);
-			logger.info(point);
-			logger.info(multiPolygon);
-			logger.info(direccion.getCalle());
-			logger.info(direccion.getNumero());
-			logger.info(imagen.getId());	
-			*/
 		
 		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());

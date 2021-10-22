@@ -79,4 +79,13 @@ public class MenuService implements IMenuService{
             }
         }
     }
+
+	@Override
+	public List<MenuDTO> listarPorRestaurante(Long Id) throws AppettitException {
+		 try {
+	            return menuConverter.fromEntity(iMenuDao.listarPorRestaurate(Id));
+	        } catch (Exception e) {
+	            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+	        }
+	}
 }

@@ -8,6 +8,10 @@ public class Constantes {
 	/*Interface*/
 	public static final Integer CALIFICACION = 5;
 	
+	/*PROPIEDADES*/
+	public static final String LOGINUSUARIO = "LOGINUSUARIO";
+	public static final String URL_HOME = "/appettit-web";
+
 	/* gub.uy 
 	public static final String CLIENT_ID = "890192";
 	public static final String CLIENT_SECRET = "457d52f181bf11804a3365b49ae4d29a2e03bbabe74997a2f510b179";

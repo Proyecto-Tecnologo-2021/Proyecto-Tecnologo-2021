@@ -31,11 +31,10 @@
 	<div class="navigation w-100">
 		<div class="container">
 
-			<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-
-			<a class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
-				class="appettit-logo" src="/appettit-web/resources/images/logobg.svg"
-				alt="Appettit"></img></a>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+				class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
+				class="appettit-logo"
+				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
 
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarSupportedContent"
@@ -83,27 +82,27 @@
 								<div class="row">
 									<div class="col-md-6">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-										<c:choose>
-										    <c:when test="#{HomeRestaurante.abierto}">
-										        <button class="btn btn-success" type="button">Cerrar 
-												Restaurante</button>
-										    </c:when>
-										    <c:otherwise>
-										        <button class="btn btn-warning" type="button">Abrir
-												Restaurante</button>
-										    </c:otherwise>
-										</c:choose>
-										
-										
-										
-											
+											<c:choose>
+												<c:when test="#{HomeRestaurante.abierto}">
+													<button class="btn btn-success" type="button">Cerrar
+														Restaurante</button>
+												</c:when>
+												<c:otherwise>
+													<button class="btn btn-warning" type="button">Abrir
+														Restaurante</button>
+												</c:otherwise>
+											</c:choose>
+
+
+
+
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<h5 class="card-title mb-3 pt-1">&Uacute;ltima
-												Actualizaci&oacute;n:
-												<h:outputText value="#{HomeRestaurante.fechaHora}"/> 
+											<h5 class="card-title mb-3 pt-1">
+												&Uacute;ltima Actualizaci&oacute;n:
+												<h:outputText value="#{HomeRestaurante.fechaHora}" />
 											</h5>
 										</div>
 									</div>
@@ -570,41 +569,39 @@
 							<div class="card-body">
 
 								<div class="list-group">
-									<a href="#"
-										class="list-group-item list-group-item-action"
+									<a href="#" class="list-group-item list-group-item-action"
 										aria-current="true">
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1">Juan Perez</h5>
 											<small>15/09/2021</small>
 										</div>
-										<p class="mb-1">Buen servicio</p> 
-										<small>
-											<span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star "></span> <span class="fa fa-star"></span>
-										</small>
-										
+										<p class="mb-1">Buen servicio</p> <small> <span
+											class="fa fa-star text-warning"></span> <span
+											class="fa fa-star text-warning"></span> <span
+											class="fa fa-star text-warning"></span> <span
+											class="fa fa-star "></span> <span class="fa fa-star"></span>
+									</small>
+
 									</a> <a href="#" class="list-group-item list-group-item-action">
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1">Ignacio Mart&iacute;nez</h5>
 											<small class="text-muted">15/09/2021</small>
 										</div>
-										<p class="mb-1">La comida estaba fr&iacute;a. y
-											llegaron a las 2 horas.</p>
-										<small>
-											<span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span
-												class="fa fa-star"></span> <span
-												class="fa fa-star "></span> <span class="fa fa-star"></span>
-										</small>
+										<p class="mb-1">La comida estaba fr&iacute;a. y llegaron a
+											las 2 horas.</p> <small> <span
+											class="fa fa-star text-warning"></span> <span
+											class="fa fa-star"></span> <span class="fa fa-star"></span> <span
+											class="fa fa-star "></span> <span class="fa fa-star"></span>
+									</small>
 									</a>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
-						*Per&iacute;odo de an&aacute;lisis - 
+						*Per&iacute;odo de an&aacute;lisis -</div>
+					<div class="col-12">
+						<p:growl id="messages" showDetail="true" />
 					</div>
 				</div>
 			</div>
