@@ -31,10 +31,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.GeoConverter;
+import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ImagenDTO;
@@ -82,6 +84,9 @@ public class RestauranteAddBean implements Serializable {
 	IGeoService geoSrv;
 	
 	@EJB
+	IDepartamentoService deptoSrv;
+	
+	@EJB
 	GeoConverter geoConverter;
 	
 	WKTReader fromText;
@@ -96,8 +101,6 @@ public class RestauranteAddBean implements Serializable {
 
 	public void addRestaurante() {
 		String id_imagen = null;
-	    Point gpoint;
-	    MultiPolygon areaentrega = null;
 		Boolean loadImg = null; 
 	    	
 		try {
@@ -125,24 +128,14 @@ public class RestauranteAddBean implements Serializable {
 			
 			
 			try {
-				
-				logger.info(point);
-				
-				if (!strareaentrega.equals("")) {
-					areaentrega = geoConverter.strToMultiPolygon(strareaentrega);
-						
-				}
-				
-				
-				gpoint = geoConverter.strToPoint(point);
-				LocalidadDTO ldto = geoSrv.localidadPorPunto(point); 
+				LocalidadDTO ldto = geoSrv.localidadPorPunto(point);
 				
 				if(ldto != null) {
-					direccion.setGeometry(gpoint);
+					direccion.setGeometry(point);
 					direccion.setBarrio(ldto);
 					
 					RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, null, rut,
-							EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, areaentrega, direccion,
+							EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, strareaentrega, direccion,
 							id_imagen);
 
 					

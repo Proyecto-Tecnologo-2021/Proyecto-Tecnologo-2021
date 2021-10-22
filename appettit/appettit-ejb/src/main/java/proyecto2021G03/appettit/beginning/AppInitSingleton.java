@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+
 import org.jboss.logging.Logger;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -26,10 +27,13 @@ import com.vividsolutions.jts.io.WKTReader;
 
 import proyecto2021G03.appettit.beginning.AppInitSingleton;
 import proyecto2021G03.appettit.business.IGeoService;
+import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
+import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 
 import proyecto2021G03.appettit.business.IDepartamentoService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -49,6 +53,12 @@ public class AppInitSingleton implements Serializable {
 
 	@EJB
 	DepartamentoConverter dConverter;
+	
+	@EJB
+	IUsuarioService usrSrv;
+	
+	@EJB
+	UsuarioConverter usrConverter;
 
 	WKTReader fromText;
 	Geometry geom;
@@ -58,45 +68,7 @@ public class AppInitSingleton implements Serializable {
 	@PostConstruct
 	public void init() {
 
-		/*
-		 * String polygon =
-		 * "MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416)))"
-		 * ; String point = "POINT(743238 2967416)"; fromText = new WKTReader(new
-		 * GeometryFactory(new PrecisionModel(), 32721)); Geometry geom = null; Geometry
-		 * p_geom = null; multiPolygon = null; List<CiudadDTO> ciudades = new
-		 * ArrayList<CiudadDTO>();
-		 * 
-		 * try {
-		 * 
-		 * geom = fromText.read(polygon); multiPolygon =
-		 * (com.vividsolutions.jts.geom.MultiPolygon) geom; DepartamentoDTO
-		 * departamentoDTO = new DepartamentoDTO((long) 1001, "MONTEVIDEO",
-		 * multiPolygon, ciudades); DepartamentoDTO departamentoDTO2 = new
-		 * DepartamentoDTO((long) 1002, "MONTEVIDEO", multiPolygon, ciudades);
-		 * departamentoService.crear(departamentoDTO);
-		 * departamentoService.crear(departamentoDTO2);
-		 * 
-		 * List<DepartamentoDTO> deptoDTO =
-		 * departamentoService.buscarPorNombre("MONTEVIDEO");
-		 * 
-		 * if(deptoDTO !=null) { logger.info("Departamentos: " + deptoDTO.size()); // }
-		 * else { logger.info("No existen Localidades"); // }
-		 * 
-		 * 
-		 * p_geom = fromText.read(point); gpoint = (com.vividsolutions.jts.geom.Point)
-		 * p_geom;
-		 * 
-		 * LocalidadDTO ldto = geoSrv.localidadPorPunto(gpoint);
-		 * 
-		 * if(ldto != null) { logger.info("Localidad: " + ldto.getNombre()); }else {
-		 * logger.info("No existen Localidades"); }
-		 * 
-		 * 
-		 * } catch (ParseException e) { logger.error(e.getMessage());
-		 * 
-		 * } catch (AppettitException e) { logger.error(e.getLocalizedMessage()); }
-		 * catch (Exception e) { logger.error(e.getLocalizedMessage()); }
-		 */
+		
 		fromText = new WKTReader(new GeometryFactory(new PrecisionModel(), 32721));
 
 		try {
@@ -106,6 +78,8 @@ public class AppInitSingleton implements Serializable {
 			parseCiudad();
 
 			parseLocalidad();
+			
+			parseAdministrador();
 			
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
 			
@@ -130,7 +104,7 @@ public class AppInitSingleton implements Serializable {
 		List<CiudadDTO> ciudades = new ArrayList<CiudadDTO>();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader.getResource("META-INF/gis/departamentos.csv");
+		URL resource = classLoader.getResource("META-INF/input/departamentos.csv");
 		File deptoFile = new File(resource.getFile());
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -145,7 +119,8 @@ public class AppInitSingleton implements Serializable {
 			geom = fromText.read(polygon);
 			multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
 
-			departamentoService.crear(new DepartamentoDTO(id, nombre, multiPolygon, ciudades));
+			//departamentoService.crear(new DepartamentoDTO(id, nombre, multiPolygon, ciudades));
+			departamentoService.crear(new DepartamentoDTO(id, nombre, polygon, ciudades));
 
 		}
 
@@ -160,7 +135,7 @@ public class AppInitSingleton implements Serializable {
 		List<LocalidadDTO> localidades = new ArrayList<LocalidadDTO>();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader.getResource("META-INF/gis/ciudades.csv");
+		URL resource = classLoader.getResource("META-INF/input/ciudades.csv");
 		File deptoFile = new File(resource.getFile());
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -173,10 +148,11 @@ public class AppInitSingleton implements Serializable {
 			String nombre = data[2].trim();
 			String polygon = data[3].trim();
 
-			geom = fromText.read(polygon);
-			multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
+			//geom = fromText.read(polygon);
+			//multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
 
-			departamentoService.crearCiudad(new CiudadDTO(id, idDepto, nombre, multiPolygon, localidades));
+			//departamentoService.crearCiudad(new CiudadDTO(id, idDepto, nombre, multiPolygon, localidades));
+			departamentoService.crearCiudad(new CiudadDTO(id, idDepto, nombre, polygon, localidades));
 
 		}
 
@@ -190,7 +166,7 @@ public class AppInitSingleton implements Serializable {
 		String[] data;
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL resource = classLoader.getResource("META-INF/gis/localidades.csv");
+		URL resource = classLoader.getResource("META-INF/input/localidades.csv");
 		File deptoFile = new File(resource.getFile());
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -204,16 +180,44 @@ public class AppInitSingleton implements Serializable {
 			String nombre = data[3].trim();
 			String polygon = data[4].trim();
 
-			geom = fromText.read(polygon);
-			multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
+			//geom = fromText.read(polygon);
+			//multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
 
-			departamentoService.crearLocalidad(new LocalidadDTO(id, idCiudad, idDepto, nombre, multiPolygon));
-
+			//departamentoService.crearLocalidad(new LocalidadDTO(id, idCiudad, idDepto, nombre, multiPolygon));
+			departamentoService.crearLocalidad(new LocalidadDTO(id, idCiudad, idDepto, nombre, polygon));
 		}
 
 		bufferedReader.close();
 
 		logger.info("Localidades ingresadas");
+	}
+
+	private void parseAdministrador() throws IOException, ParseException, AppettitException {
+
+		String linea;
+		String[] data;
+
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL resource = classLoader.getResource("META-INF/input/administradores.csv");
+		File deptoFile = new File(resource.getFile());
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+
+		while ((linea = bufferedReader.readLine()) != null) {
+			data = linea.split(";");
+			String nombre = data[0].trim();
+			String correo = data[1].trim();
+			String telefono = data[2].trim();
+			String password = data[3].trim();
+			
+			
+			usrSrv.crear(new AdministradorDTO(null, nombre, correo, password, telefono, correo, null, null));
+		}
+
+		bufferedReader.close();
+
+		logger.info("Administradores ingresadas");
 	}
 
 }

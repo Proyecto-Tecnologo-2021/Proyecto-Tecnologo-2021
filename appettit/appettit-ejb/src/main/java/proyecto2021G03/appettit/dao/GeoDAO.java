@@ -3,10 +3,13 @@ package proyecto2021G03.appettit.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import com.vividsolutions.jts.geom.Point;
+import javax.persistence.Query;
+
+//import com.vividsolutions.jts.geom.Point;
 
 import org.jboss.logging.Logger;
 
@@ -15,41 +18,71 @@ import proyecto2021G03.appettit.entity.Menu;
 import proyecto2021G03.appettit.entity.Promocion;
 import proyecto2021G03.appettit.entity.Restaurante;
 
+
 @Singleton
 public class GeoDAO implements IGeoDAO {
 
 	static Logger logger = Logger.getLogger(GeoDAO.class);
 	
+	@EJB
+	IDepartamentoDAO deptoDAO;
+	
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;	
-    
+    	
 	
 	@Override
-	public Localidad localidadPorPunto(Point point) {
+	public Localidad localidadPorPunto(String point) {
 		Localidad localidad = null;
-		//try {
-			localidad =  em.createQuery("select l "
+
+		try {
+			Query consulta = em.createNativeQuery("select l.id, l.id_ciudad, l.id_departamento, l.nombre, l.geom "
+					+ "from localidades l "
+					+ "where st_contains(ST_GeometryFromText(l.geom), ST_GeometryFromText(:point)) = true");
+			consulta.setParameter("point", point);
+			
+			Object[] data = (Object[]) consulta.getSingleResult();
+			
+			localidad = new Localidad(Long.valueOf(data[0].toString()), 
+					Long.valueOf(data[1].toString()), 
+					Long.valueOf(data[2].toString()),
+					data[3].toString(),
+					deptoDAO.ciudadPorId(Long.valueOf(data[1].toString()), Long.valueOf(data[2].toString())),
+					data[4].toString());
+			
+			//localidad = (Localidad) consulta.getSingleResult();
+			
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		
+		/*
+		try {
+			 Object data = em.createQuery("select l "
 					+ "from Localidad l "
-					+ "where contains(l.geometry, :point) = true", Localidad.class)
+					+ "where st_contains(ST_GeometryFromText(l.geometry), ST_GeometryFromText(:point)) = true", Localidad.class)
 					.setParameter("point", point)
 					.getSingleResult();
-			
-		///} catch (Exception e) {
-			//logger.error(e.getLocalizedMessage());
-			logger.error(point.getGeometryType());
-			logger.error(point.getSRID());
-			logger.error(point.getCoordinates().toString());
-		
-			
-		//}
-			
-		
+	
+			 logger.info(data.getClass().getName());				 
+				
+			 
+			 if(data.getClass().getName().equals("proyecto2021G03.appettit.entity.Localidad")) {
+				 localidad = (Localidad) data;
+			 } else {
+				 logger.info(data.getClass().getName());				 
+			 }
+			 
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		*/
 		
 		return localidad;
 	}
 
 	@Override
-	public List<Restaurante> repartoRestaurantesPorPunto(Point point) {
+	public List<Restaurante> repartoRestaurantesPorPunto(String point) {
 		List<Restaurante> restaurantes = new ArrayList<Restaurante>();
 		
 		try {
@@ -68,7 +101,7 @@ public class GeoDAO implements IGeoDAO {
 	}
 
 	@Override
-	public List<Menu> menuRestaurantesPorPunto(Point point) {
+	public List<Menu> menuRestaurantesPorPunto(String point) {
 		List<Menu> menus = new ArrayList<Menu>();
 		
 		try {
@@ -87,7 +120,7 @@ public class GeoDAO implements IGeoDAO {
 	}
 
 	@Override
-	public List<Promocion> promocionRestaurantesPorPunto(Point point) {
+	public List<Promocion> promocionRestaurantesPorPunto(String point) {
 		List<Promocion> promociones = new ArrayList<Promocion>();
 		
 		try {

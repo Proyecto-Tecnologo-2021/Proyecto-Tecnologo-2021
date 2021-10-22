@@ -1,7 +1,7 @@
 package proyecto2021G03.appettit.dto;
 
 
-import com.vividsolutions.jts.geom.Point;
+//import com.vividsolutions.jts.geom.Point;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,8 @@ public class DireccionDTO implements Comparable<Object>{
 	private String apartamento;
 	private String referencias;
 	private LocalidadDTO barrio;
-	private Point geometry;
+	//private Point geometry;
+	private String geometry;
 	private int quantity;
 
 

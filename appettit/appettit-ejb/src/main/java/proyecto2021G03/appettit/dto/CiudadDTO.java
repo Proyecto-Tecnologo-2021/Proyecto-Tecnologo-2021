@@ -3,7 +3,7 @@ package proyecto2021G03.appettit.dto;
 
 import java.util.List;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+//import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,8 @@ public class CiudadDTO {
 	private Long id;
 	private Long id_departamento;
 	private String nombre;
-	private MultiPolygon geometry;
+	//private MultiPolygon geometry;
+	private String geometry;
 	
 	private List<LocalidadDTO> localidades;
 	

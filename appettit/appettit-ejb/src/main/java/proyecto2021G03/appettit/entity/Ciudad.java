@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+//import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +51,10 @@ public class Ciudad implements Serializable {
 	private List<Localidad> localidades;
 
 
-	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	private MultiPolygon geometry;
+	//@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
+	//private MultiPolygon geometry;
+	
+	@Column(name="geom", columnDefinition="TEXT")
+	private String geometry;
 
 }

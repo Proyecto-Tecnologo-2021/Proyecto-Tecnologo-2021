@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.Point;
+//import com.vividsolutions.jts.geom.Point;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,8 +42,12 @@ public class Direccion implements Serializable {
 	
 	private Localidad barrio;
 	
-	@Column(name = "geom", columnDefinition = "geometry(Point, 32721)")
-	private Point geometry;
+	//@Column(name = "geom", columnDefinition = "geometry(Point, 32721)")
+	//private Point geometry;
+	
+	@Column(name="geom", columnDefinition="TEXT")
+	private String geometry;
+
 
 	 
 

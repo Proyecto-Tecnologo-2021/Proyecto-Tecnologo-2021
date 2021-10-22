@@ -88,4 +88,46 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 		return localidad;
 	}
 
+	@Override
+	public Ciudad ciudadPorId(Long id, Long id_departamento) {
+		Ciudad ciudad = null;
+		
+		try {
+			ciudad = em.createQuery("select c "
+					+ "from Ciudad c "
+					+ "where id= :id and id_departamento = :id_departamento", Ciudad.class)
+					.setParameter("id", id)
+					.setParameter("id_departamento", id_departamento)
+					.getSingleResult();
+			
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		
+		return ciudad;
+	}
+
+	@Override
+	public Localidad localidadPorId(Long id, Long id_ciudad, Long id_departamento) {
+		Localidad localidad = null;
+		
+		try {
+			localidad = em.createQuery("select c "
+					+ "from Localidad c "
+					+ "where id= :id and "
+					+ "id_ciudad = :id_ciudad"
+					+ "id_departamento = :id_departamento", Localidad.class)
+					.setParameter("id", id)
+					.setParameter("id_ciudad", id_ciudad)
+					.setParameter("id_departamento", id_departamento)
+					.getSingleResult();
+			
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		
+		return localidad;
+
+	}
+
 }

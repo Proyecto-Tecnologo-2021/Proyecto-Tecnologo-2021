@@ -29,7 +29,7 @@ public class GeoService implements IGeoService {
 	@Override
 	public LocalidadDTO localidadPorPunto(String point) throws AppettitException, ParseException {
 		
-		return locConverter.fromEntity(geoSrv.localidadPorPunto(gConverter.strToPoint(point)));
+		return locConverter.fromEntity(geoSrv.localidadPorPunto(point));
 	}
 
 	@Override

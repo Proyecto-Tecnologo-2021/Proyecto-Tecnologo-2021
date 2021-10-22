@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+//import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public class Restaurante extends Usuario {
 	public Restaurante(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
 			LocalTime horarioApertura, LocalTime horarioCierre, Boolean abierto, Boolean abiertoAutom,
-			MultiPolygon areaentrega, Direccion direccion, String id_imagen) {
+			String areaentrega, Direccion direccion, String id_imagen) {
 		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
 		
 		this.rut = rut;
@@ -58,11 +58,15 @@ public class Restaurante extends Usuario {
 	private Boolean abiertoAutom;
 	private String id_imagen;
 	
-	@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	private MultiPolygon areaentrega;
-	
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_direccion", referencedColumnName="id")
 	private Direccion direccion;
+
+	//@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
+	//private MultiPolygon areaentrega;
+
+	@Column(name="geom", columnDefinition="TEXT")
+	private String areaentrega;
+
 
 }

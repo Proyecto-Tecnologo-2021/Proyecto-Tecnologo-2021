@@ -12,7 +12,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+//import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,9 +54,12 @@ public class Localidad implements Serializable{
     })
 	private Ciudad ciudad;
 	
-	//@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	@Column(name = "geom")
-	private MultiPolygon geometry;
+	//@Column(name = "geom")
+	//private MultiPolygon geometry;
+	
+	@Column(name="geom", columnDefinition="TEXT")
+	private String geometry;
+
 
 
 }

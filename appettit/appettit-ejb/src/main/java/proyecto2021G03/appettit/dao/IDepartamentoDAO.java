@@ -20,7 +20,9 @@ public interface IDepartamentoDAO {
 	public List<Departamento> buscarPorNombre(String nombre);
 	
 	public Ciudad crearCiudad(Ciudad ciudad);
+	public Ciudad ciudadPorId(Long id, Long id_departamento);
 	
 	public Localidad crearLocalidad(Localidad localidad);
+	public Localidad localidadPorId(Long id, Long id_ciudad, Long id_departamento);
 
 }
