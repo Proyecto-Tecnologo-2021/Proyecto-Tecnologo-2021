@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Table;
 
 //import com.vividsolutions.jts.geom.Point;
@@ -36,10 +38,15 @@ public class Direccion implements Serializable {
 	private Long id;
 	private String alias;
 	private String calle;
-	private Integer numero;
+	private String numero;
 	private String apartamento;
 	private String referencias;
 	
+	@JoinColumns( {
+		@JoinColumn(name="id_localidad", referencedColumnName="id"),
+		@JoinColumn(name="id_ciudad", referencedColumnName="id_ciudad"),
+		@JoinColumn(name="id_departamento", referencedColumnName="id_departamento")
+    })
 	private Localidad barrio;
 	
 	//@Column(name = "geom", columnDefinition = "geometry(Point, 32721)")

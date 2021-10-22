@@ -50,33 +50,9 @@ public class GeoDAO implements IGeoDAO {
 					deptoDAO.ciudadPorId(Long.valueOf(data[1].toString()), Long.valueOf(data[2].toString())),
 					data[4].toString());
 			
-			//localidad = (Localidad) consulta.getSingleResult();
-			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 		}
-		
-		/*
-		try {
-			 Object data = em.createQuery("select l "
-					+ "from Localidad l "
-					+ "where st_contains(ST_GeometryFromText(l.geometry), ST_GeometryFromText(:point)) = true", Localidad.class)
-					.setParameter("point", point)
-					.getSingleResult();
-	
-			 logger.info(data.getClass().getName());				 
-				
-			 
-			 if(data.getClass().getName().equals("proyecto2021G03.appettit.entity.Localidad")) {
-				 localidad = (Localidad) data;
-			 } else {
-				 logger.info(data.getClass().getName());				 
-			 }
-			 
-		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
-		}
-		*/
 		
 		return localidad;
 	}

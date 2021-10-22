@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +33,13 @@ import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
-
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
+import proyecto2021G03.appettit.dto.DireccionDTO;
+import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Startup
@@ -80,6 +84,8 @@ public class AppInitSingleton implements Serializable {
 			parseLocalidad();
 			
 			parseAdministrador();
+			
+			parseRestaurante();
 			
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
 			
@@ -214,6 +220,56 @@ public class AppInitSingleton implements Serializable {
 		bufferedReader.close();
 
 		logger.info("Administradores ingresadas");
+	}
+
+	
+	private void parseRestaurante() throws IOException, ParseException, AppettitException {
+
+		String linea;
+		String[] data;
+		
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL resource = classLoader.getResource("META-INF/input/restaurantes.csv");
+		File deptoFile = new File(resource.getFile());
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+
+		while ((linea = bufferedReader.readLine()) != null) {
+			data = linea.split(";");
+			String nombre = data[0].trim();
+			String correo = data[1].trim();
+			String telefono = data[3].trim();
+			String password = data[2].trim();
+			String rut = data[8].trim();
+			LocalTime horarioApertura = LocalTime.parse(data[5].trim());
+			LocalTime horarioCierre = LocalTime.parse(data[6].trim());
+			Boolean abiertoAutom = true;
+			String strareaentrega = data[4].trim();
+			
+			Long id = Long.valueOf(data[12].trim());
+			Long idCiudad = Long.valueOf(data[13].trim());
+			Long idDepto = Long.valueOf(data[14].trim());
+			String calle = data[9].trim();
+			String numero = data[10].trim();
+			String geometry = data[11].trim();
+			String id_imagen = data[7].trim();;
+			
+			LocalidadDTO localidad = departamentoService.localidadPorId(id, idCiudad, idDepto);
+			DireccionDTO direccion = new DireccionDTO(null, "Restaurante", calle, numero, null, null, localidad, geometry, 0);
+			
+			
+			
+			RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, null, rut,
+					EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, strareaentrega, direccion,
+					id_imagen);
+
+			usrSrv.crearRestaurante(restDTO);
+		}
+
+		bufferedReader.close();
+
+		logger.info("Restaurantes ingresados");
 	}
 
 }

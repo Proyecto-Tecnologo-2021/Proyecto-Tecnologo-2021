@@ -7,6 +7,8 @@ import javax.ejb.Local;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.entity.Ciudad;
+import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 
@@ -21,5 +23,9 @@ public interface IDepartamentoService {
 	
 	public CiudadDTO crearCiudad(CiudadDTO ciudadDTO) throws AppettitException;
 	public LocalidadDTO crearLocalidad(LocalidadDTO localidadDTO) throws AppettitException;
+	
+	public CiudadDTO ciudadPorId(Long id, Long id_departamento) throws AppettitException;
+	public LocalidadDTO localidadPorId(Long id, Long id_ciudad, Long id_departamento) throws AppettitException;
+
 	
 }

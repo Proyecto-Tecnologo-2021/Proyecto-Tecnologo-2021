@@ -115,7 +115,7 @@ public class DepartamentoDAO implements IDepartamentoDAO {
 			localidad = em.createQuery("select c "
 					+ "from Localidad c "
 					+ "where id= :id and "
-					+ "id_ciudad = :id_ciudad"
+					+ "id_ciudad = :id_ciudad and "
 					+ "id_departamento = :id_departamento", Localidad.class)
 					.setParameter("id", id)
 					.setParameter("id_ciudad", id_ciudad)

@@ -31,6 +31,7 @@ public class DepartamentoService implements IDepartamentoService {
 	
 	@EJB
 	public CiudadConverter ciudadConverter;
+	
 
 	@Override
 	public DepartamentoDTO crear(DepartamentoDTO departamentoDTO) throws AppettitException {
@@ -118,6 +119,30 @@ public class DepartamentoService implements IDepartamentoService {
 		Localidad localidad = localidadConverter.fromDTO(localidadDTO);
 		try {
 			return localidadConverter.fromEntity(departamentoDAO.crearLocalidad(localidad));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public CiudadDTO ciudadPorId(Long id, Long id_departamento) throws AppettitException {
+		Ciudad ciudad = departamentoDAO.ciudadPorId(id, id_departamento);
+		if (ciudad == null)
+			throw new AppettitException("La ciuduad indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			return ciudadConverter.fromEntity(ciudad);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public LocalidadDTO localidadPorId(Long id, Long id_ciudad, Long id_departamento) throws AppettitException {
+		Localidad localidad = departamentoDAO.localidadPorId(id, id_ciudad, id_departamento);
+		if (localidad == null)
+			throw new AppettitException("La localidad indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			return localidadConverter.fromEntity(localidad);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

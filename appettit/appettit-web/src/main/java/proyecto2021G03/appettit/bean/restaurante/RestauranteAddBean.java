@@ -20,8 +20,6 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -36,7 +34,6 @@ import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.GeoConverter;
-import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ImagenDTO;

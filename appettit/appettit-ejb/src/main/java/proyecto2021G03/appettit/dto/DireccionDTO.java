@@ -19,7 +19,7 @@ public class DireccionDTO implements Comparable<Object>{
 	private Long id;
 	private String alias;
 	private String calle;
-	private Integer numero;
+	private String numero;
 	private String apartamento;
 	private String referencias;
 	private LocalidadDTO barrio;
