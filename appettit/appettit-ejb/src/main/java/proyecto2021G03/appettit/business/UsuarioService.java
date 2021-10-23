@@ -143,7 +143,7 @@ public class UsuarioService implements IUsuarioService {
 				res.setCalificacion(calificcionRestaurante(res));
 				ImagenDTO img = new ImagenDTO();
 
-				if (!(res.getId_imagen() == null || res.getId_imagen().equals(""))) {
+				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
 
 					img.setIdentificador("Sin Imagen");
@@ -151,6 +151,7 @@ public class UsuarioService implements IUsuarioService {
 				} else {
 					img = imgSrv.buscarPorId(res.getId_imagen());
 				}
+				
 				res.setImagen(img);
 				restaurantes.add(res);
 			}
@@ -174,7 +175,7 @@ public class UsuarioService implements IUsuarioService {
 				restaurantes.add(res);
 				ImagenDTO img = new ImagenDTO();
 
-				if (!(res.getId_imagen() == null || res.getId_imagen().equals(""))) {
+				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
 
 					img.setIdentificador("Sin Imagen");
@@ -201,6 +202,32 @@ public class UsuarioService implements IUsuarioService {
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
+	}
+
+	@Override
+	public RestauranteDTO buscarPorCorreoRestaurante(String correo) throws AppettitException {
+		RestauranteDTO restaurante = null;
+		restaurante = usrConverter.fromRestaurante(usrDAO.buscarPorCorreoRestaurante(correo));
+
+		if(restaurante != null) {	
+			
+			restaurante.setCalificacion(calificcionRestaurante(restaurante));
+			
+			ImagenDTO img = new ImagenDTO();
+
+			if (restaurante.getId_imagen() == null || restaurante.getId_imagen().equals("")) {
+				FileManagement fm = new FileManagement();
+
+				img.setIdentificador("Sin Imagen");
+				img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+			} else {
+				img = imgSrv.buscarPorId(restaurante.getId_imagen());
+			}
+			restaurante.setImagen(img);
+		}
+		
+		return restaurante;
+
 	}
 
 }

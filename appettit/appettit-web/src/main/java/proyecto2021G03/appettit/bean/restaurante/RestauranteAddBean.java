@@ -99,7 +99,8 @@ public class RestauranteAddBean implements Serializable {
 	public void addRestaurante() {
 		String id_imagen = null;
 		Boolean loadImg = false; 
-	    	
+		imagen = null;
+		
 		try {
 			crop();
 			
@@ -107,14 +108,19 @@ public class RestauranteAddBean implements Serializable {
 				byte[] bimg = getImageAsByteArray();
 				if (bimg != null) {
 					String identificador = "restaurante." + this.getCorreo().trim() + "." + this.getTelefono().trim();
-					
-					imagen = new ImagenDTO();
-					imagen.setIdentificador(identificador);
-					imagen.setImagen(bimg);
-					imgSrv.crear(imagen);	
-					
+
 					imagen = imgSrv.buscarPorIdentificador(identificador);
-					id_imagen = imagen.getId();
+					
+					if(imagen == null) {
+						imagen = new ImagenDTO();
+						imagen.setIdentificador(identificador);
+						imagen.setImagen(bimg);
+						
+						imgSrv.crear(imagen);
+						imagen = imgSrv.buscarPorIdentificador(identificador);
+						id_imagen = imagen.getId();
+					}
+
 					loadImg = true;
 				} 
 				

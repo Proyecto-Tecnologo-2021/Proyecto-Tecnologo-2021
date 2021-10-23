@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class MenuDao implements IMenuDao {
+public class MenuDAO implements IMenuDAO {
 
-	static Logger logger = Logger.getLogger(MenuDao.class);
+	static Logger logger = Logger.getLogger(MenuDAO.class);
 
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;
@@ -53,7 +53,10 @@ public class MenuDao implements IMenuDao {
 	public List<Menu> listarPorRestaurate(Long id) {
 		List<Menu> menus = new ArrayList<Menu>();
 		try {
-			menus = em.createQuery("select m " + "from Menu d " + "where id_restaurante =:id", Menu.class)
+			menus = em.createQuery("select m " 
+					+ "from Menu d "
+					+ "inner join d.restaurante r"
+					+ "where r.id =:id", Menu.class)
 					.setParameter("id", id).getResultList();
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());

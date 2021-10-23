@@ -206,9 +206,11 @@ body .ui-datepicker .ui-picker-down .ui-icon:before {
 	display: nonne !important;
 }
 
-/*
-.cropper-container {
-	width: 250px !important;
-	height:250px !important; 
+div.product-grid-item img {
+	max-width: 150px;
+	max-height: 150px;
 }
-*/
+
+.ui-rating{
+	height: auto !important;
+}

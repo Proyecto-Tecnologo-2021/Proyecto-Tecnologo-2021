@@ -4,7 +4,7 @@ import proyecto2021G03.appettit.entity.Menu;
 
 import java.util.List;
 
-public interface IMenuDao {
+public interface IMenuDAO {
     public List<Menu> listar();
     public Menu listarPorId(Long id);
     public Menu crear(Menu menu);

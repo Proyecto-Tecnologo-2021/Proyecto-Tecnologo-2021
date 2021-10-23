@@ -35,4 +35,5 @@ public interface IUsuarioDAO {
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
 	public Restaurante crearRestaurante(Restaurante restaurante);
 	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO);
+	public Restaurante buscarPorCorreoRestaurante(String correo);
 }

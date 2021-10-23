@@ -7,8 +7,6 @@ import javax.ejb.Local;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
-import proyecto2021G03.appettit.entity.Ciudad;
-import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 

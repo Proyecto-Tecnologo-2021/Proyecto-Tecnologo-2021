@@ -32,26 +32,51 @@ public class ImagenService implements IImagenService {
 
 	@Override
 	public ImagenDTO editar(ImagenDTO imagenDTO) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		Imagen imagen = imagenDAO.buscarPorId(imagenDTO.getId());
+		if (imagen == null)
+			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
+
+		try {
+			return imagenConverter.fromEntity(imagenDAO.editar(imagen));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public void eliminar(String id) throws AppettitException {
-		// TODO Auto-generated method stub
+		Imagen imagen = imagenDAO.buscarPorId(id);
+		if (imagen == null)
+			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
+
+		try {
+			imagenDAO.eliminar(imagen);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 
 	}
 
 	@Override
 	public List<ImagenDTO> listar() throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return imagenConverter.fromEntity(imagenDAO.listar());
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public ImagenDTO buscarPorId(String id) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		Imagen imagen = imagenDAO.buscarPorId(id);
+		if (imagen == null)
+			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
+
+		try {
+			return imagenConverter.fromEntity(imagenDAO.editar(imagen));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
