@@ -1,8 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
 import proyecto2021G03.appettit.entity.ClasificacionCliente;
-import proyecto2021G03.appettit.entity.ClasificacionPedido;
-
 import java.util.List;
 
 public interface IClasificacionClienteDAO {

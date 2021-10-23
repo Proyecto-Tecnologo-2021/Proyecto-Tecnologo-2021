@@ -1,8 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
 import proyecto2021G03.appettit.entity.Pedido;
-import proyecto2021G03.appettit.entity.Producto;
-
 import java.util.List;
 
 public interface IPedidoDao {

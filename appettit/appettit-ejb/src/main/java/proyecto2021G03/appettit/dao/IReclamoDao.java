@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.ExtraMenu;
 import proyecto2021G03.appettit.entity.Reclamo;
 
 import java.util.List;

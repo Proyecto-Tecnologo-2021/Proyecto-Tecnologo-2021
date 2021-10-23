@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,6 +7,9 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
@@ -19,6 +21,9 @@ import proyecto2021G03.appettit.entity.Usuario;
 
 @Singleton
 public class UsuarioDAO implements IUsuarioDAO {
+	
+	static Logger logger = Logger.getLogger(UsuarioDAO.class);
+
 
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;
@@ -116,10 +121,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public List<Restaurante> listarRestaurantes() {
-		//Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "restaurante");
-
-		//List<Restaurante> usuarios = consulta.getResultList();
-		//return usuarios;
 		
 		List<Restaurante> restaurantes = em.createQuery("select r "
 				+ "from Restaurante r", Restaurante.class)
@@ -241,15 +242,18 @@ public class UsuarioDAO implements IUsuarioDAO {
 	public Restaurante buscarPorCorreoRestaurante(String correo) {
 		Restaurante res = null;
 		
-		res = em.createQuery("SELECT _usu "
-				+ "FROM Usuario as _usu "
-				+ "where correo = :correo and "
-				+ "dtype = :type", Restaurante.class)
+		res = em.createQuery("SELECT _r "
+				+ "from Restaurante as _r "
+				+ "where _r.correo = :correo", Restaurante.class)
 				.setParameter("correo", correo)
-				.setParameter("type", "restaurante")
 				.getSingleResult();
 		
 		return res;
+	}
+
+	@Override
+	public Restaurante editarRestaurante(Restaurante restaurante) {
+		return em.merge(restaurante);
 	}
 
 }

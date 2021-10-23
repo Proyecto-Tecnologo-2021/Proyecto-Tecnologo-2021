@@ -44,7 +44,7 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link  active" href="#">Restaurantes</a></li>
+					<li class="nav-item"><a class="nav-link active" href="#">Restaurantes</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="administradores.xhtml">Administradores</a></li>
@@ -61,7 +61,7 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form id="form">
-						<p:dataTable var="restaurante"
+						<p:dataTable var="restaurante" editable="true"
 							value="#{beanAdminRestaurante.restaurantes}"
 							widgetVar="restaurantesTable"
 							emptyMessage="No existen Restaurantes"
@@ -72,6 +72,12 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
 							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+							<p:ajax event="rowEdit" listener="#{beanAdminRestaurante.onRowEdit}"
+								update=":form:messages" />
+								
+							<p:ajax event="rowEditCancel"
+								listener="#{beanAdminRestaurante.onRowCancel}" update=":form:messages" />
 
 							<f:facet name="header">
 								<div class="row">
@@ -119,8 +125,24 @@
 							</p:column>
 
 
-							<p:column field="status" headerText="Estado"
-								filterMatchMode="exact">
+							<p:column headerText="Registro" filterBy="#{restaurante.estado}"
+								sortBy="#{restaurante.estado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge status-restaurante-#{restaurante.estado.toString().toLowerCase()}"
+											value="#{restaurante.estado}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{restaurante.estado}" styleClass="custom-filter">
+										 
+											<f:selectItems
+												value="#{beanAdminRestaurante.restauranteEstado}" var="estado"
+												itemLAbel="#{estado.toString()}" itemValue="#{estado}"/>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
 								<f:facet name="filter">
 									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
 										styleClass="custom-filter">
@@ -130,16 +152,45 @@
 											value="#{beanAdminRestaurante.restauranteEstado}" />
 									</p:selectOneMenu>
 								</f:facet>
+							</p:column>
 
-								<span
-									class="restaurante-badge status-#{restaurante.estado.toString().toLowerCase()}">#{restaurante.estado.toString()}</span>
+							<p:column headerText="Bloqueado"
+								filterBy="#{restaurante.bloqueado}"
+								sortBy="#{restaurante.bloqueado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}"
+											value="#{restaurante.bloqueado}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu styleClass="custom-filter">
+											<f:selectItem itemLabel="Bloquedado" itemValue="#{true}"
+												noSelectionOption="false" />
+											<f:selectItem itemLabel="Desbloqueado" itemValue="#{false}"
+												noSelectionOption="false" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Bloquedado" itemValue="#{true}"
+											noSelectionOption="false" />
+										<f:selectItem itemLabel="Desbloqueado" itemValue="#{false}"
+											noSelectionOption="false" />
+									</p:selectOneMenu>
+								</f:facet>
 							</p:column>
 
 							<p:column headerText="Calificacion"
 								sortBy="#{restaurante.calificacion.general}">
 								<p:rating readonly="true"
-									value="#{restaurante.calificacion.general}"
-									style="height: .5rem" />
+									value="#{restaurante.calificacion.general}" />
 							</p:column>
 
 							<p:column style="width:3rem;text-align: center">
@@ -150,9 +201,15 @@
 										target="#{beanAdminRestaurante.selRestaurante}" />
 								</p:commandButton>
 							</p:column>
+
+							<p:column style="width:6rem">
+								<p:rowEditor editTitle="Editar Restaurante"
+									cancelTitle="Cancelar Edici&oacute;n"
+									saveTitle="Confirmar Edici&oacute;n" />
+							</p:column>
 						</p:dataTable>
-						
-			
+
+
 						<p:dialog header="Informaci&oacute;n Restaurante"
 							widgetVar="restauranteDialog" modal="true" showEffect="fade"
 							hideEffect="fade" resizable="false">
@@ -164,11 +221,13 @@
 										<div class="product-grid-item card" style="margin-bottom: 0">
 											<div class="product-grid-item-top">
 												<div>
-													<i class="pi pi-tag product-category-icon" /> <span
-														class="product-category">#{beanAdminRestaurante.selRestaurante.nombre}</span>
+													<span
+														class="restaurante-badge font-weight-bold product-badge #{beanAdminRestaurante.selRestaurante.bloqueado ? 'text-danger': ''}">
+														<i
+														class="pi pi-#{beanAdminRestaurante.selRestaurante.bloqueado ?  'lock' : 'lock-open'}"></i>
+													</span> <span class="restaurante-name-card">#{beanAdminRestaurante.selRestaurante.nombre}</span>
 												</div>
-												<span
-													class="product-badge status-#{beanAdminRestaurante.selRestaurante.bloqueado.toString().toLowerCase()}">#{beanAdminRestaurante.selRestaurante.bloqueado.toString()}</span>
+
 											</div>
 											<div class="product-grid-item-content">
 
@@ -178,6 +237,10 @@
 
 												<div class="product-grid-item-bottom">
 													<div class="product-name">Cantidad de men&uacute;s</div>
+													<h:outputText
+														value="#{beanAdminRestaurante.menuRestaurante.size()}"
+														styleClass="product-price">
+													</h:outputText>
 												</div>
 											</div>
 											<div class="product-grid-item-bottom">
@@ -185,9 +248,7 @@
 													value="#{beanAdminRestaurante.menuRestaurante.size()}"
 													styleClass="product-price">
 												</h:outputText>
-												<p:commandButton value="Habilitar"
-													icon="pi pi-check"
-													disabled="#{beanAdminRestaurante.menuRestaurante.size() == 0}">
+												<p:commandButton value="Ver m&aacute;s" icon="pi pi-check">
 													<f:setPropertyActionListener
 														value="#{beanAdminRestaurante.selRestaurante}"
 														target="#{beanAdminRestaurante.selRestaurante}" />
@@ -199,272 +260,21 @@
 
 							</p:outputPanel>
 						</p:dialog>
-
-					</h:form>
-				</div>
-			</div>
-
-
-
-
-			<div class="col-12 d-flex flex-row-reverse">
-				<div class="p-2">
-					<div class="btn-group" data-toggle="buttons">
-						<a class="btn btn-secondary" href="javascript:addAdmin();"
-							role="button" title="Agregar Administrador"><i
-							class="fas fa-plus"></i> </a> <a class="btn btn-secondary"
-							href="javascript:delAdministrador();" role="button"
-							title="Eliminar Administrador"><i class="fas fa-minus"></i> </a>
-						<a class="btn btn-secondary" href="javascript:updAdministrador();"
-							role="button" title="Modificar Administrador"><i
-							class="fas fa-pen"></i> </a>
-
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal ERROR -->
-	<div class="modal fade" id="error_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Error</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-minus-circle display-3" style="color: #cc0000"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-							<!--Displays only Error Messages-->
-							<h:messages globalOnly="true" styleClass="mystyle" layout="list"
-								id="general_error_msj_1" infoStyle="display:none"
-								warnStyle="display:none" />
-
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal INFO -->
-	<div class="modal fade" id="info_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Informaci&oacute;n</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-info-circle display-3" style="color: #F1C40F"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-
-							<!--Displays only Warning Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_2" errorStyle="display:none"
-								infoStyle="display:none" />
-
-							<!--Displays only Info Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_3" errorStyle="display:none"
-								warnStyle="display:none" />
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal ADD-->
-	<div class="modal" tabindex="-1" role="dialog" id="addUsuario">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3 class="modal-title">Crear Administrador</h3>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<h:form class="addusuario-form">
 						<div class="col-12">
-							<div class="col-12 d-flex flex-row">
-								<div class="col-3  mb-3">
-									<p:outputLabel for="addName" value="Nombre" />
-								</div>
-								<div class="col-9  mb-3 mr-0 pr-0">
-									<h:inputText type="text" class="form-control" id="addName"
-										required="true" name="addName" value="#{beanAdmin.nombre}">
-									</h:inputText>
-								</div>
-							</div>
-							<div class="col-12 d-flex flex-row">
-								<div class="col-3  mb-3">
-									<p:outputLabel for="addUserName" value="UserName" />
-								</div>
-								<div class="col-9  mb-3 mr-0 pr-0">
-									<h:inputText type="text" class="form-control" id="addUserName"
-										required="true" name="addApellido"
-										value="#{beanAdmin.username}">
-									</h:inputText>
-								</div>
-							</div>
-
-							<div class="col-12 d-flex flex-row">
-								<div class="col-3  mb-3">
-									<p:outputLabel for="addCorreo" value="Correo" />
-								</div>
-								<div class="col-9  mb-3 mr-0 pr-0">
-									<h:inputText type="text" class="form-control" id="addCorreo"
-										required="true" name="addCorreo" value="#{beanAdmin.correo}">
-										<f:passThroughAttribute name="type" value="email" />
-									</h:inputText>
-								</div>
-							</div>
-							<div class="col-12 d-flex flex-row">
-								<div class="col-3  mb-3">
-									<p:outputLabel for="addTelefono" value="Tel&eacute;fono" />
-								</div>
-								<div class="col-9  mb-3 mr-0 pr-0">
-									<h:inputText type="text" class="form-control" id="addTelefono"
-										required="true" name="addCorreo" value="#{beanAdmin.telefono}">
-										<f:passThroughAttribute name="type" value="tel" />
-									</h:inputText>
-								</div>
-							</div>
-							<div class="col-12 d-flex flex-row">
-								<div class="col-3  mb-3">
-									<p:outputLabel for="addPassword" value="Contrase&ntilde;a" />
-								</div>
-								<div class="col-9  mb-3 mr-0 pr-0">
-									<h:inputSecret type="text" class="form-control"
-										id="addPassword" required="true" name="addPassword"
-										value="#{beanAdmin.password}">
-									</h:inputSecret>
-								</div>
-							</div>
-						</div>
-						<div class="col-12">
-
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddTelefono" for="addTelefono" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddCorreo" for="addCorreo" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddName" for="addName" />
-							</p>
-							<p>
-								<h:message
-									style="color: red;
-							    font-family: 'New Century Schoolbook', serif;
-							    font-style: oblique"
-									id="errAddUserName" for="addUserName" />
-							</p>
-						</div>
-						<div class="col-12">
-							<div class="col-12 d-flex flex-row">
-								<h:commandButton class="btn btn-primary"
-									action="#{beanAdmin.addAdministrador()}" value="CREAR" />
-							</div>
+							<p:growl id="messages" showDetail="true" />
 						</div>
 					</h:form>
 				</div>
 			</div>
 		</div>
 	</div>
-
-
-
-
-	<section class="section" id="main_section">
-	<div></div>
-
-	</section>
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
 
 	<script type="text/javascript">
 		var $ds = jQuery.noConflict();
-		
-		$ds(document).ready(function() {
-			var err = $ds('#general_error_msj_1 li'); 
-			var info = $ds('#general_error_msj_2 li');
-			var info2 = $ds('#general_error_msj_3 li');
-
-			var errAddTelefono = $ds("span[id*='errAddTelefono']"); 	
-			var errAddCorreo = $ds("span[id*='errAddCorreo']");
-			var errAddName = $ds("span[id*='errAddName']");
-			var errAddUserName = $ds("span[id*='errAddUserName']");
 			
-			if(errAddTelefono.html().length > 0 || 
-					errAddCorreo.html().length > 0 ||
-					errAddName.html().length > 0 ||
-					errAddUserName.html().length >0){
-				addAdmin();
-			}
-
-			if(err.length>0 &amp;&amp; $ds(err).css("display")!= "none"){
-				$ds('#error_usuario').modal('show');
-			}
-
-			if(info.length>0 &amp;&amp; $ds(info).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}	
-
-			if(info2.length>0 &amp;&amp; $ds(info2).css("display")!= "none"){
-				$ds('#info_usuario').modal('show');
-			}
-
-			
-		});
 		
-		function addAdmin(){
-			$ds('#addUsuario').modal('show');
-		}
-
 		
 	</script>
 </h:body>

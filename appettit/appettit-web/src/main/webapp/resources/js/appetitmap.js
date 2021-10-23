@@ -41,17 +41,6 @@ var searchControl = L.esri.Geocoding.geosearch({
 		}
 	})]
 });
-/*
-searchControl.on('results', function(data) {
-	if (data.results.length > 0) {
-		var popup = L.popup()
-			.setLatLng(data.results[0].latlng)
-			.setContent(data.results[0].text)
-			.openOn(map);
-		map.setView(data.results[0].latlng)
-	}
-})
-*/
 
 function initMap() {
 	map = L.map('map').setView([lat, lon], zoom);
@@ -207,18 +196,26 @@ function zonaReparto(buttonId) {
 		$mj('#' + buttonId ).addClass( "btn-secondary" );
 
 		selectarea.disable();
-
 	}
 
 }
 
 function cleanZonaReparto(){
 	selectarea.removeAllArea();
+	
+	try {
+		$mj('#textDefDeliveryZone').html('Zona sin definir');
+		
+	}catch (error) {
+		console.error('Div textDefDeliveryZone sin definir');
+	}
+	
+	
 }
 
 function confirmarZonaReparto(buttonId){
 	if (selectarea != null ) {
-		console.log(selectarea);
+		//console.log(selectarea);
 
 		var polygons = selectarea._area_pologon_layers;
 		var multiPolygon = 'MULTIPOLYGON(('
@@ -252,6 +249,14 @@ function confirmarZonaReparto(buttonId){
 		$mj('#' + buttonId ).addClass( "btn-secondary" );
 		
 		selectarea.disable();
+		
+		try {
+			$mj('#textDefDeliveryZone').html('Zona definida');
+			
+		}catch (error) {
+			console.error('Div textDefDeliveryZone sin definir');
+		}
+
 	}
 	
 }

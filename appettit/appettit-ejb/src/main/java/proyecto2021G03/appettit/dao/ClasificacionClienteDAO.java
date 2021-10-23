@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.Categoria;
 import proyecto2021G03.appettit.entity.ClasificacionCliente;
 
 import javax.ejb.Singleton;
@@ -14,7 +13,8 @@ public class ClasificacionClienteDAO implements IClasificacionClienteDAO{
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<ClasificacionCliente> listar() {
         Query consulta = em.createQuery("SELECT c FROM ClasificacionCliente c");
         return consulta.getResultList();    }

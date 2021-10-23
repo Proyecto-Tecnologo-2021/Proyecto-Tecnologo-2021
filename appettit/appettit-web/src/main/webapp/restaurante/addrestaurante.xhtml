@@ -38,7 +38,7 @@
 	<div class="navigation w-100">
 		<div class="container">
 			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
-				class="navbar-brand" href="/appettit-web/admin/home.xhtml"><img
+				class="navbar-brand" href="/appettit-web/"><img
 				class="appettit-logo"
 				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
 
@@ -73,11 +73,24 @@
 
 												<h:panelGrid columns="2" cellpadding="7">
 
+													<!-- <p:imageCropper value="#{beanAddRestaurante.croppedImage}"
+														id="imageCropper" cache="false"
+														image="#{beanAddRestaurante.image}"
+														initialCoords="0,0,150,150" minSize="50,50"
+														maxSize="350,350" /> -->
+														
 													<p:imageCropper value="#{beanAddRestaurante.croppedImage}"
 														id="imageCropper" cache="false"
 														image="#{beanAddRestaurante.image}"
-														initialCoords="0,0,100,100" minSize="100,100"
-														maxSize="250,250" />
+														/>	
+														
+													<p:outputPanel id="cropped">
+													
+								                        <p:graphicImage cache="false"
+								                                        rendered="#{not empty beanAddRestaurante.croppedImage}"
+								                                        value="#{beanAddRestaurante.cropped}"/>
+								                    </p:outputPanel>
+																					
 												</h:panelGrid>
 											</h:panelGrid>
 										</p:outputPanel>
@@ -86,9 +99,9 @@
 									<div class="col-12 mb-3 text-center">
 										<p:fileUpload mode="advanced" multiple="false"
 											label="Cargar Imagen" sizeLimit="2097152"
-											allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+											allowTypes="/(\.|\/)(gif|jpe?g)$/"
 											invalidSizeMessage="Tama&ntilde;o m&acute;ximo 2MB"
-											invalidFileMessage="Formatos soportados: gif | jpg | jpeg | png"
+											invalidFileMessage="Formatos soportados: gif | jpg | jpeg"
 											update="messages cropperPanel" auto="true"
 											listener="#{beanAddRestaurante.handleFileUpload}" />
 									</div>
@@ -236,7 +249,10 @@
 												<i class="fas fa-draw-polygon"></i> Zona Reparto
 											</button>
 										</div>
-										<div class="col-7 mb-1 d-flex flex-row-reverse">
+										<div class="col-6 mb-1">
+										<h6 id="textDefDeliveryZone">Zona sin definir</h6>
+										</div>
+										<div class="col-1 mb-1 d-flex flex-row-reverse">
 											<button type="button" id="confZonaReparto"
 												onclick="confirmarZonaReparto('defZonaReparto')"
 												class="btn btn-success" title="Confirmar zona de reparto">

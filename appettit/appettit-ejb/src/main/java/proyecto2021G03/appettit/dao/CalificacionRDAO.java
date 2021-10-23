@@ -1,7 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
 import org.jboss.logging.Logger;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.entity.*;
 
 import javax.ejb.Singleton;
@@ -12,11 +11,14 @@ import java.util.List;
 
 @Singleton
 public class CalificacionRDAO implements ICalificacionRDao {
-    @PersistenceContext(name = "Proyecto2021G03")
+ 
+	@PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
     static Logger logger = Logger.getLogger(CalificacionRDAO.class);
 
-    @Override
+    
+    @SuppressWarnings("unchecked")
+	@Override
     public List<ClasificacionPedido> listar() {
         Query consulta = em.createQuery("SELECT c FROM ClasificacionPedido c");
         return consulta.getResultList();

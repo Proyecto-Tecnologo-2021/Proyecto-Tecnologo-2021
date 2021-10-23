@@ -149,10 +149,12 @@ public class UsuarioService implements IUsuarioService {
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 				} else {
-					img = imgSrv.buscarPorId(res.getId_imagen());
+					try {
+						img = imgSrv.buscarPorId(res.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
 					
-					logger.info(img.getIdentificador());
-					logger.info(img.getImagen().toString());
 				}
 				
 				res.setImagen(img);
@@ -184,7 +186,12 @@ public class UsuarioService implements IUsuarioService {
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 				} else {
-					img = imgSrv.buscarPorId(res.getId_imagen());
+					try {
+						img = imgSrv.buscarPorId(res.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
 				}
 				res.setImagen(img);
 			}
@@ -224,7 +231,12 @@ public class UsuarioService implements IUsuarioService {
 				img.setIdentificador("Sin Imagen");
 				img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 			} else {
-				img = imgSrv.buscarPorId(restaurante.getId_imagen());
+				try {
+					img = imgSrv.buscarPorId(restaurante.getId_imagen());	
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+
 			}
 			restaurante.setImagen(img);
 		}
@@ -254,6 +266,22 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public CalificacionClienteDTO clasificacionCliente(ClienteDTO restauranteDTO) throws AppettitException {
 		return null;
+	}
+
+	@Override
+	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
+		Restaurante restaurante = usrDAO.buscarPorCorreoRestaurante(restauranteDTO.getCorreo());
+		if (restaurante == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			restaurante = usrConverter.fromRestauranteDTO(restauranteDTO);
+			
+			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 }
