@@ -140,7 +140,7 @@ public class UsuarioService implements IUsuarioService {
 			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.listarRestaurantes()).iterator();
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
-				res.setCalificacion(calificcionRestaurante(res));
+				res.setCalificacion(calificacionRestaurante(res));
 				ImagenDTO img = new ImagenDTO();
 
 				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
@@ -176,7 +176,7 @@ public class UsuarioService implements IUsuarioService {
 					.iterator();
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
-				res.setCalificacion(calificcionRestaurante(res));
+				res.setCalificacion(calificacionRestaurante(res));
 				restaurantes.add(res);
 				ImagenDTO img = new ImagenDTO();
 
@@ -203,12 +203,12 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 	@Override
-	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
+	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
 		Restaurante usuario = (Restaurante) usrDAO.buscarPorId(restauranteDTO.getId());
 		if (usuario == null)
 			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-			return usrDAO.calificcionRestaurante(restauranteDTO);
+			return usrDAO.calificacionRestaurante(restauranteDTO);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -221,7 +221,7 @@ public class UsuarioService implements IUsuarioService {
 
 		if(restaurante != null) {	
 			
-			restaurante.setCalificacion(calificcionRestaurante(restaurante));
+			restaurante.setCalificacion(calificacionRestaurante(restaurante));
 			
 			ImagenDTO img = new ImagenDTO();
 
@@ -244,6 +244,23 @@ public class UsuarioService implements IUsuarioService {
 		return restaurante;
 	}
 
+	@Override
+	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
+		Restaurante restaurante = usrDAO.buscarPorCorreoRestaurante(restauranteDTO.getCorreo());
+		if (restaurante == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			restaurante = usrConverter.fromRestauranteDTO(restauranteDTO);
+			
+			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
 	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException {
 		return null;
 	}
@@ -264,24 +281,8 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 	@Override
-	public CalificacionClienteDTO clasificacionCliente(ClienteDTO restauranteDTO) throws AppettitException {
+	public CalificacionClienteDTO calificacionCliente(ClienteDTO restauranteDTO) throws AppettitException {
 		return null;
-	}
-
-	@Override
-	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
-		Restaurante restaurante = usrDAO.buscarPorCorreoRestaurante(restauranteDTO.getCorreo());
-		if (restaurante == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-		try {
-			
-			restaurante = usrConverter.fromRestauranteDTO(restauranteDTO);
-			
-			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
-			
-		} catch (Exception e) {
-			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}
 	}
 
 }

@@ -24,10 +24,10 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	static Logger logger = Logger.getLogger(UsuarioDAO.class);
 
-
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;
 
+	/* GENERAL */
 	@Override
 	public Usuario crear(Usuario usuario) {
 		em.persist(usuario);
@@ -68,26 +68,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Administrador> listarAdministradores() {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "administrador");
-
-		List<Administrador> usuarios = consulta.getResultList();
-		return usuarios;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Administrador> buscarPorNombreAdministrador(String nombre) {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
-		consulta.setParameter("type", "administrador");
-		consulta.setParameter("nombre", nombre);
-
-		List<Administrador> usuarios = consulta.getResultList();
-		return usuarios;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<Usuario> buscarPorCorreo(String correo) {
 		Query consulta = em.createQuery("SELECT _usu FROM Usuario as _usu where correo = :correo")
 				.setParameter("correo", correo);
@@ -112,6 +92,8 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return consulta.getResultList().size() != 0;
 	}
 
+	/* ADMINISTRADOR */
+
 	@Override
 	public Administrador crearAdministrador(Administrador administrador) {
 		em.persist(administrador);
@@ -119,15 +101,50 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return administrador;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Administrador> listarAdministradores() {
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "administrador");
+
+		List<Administrador> usuarios = consulta.getResultList();
+		return usuarios;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Administrador> buscarPorNombreAdministrador(String nombre) {
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
+		consulta.setParameter("type", "administrador");
+		consulta.setParameter("nombre", nombre);
+
+		List<Administrador> usuarios = consulta.getResultList();
+		return usuarios;
+	}
+
+	/* RESTAURANTE */
+
+	@Override
+	public Restaurante crearRestaurante(Restaurante restaurante) {
+		em.persist(restaurante);
+
+		return restaurante;
+	}
+
+	@Override
+	public Restaurante editarRestaurante(Restaurante restaurante) {
+
+		return em.merge(restaurante);
+	}
+
 	@Override
 	public List<Restaurante> listarRestaurantes() {
-		
+
 		List<Restaurante> restaurantes = em.createQuery("select r "
 				+ "from Restaurante r", Restaurante.class)
 				.getResultList();
 
 		return restaurantes;
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -142,15 +159,21 @@ public class UsuarioDAO implements IUsuarioDAO {
 	}
 
 	@Override
-	public Restaurante crearRestaurante(Restaurante restaurante) {
-		em.persist(restaurante);
+	public Restaurante buscarPorCorreoRestaurante(String correo) {
+		Restaurante res = null;
 
-		return restaurante;
+		res = em.createQuery("SELECT _r "
+						+ "from Restaurante as _r "
+						+ "where _r.correo = :correo", Restaurante.class)
+				.setParameter("correo", correo)
+				.getSingleResult();
+
+		return res;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) {
+	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO) {
 		Query consulta = em
 				.createNativeQuery("SELECT"
 						+ "	c.cla, "
@@ -213,47 +236,56 @@ public class UsuarioDAO implements IUsuarioDAO {
 				  	
 	}
 
+	/* CLIENTE */
+
 	@Override
 	public Cliente crearCliente(Cliente cliente) {
-		return null;
+
+		em.persist(cliente);
+
+		return cliente;
+	}
+
+	@Override
+	public Cliente editarCliente(Cliente cliente) {
+
+		return em.merge(cliente);
 	}
 
 	@Override
 	public List<Cliente> listarClientes() {
-		return null;
+
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "cliente");
+
+		List<Cliente> usuarios = consulta.getResultList();
+		return usuarios;
 	}
 
 	@Override
 	public List<Cliente> buscarPorNombreCliente(String nombre) {
-		return null;
+
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
+		consulta.setParameter("type", "cliente");
+		consulta.setParameter("nombre", nombre);
+
+		List<Cliente> usuarios = consulta.getResultList();
+		return usuarios;
 	}
 
 	@Override
-	public List<Cliente> buscarPorIdCliente(String nombre) {
-		return null;
+	public List<Cliente> buscarPorIdCliente(String id) {
+
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
+		consulta.setParameter("type", "cliente");
+		consulta.setParameter("id", id);
+
+		List<Cliente> usuarios = consulta.getResultList();
+		return usuarios;
 	}
 
 	@Override
 	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData) {
+
 		return null;
 	}
-
-	@Override
-	public Restaurante buscarPorCorreoRestaurante(String correo) {
-		Restaurante res = null;
-		
-		res = em.createQuery("SELECT _r "
-				+ "from Restaurante as _r "
-				+ "where _r.correo = :correo", Restaurante.class)
-				.setParameter("correo", correo)
-				.getSingleResult();
-		
-		return res;
-	}
-
-	@Override
-	public Restaurante editarRestaurante(Restaurante restaurante) {
-		return em.merge(restaurante);
-	}
-
 }

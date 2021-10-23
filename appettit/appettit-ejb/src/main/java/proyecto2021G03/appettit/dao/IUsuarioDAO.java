@@ -29,24 +29,24 @@ public interface IUsuarioDAO {
 	public Boolean existeCorreoTelefono(String correo, String telefono);
 
 	/*ADMINISTRADOR*/
+	public Administrador crearAdministrador(Administrador administrador);
 	public List<Administrador> listarAdministradores();
 	public List<Administrador> buscarPorNombreAdministrador(String nombre);
-	public Administrador crearAdministrador(Administrador administrador);
-	
+
 	/*RESTAURANTE*/
+	public Restaurante crearRestaurante(Restaurante restaurante);
+	public Restaurante editarRestaurante(Restaurante restaurante);
 	public List<Restaurante> listarRestaurantes();
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
-	public Restaurante crearRestaurante(Restaurante restaurante);
-	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO);
 	public Restaurante buscarPorCorreoRestaurante(String correo);
-	public Restaurante editarRestaurante(Restaurante restaurante);
+	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO);
 
 	/*CLIENTE*/
 	public Cliente crearCliente(Cliente cliente);
+	public Cliente editarCliente(Cliente cliente);
 	public List<Cliente> listarClientes();
 	public List<Cliente> buscarPorNombreCliente(String nombre);
-	public List<Cliente> buscarPorIdCliente(String nombre);
+	public List<Cliente> buscarPorIdCliente(String id);
 	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData);
-	
 
 }
