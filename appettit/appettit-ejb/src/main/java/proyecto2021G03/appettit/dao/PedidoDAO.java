@@ -1,8 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
 import proyecto2021G03.appettit.entity.Pedido;
-import proyecto2021G03.appettit.entity.Producto;
-
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,7 +11,10 @@ import java.util.List;
 public class PedidoDAO implements IPedidoDao {
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
-    @Override
+   
+    
+    @SuppressWarnings("unchecked")
+	@Override
     public List<Pedido> listar() {
         Query consulta = em.createQuery("SELECT p FROM Pedido p");
         return consulta.getResultList();    }

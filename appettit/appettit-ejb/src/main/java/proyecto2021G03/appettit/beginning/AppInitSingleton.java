@@ -86,6 +86,7 @@ public class AppInitSingleton implements Serializable {
 			
 			parseRestaurante();
 			
+			/*
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
 			
 			if(ldto != null) { 
@@ -94,7 +95,7 @@ public class AppInitSingleton implements Serializable {
 				logger.info("No existen Localidades"); 
 			}		
 					
-			
+			*/
 			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());

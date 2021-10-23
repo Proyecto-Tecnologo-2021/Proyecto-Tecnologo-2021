@@ -1,7 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.entity.Categoria;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
 
 import java.util.List;

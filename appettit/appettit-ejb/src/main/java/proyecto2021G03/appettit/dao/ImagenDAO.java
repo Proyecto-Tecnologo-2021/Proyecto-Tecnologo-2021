@@ -57,7 +57,7 @@ public class ImagenDAO implements IImagenDAO {
 		try {
 			imagen =  em.createQuery("select i "
 					+ "from Imagen i "
-					+ "where id = :id", Imagen.class)
+					+ "where i.id = :id", Imagen.class)
 					.setParameter("id", id)
 					.getSingleResult();
 			
@@ -81,7 +81,7 @@ public class ImagenDAO implements IImagenDAO {
 		try {
 			imagen =  em.createQuery("select i "
 					+ "from Imagen i "
-					+ "where identificador = :identificador", Imagen.class)
+					+ "where i.identificador = :identificador", Imagen.class)
 					.setParameter("identificador", identificador)
 					.getSingleResult();
 		} catch (Exception e) {

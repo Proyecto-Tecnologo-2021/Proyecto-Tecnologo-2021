@@ -7,13 +7,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-@Singleton
 
+
+@Singleton
 public class ExtraMenuDAO implements IExtraMenuDAO {
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<ExtraMenu> listar() {
         Query consulta = em.createQuery("SELECT m FROM ExtraMenu m");
         return consulta.getResultList();

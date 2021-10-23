@@ -4,11 +4,6 @@ import lombok.*;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 @Getter
 @Setter
 @NoArgsConstructor

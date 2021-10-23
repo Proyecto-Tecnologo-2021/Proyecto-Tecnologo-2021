@@ -155,7 +155,7 @@ public class RestauranteAddBean implements Serializable {
 								"No fue posible cargar la imagen."));
 					}
 						
-						FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
+					//	FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
 					
 				} else {
 					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
@@ -174,10 +174,10 @@ public class RestauranteAddBean implements Serializable {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-		} catch (IOException e) {
-			logger.info(e.getMessage().trim());
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+		//} catch (IOException e) {
+		//	logger.info(e.getMessage().trim());
+		//	FacesContext.getCurrentInstance().addMessage(null,
+		//			new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		} finally {
 			clearParam();
 		}
@@ -204,7 +204,6 @@ public class RestauranteAddBean implements Serializable {
 
 	public byte[] getImageAsByteArray() throws IOException {
 		
-		logger.info("EN getImageAsByteArray");
 		if (this.croppedImage != null) {
 			return this.croppedImage.getBytes();
 		} else {

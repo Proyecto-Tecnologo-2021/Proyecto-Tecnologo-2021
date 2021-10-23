@@ -27,6 +27,8 @@ public interface IUsuarioService {
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException;
 	public RestauranteDTO buscarPorCorreoRestaurante(String correo) throws AppettitException;
 	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
+	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
+	
 
 	/*CLIENTE*/
 	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException;

@@ -215,10 +215,13 @@ div.product-grid-item img {
 	height: auto !important;
 }
 
-.ui-dialog {
+.ui-dialog{
 	z-index: 1100 !important;
 }
 
+.ui-growl-item {
+	margin-top: 75px; 	
+}
 .product-grid-item{
 	padding: 2rem;
 } 
@@ -236,3 +239,33 @@ div.product-grid-item img {
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
+
+.status-restaurante-pendiente{
+	background-color: #ffc107!important;
+	color: #343a40!important;
+}
+
+.status-restaurante-aprobado, .bloqueado-restaurante-false{
+	background-color: #28a745!important;
+	color: #fff!important;
+}
+
+.status-restaurante-rechazado, .bloqueado-restaurante-true {
+	background-color: #dc3545!important;
+	color: #fff!important;
+}
+
+.restaurante-badge {
+    border-radius: 2px;
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+}
+
+.restaurante-name-card{
+	font-weight: 600;
+    vertical-align: middle;
+}
+
