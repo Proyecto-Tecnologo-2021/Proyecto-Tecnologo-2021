@@ -16,14 +16,14 @@ import java.util.List;
 @Consumes("application/json")
 @Produces("application/json")
 /*public class PromocionREST {
-  //  @EJB
+    @EJB
 
-    //IServicioPromocion  iservicioPromocion;
+    IServicioPromocion  iservicioPromocion;
 
-    //@GET
+    @GET
 
-    //public Response listar() {
-     /*   RespuestaREST<List<PromocionDTO>> respuesta = null;
+    public Response listar() {
+        RespuestaREST<List<PromocionDTO>> respuesta = null;
         try {
             List<PromocionDTO> promocionDTOS = iservicioPromocion.listar();
             respuesta = new RespuestaREST<List<PromocionDTO>>(true, "Promociones listadas con éxito.", promocionDTOS);
