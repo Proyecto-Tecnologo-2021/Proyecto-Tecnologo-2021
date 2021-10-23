@@ -10,11 +10,7 @@ import javax.ejb.Stateless;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.AdministradorDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.ImagenDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.UsuarioDTO;
+import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
@@ -227,7 +223,30 @@ public class UsuarioService implements IUsuarioService {
 		}
 		
 		return restaurante;
+	}
 
+	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException {
+		return null;
+	}
+
+	@Override
+	public List<ClienteDTO> listarClientes() throws AppettitException {
+		return null;
+	}
+
+	@Override
+	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException {
+		return null;
+	}
+
+	@Override
+	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException {
+		return null;
+	}
+
+	@Override
+	public CalificacionClienteDTO clasificacionCliente(ClienteDTO restauranteDTO) throws AppettitException {
+		return null;
 	}
 
 }

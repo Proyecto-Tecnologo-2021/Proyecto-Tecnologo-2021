@@ -7,9 +7,11 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
 import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
+import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 
@@ -29,6 +31,7 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 		return null;
 	}
 
+	/* ADMIN */
 	public AdministradorDTO fromAdministrador(Administrador e) {
 		if(e == null) return null;
 		return AdministradorDTO.builder()
@@ -71,7 +74,7 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 			.collect(Collectors.toList());
 	}
 	
-
+	/* RESTAURANTE */
 	public RestauranteDTO fromRestaurante(Restaurante e) {
 		if(e == null) return null;
 		return RestauranteDTO.builder()
@@ -127,12 +130,56 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 			.collect(Collectors.toList());
 	}
 	
-	public List<Restaurante> fromRestauranteDTO(List<RestauranteDTO> dtos){
-		if(dtos == null) return null;
-		return dtos.stream()
+	public List<Restaurante> fromRestauranteDTO(List<RestauranteDTO> datos){
+		if(datos == null) return null;
+		return datos.stream()
 			.map(d -> fromRestauranteDTO(d))
 			.collect(Collectors.toList());
 	}
 
-	
+	/* CLIENTE */
+	public ClienteDTO fromCliente(Cliente c) {
+		if(c == null) return null;
+		return ClienteDTO.builder()
+				.id(c.getId())
+				.nombre(c.getNombre())
+				.username(c.getUsername())
+				.password(c.getPassword())
+				.telefono(c.getTelefono())
+				.correo(c.getCorreo())
+				.token(c.getToken())
+				.tokenFireBase(c.getTokenFireBase())
+				.bloqueado(c.getBloqueado())
+				.direcciones(direccionConverter.fromEntity(c.getDirecciones()))
+				.build();
+	}
+
+	public Cliente fromClienteDTO(ClienteDTO c) {
+		if(c == null) return null;
+		return Cliente.builder()
+				.id(c.getId())
+				.nombre(c.getNombre())
+				.username(c.getUsername())
+				.password(c.getPassword())
+				.telefono(c.getTelefono())
+				.correo(c.getCorreo())
+				.token(c.getToken())
+				.bloqueado(c.getBloqueado())
+				.direcciones(direccionConverter.fromDTO(c.getDirecciones()))
+				.build();
+	}
+
+	public List<ClienteDTO> fromCliente(List<Cliente> entities){
+		if(entities == null) return null;
+		return entities.stream()
+				.map(e -> fromCliente(e))
+				.collect(Collectors.toList());
+	}
+
+	public List<Cliente> fromClienteDTO(List<ClienteDTO> datos){
+		if(datos == null) return null;
+		return datos.stream()
+				.map(d -> fromClienteDTO(d))
+				.collect(Collectors.toList());
+	}
 }
