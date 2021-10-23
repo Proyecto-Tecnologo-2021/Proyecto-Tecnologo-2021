@@ -73,7 +73,7 @@ public class ImagenService implements IImagenService {
 			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
 		try {
-			return imagenConverter.fromEntity(imagenDAO.editar(imagen));
+			return imagenConverter.fromEntity(imagen);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

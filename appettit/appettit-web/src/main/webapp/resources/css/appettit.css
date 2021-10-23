@@ -207,10 +207,32 @@ body .ui-datepicker .ui-picker-down .ui-icon:before {
 }
 
 div.product-grid-item img {
-	max-width: 150px;
-	max-height: 150px;
+	max-width: 200px;
+	max-height: 200px;
 }
 
 .ui-rating{
 	height: auto !important;
+}
+
+.ui-dialog {
+	z-index: 1100 !important;
+}
+
+.product-grid-item{
+	padding: 2rem;
+} 
+
+.product .product-grid-item .product-price {
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+
+.product .product-grid-item .product-grid-item-top, .product .product-grid-item .product-grid-item-bottom {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
 }

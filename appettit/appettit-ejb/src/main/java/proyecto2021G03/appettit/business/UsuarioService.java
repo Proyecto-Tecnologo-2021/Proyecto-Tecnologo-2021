@@ -7,6 +7,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.jboss.logging.Logger;
+
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
@@ -19,6 +21,8 @@ import proyecto2021G03.appettit.util.FileManagement;
 
 @Stateless
 public class UsuarioService implements IUsuarioService {
+	
+	static Logger logger = Logger.getLogger(UsuarioService.class);
 
 	@EJB
 	public IUsuarioDAO usrDAO;
@@ -146,6 +150,9 @@ public class UsuarioService implements IUsuarioService {
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 				} else {
 					img = imgSrv.buscarPorId(res.getId_imagen());
+					
+					logger.info(img.getIdentificador());
+					logger.info(img.getImagen().toString());
 				}
 				
 				res.setImagen(img);

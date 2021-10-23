@@ -8,10 +8,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.entity.Imagen;
 
 @Singleton
 public class ImagenDAO implements IImagenDAO {
+	
+	static Logger logger = Logger.getLogger(ImagenDAO.class);
 	
 	@PersistenceContext(unitName = "mongo-ogm")
 	@PersistenceUnit(unitName = "mongo-ogm") 
@@ -48,7 +52,20 @@ public class ImagenDAO implements IImagenDAO {
 
 	@Override
 	public Imagen buscarPorId(String id) {
-		return em.find(Imagen.class, id);
+		Imagen imagen = null;
+		
+		try {
+			imagen =  em.createQuery("select i "
+					+ "from Imagen i "
+					+ "where id = :id", Imagen.class)
+					.setParameter("id", id)
+					.getSingleResult();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return imagen;
 	}
 	
 	@TransactionAttribute
@@ -59,12 +76,17 @@ public class ImagenDAO implements IImagenDAO {
 
 	@Override
 	public Imagen buscarPorIdentificador(String identificador) {
-		Imagen imagen =  em.createQuery("select i "
-				+ "from Imagen i "
-				+ "where identificador = :identificador", Imagen.class)
-				.setParameter("identificador", identificador)
-				.getSingleResult();
+		Imagen imagen = null;
 		
+		try {
+			imagen =  em.createQuery("select i "
+					+ "from Imagen i "
+					+ "where identificador = :identificador", Imagen.class)
+					.setParameter("identificador", identificador)
+					.getSingleResult();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		
 		return imagen;
 	}

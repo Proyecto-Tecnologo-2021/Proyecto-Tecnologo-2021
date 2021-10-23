@@ -168,7 +168,7 @@
 														class="product-category">#{beanAdminRestaurante.selRestaurante.nombre}</span>
 												</div>
 												<span
-													class="product-badge status-#{beanAdminRestaurante.selRestaurante.bloqueado.toString().toLowerCase()}">#{beanAdminRestaurante.selRestaurante.bloqueado?Bloqueado:Habilitado}</span>
+													class="product-badge status-#{beanAdminRestaurante.selRestaurante.bloqueado.toString().toLowerCase()}">#{beanAdminRestaurante.selRestaurante.bloqueado.toString()}</span>
 											</div>
 											<div class="product-grid-item-content">
 
@@ -178,18 +178,15 @@
 
 												<div class="product-grid-item-bottom">
 													<div class="product-name">Cantidad de men&uacute;s</div>
-													<div class="product-description">"#{beanAdminRestaurante.menuRestaurante.size()}"</div>
 												</div>
-
 											</div>
 											<div class="product-grid-item-bottom">
 												<h:outputText
-													value="#{dtSelectionView.selectedProduct.price}"
+													value="#{beanAdminRestaurante.menuRestaurante.size()}"
 													styleClass="product-price">
-													<f:convertNumber currencySymbol="$" type="currency" />
 												</h:outputText>
 												<p:commandButton value="Habilitar"
-													icon="pi pi-shopping-cart"
+													icon="pi pi-check"
 													disabled="#{beanAdminRestaurante.menuRestaurante.size() == 0}">
 													<f:setPropertyActionListener
 														value="#{beanAdminRestaurante.selRestaurante}"

@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -113,13 +114,19 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return administrador;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Restaurante> listarRestaurantes() {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "restaurante");
+		//Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "restaurante");
 
-		List<Restaurante> usuarios = consulta.getResultList();
-		return usuarios;
+		//List<Restaurante> usuarios = consulta.getResultList();
+		//return usuarios;
+		
+		List<Restaurante> restaurantes = em.createQuery("select r "
+				+ "from Restaurante r", Restaurante.class)
+				.getResultList();
+
+		return restaurantes;
+		
 	}
 
 	@SuppressWarnings("unchecked")
