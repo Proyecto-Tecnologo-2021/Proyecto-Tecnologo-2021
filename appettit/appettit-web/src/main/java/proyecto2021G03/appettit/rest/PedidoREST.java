@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 @Path("/pedido")
 @Consumes("application/json")
 @Produces("application/json")
-public class PedidoRest {
+public class PedidoREST {
 
     @EJB
     IPedidoService iPedidoService;
