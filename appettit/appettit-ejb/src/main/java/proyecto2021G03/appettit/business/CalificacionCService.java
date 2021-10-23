@@ -1,8 +1,8 @@
 package proyecto2021G03.appettit.business;
 
-import proyecto2021G03.appettit.converter.ClasificacionClienteConverter;
+import proyecto2021G03.appettit.converter.CalificacionClienteConverter;
 import proyecto2021G03.appettit.dao.IClasificacionClienteDAO;
-import proyecto2021G03.appettit.dto.ClasificacionClienteDTO;
+import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.entity.ClasificacionCliente;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -12,17 +12,17 @@ import javax.ejb.Stateless;
 import java.util.List;
 
 @Stateless
-public class ClasificacionCService implements IClasificacionCService{
+public class CalificacionCService implements ICalificacionCService {
 
     @EJB
     public IClasificacionClienteDAO iClasificacionClienteDAO;
 
     @EJB
-    public ClasificacionClienteConverter clasificacionClienteConverter;
+    public CalificacionClienteConverter clasificacionClienteConverter;
 
 
     @Override
-    public List<ClasificacionClienteDTO> listar() throws AppettitException {
+    public List<CalificacionClienteDTO> listar() throws AppettitException {
         try {
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.listar());
         } catch (Exception e) {
@@ -30,7 +30,7 @@ public class ClasificacionCService implements IClasificacionCService{
         }       }
 
     @Override
-    public ClasificacionClienteDTO listarPorId(Long id) {
+    public CalificacionClienteDTO listarPorId(Long id) {
         try {
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.listarPorId(id));
         } catch (Exception e) {
@@ -38,8 +38,8 @@ public class ClasificacionCService implements IClasificacionCService{
         }    }
 
     @Override
-    public ClasificacionClienteDTO crear(ClasificacionClienteDTO clasificacionClienteDTO) throws AppettitException {
-        ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(clasificacionClienteDTO.getId_cliente());
+    public CalificacionClienteDTO crear(CalificacionClienteDTO calificacionClienteDTO) throws AppettitException {
+        ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(calificacionClienteDTO.getId_cliente());
         try {
 
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.crear(clasificacionCliente));
@@ -48,8 +48,8 @@ public class ClasificacionCService implements IClasificacionCService{
         }       }
 
     @Override
-    public ClasificacionClienteDTO editar(Long id, ClasificacionClienteDTO clasificacionClienteDTO) throws AppettitException {
-        ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(clasificacionClienteDTO.getId_cliente());
+    public CalificacionClienteDTO editar(Long id, CalificacionClienteDTO calificacionClienteDTO) throws AppettitException {
+        ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(calificacionClienteDTO.getId_cliente());
         if (clasificacionCliente == null)
             throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 

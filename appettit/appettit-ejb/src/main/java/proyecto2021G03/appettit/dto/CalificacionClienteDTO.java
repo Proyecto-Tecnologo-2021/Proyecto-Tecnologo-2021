@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClasificacionClienteDTO {
+public class CalificacionClienteDTO {
 
     private Long id_restaurante;
     private Long id_cliente;

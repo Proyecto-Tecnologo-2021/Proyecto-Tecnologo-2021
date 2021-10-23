@@ -8,8 +8,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
+import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 
@@ -200,6 +203,31 @@ public class UsuarioDAO implements IUsuarioDAO {
 		
 		return new CalificacionRestauranteDTO(rapidez, comida, servicio, general);
 				  	
+	}
+
+	@Override
+	public Cliente crearCliente(Cliente cliente) {
+		return null;
+	}
+
+	@Override
+	public List<Cliente> listarClientes() {
+		return null;
+	}
+
+	@Override
+	public List<Cliente> buscarPorNombreCliente(String nombre) {
+		return null;
+	}
+
+	@Override
+	public List<Cliente> buscarPorIdCliente(String nombre) {
+		return null;
+	}
+
+	@Override
+	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData) {
+		return null;
 	}
 
 }

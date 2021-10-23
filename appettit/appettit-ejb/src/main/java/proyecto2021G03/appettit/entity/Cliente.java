@@ -23,6 +23,7 @@ public class Cliente extends Usuario {
 
 	private static final long serialVersionUID = 1L;
 
+	@Builder
 	public Cliente(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase) {
 		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);

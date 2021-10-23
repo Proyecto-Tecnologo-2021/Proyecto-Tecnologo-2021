@@ -4,10 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import proyecto2021G03.appettit.dto.AdministradorDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.UsuarioDTO;
+import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Local
@@ -29,8 +26,12 @@ public interface IUsuarioService {
 	public List<RestauranteDTO> listarRestaurantes() throws AppettitException;
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException;
 	public CalificacionRestauranteDTO calificcionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
-	
-	
-	
+
+	/*CLIENTE*/
+	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException;
+	public List<ClienteDTO> listarClientes() throws AppettitException;
+	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException;
+	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException;
+	public CalificacionClienteDTO clasificacionCliente(ClienteDTO restauranteDTO) throws AppettitException;
 
 }
