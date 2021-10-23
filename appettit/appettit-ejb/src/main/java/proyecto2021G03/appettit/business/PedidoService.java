@@ -8,10 +8,14 @@ import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
 import java.util.List;
 
+@Stateless
 public class PedidoService implements IPedidoService {
-    @EJB
+
+	@EJB
     IPedidoDao iPedidoDao;
     @EJB
     PedidoConverter pedidoConverter;
