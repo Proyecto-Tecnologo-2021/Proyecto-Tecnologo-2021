@@ -153,6 +153,10 @@ public class UsuarioService implements IUsuarioService {
 					try {
 						img = imgSrv.buscarPorId(res.getId_imagen());	
 					} catch (Exception e) {
+						FileManagement fm = new FileManagement();
+
+						img.setIdentificador("Sin Imagen");
+						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 						logger.error(e.getMessage());
 					}
 					

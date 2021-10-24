@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -26,7 +27,8 @@ import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanAdminRestaurante")
-@SessionScoped
+//@SessionScoped
+@RequestScoped
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,19 +39,17 @@ public class RestauranteBean implements Serializable {
 
 	static Logger logger = Logger.getLogger(RestauranteBean.class);
 
-	private List<RestauranteDTO> restaurantes;
-	private List<RestauranteDTO> filterRestaurantes;
-	//private List<MenuDTO> menuRestaurante;
-	private RestauranteDTO selRestaurante;
-	private Boolean menuDeshabilitado; 
-	
-	
+	private List<RestauranteDTO> restaurantes = null;
+	private List<RestauranteDTO> filterRestaurantes = null;
+	private RestauranteDTO selRestaurante = null;
+	private Boolean menuDeshabilitado = null;
+	private Boolean disabledBloquedado = true;
 	private Long id;
 	private boolean globalFilterOnly;
-	
+
 	@EJB
 	IUsuarioService usrSrv;
-	
+
 	@EJB
 	IMenuService menuSRV;
 
@@ -57,13 +57,12 @@ public class RestauranteBean implements Serializable {
 	public void init() {
 		try {
 			restaurantes = usrSrv.listarRestaurantes();
-			logger.info(restaurantes.size());
-			
-			//menuRestaurante = null;
+			logger.info("Restaurantes: " + restaurantes.size());
+
+			// menuRestaurante = null;
 			menuDeshabilitado = false;
 			selRestaurante = null;
-			
-			
+
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -74,7 +73,7 @@ public class RestauranteBean implements Serializable {
 	public void toggleGlobalFilter() {
 		setGlobalFilterOnly(!isGlobalFilterOnly());
 	}
-	
+
 	public boolean isGlobalFilterOnly() {
 		return globalFilterOnly;
 	}
@@ -84,56 +83,69 @@ public class RestauranteBean implements Serializable {
 	}
 
 	public EstadoRegistro[] getRestauranteEstado() {
-        return EstadoRegistro.values();
-        
-    }
+		return EstadoRegistro.values();
+
+	}
+
 	
+
 	public List<MenuDTO> getMenuRestaurante() {
-		List <MenuDTO> menus = new ArrayList<MenuDTO>();
-		
+		List<MenuDTO> menus = new ArrayList<MenuDTO>();
+
 		try {
 			menus = menuSRV.listarPorRestaurante(getSelRestaurante().getId());
-			
-			if (menus.size()<3)
+
+			if (menus.size() < 3)
 				menuDeshabilitado = true;
-			
+
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
 		}
-		
+
 		return menus;
+	}
+	
+	public void onRowSelect(RowEditEvent<RestauranteDTO> event) {
+		disabledBloquedado = false;
 	}
 
 	public void onRowEdit(RowEditEvent<RestauranteDTO> event) {
-		
+
 		try {
+			selRestaurante = event.getObject();
 			
-			if(!event.getObject().getBloqueado() && getMenuRestaurante().size()<3) {
+			logger.info("onRowEdit - Bloqueddo: " + event.getObject().getBloqueado());
+			
+			if (!event.getObject().getBloqueado() && getMenuRestaurante().size() < 3) {
+				restaurantes = usrSrv.listarRestaurantes();
 				
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_WARN, "Ël Restaurante tiene menos de 3 men\\00FAs, no es posible desbloquearlo.", null));
-				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+						"Error", "El Restaurante tiene menos de 3 menús, no es posible desbloquearlo."));
+
 			} else {
 				usrSrv.editarRestaurante(event.getObject());
 				restaurantes = usrSrv.listarRestaurantes();
-				
-		        FacesContext.getCurrentInstance().addMessage(null, 
-		        		new FacesMessage("Edición correcta", event.getObject().getNombre()));
-				
+
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Edición correcta", event.getObject().getNombre()));
+
 			}
 			
 			
+
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		}
-    }
-	
-	
+	}
 
-    public void onRowCancel(RowEditEvent<RestauranteDTO> event) {
-        FacesMessage msg = new FacesMessage("Edición cancelada", String.valueOf(event.getObject().getNombre()));
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
+	
+	
+	public void onRowCancel(RowEditEvent<RestauranteDTO> event) {
+		disabledBloquedado=true;
+	
+		FacesMessage msg = new FacesMessage("Edición cancelada", String.valueOf(event.getObject().getNombre()));
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
 }

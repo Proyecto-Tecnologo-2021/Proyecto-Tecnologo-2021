@@ -118,9 +118,9 @@ public class RestauranteAddBean implements Serializable {
 						
 						imgSrv.crear(imagen);
 						imagen = imgSrv.buscarPorIdentificador(identificador);
-						id_imagen = imagen.getId();
 					}
-
+					
+					id_imagen = imagen.getId();
 					loadImg = true;
 				} 
 				

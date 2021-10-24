@@ -25,6 +25,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 	static Logger logger = Logger.getLogger(UsuarioDAO.class);
 
 	@PersistenceContext(name = "Proyecto2021G03")
+	
 	private EntityManager em;
 
 	/* GENERAL */
@@ -132,8 +133,11 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public Restaurante editarRestaurante(Restaurante restaurante) {
-
-		return em.merge(restaurante);
+		
+		restaurante =  em.merge(restaurante);
+		
+		return restaurante;
+		
 	}
 
 	@Override
@@ -141,6 +145,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 		List<Restaurante> restaurantes = em.createQuery("select r "
 				+ "from Restaurante r", Restaurante.class)
+				.setHint("org.hibernate.cacheable", false)
 				.getResultList();
 
 		return restaurantes;
@@ -240,7 +245,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public Cliente crearCliente(Cliente cliente) {
-
 		em.persist(cliente);
 
 		return cliente;

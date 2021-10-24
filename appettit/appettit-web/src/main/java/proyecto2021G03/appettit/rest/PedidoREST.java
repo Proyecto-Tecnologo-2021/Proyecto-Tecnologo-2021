@@ -2,8 +2,6 @@ package proyecto2021G03.appettit.rest;
 
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.dto.PedidoDTO;
-import proyecto2021G03.appettit.dto.ProductoCrearDTO;
-import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;

@@ -61,7 +61,7 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form id="form">
-						<p:dataTable var="restaurante" editable="true"
+						<p:dataTable var="restaurante" editable="true" id="tableRestaurantes"
 							value="#{beanAdminRestaurante.restaurantes}"
 							widgetVar="restaurantesTable"
 							emptyMessage="No existen Restaurantes"
@@ -73,11 +73,13 @@
 							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
 							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
 
-							<p:ajax event="rowEdit" listener="#{beanAdminRestaurante.onRowEdit}"
-								update=":form:messages" />
-								
+							<p:ajax event="rowEdit"
+								listener="#{beanAdminRestaurante.onRowEdit}"
+								update=":form:messages tableRestaurantes" />
+
 							<p:ajax event="rowEditCancel"
-								listener="#{beanAdminRestaurante.onRowCancel}" update=":form:messages" />
+								listener="#{beanAdminRestaurante.onRowCancel}"
+								update=":form:messages tableRestaurantes" />
 
 							<f:facet name="header">
 								<div class="row">
@@ -135,11 +137,13 @@
 											value="#{restaurante.estado}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu value="#{restaurante.estado}" styleClass="custom-filter">
-										 
+										<p:selectOneMenu value="#{restaurante.estado}"
+											styleClass="custom-filter">
+
 											<f:selectItems
-												value="#{beanAdminRestaurante.restauranteEstado}" var="estado"
-												itemLAbel="#{estado.toString()}" itemValue="#{estado}"/>
+												value="#{beanAdminRestaurante.restauranteEstado}"
+												var="estado" itemLAbel="#{estado.toString()}"
+												itemValue="#{estado}" />
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
@@ -159,20 +163,41 @@
 								sortBy="#{restaurante.bloqueado}" filterMatchMode="exact">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText
-											style="vertical-align: middle; margin-left: .5rem"
-											styleClass="restaurante-badge bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}"
-											value="#{restaurante.bloqueado}" />
+										<div style="width: 3rem"
+											class="btn-sm bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}">
+											<i
+												class="pi pi-#{restaurante.bloqueado ?  'lock' : 'lock-open'}"></i>&nbsp;
+											<h:outputText value="#{restaurante.bloqueado ?  'Si' : 'No'}" />
+										</div>
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu styleClass="custom-filter">
-											<f:selectItem itemLabel="Bloquedado" itemValue="#{true}"
-												noSelectionOption="false" />
-											<f:selectItem itemLabel="Desbloqueado" itemValue="#{false}"
-												noSelectionOption="false" />
-										</p:selectOneMenu>
+										<p:selectBooleanButton onLabel="Si" offLabel="No"
+											style="width:5rem" value="#{restaurante.bloqueado}"
+											onIcon="pi pi-lock" offIcon="pi pi-lock-open" />
 									</f:facet>
 								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="#{true}"
+											noSelectionOption="false" />
+										<f:selectItem itemLabel="No" itemValue="#{false}"
+											noSelectionOption="false" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+
+
+
+							<!-- <p:column headerText="Bloqueado"
+								filterBy="#{restaurante.bloqueado}"
+								sortBy="#{restaurante.bloqueado}" filterMatchMode="exact">
+								<p:selectBooleanButton onLabel="Si" offLabel="No"
+									style="width:5rem" value="#{restaurante.bloqueado}"
+									onIcon="pi pi-lock" offIcon="pi pi-lock-open"
+									styleClass="btn-sm bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}" />
 
 								<f:facet name="filter">
 									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
@@ -186,7 +211,7 @@
 									</p:selectOneMenu>
 								</f:facet>
 							</p:column>
-
+ -->
 							<p:column headerText="Calificacion"
 								sortBy="#{restaurante.calificacion.general}">
 								<p:rating readonly="true"
