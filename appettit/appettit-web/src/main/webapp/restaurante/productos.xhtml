@@ -50,15 +50,16 @@
 						role="button" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false"> Men&uacute; </a>
 						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item  active" href="#">Productos</a> <a
-								class="dropdown-item" href="#">Promociones</a>
+							<a class="dropdown-item" href="/appettit-web/restaurante/productos.xhtml">Productos</a>
+							<a class="dropdown-item" href="#">Men&uacute;s</a> 
+							<a class="dropdown-item" href="#">Promociones</a>
 						</div></li>
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
 						role="button" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false"> Clientes </a>
 						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item" href="#">Pedidos</a> <a
+							<a class="dropdown-item" href="">Pedidos</a> <a
 								class="dropdown-item" href="#">Reclamos</a> <a
 								class="dropdown-item" href="#">Calificar</a>
 						</div></li>
@@ -75,8 +76,8 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form>
-						<p:dataTable var="admin" value="#{beanAdmin.administradores}"
-							widgetVar="adminsTable" emptyMessage="No existen Administradores"
+						<p:dataTable var="producto" value="#{beanProducto.productos}"
+							widgetVar="adminsTable" emptyMessage="No existen Productos"
 							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
 							filteredValue="#{beanAdmin.filterAdministradores}" rows="10"
 							paginator="true" rowKey="#{admin.id}" selectionMode="single"

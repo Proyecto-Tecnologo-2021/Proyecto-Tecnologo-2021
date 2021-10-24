@@ -44,5 +44,16 @@ public class ProductoDAO implements IProductoDAO{
 		em.remove(producto);
 		
 	}
+
+	@Override
+	public  List<Producto> listarPorRestaurante(Long id) {
+		 List<Producto> productos = em.createQuery("select _p "
+		 		+ "from Producto _p "
+		 		+ "inner join _p.restaurante _r "
+				+ "where _r.id =:id", Producto.class)
+				.setParameter("id", id).getResultList();
+		
+		return productos;
+	}
 	
 }

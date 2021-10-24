@@ -36,20 +36,28 @@
 	</div>
 
 	<script>
-			/*
 			var userTOKEN;
+			storeLocalStorage();
 			loadLocalStorage();
 			
             function loadLocalStorage() {
-                var prefix = 'flutter.vacunasUYUser';
+                var prefix = 'react.appetitUser';
                 console.log(prefix);
                 getLocalStorageValue(prefix);
 				
             }
 
+            function storeLocalStorage(){
+            	var prefix = 'react.appetitUser';
+
+            	var contenido = "{\"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":restaurante}";
+            	localStorage.setItem(prefix, contenido);
+                
+            }
+
             function clearLocalStorage(prefix) {
             	localStorage.clear();
-            	window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
+            	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
             }
 
             function getLocalStorageValue(prefix) {
@@ -64,18 +72,18 @@
                     n.append(prefixValue["nombre"]);
 
                  
-					if(prefixValue["rol"] != 2){
-						console.log("ERROR ROL 2");
+					if(prefixValue["rol"] != 'restaurnate'){
+						console.log("ERROR ROL RESTAURANTE");
 						localStorage.clear();
-						window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
+						window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
 	                }
                         
                 }else{
                 	console.log("ERROR NO COOKIE");
-                	window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
+                	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
 				}
             }
-            */
-        </script>
+
+            </script>
 
 </ui:composition>

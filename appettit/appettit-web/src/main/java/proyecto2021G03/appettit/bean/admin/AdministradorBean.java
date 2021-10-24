@@ -13,7 +13,6 @@ import javax.inject.Named;
 import org.jboss.logging.Logger;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +26,6 @@ import proyecto2021G03.appettit.exception.AppettitException;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class AdministradorBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

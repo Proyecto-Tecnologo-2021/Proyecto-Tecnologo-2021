@@ -16,4 +16,6 @@ public interface IProductoService {
 	public ProductoDTO crear(ProductoCrearDTO ccDTO)throws AppettitException;
 	public ProductoDTO editar(Long id, ProductoCrearDTO ccDTO)throws AppettitException;
 	public void eliminar(Long id)throws AppettitException;
+	
+	public List<ProductoDTO> listarPorRestaurante(Long id) throws AppettitException;
 }

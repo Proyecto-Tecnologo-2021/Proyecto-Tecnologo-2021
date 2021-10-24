@@ -26,19 +26,20 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-import proyecto2021G03.appettit.beginning.AppInitSingleton;
+import proyecto2021G03.appettit.business.ICategoriaService;
+import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
-import proyecto2021G03.appettit.dto.LocalidadDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Startup
@@ -62,6 +63,9 @@ public class AppInitSingleton implements Serializable {
 	
 	@EJB
 	UsuarioConverter usrConverter;
+	
+	@EJB
+	ICategoriaService srvCategoria;
 
 	WKTReader fromText;
 	Geometry geom;
@@ -85,6 +89,8 @@ public class AppInitSingleton implements Serializable {
 			parseAdministrador();
 			
 			parseRestaurante();
+			
+			parseCategoria();
 			
 			/*
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
@@ -125,7 +131,6 @@ public class AppInitSingleton implements Serializable {
 			geom = fromText.read(polygon);
 			multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
 
-			//departamentoService.crear(new DepartamentoDTO(id, nombre, multiPolygon, ciudades));
 			departamentoService.crear(new DepartamentoDTO(id, nombre, polygon, ciudades));
 
 		}
@@ -182,10 +187,6 @@ public class AppInitSingleton implements Serializable {
 			String nombre = data[3].trim();
 			String polygon = data[4].trim();
 
-			//geom = fromText.read(polygon);
-			//multiPolygon = (com.vividsolutions.jts.geom.MultiPolygon) geom;
-
-			//departamentoService.crearLocalidad(new LocalidadDTO(id, idCiudad, idDepto, nombre, multiPolygon));
 			departamentoService.crearLocalidad(new LocalidadDTO(id, idCiudad, idDepto, nombre, polygon));
 		}
 
@@ -270,6 +271,30 @@ public class AppInitSingleton implements Serializable {
 		bufferedReader.close();
 
 		logger.info("Restaurantes ingresados");
+	}
+
+	private void parseCategoria() throws IOException, ParseException, AppettitException {
+
+		String linea;
+		String[] data;
+
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL resource = classLoader.getResource("META-INF/input/categorias.csv");
+		File deptoFile = new File(resource.getFile());
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+
+		while ((linea = bufferedReader.readLine()) != null) {
+			data = linea.split(";");
+			String nombre = data[0].trim();
+
+			srvCategoria.crear(new CategoriaCrearDTO(nombre));
+		}
+
+		bufferedReader.close();
+
+		logger.info("Categorías ingresadas");
 	}
 
 }

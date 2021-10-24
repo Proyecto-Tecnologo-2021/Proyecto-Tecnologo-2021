@@ -113,5 +113,14 @@ public class ProductoService implements IProductoService{
 		}
 		return false;
 	}
+
+	@Override
+	public List<ProductoDTO> listarPorRestaurante(Long id) throws AppettitException {
+		try {
+			return pConverter.fromEntity(pDAO.listarPorRestaurante(id));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 	
 }

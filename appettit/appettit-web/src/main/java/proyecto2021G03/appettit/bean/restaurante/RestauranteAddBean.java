@@ -19,10 +19,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -86,12 +83,9 @@ public class RestauranteAddBean implements Serializable {
 	@EJB
 	GeoConverter geoConverter;
 	
-	WKTReader fromText;
-
 	@PostConstruct
 	public void init() {
 		clearParam();
-		fromText = new WKTReader(new GeometryFactory(new PrecisionModel(), 32721));
 		
 		
 	}

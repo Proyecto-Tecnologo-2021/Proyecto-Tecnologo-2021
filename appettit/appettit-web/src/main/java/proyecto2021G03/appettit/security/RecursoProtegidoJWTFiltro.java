@@ -13,9 +13,9 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-@Provider
+//@Provider
 //@RecursoProtegidoJWT
-@Priority(Priorities.AUTHENTICATION)
+//@Priority(Priorities.AUTHENTICATION)
 public class RecursoProtegidoJWTFiltro implements ContainerRequestFilter{
 
 	@Override
