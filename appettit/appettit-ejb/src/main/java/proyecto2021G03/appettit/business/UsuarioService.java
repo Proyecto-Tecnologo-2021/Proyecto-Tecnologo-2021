@@ -14,6 +14,7 @@ import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Administrador;
+import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -262,7 +263,21 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException {
-		return null;
+		Cliente usuario = usrConverter.fromClienteDTO(clienteData);
+
+		try {
+			if (usrDAO.existeCorreoTelefono(usuario.getCorreo(), usuario.getTelefono())) {
+				throw new AppettitException("Teléfono y/o correo ya registrado.", AppettitException.EXISTE_REGISTRO);
+			} else {
+				/* Se encripta la contraseña */
+				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
+
+				return usrConverter.fromCliente(usrDAO.crearCliente(usuario));
+			}
+
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
