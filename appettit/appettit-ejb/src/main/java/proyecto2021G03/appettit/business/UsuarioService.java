@@ -1,6 +1,7 @@
 package proyecto2021G03.appettit.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import javax.ejb.Stateless;
 import org.jboss.logging.Logger;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
@@ -18,7 +21,9 @@ import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 import proyecto2021G03.appettit.util.FileManagement;
+
 
 @Stateless
 public class UsuarioService implements IUsuarioService {
@@ -304,4 +309,39 @@ public class UsuarioService implements IUsuarioService {
 		return null;
 	}
 
+	@Override
+	public UsuarioLoginExitosoDTO login(LoginDTO loginDTO) throws AppettitException {
+		/* Se valida que exista el correo electrónico */
+		List<Usuario> usuarios = usrDAO.buscarPorCorreo(loginDTO.getCorreo());
+		
+		if (usuarios.size() == 0) {
+			throw new AppettitException("Usuario y/o passwords incorrectos.", AppettitException.DATOS_INCORRECTOS);
+		} else {
+			/* Se verifica que la contraseña sea válida */
+			
+			Usuario usuario = usuarios.get(0);
+			BCrypt.Result resultado = null;
+			resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
+			if(resultado.verified) {
+				String token = crearJsonWebToken(usuario);
+				return usrConverter.fromLogin(usuario, token);
+			} else {
+				throw new AppettitException("Usuario y/o passwords incorrectos.", AppettitException.DATOS_INCORRECTOS);
+			}
+		}
+	}
+	
+	/* Función auxiliar para generar un JWT */
+	public String crearJsonWebToken(Usuario usuario) {
+		Date ahora = new Date();
+		/* 1 horas de validez */
+		Date expiracion = new Date(ahora.getTime() + (1000*60*60));
+		return Jwts.builder()
+				.setSubject(Long.toString(usuario.getId()))
+				.setIssuedAt(ahora)
+				.setExpiration(expiracion)
+				.signWith(SignatureAlgorithm.HS512, Constantes.JWT_KEY)
+				.compact();
+	}
+	
 }
