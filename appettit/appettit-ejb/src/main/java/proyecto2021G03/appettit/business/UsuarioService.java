@@ -310,23 +310,31 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 	@Override
-	public UsuarioLoginExitosoDTO login(LoginDTO loginDTO) throws AppettitException {
-		/* Se valida que exista el correo electrónico */
-		List<Usuario> usuarios = usrDAO.buscarPorCorreo(loginDTO.getCorreo());
+	public String login(LoginDTO loginDTO) throws AppettitException {
+		/* Se valida que exista el correo electrónico o el teléfono*/
+		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
+		List<Usuario> usuarios_telefono = usrDAO.buscarPorTelefono(loginDTO.getUsuario());
 		
-		if (usuarios.size() == 0) {
-			throw new AppettitException("Usuario y/o passwords incorrectos.", AppettitException.DATOS_INCORRECTOS);
+		if ((usuarios_correo.size() == 0) && (usuarios_telefono.size() == 0)) {
+			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 		} else {
 			/* Se verifica que la contraseña sea válida */
 			
-			Usuario usuario = usuarios.get(0);
+			Usuario usuario;
+			
+			if (usuarios_correo.size() != 0) {
+				usuario = usuarios_correo.get(0);
+			}else {
+				usuario = usuarios_telefono.get(0);
+			}
+			
 			BCrypt.Result resultado = null;
 			resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
 			if(resultado.verified) {
 				String token = crearJsonWebToken(usuario);
-				return usrConverter.fromLogin(usuario, token);
+				return token;
 			} else {
-				throw new AppettitException("Usuario y/o passwords incorrectos.", AppettitException.DATOS_INCORRECTOS);
+				throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 			}
 		}
 	}
@@ -336,10 +344,35 @@ public class UsuarioService implements IUsuarioService {
 		Date ahora = new Date();
 		/* 1 horas de validez */
 		Date expiracion = new Date(ahora.getTime() + (1000*60*60));
+		
+		String tipoUsuario;
+		
+		if (usuario instanceof Cliente) {
+			tipoUsuario = "cliente";
+		}
+		else {
+			if (usuario instanceof Restaurante) { 
+				tipoUsuario = "restaurante";
+			}
+			else {
+				if (usuario instanceof Administrador) {
+					tipoUsuario = "administrador";
+				}
+				else {
+					tipoUsuario = "Error";
+				}
+			}
+		}
+		
 		return Jwts.builder()
 				.setSubject(Long.toString(usuario.getId()))
 				.setIssuedAt(ahora)
 				.setExpiration(expiracion)
+				.claim("tipoUsuario", tipoUsuario)
+				.claim("idUsuario", usuario.getId())
+				.claim("nombre", usuario.getNombre())
+				.claim("correo", usuario.getCorreo())
+				.claim("telefono", usuario.getTelefono())
 				.signWith(SignatureAlgorithm.HS512, Constantes.JWT_KEY)
 				.compact();
 	}

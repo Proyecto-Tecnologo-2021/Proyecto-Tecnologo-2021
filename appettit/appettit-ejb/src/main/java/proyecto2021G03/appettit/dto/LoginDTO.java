@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 public class LoginDTO {
 	
-	private String correo;
+	private String usuario;
 	private String password;
 	
 }
