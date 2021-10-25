@@ -128,7 +128,7 @@ public class DepartamentoService implements IDepartamentoService {
 	public CiudadDTO ciudadPorId(Long id, Long id_departamento) throws AppettitException {
 		Ciudad ciudad = departamentoDAO.ciudadPorId(id, id_departamento);
 		if (ciudad == null)
-			throw new AppettitException("La ciuduad indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("La ciudad indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 			return ciudadConverter.fromEntity(ciudad);
 		} catch (Exception e) {
