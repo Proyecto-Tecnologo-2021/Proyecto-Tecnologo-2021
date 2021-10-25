@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
-import proyecto2021G03.appettit.dto.UsuarioLoginExitosoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
 
@@ -60,13 +59,13 @@ public class UsuarioREST {
 	@POST
 	@Path("/login")
 	public Response login(LoginDTO request) {
-		RespuestaREST<UsuarioLoginExitosoDTO> respuesta = null;
+		RespuestaREST<String> respuesta = null;
 		try {
-			UsuarioLoginExitosoDTO usuario = uService.login(request);
-			respuesta = new RespuestaREST<UsuarioLoginExitosoDTO>(true, "Inicio de sesión correcto.", usuario);
+			String token = uService.login(request);
+			respuesta = new RespuestaREST<String>(true, "Inicio de sesión correcto.", token);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
-			respuesta = new RespuestaREST<UsuarioLoginExitosoDTO>(false, e.getLocalizedMessage());
+			respuesta = new RespuestaREST<String>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {

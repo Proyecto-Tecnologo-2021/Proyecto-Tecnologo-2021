@@ -10,7 +10,6 @@ import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
-import proyecto2021G03.appettit.dto.UsuarioLoginExitosoDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
@@ -178,36 +177,4 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.collect(Collectors.toList());
 	}
 	
-	public UsuarioLoginExitosoDTO fromLogin(Usuario e, String token) {
-		if(e == null) return null;
-		
-		String tipoUsuario;
-		
-		if (e instanceof Cliente) {
-			tipoUsuario = "cliente";
-		}
-		else {
-			if (e instanceof Restaurante) { 
-				tipoUsuario = "restaurante";
-			}
-			else {
-				if (e instanceof Administrador) {
-					tipoUsuario = "administrador";
-				}
-				else {
-					tipoUsuario = "Error";
-				}
-			}
-		}
-		
-		return UsuarioLoginExitosoDTO.builder()
-			.tipoUsuario(tipoUsuario)
-			.id(e.getId())
-			.nombre(e.getNombre())
-			.correo(e.getCorreo())
-			.telefono(e.getTelefono())
-			.jwt(token)
-			//.tokenFirebase(e.getTokenFirebase())
-			.build();
-	}
 }
