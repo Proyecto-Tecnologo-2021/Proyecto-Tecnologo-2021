@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import proyecto2021G03.appettit.entity.Categoria;
 
@@ -15,11 +14,10 @@ public class CategoriaDAO implements ICategoriaDAO{
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Categoria> listar() {
-		Query consulta = em.createQuery("SELECT c FROM Categoria c");
-		return consulta.getResultList();
+		List<Categoria> consulta = em.createQuery("SELECT c FROM Categoria c", Categoria.class).getResultList();;
+		return consulta;
 	}
 
 	@Override

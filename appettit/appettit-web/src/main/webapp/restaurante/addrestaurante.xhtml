@@ -73,19 +73,11 @@
 
 												<h:panelGrid columns="2" cellpadding="7">
 
-													<!-- <p:imageCropper value="#{beanAddRestaurante.croppedImage}"
-														id="imageCropper" cache="false"
-														image="#{beanAddRestaurante.image}"
-														initialCoords="0,0,150,150" minSize="50,50"
-														maxSize="350,350" /> -->
-														
 													<p:imageCropper value="#{beanAddRestaurante.croppedImage}"
 														id="imageCropper" cache="false"
 														image="#{beanAddRestaurante.image}"
 														/>	
-														
 													<p:outputPanel id="cropped">
-													
 								                        <p:graphicImage cache="false"
 								                                        rendered="#{not empty beanAddRestaurante.croppedImage}"
 								                                        value="#{beanAddRestaurante.cropped}"/>

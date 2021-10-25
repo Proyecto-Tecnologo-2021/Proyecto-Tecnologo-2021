@@ -13,7 +13,7 @@ import proyecto2021G03.appettit.exception.AppettitException;
 public interface ICategoriaService {
 
 	public List<CategoriaDTO> listar() throws AppettitException;
-	public Categoria listarPorId(Long id);
+	public CategoriaDTO listarPorId(Long id);
 	public CategoriaDTO crear(CategoriaCrearDTO ccDTO)throws AppettitException;
 	public CategoriaDTO editar(Long id, CategoriaCrearDTO ccDTO)throws AppettitException;
 	public void eliminar(Long id)throws AppettitException;

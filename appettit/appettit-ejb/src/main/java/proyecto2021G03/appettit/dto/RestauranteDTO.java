@@ -18,10 +18,10 @@ public class RestauranteDTO extends UsuarioDTO  {
 
 	@Builder
 	public RestauranteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
-			String token, String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
+			String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
 			LocalTime horarioApertura, LocalTime horarioCierre, Boolean abierto, Boolean abiertoAutom,
 			String areaentrega, DireccionDTO direccion, String id_imagen) {
-		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
+		super(id, nombre, username, password, telefono, correo, tokenFireBase);
 		
 		this.rut = rut;
 		this.estado = estado;

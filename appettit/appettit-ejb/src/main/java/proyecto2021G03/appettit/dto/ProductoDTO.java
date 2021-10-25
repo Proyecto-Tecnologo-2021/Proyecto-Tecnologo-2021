@@ -17,5 +17,7 @@ public class ProductoDTO {
 	private Long id_restaurante;
 	private String nombre;
 	private Long id_categoria;
+	private RestauranteDTO restaurante;
+	private CategoriaDTO categoria;
 	
 }

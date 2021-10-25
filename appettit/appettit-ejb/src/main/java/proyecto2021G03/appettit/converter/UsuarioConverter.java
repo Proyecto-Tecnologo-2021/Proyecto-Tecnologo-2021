@@ -42,7 +42,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(e.getPassword())
 				.telefono(e.getTelefono())
 				.correo(e.getCorreo())
-				.token(e.getToken())
 				.tokenFireBase(e.getTokenFireBase())
 				.build();
 	}
@@ -56,7 +55,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(d.getPassword())
 				.telefono(d.getTelefono())
 				.correo(d.getCorreo())
-				.token(d.getToken())
 				.tokenFireBase(d.getTokenFireBase())
 				.build();
 	}
@@ -85,7 +83,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(e.getPassword())
 				.telefono(e.getTelefono())
 				.correo(e.getCorreo())
-				.token(e.getToken())
 				.tokenFireBase(e.getTokenFireBase())
 				.rut(e.getRut())
 				.estado(e.getEstado())
@@ -109,7 +106,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(d.getPassword())
 				.telefono(d.getTelefono())
 				.correo(d.getCorreo())
-				.token(d.getToken())
 				.tokenFireBase(d.getTokenFireBase())
 				.rut(d.getRut())
 				.estado(d.getEstado())
@@ -148,7 +144,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(c.getPassword())
 				.telefono(c.getTelefono())
 				.correo(c.getCorreo())
-				.token(c.getToken())
 				.tokenFireBase(c.getTokenFireBase())
 				.bloqueado(c.getBloqueado())
 				.direcciones(direccionConverter.fromEntity(c.getDirecciones()))
@@ -164,7 +159,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(c.getPassword())
 				.telefono(c.getTelefono())
 				.correo(c.getCorreo())
-				.token(c.getToken())
 				.bloqueado(c.getBloqueado())
 				.direcciones(direccionConverter.fromDTO(c.getDirecciones()))
 				.build();

@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
 
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
@@ -13,10 +14,27 @@
 							data-toggle="dropdown">
 							<div class="navbar-profile">
 								<p class="mb-0 d-sm-block navbar-profile-name"
-									id="userProfileName"> <h:outputText value="#{HomeBeanRestaurant.nombre_restaurante}" />
-									<i class="fas fa-user-circle h3"></i>
+									id="userProfileName">
 
+
+									<h:form id="UserInfo" cache="false">
+
+										<p:remoteCommand name="rc"
+											action="#{beanUserLoged.getRestauranteReg()}"
+											update="restauranteUsrDetail" />
+
+										<p:remoteCommand name="rc2" oncomplete="loadinfoFromLocalStorage();"
+											autoRun="true"> 
+										</p:remoteCommand>
+										<p:outputPanel id="restauranteUsrDetail"
+											style="text-align:center;">
+											<h:outputText value="#{beanUserLoged.restaurante.nombre}" />
+											<p:graphicImage
+												value="#{beanUserLoged.restaurante.imagen.imagen}" />
+										</p:outputPanel>
+									</h:form>
 								</p>
+
 							</div>
 						</a>
 
@@ -25,8 +43,7 @@
 							aria-labelledby="profileDropdown">
 							<h6 class="p-3 mb-0">Perfil</h6>
 							<div class="dropdown-divider"></div>
-							<a href="#"
-								class="list-group-item list-group-item-action">Salir</a>
+							<a href="#" class="list-group-item list-group-item-action">Salir</a>
 
 						</div>
 					</div>
@@ -40,17 +57,20 @@
 			storeLocalStorage();
 			loadLocalStorage();
 			
+			loadinfoFromLocalStorage(){
+				loadLocalStorage();
+			}
+			
             function loadLocalStorage() {
                 var prefix = 'react.appetitUser';
                 console.log(prefix);
                 getLocalStorageValue(prefix);
-				
             }
 
             function storeLocalStorage(){
             	var prefix = 'react.appetitUser';
 
-            	var contenido = "{\"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":restaurante}";
+            	var contenido = "{\"correo\":\"comoencasa.gf@gmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":restaurante}";
             	localStorage.setItem(prefix, contenido);
                 
             }
@@ -68,16 +88,20 @@
                  
                  	userTOKEN =  prefixValue["token"];
 
-                    var n = document.getElementById("userProfileName"); 
-                    n.append(prefixValue["nombre"]);
+                    //var n = document.getElementById("userProfileName"); 
+                    //n.val(prefixValue["nombre"]);
 
+                    //var n = document.getElementById("userProfileCorreo");
+                    //n.append(prefixValue["correo"]);
                  
 					if(prefixValue["rol"] != 'restaurnate'){
 						console.log("ERROR ROL RESTAURANTE");
 						localStorage.clear();
 						window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
 	                }
-                        
+
+                    rc([{name: 'correo', value: prefixValue["correo"]}]);
+                    
                 }else{
                 	console.log("ERROR NO COOKIE");
                 	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';

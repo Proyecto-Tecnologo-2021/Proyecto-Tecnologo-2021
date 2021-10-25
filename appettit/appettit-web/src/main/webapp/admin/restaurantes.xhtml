@@ -189,29 +189,6 @@
 								</f:facet>
 							</p:column>
 
-
-
-							<!-- <p:column headerText="Bloqueado"
-								filterBy="#{restaurante.bloqueado}"
-								sortBy="#{restaurante.bloqueado}" filterMatchMode="exact">
-								<p:selectBooleanButton onLabel="Si" offLabel="No"
-									style="width:5rem" value="#{restaurante.bloqueado}"
-									onIcon="pi pi-lock" offIcon="pi pi-lock-open"
-									styleClass="btn-sm bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}" />
-
-								<f:facet name="filter">
-									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
-										styleClass="custom-filter">
-										<f:selectItem itemLabel="All" itemValue="#{null}"
-											noSelectionOption="true" />
-										<f:selectItem itemLabel="Bloquedado" itemValue="#{true}"
-											noSelectionOption="false" />
-										<f:selectItem itemLabel="Desbloqueado" itemValue="#{false}"
-											noSelectionOption="false" />
-									</p:selectOneMenu>
-								</f:facet>
-							</p:column>
- -->
 							<p:column headerText="Calificacion"
 								sortBy="#{restaurante.calificacion.general}">
 								<p:rating readonly="true"

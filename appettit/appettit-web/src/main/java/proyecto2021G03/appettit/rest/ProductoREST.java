@@ -28,7 +28,7 @@ public class ProductoREST {
 
 	@EJB
 	IProductoService pService;
-	
+/*	
 	@GET
 	public Response listar() {
 		RespuestaREST<List<ProductoDTO>> respuesta = null;
@@ -98,5 +98,5 @@ public class ProductoREST {
 			}
 		}
 	}
-
+*/
 }

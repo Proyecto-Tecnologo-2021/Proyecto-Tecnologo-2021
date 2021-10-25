@@ -21,7 +21,11 @@ public class CategoriaConverter extends AbstractConverter<Categoria, CategoriaDT
 	
 	@Override
 	public Categoria fromDTO(CategoriaDTO d) {
-		return null;
+		if(d == null) return null;
+		return Categoria.builder()
+				.id(d.getId())
+				.nombre(d.getNombre())
+				.build();
 	}
 	
 	public Categoria fromCrearDTO(CategoriaCrearDTO d) {

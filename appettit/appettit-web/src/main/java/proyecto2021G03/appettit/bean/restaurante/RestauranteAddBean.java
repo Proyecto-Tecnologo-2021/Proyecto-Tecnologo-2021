@@ -131,7 +131,7 @@ public class RestauranteAddBean implements Serializable {
 					direccion.setGeometry(point);
 					direccion.setBarrio(ldto);
 					
-					RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, null, rut,
+					RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, rut,
 							EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, strareaentrega, direccion,
 							id_imagen);
 

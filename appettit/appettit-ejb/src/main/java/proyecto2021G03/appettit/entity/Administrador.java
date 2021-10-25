@@ -20,7 +20,7 @@ public class Administrador extends Usuario {
 	@Builder
 	public Administrador(Long id, String nombre, String username, String password, String telefono, String correo,
 			String token, String tokenFireBase) {
-		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
+		super(id, nombre, username, password, telefono, correo, tokenFireBase);
 		// TODO Auto-generated constructor stub
 	}
 

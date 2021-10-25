@@ -215,7 +215,7 @@ public class AppInitSingleton implements Serializable {
 			String password = data[3].trim();
 			
 			
-			usrSrv.crear(new AdministradorDTO(null, nombre, correo, password, telefono, correo, null, null));
+			usrSrv.crear(new AdministradorDTO(null, nombre, correo, password, telefono, correo, null));
 		}
 
 		bufferedReader.close();
@@ -261,7 +261,7 @@ public class AppInitSingleton implements Serializable {
 			
 			
 			
-			RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, null, rut,
+			RestauranteDTO restDTO = new RestauranteDTO(null, nombre, correo, password, telefono, correo, null, rut,
 					EstadoRegistro.PENDIENTE, true, horarioApertura, horarioCierre, false, abiertoAutom, strareaentrega, direccion,
 					id_imagen);
 

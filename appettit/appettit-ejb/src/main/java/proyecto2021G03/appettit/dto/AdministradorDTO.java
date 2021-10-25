@@ -16,8 +16,8 @@ public class AdministradorDTO extends Usuario { //porque extiende de Usuario y n
 
 	@Builder
 	public AdministradorDTO(Long id, String nombre, String username, String password, String telefono, String correo,
-			String token, String tokenFireBase) {
-		super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
+			String tokenFireBase) {
+		super(id, nombre, username, password, telefono, correo, tokenFireBase);
 		// TODO Auto-generated constructor stub
 	}
 	

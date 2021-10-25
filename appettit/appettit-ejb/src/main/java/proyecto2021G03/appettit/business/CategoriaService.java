@@ -31,8 +31,8 @@ public class CategoriaService implements ICategoriaService{
 	}
 
 	@Override
-	public Categoria listarPorId(Long id) {
-		return cDAO.listarPorId(id);
+	public CategoriaDTO listarPorId(Long id) {
+		return cConverter.fromEntity(cDAO.listarPorId(id));
 	}
 
 	@Override

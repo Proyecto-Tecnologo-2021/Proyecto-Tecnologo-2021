@@ -17,7 +17,6 @@ public abstract class UsuarioDTO {
 	private String password;
 	private String telefono;
 	private String correo;
-	private String token;
 	private String tokenFireBase;
 
 }

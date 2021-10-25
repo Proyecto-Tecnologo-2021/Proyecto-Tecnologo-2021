@@ -15,17 +15,17 @@ import proyecto2021G03.appettit.entity.Producto;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Stateless
-public class ProductoService implements IProductoService{
+public class ProductoService implements IProductoService {
 
 	@EJB
 	public IProductoDAO pDAO;
-	
+
 	@EJB
 	public ICategoriaDAO cDAO;
-	
+
 	@EJB
 	public ProductoConverter pConverter;
-	
+
 	@Override
 	public List<ProductoDTO> listar() throws AppettitException {
 		try {
@@ -36,33 +36,21 @@ public class ProductoService implements IProductoService{
 	}
 
 	@Override
-	public ProductoDTO listarPorId(Long id) {
-		return pConverter.fromEntity(pDAO.listarPorId(id));
-	}
-
-	@Override
-	public ProductoDTO crear(ProductoCrearDTO pcDTO) throws AppettitException {
-		
-		//HACER EL CONTROL POR RESTAURANTE Y NO GENERAL
-		if(existeNombreProducto(pcDTO.getNombre())) {
-			throw new AppettitException("Ya existe un producto con ese nombre.", AppettitException.EXISTE_REGISTRO);
-		}else {	
-			try {
-				Producto producto = pConverter.fromCrearDTO(pcDTO);
-				return pConverter.fromEntity(pDAO.crear(producto));
-			} catch (Exception e) {
-				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-			}
+	public ProductoDTO listarPorId(Long id) throws AppettitException {
+		try {
+			return pConverter.fromEntity(pDAO.listarPorId(id));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
 
 	@Override
 	public ProductoDTO editar(Long id, ProductoCrearDTO pcDTO) throws AppettitException {
-		
-		//HACER EL CONTROL POR RESTAURANTE Y NO GENERAL
-		if(existeNombreProductoExcluirId (id, pcDTO.getNombre())) {
-			throw new AppettitException ("Ya existe un producto con ese nombre.", AppettitException.EXISTE_REGISTRO);
-		}else {	
+
+		// HACER EL CONTROL POR RESTAURANTE Y NO GENERAL
+		if (existeNombreProductoExcluirId(id, pcDTO.getNombre())) {
+			throw new AppettitException("Ya existe un producto con ese nombre.", AppettitException.EXISTE_REGISTRO);
+		} else {
 			try {
 				Producto producto = pDAO.listarPorId(id);
 				producto.setNombre(pcDTO.getNombre());
@@ -78,8 +66,8 @@ public class ProductoService implements IProductoService{
 	@Override
 	public void eliminar(Long id) throws AppettitException {
 		/* Se valida que exista el prodcuto */
-		Producto producto= pDAO.listarPorId(id);
-		if(producto == null) {
+		Producto producto = pDAO.listarPorId(id);
+		if (producto == null) {
 			throw new AppettitException("El producto indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		} else {
 			try {
@@ -90,21 +78,21 @@ public class ProductoService implements IProductoService{
 		}
 	}
 
-	public boolean existeNombreProducto (String nombre) {
-		
+	public boolean existeNombreProducto(String nombre) {
+
 		List<ProductoDTO> productos = pConverter.fromEntity(pDAO.listar());
-		for (ProductoDTO p: productos) {
+		for (ProductoDTO p : productos) {
 			if (p.getNombre().equals(nombre)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean existeNombreProductoExcluirId (Long id, String nombre) {
-		
+
+	public boolean existeNombreProductoExcluirId(Long id, String nombre) {
+
 		List<ProductoDTO> productos = pConverter.fromEntity(pDAO.listar());
-		for (ProductoDTO p: productos) {
+		for (ProductoDTO p : productos) {
 			if (!p.getId().equals(id)) {
 				if (p.getNombre().equals(nombre)) {
 					return true;
@@ -122,5 +110,15 @@ public class ProductoService implements IProductoService{
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
-	
+
+	@Override
+	public ProductoDTO crear(ProductoDTO pcDTO) throws AppettitException {
+
+		try {
+			Producto producto = pConverter.fromDTO(pcDTO);
+			return pConverter.fromEntity(pDAO.crear(producto));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 }

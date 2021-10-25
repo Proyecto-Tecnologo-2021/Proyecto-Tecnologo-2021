@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -14,15 +15,14 @@ import javax.inject.Named;
 
 import org.jboss.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.bean.user.UserBean;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -41,12 +41,11 @@ public class HomeRestauranteBean implements Serializable{
 	List<DepartamentoDTO> departamentos;
 	Boolean abierto;
 	String fechaHora;
-	
+	RestauranteDTO restauranteDTO;
+	Long id_restaurante;
 
 	@EJB
 	IDepartamentoService departamentoService;
-	
-	
 	
 	@PostConstruct
 	public void init() {

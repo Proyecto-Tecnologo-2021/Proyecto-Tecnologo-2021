@@ -64,8 +64,7 @@ public class AdministradorBean implements Serializable {
 
 		logger.info("addAdministrador 'nombre': " + nombre);
 
-		AdministradorDTO adminDTO = new AdministradorDTO(null, nombre, username, password, telefono, correo, null,
-				null);
+		AdministradorDTO adminDTO = new AdministradorDTO(null, nombre, username, password, telefono, correo, null);
 
 		try {
 			adminDTO = usrSrv.crear(adminDTO);
@@ -94,8 +93,7 @@ public class AdministradorBean implements Serializable {
 
 		logger.info("updAdministrador 'nombre': " + nombre);
 
-		AdministradorDTO adminDTO = new AdministradorDTO(id, nombre, username, password, telefono, correo, null,
-				null);
+		AdministradorDTO adminDTO = new AdministradorDTO(id, nombre, username, password, telefono, correo, null);
 
 		try {
 			adminDTO = usrSrv.crear(adminDTO);

@@ -3,7 +3,10 @@ package proyecto2021G03.appettit.bean.user;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
@@ -13,9 +16,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.bean.restaurante.HomeRestauranteBean;
+import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.util.Constantes;
 
+@Named("beanUserLoged")
+@SessionScoped
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,15 +32,20 @@ public class UserBean implements Serializable {/**
 	 */
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(HomeRestauranteBean.class);
+	
+	
+	@EJB
+	IUsuarioService usrSrv;
 
 	FacesContext facesContext;
 	HttpSession session;
+	RestauranteDTO restaurante;
+	//String correo; 
 	
 	@PostConstruct
 	public void init() {
 		facesContext = FacesContext.getCurrentInstance();
 		session = (HttpSession) facesContext.getExternalContext().getSession(true);
-		
 	}
 	
 	public UsuarioDTO getUserSession() {
@@ -45,6 +57,20 @@ public class UserBean implements Serializable {/**
 		}
 		
 		return usuarioDTO;
+		
+	}
+	
+	public void getRestauranteReg() {
+		String correo = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("correo");
+		
+		logger.info(correo);
+		
+		try {
+			restaurante = usrSrv.buscarPorCorreoRestaurante(correo); 	
+		} catch (Exception e) {
+			logger.error("No se encontró el Restaurante");
+		}
+		
 		
 	}
 	
