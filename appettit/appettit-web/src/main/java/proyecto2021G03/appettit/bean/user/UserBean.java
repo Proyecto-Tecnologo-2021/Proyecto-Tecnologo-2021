@@ -40,7 +40,6 @@ public class UserBean implements Serializable {/**
 	FacesContext facesContext;
 	HttpSession session;
 	RestauranteDTO restaurante;
-	//String correo; 
 	
 	@PostConstruct
 	public void init() {
@@ -63,10 +62,10 @@ public class UserBean implements Serializable {/**
 	public void getRestauranteReg() {
 		String correo = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("correo");
 		
-		logger.info(correo);
-		
 		try {
-			restaurante = usrSrv.buscarPorCorreoRestaurante(correo); 	
+			restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+			createSession((UsuarioDTO) restaurante);
+			
 		} catch (Exception e) {
 			logger.error("No se encontró el Restaurante");
 		}

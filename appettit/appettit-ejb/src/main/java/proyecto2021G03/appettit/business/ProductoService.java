@@ -121,4 +121,13 @@ public class ProductoService implements IProductoService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+
+	@Override
+	public ProductoDTO editar(ProductoDTO ccDTO) throws AppettitException {
+		try {
+			Producto producto = pConverter.fromDTO(ccDTO);
+			return pConverter.fromEntity(pDAO.editar(producto));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	}
 }

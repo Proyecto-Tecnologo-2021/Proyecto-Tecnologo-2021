@@ -34,6 +34,7 @@ public class ProductoId implements Serializable {
 		if(arg0 == null) return false;
 		if(!(arg0 instanceof ProductoId)) return false;
 		ProductoId arg1 = (ProductoId) arg0;
+		
 		return (this.id.equals(arg1.id) && 
 				this.id_restaurante.equals(arg1.id_restaurante));
     }

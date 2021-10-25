@@ -4,40 +4,32 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" lang="sp">
 
+	<p:remoteCommand name="rc"
+		action="#{beanUserLoged.getRestauranteReg()}" update="userProfileName userProfileImg" />
+
+	<p:remoteCommand name="rc2" oncomplete="loadinfoFromLocalStorage();"
+		autoRun="true" />
+
+
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
 		<div class="container">
 			<div class="row no-gutters">
 				<div class="col-lg-12 text-right text-lg-right">
 					<div class="dropdown show">
+
 						<a class="nav-link text-secondary" id="userDropdown" href="#"
 							data-toggle="dropdown">
 							<div class="navbar-profile">
 								<p class="mb-0 d-sm-block navbar-profile-name"
-									id="userProfileName">
+									id="userProfileData">
 
-
-									<h:form id="UserInfo" cache="false">
-
-										<p:remoteCommand name="rc"
-											action="#{beanUserLoged.getRestauranteReg()}"
-											update="restauranteUsrDetail" />
-
-										<p:remoteCommand name="rc2" oncomplete="loadinfoFromLocalStorage();"
-											autoRun="true"> 
-										</p:remoteCommand>
-										<p:outputPanel id="restauranteUsrDetail"
-											style="text-align:center;">
-											<h:outputText value="#{beanUserLoged.restaurante.nombre}" />
-											<p:graphicImage
-												value="#{beanUserLoged.restaurante.imagen.imagen}" />
-										</p:outputPanel>
-									</h:form>
+									<h:outputText value="#{beanUserLoged.restaurante.nombre }" id="userProfileName"/>
+									<p:graphicImage styleClass="img-profile"
+										value="#{beanUserLoged.restaurante.imagen.imagen}" id="userProfileImg"/>
 								</p>
-
 							</div>
 						</a>
-
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
@@ -54,10 +46,11 @@
 
 	<script>
 			var userTOKEN;
-			storeLocalStorage();
-			loadLocalStorage();
 			
-			loadinfoFromLocalStorage(){
+			//loadLocalStorage();
+			
+			function loadinfoFromLocalStorage() {
+				storeLocalStorage();
 				loadLocalStorage();
 			}
 			
@@ -70,7 +63,7 @@
             function storeLocalStorage(){
             	var prefix = 'react.appetitUser';
 
-            	var contenido = "{\"correo\":\"comoencasa.gf@gmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":restaurante}";
+            	var contenido = "{\"correo\":\"comoencasa.gf@gmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":\"restaurante\"}";
             	localStorage.setItem(prefix, contenido);
                 
             }
@@ -82,10 +75,12 @@
 
             function getLocalStorageValue(prefix) {
             	if (localStorage.getItem(prefix)) {
+                	console.log(localStorage.getItem(prefix));
                 	var prefixValue = JSON.parse(localStorage.getItem(prefix));
-
-                	prefixValue = JSON.parse(prefixValue);
-                 
+                	
+                	//prefixValue = JSON.parse(prefixValue);
+                	console.log(prefixValue);
+                    
                  	userTOKEN =  prefixValue["token"];
 
                     //var n = document.getElementById("userProfileName"); 
@@ -93,14 +88,16 @@
 
                     //var n = document.getElementById("userProfileCorreo");
                     //n.append(prefixValue["correo"]);
+					
+					rc([{name: 'correo', value: prefixValue["correo"]}]);                 
                  
-					if(prefixValue["rol"] != 'restaurnate'){
+					if(prefixValue["rol"] != 'restaurante'){
 						console.log("ERROR ROL RESTAURANTE");
 						localStorage.clear();
 						window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
 	                }
 
-                    rc([{name: 'correo', value: prefixValue["correo"]}]);
+                    
                     
                 }else{
                 	console.log("ERROR NO COOKIE");

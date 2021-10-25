@@ -198,7 +198,7 @@ body .ui-datepicker .ui-picker-down .ui-icon:before {
     overflow: visible !important;
 }
 
-#messages_container{
+#messages_container, .ui-dialog, .ui-selectonemenu-panel{
 	z-index: 1100 !important;
 }
 
@@ -213,10 +213,6 @@ div.product-grid-item img {
 
 .ui-rating{
 	height: auto !important;
-}
-
-.ui-dialog{
-	z-index: 1100 !important;
 }
 
 .ui-growl-item {
@@ -269,3 +265,8 @@ div.product-grid-item img {
     vertical-align: middle;
 }
 
+.img-profile{
+	width: 3rem;
+	height: 3rem;
+	border: 1px solid #008037 !important;
+}

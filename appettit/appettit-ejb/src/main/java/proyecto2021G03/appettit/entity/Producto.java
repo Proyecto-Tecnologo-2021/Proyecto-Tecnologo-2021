@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +33,12 @@ public class Producto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="producto_seq")
+	@SequenceGenerator(
+		name="producto_seq",
+		sequenceName="producto_sequence",
+		allocationSize=1
+	)
 	private Long id;
 
 	@Id
@@ -44,13 +50,15 @@ public class Producto implements Serializable {
 
 	private Long id_categoria;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	//@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
+	private Restaurante restaurante;
+	
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name="id_categoria", referencedColumnName="id", insertable=false, updatable=false)
 	private Categoria categoria;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
-	private Restaurante restaurante;
 	
 	
 }

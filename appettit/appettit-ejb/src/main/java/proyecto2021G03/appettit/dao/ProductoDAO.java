@@ -35,8 +35,7 @@ public class ProductoDAO implements IProductoDAO{
 
 	@Override
 	public Producto editar(Producto producto) {
-		em.persist(producto);
-		return producto;
+		return em.merge(producto);
 	}
 
 	@Override

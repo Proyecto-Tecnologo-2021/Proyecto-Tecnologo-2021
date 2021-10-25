@@ -6,7 +6,6 @@ import javax.ejb.Local;
 
 import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
 import proyecto2021G03.appettit.dto.CategoriaDTO;
-import proyecto2021G03.appettit.entity.Categoria;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Local

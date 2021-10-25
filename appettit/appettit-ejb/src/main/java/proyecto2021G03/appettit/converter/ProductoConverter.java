@@ -13,6 +13,9 @@ public class ProductoConverter extends AbstractConverter<Producto, ProductoDTO>{
 	@EJB
 	CategoriaConverter catConverter;
 	
+	@EJB
+	UsuarioConverter usrConverter;
+	
 	@Override
 	public ProductoDTO fromEntity(Producto p) {
 		if(p == null) return null;
@@ -22,6 +25,7 @@ public class ProductoConverter extends AbstractConverter<Producto, ProductoDTO>{
 				.nombre(p.getNombre())
 				.id_categoria(p.getId_categoria())
 				.categoria(catConverter.fromEntity(p.getCategoria()))
+				.restaurante(usrConverter.fromRestaurante(p.getRestaurante()))
 				.build();
 	}
 	
@@ -34,16 +38,8 @@ public class ProductoConverter extends AbstractConverter<Producto, ProductoDTO>{
 				.nombre(p.getNombre())
 				.id_categoria(p.getId_categoria())
 				.categoria(catConverter.fromDTO(p.getCategoria()))
+				.restaurante(usrConverter.fromRestauranteDTO(p.getRestaurante()))
 				.build();
 	}
-	
-	public Producto fromCrearDTO(ProductoCrearDTO p) {
-		if(p == null) return null;
-		return Producto.builder()
-			.nombre(p.getNombre())
-			.id_restaurante(p.getId_restaurante())
-			.id_categoria(p.getId_categoria())
-			.build();
-	}
-	
+
 }

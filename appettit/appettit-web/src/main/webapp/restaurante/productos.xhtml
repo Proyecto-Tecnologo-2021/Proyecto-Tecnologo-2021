@@ -75,177 +75,120 @@
 	<div class="main-panel">
 		<div class="container">
 			<div class="wrapper pt-3">
-				<div class="card">
-					<h:form>
-						<p:dataTable var="producto" value="#{beanProducto.productos}"
-							widgetVar="prodTable" emptyMessage="No existen Productos"
-							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
-							filteredValue="#{beanProducto.filterProductos}" rows="10"
-							paginator="true" rowKey="#{producto.id}" selectionMode="single"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+				<div class="row mb-3 pt-3">
+					<div class="card">
+						<h:form id="form">
+							<p:dataTable var="producto" editable="true" id="tableProductos"
+								value="#{beanProducto.productos}" widgetVar="prodTable"
+								emptyMessage="No existen Productos"
+								globalFilterOnly="#{dtFilterView.globalFilterOnly}"
+								filteredValue="#{beanProducto.filterProductos}" rows="10"
+								paginator="true" rowKey="#{producto.id}" selectionMode="single"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+								rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
 
-							<f:facet name="header">
-								<div class="row">
-									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-											<h5>Lista de Productos</h5>
+								<p:ajax event="rowEdit" listener="#{beanProducto.onRowEdit}"
+									update=":form:messages tableProductos" />
+
+								<p:ajax event="rowEditCancel"
+									listener="#{beanProducto.onRowCancel}"
+									update=":form:messages tableProductos" />
+
+								<f:facet name="header">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+												<h5>Lista de Productos</h5>
+											</div>
+										</div>
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+												<p:inputText id="globalFilter"
+													onkeyup="PF('prodTable').filter()" style="width:10rem"
+													placeholder="Palabra clave" />
+												<p:commandButton value="Buscar" update="@form"
+													action="#{beanProducto.toggleGlobalFilter()}"
+													class="btn btn-primary" />
+											</div>
 										</div>
 									</div>
-									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<p:inputText id="globalFilter"
-												onkeyup="PF('prodTable').filter()" style="width:10rem"
-												placeholder="Palabra clave" />
-											<p:commandButton value="Buscar" update="@form"
-												action="#{beanProducto.toggleGlobalFilter()}"
-												class="btn btn-primary" />
-										</div>
-									</div>
-								</div>
 
-							</f:facet>
+								</f:facet>
 
-							<p:column headerText="Id" sortBy="#{producto.id}">
-								<h:outputText value="#{producto.id}" />
-							</p:column>
+								<p:column headerText="Id" sortBy="#{producto.id}">
+									<h:outputText value="#{producto.id}" />
+								</p:column>
 
-							<p:column headerText="Nombre" sortBy="#{producto.nombre}"
-								filterBy="#{producto.nombre}">
-								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{producto.nombre}" />
-							</p:column>
+								<p:column headerText="Nombre" sortBy="#{producto.nombre}"
+									filterBy="#{producto.nombre}">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText
+												style="vertical-align: middle; margin-left: .5rem"
+												value="#{producto.nombre}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{producto.nombre}" style="width:100%"
+												label="Nombre" />
+										</f:facet>
+									</p:cellEditor>
 
-							<p:column headerText="Categor&iacute;a"
-								filterBy="#{producto.categoria}"
-								sortBy="#{producto.categoria.nombre}" filterMatchMode="exact">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText
-											style="vertical-align: middle; margin-left: .5rem"
-											styleClass="restaurante-badge"
-											value="#{producto.categoria.nombre}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{producto.categoria}"
+								</p:column>
+
+								<p:column headerText="Categor&iacute;a"
+									filterBy="#{producto.categoria.id}"
+									sortBy="#{producto.categoria.nombre}" filterMatchMode="exact">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText
+												style="vertical-align: middle; margin-left: .5rem"
+												styleClass="restaurante-badge"
+												value="#{producto.categoria.nombre}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:selectOneMenu value="#{producto.id_categoria}"
+												styleClass="custom-filter">
+
+												<f:selectItems value="#{beanProducto.categorias}" var="cat"
+													itemLabel="#{cat.nombre}" itemValue="#{cat.id}" />
+											</p:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+									<f:facet name="filter">
+										<p:selectOneMenu onchange="PF('prodTable').filter()"
 											styleClass="custom-filter">
 
-											<f:selectItems value="#{beanProducto.categorias}" var="cat"
-												itemLAbel="#{cat.nombre}" itemValue="#{cat}" />
+											<f:selectItem itemLabel="All" itemValue="#{null}"
+												noSelectionOption="true" />
+
+											<f:selectItems value="#{beanProducto.categorias}"
+												var="categoria" itemLabel="#{categoria.nombre}"
+												itemValue="#{categoria.id}" />
 										</p:selectOneMenu>
 									</f:facet>
-								</p:cellEditor>
-								<f:facet name="filter">
-									<p:selectOneMenu onchange="PF('prodTable').filter()"
-										styleClass="custom-filter">
-										<f:selectItem itemLabel="All" itemValue="#{null}"
-											noSelectionOption="true" />
-											
-										<f:selectItems value="#{beanProducto.categorias}" var="cat"
-											itemLAbel="#{cat.nombre}" itemValue="#{cat.id}" />
-									</p:selectOneMenu>
-								</f:facet>
-							</p:column>
+								</p:column>
+								<p:column style="width:6rem">
+									<p:rowEditor editTitle="Editar Producto"
+										cancelTitle="Cancelar Edici&oacute;n"
+										saveTitle="Confirmar Edici&oacute;n" />
+								</p:column>
+							</p:dataTable>
+							<div class="col-12">
+								<p:growl id="messages" showDetail="true" />
+							</div>
 
-
-						</p:dataTable>
-					</h:form>
-				</div>
-			</div>
-			<div class="col-12">
-				<p:growl id="messages" showDetail="true" />
-			</div>
-			<div class="col-12 d-flex flex-row-reverse">
-				<div class="p-2">
-					<div class="btn-group" data-toggle="buttons">
-						<a class="btn btn-secondary" href="javascript:addProducto();"
-							role="button" title="Agregar Producto"><i class="fas fa-plus"></i>
-						</a> <a class="btn btn-secondary" href="javascript:delProducto();"
-							role="button" title="Eliminar Producto"><i
-							class="fas fa-minus"></i> </a> <a class="btn btn-secondary"
-							href="javascript:updProducto();" role="button"
-							title="Modificar Producto"><i class="fas fa-pen"></i> </a>
-
-
+						</h:form>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal ERROR -->
-	<div class="modal fade" id="error_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Error</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-minus-circle display-3" style="color: #cc0000"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-							<!--Displays only Error Messages-->
-							<h:messages globalOnly="true" styleClass="mystyle" layout="list"
-								id="general_error_msj_1" infoStyle="display:none"
-								warnStyle="display:none" />
-
+				<div class="col-12 d-flex flex-row-reverse">
+					<div class="p-2">
+						<div class="btn-group" data-toggle="buttons">
+							<a class="btn btn-secondary" href="javascript:addProducto();"
+								role="button" title="Agregar Producto"><i
+								class="fas fa-plus"></i> </a>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal INFO -->
-	<div class="modal fade" id="info_usuario" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="errorModalLabel">Informaci&oacute;n</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true"> &times; </span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3" id="general_error_icon">
-							<h1>
-								<i class="fas fa-info-circle display-3" style="color: #F1C40F"></i>
-							</h1>
-						</div>
-						<div class="col-md-9 ml-auto" id="general_error_msj">
-
-							<!--Displays only Warning Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_2" errorStyle="display:none"
-								infoStyle="display:none" />
-
-							<!--Displays only Info Messages-->
-							<h:messages globalOnly="true" styleClass="messages" layout="list"
-								id="general_error_msj_3" errorStyle="display:none"
-								warnStyle="display:none" />
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Cerrar</button>
 				</div>
 			</div>
 		</div>
@@ -265,6 +208,17 @@
 				<div class="modal-body">
 					<h:form class="addusuario-form">
 						<div class="col-12">
+							<div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
+									<p:outputLabel for="addRestaurante" value="Restaurante" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0">
+									<h:inputText type="text" class="form-control"
+										id="addRestaurante" name="addName"
+										value="#{beanProducto.restaurante.nombre}" disabled="true">
+									</h:inputText>
+								</div>
+							</div>
 							<div class="col-12 d-flex flex-row">
 								<div class="col-3  mb-3">
 									<p:outputLabel for="addName" value="Nombre" />
@@ -287,7 +241,7 @@
 										styleClass="form-control" id="addCategoria">
 
 										<f:selectItems value="#{beanProducto.categorias}" var="cat"
-											itemLAbel="#{cat.nombre}" itemValue="#{cat.id}" />
+											itemLabel="#{cat.nombre}" itemValue="#{cat.id}" />
 									</p:selectOneMenu>
 								</div>
 							</div>
