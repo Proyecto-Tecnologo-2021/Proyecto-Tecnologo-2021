@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import com.vividsolutions.jts.io.ParseException;
+
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -31,7 +33,7 @@ public interface IUsuarioService {
 	
 
 	/*CLIENTE*/
-	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException;
+	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException;
 	public List<ClienteDTO> listarClientes() throws AppettitException;
 	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException;
 	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException;

@@ -3,14 +3,23 @@ package proyecto2021G03.appettit.converter;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
+import com.vividsolutions.jts.io.ParseException;
+
+import proyecto2021G03.appettit.business.IGeoService;
+import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.entity.Direccion;
+import proyecto2021G03.appettit.exception.AppettitException;
 
 @Singleton
 public class DireccionConverter extends AbstractConverter<Direccion, DireccionDTO> {
 
 	@EJB
 	private LocalidadConverter localidadConverter;
+	
+	@EJB
+	private IGeoService gService;
 	
 	@Override
 	public DireccionDTO fromEntity(Direccion e) {
@@ -40,4 +49,19 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 				.build();
 	}
 
+	public Direccion fromCrearDTO(DireccionCrearDTO d) throws AppettitException, ParseException {
+		if(d == null) return null;
+		
+		LocalidadDTO barrio = gService.localidadPorPunto(d.getGeometry());
+		
+		return Direccion.builder()
+				.alias(d.getAlias())
+				.calle(d.getCalle())
+				.numero(d.getNumero())
+				.apartamento(d.getApartamento())
+				.barrio(localidadConverter.fromDTO(barrio))
+				.geometry(d.getGeometry())
+				.build();
+	}
+	
 }

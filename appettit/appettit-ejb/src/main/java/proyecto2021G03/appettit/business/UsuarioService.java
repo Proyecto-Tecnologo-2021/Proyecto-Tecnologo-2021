@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 
 import org.jboss.logging.Logger;
 
+import com.vividsolutions.jts.io.ParseException;
+
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,6 +20,7 @@ import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
@@ -282,8 +285,8 @@ public class UsuarioService implements IUsuarioService {
 
 
 	@Override
-	public ClienteDTO crearCliente(ClienteDTO clienteData) throws AppettitException {
-		Cliente usuario = usrConverter.fromClienteDTO(clienteData);
+	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
+		Cliente usuario = usrConverter.fromClienteCrearDTO(clienteData);
 
 		try {
 			if (usrDAO.existeCorreoTelefono(usuario.getCorreo(), usuario.getTelefono())) {

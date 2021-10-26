@@ -20,14 +20,12 @@ public class ClienteDTO extends UsuarioDTO  {
         this.bloqueado = bloqueado;
         this.direcciones = direcciones;
         this.calificacion = calificacion;
-        this.idImagen = idImagen;
-        this.imagen = imagen;
+  
     }
 
     private Boolean bloqueado;
     private List<DireccionDTO> direcciones;
 
     private CalificacionClienteDTO calificacion;
-    private String idImagen;
-    private ImagenDTO imagen;
+  
 }

@@ -8,8 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.vividsolutions.jts.io.ParseException;
+
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
@@ -40,7 +44,7 @@ public class UsuarioREST {
 	
 	@POST
 	//@RecursoProtegidoJWT
-	public Response crear(ClienteDTO request) {
+	public Response crear(ClienteCrearDTO request) throws ParseException {
 		RespuestaREST<ClienteDTO> respuesta = null;
 		try {
 			ClienteDTO cliente = uService.crearCliente(request);
@@ -55,6 +59,25 @@ public class UsuarioREST {
 			}
 		}
 	}
+	/*
+	@POST
+	@Path("/agregarDireccion")
+	//@RecursoProtegidoJWT
+	public Response agregarDireccion(DireccionCrearDTO request) {
+		RespuestaREST<ClienteDTO> respuesta = null;
+		try {
+			ClienteDTO cliente = uService.agregarDireccion(request);
+			respuesta = new RespuestaREST<ClienteDTO>(true, "Dirección agregada con éxito.", cliente);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}*/
 	
 	@POST
 	@Path("/login")

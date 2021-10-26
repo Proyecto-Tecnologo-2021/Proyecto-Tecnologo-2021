@@ -1,26 +1,32 @@
 package proyecto2021G03.appettit.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
+import com.vividsolutions.jts.io.ParseException;
+
 import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
+import proyecto2021G03.appettit.entity.Direccion;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
+import proyecto2021G03.appettit.exception.AppettitException;
 
 @Singleton
 public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 	
 	@EJB
 	private DireccionConverter direccionConverter;
-
+	
 	@Override
 	public UsuarioDTO fromEntity(Usuario e) {
 		return null;
@@ -149,6 +155,24 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.build();
 	}
 
+	public Cliente fromClienteCrearDTO(ClienteCrearDTO c) throws AppettitException, ParseException {
+		if(c == null) return null;
+		
+		List<Direccion> direcciones = new ArrayList<Direccion>();
+		Direccion direccion = direccionConverter.fromCrearDTO(c.getDireccion());
+		direcciones.add(direccion);
+		
+		return Cliente.builder()
+				.nombre(c.getNombre())
+				.username(c.getUsername())
+				.password(c.getPassword())
+				.telefono(c.getTelefono())
+				.correo(c.getCorreo())
+				.tokenFireBase(c.getTokenFireBase())
+				.direcciones(direcciones)
+				.build();
+	}
+	
 	public Cliente fromClienteDTO(ClienteDTO c) {
 		if(c == null) return null;
 		return Cliente.builder()
