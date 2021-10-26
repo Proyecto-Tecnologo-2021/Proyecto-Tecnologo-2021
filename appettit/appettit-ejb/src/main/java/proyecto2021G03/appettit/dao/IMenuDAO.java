@@ -11,4 +11,5 @@ public interface IMenuDAO {
     public Menu editar(Menu menu);
     public void eliminar(Menu menu);
 	public List<Menu> listarPorRestaurate(Long id);
+    public List<Menu> listara();
     }

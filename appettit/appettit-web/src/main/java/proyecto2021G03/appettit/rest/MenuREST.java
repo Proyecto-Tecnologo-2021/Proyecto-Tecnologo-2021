@@ -1,8 +1,10 @@
 package proyecto2021G03.appettit.rest;
 
+import proyecto2021G03.appettit.business.IMenuRService;
 import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.dto.CategoriaDTO;
 import proyecto2021G03.appettit.dto.MenuDTO;
+import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
@@ -21,15 +23,15 @@ import java.util.List;
 public class MenuREST {
 
     @EJB
-    IMenuService iMenuService;
+    IMenuRService iMenuRService;
 
     @GET
 
     public Response listar() {
-        RespuestaREST<List<MenuDTO>> respuesta = null;
+        RespuestaREST<List<MenuRDTO>> respuesta = null;
         try {
-            List<MenuDTO> menuDTOS = iMenuService.listar();
-            respuesta = new RespuestaREST<List<MenuDTO>>(true, "Menues listadas con éxito.", menuDTOS);
+            List<MenuRDTO> menuDTOS = iMenuRService.listar();
+            respuesta = new RespuestaREST<List<MenuRDTO>>(true, "Menues listadas con éxito.", menuDTOS);
             return Response.ok(respuesta).build();
         } catch (AppettitException e) {
             respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());

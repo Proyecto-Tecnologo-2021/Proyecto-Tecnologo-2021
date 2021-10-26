@@ -11,6 +11,5 @@ public interface IMenuService {
     public MenuDTO crear(MenuDTO menuDTO)throws AppettitException;
     public MenuDTO editar(Long id, MenuDTO menuDTO)throws AppettitException;
     public void eliminar(Long id)throws AppettitException;
-    
     public List<MenuDTO> listarPorRestaurante(Long Id) throws AppettitException;
 }

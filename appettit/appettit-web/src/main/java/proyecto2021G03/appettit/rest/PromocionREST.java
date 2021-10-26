@@ -15,7 +15,7 @@ import java.util.List;
 @Path("/promo")
 @Consumes("application/json")
 @Produces("application/json")
-/*public class PromocionREST {
+public class PromocionREST {
     @EJB
 
     IServicioPromocion  iservicioPromocion;
