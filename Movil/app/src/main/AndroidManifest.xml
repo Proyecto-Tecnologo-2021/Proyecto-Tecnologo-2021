@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
         <activity
+            android:name=".AltaCliente"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true" />
         <activity

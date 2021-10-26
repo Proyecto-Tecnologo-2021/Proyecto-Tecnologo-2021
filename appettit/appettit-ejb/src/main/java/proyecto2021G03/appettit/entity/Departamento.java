@@ -37,9 +37,6 @@ public class Departamento implements Serializable {
 	@OneToMany
 	private List<Ciudad> ciudades;
 	
-	//@Column(name = "geom", columnDefinition = "geometry(MultiPolygon, 32721)")
-	//private MultiPolygon geometry;
-	
 	@Column(name="geom", columnDefinition="TEXT")
 	private String geometry;
 

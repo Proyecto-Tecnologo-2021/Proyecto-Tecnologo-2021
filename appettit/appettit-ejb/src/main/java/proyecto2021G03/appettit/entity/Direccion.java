@@ -49,9 +49,6 @@ public class Direccion implements Serializable {
     })
 	private Localidad barrio;
 	
-	//@Column(name = "geom", columnDefinition = "geometry(Point, 32721)")
-	//private Point geometry;
-	
 	@Column(name="geom", columnDefinition="TEXT")
 	private String geometry;
 

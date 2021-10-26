@@ -15,6 +15,7 @@ import com.vividsolutions.jts.io.ParseException;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
@@ -22,7 +23,9 @@ import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
@@ -48,7 +51,13 @@ public class UsuarioService implements IUsuarioService {
 
 	@EJB
 	IImagenService imgSrv;
-
+	
+	@EJB
+	DireccionConverter dirConverter;
+	
+	@EJB
+	IGeoService geoSrv;
+	
 	@Override
 	public void eliminar(Long id) throws AppettitException {
 		// se valida que el usuario exista
@@ -281,12 +290,46 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 
-
-
-
 	@Override
 	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
-		Cliente usuario = usrConverter.fromClienteCrearDTO(clienteData);
+		
+		/*
+		ClienteDTO cliente = new ClienteDTO();
+		cliente.setId(null);
+		cliente.setNombre(clienteData.getNombre());
+		cliente.setUsername(clienteData.getUsername());
+		cliente.setPassword(clienteData.getPassword());
+		cliente.setTelefono(clienteData.getTelefono());
+		cliente.setCorreo(clienteData.getCorreo());
+		cliente.setTokenFireBase(clienteData.getTokenFireBase());
+		cliente.setBloqueado(false);
+		*/
+		LocalidadDTO barrio = geoSrv.localidadPorPunto(clienteData.getDireccion().getGeometry()); 
+		
+		DireccionDTO dirDTO = DireccionDTO.builder()
+				.alias(clienteData.getDireccion().getAlias())
+				.apartamento(clienteData.getDireccion().getApartamento())
+				.calle(clienteData.getDireccion().getCalle())
+				.geometry(clienteData.getDireccion().getGeometry())
+				.barrio(barrio)
+				.quantity(0)
+				.build();
+		
+		List<DireccionDTO> direcciones = new ArrayList<DireccionDTO>();
+		direcciones.add(dirDTO);
+		
+		ClienteDTO cliente = new ClienteDTO(null, clienteData.getNombre(), 
+				clienteData.getUsername(),
+				clienteData.getPassword(),
+				clienteData.getTelefono(),
+				clienteData.getCorreo(),
+				clienteData.getTokenFireBase(),
+				false,
+				direcciones,
+				null
+				);
+		
+		Cliente usuario = usrConverter.fromClienteDTO(cliente);
 
 		try {
 			if (usrDAO.existeCorreoTelefono(usuario.getCorreo(), usuario.getTelefono())) {

@@ -143,57 +143,6 @@ public class MainActivity extends AppCompatActivity {
         updateUI(null);
     }
 
-
-    /* FUNCIONA SIN FIREBASE
-    private void updateUI(GoogleSignInAccount account){
-        if(account != null){
-            dtUsuario.setCorreo(account.getEmail());
-            dtUsuario.setTokenFirebase(account.getServerAuthCode());
-            signInButton.setEnabled(false);
-            loginButton.setEnabled(false);
-            logoutButton.setVisibility(View.VISIBLE);
-            userdata.setText(account.getDisplayName());
-
-        } else{
-            dtUsuario.setCorreo(null);
-            dtUsuario.setTokenFirebase(null);
-            dtUsuario.setToken(null);
-            signInButton.setEnabled(true);
-            loginButton.setEnabled(true);
-            logoutButton.setVisibility(View.INVISIBLE);
-            userdata.setText("");
-
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.i(TAG, account.getDisplayName());
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
-        }
-    }
-*/
-
     private void updateUI(FirebaseUser account){
         if(account != null){
 

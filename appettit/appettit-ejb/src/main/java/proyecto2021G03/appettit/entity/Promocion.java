@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -58,7 +59,11 @@ public class Promocion implements Serializable {
 	private Double descuento;
 	private Double precio;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumns( {
+		@JoinColumn(name="id_menu", referencedColumnName="id"),
+		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
+    })
 	private List<Menu> menus;
 
 }

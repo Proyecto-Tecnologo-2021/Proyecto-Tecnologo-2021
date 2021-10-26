@@ -12,8 +12,8 @@ public class ClienteDTO extends UsuarioDTO  {
 
     @Builder
     public ClienteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
-                      String token, String tokenFireBase, Boolean bloqueado, List<DireccionDTO> direcciones,
-                      CalificacionClienteDTO calificacion, String idImagen, ImagenDTO imagen) {
+                      String tokenFireBase, Boolean bloqueado, List<DireccionDTO> direcciones,
+                      CalificacionClienteDTO calificacion) {
 
         super(id, nombre, username, password, telefono, correo, tokenFireBase);
 

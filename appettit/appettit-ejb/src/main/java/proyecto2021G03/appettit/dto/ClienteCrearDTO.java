@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteCrearDTO extends UsuarioDTO  {
+public class ClienteCrearDTO {
 
     private String nombre;
     private String username;

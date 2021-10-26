@@ -1,11 +1,25 @@
 package uy.edu.fing.proyecto.appetit.obj;
 
+import java.util.List;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
 public class DtUsuario {
     private static DtUsuario uInstance= null;
+    private Long id;
+    private String nombre;
+    private String username;
+    private String password;
     private String correo;
     private String telefono;
     private String token;
     private String tokenFirebase;
+    private List<DtDireccion> direcciones;
 
     protected DtUsuario(){}
 
@@ -14,37 +28,5 @@ public class DtUsuario {
             uInstance = new DtUsuario();
         }
         return uInstance;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getTokenFirebase() {
-        return tokenFirebase;
-    }
-
-    public void setTokenFirebase(String tokenFirebase) {
-        this.tokenFirebase = tokenFirebase;
     }
 }

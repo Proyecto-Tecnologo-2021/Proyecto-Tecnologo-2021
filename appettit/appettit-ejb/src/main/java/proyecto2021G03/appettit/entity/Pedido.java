@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -55,10 +56,18 @@ public class Pedido implements Serializable {
 	@JoinColumn(name="id_cliente", referencedColumnName="id", insertable=false, updatable=false)
 	private Cliente cliente;
 
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumns( {
+		@JoinColumn(name="id_menu", referencedColumnName="id"),
+		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
+    })
 	private List<Menu> menus;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumns( {
+		@JoinColumn(name="id_promocion", referencedColumnName="id"),
+		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
+    })
 	private List<Promocion> promociones;
 	
 	@ManyToOne(cascade=CascadeType.ALL)

@@ -30,4 +30,12 @@
     <string name="login_pass">Contraseña</string>
     <string name="login_input">Ingresar</string>
 
+
+    <!--MENU-->
+    <string name="menu_op1">Restaurantes</string>
+    <string name="menu_op2">Menús</string>
+    <string name="menu_op3">Pedidos</string>
+    <string name="menu_op4">Yo</string>
+
+
 </resources>

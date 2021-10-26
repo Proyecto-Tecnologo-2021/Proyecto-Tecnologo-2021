@@ -2,8 +2,10 @@ package proyecto2021G03.appettit.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -25,14 +27,17 @@ public class Cliente extends Usuario {
 
 	@Builder
 	public Cliente(Long id, String nombre, String username, String password, String telefono, String correo,
-			String tokenFireBase) {
+			String tokenFireBase, Boolean bloqueado, List<Direccion> direcciones) {
 		super(id, nombre, username, password, telefono, correo, tokenFireBase);
-		// TODO Auto-generated constructor stub
+		
+		this.bloqueado = bloqueado;
+		this.direcciones = direcciones;		
 	}
 
 	private Boolean bloqueado;
 
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="id_direccion", referencedColumnName="id")
 	private List<Direccion> direcciones;
 
 }

@@ -10,8 +10,10 @@ import javax.ejb.Singleton;
 import com.vividsolutions.jts.io.ParseException;
 
 import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -182,11 +184,13 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.password(c.getPassword())
 				.telefono(c.getTelefono())
 				.correo(c.getCorreo())
+				.tokenFireBase(c.getTokenFireBase())
 				.bloqueado(c.getBloqueado())
 				.direcciones(direccionConverter.fromDTO(c.getDirecciones()))
 				.build();
 	}
-
+	
+	
 	public List<ClienteDTO> fromCliente(List<Cliente> entities){
 		if(entities == null) return null;
 		return entities.stream()

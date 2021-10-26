@@ -59,10 +59,12 @@ public class Menu implements Serializable {
 	private Double precioSimple;
 	private Double precioTotal;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="id_producto", referencedColumnName="id")
 	private List<Producto> productos;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="id_extramenu", referencedColumnName="id")
 	private List<ExtraMenu> extras;
 	
 	private String id_imagen;

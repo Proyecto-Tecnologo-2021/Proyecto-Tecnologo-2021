@@ -333,8 +333,6 @@ public class AppInitSingleton implements Serializable {
 		
 		JSONArray jsonArray = (JSONArray) jsonObject.get("restaurantes");
 		
-		
-		
 		for (Object res: jsonArray) {
 			JSONObject data = (JSONObject) res;
 			

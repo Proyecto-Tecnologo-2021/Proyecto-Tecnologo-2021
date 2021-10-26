@@ -246,7 +246,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 	@Override
 	public Cliente crearCliente(Cliente cliente) {
 		em.persist(cliente);
-
 		return cliente;
 	}
 
