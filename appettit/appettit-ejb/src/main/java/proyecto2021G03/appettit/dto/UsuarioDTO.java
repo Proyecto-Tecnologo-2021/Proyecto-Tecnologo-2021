@@ -17,9 +17,6 @@ public abstract class UsuarioDTO {
 	private String password;
 	private String telefono;
 	private String correo;
-	private String token;
 	private String tokenFireBase;
 
-    public UsuarioDTO(Long id, String nombre, String username, String password, String telefono, String correo, String token, String tokenFireBase) {
-    }
 }

@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Restautrantes</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+				class="navbar-brand" href="/appettit-web/admin/home.xhtml"><img
+				class="appettit-logo"
+				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link active" href="#">Restaurantes</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="administradores.xhtml">Administradores</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
+				</ul>
+			</div>
+			</nav>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="card">
+					<h:form id="form">
+						<p:dataTable var="restaurante" editable="true" id="tableRestaurantes"
+							value="#{beanAdminRestaurante.restaurantes}"
+							widgetVar="restaurantesTable"
+							emptyMessage="No existen Restaurantes"
+							globalFilterOnly="#{beanAdminRestaurante.globalFilterOnly}"
+							filteredValue="#{beanAdminRestaurante.filterRestaurantes}"
+							rows="10" paginator="true" rowKey="#{restaurante.id}"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+							<p:ajax event="rowEdit"
+								listener="#{beanAdminRestaurante.onRowEdit}"
+								update=":form:messages tableRestaurantes" />
+
+							<p:ajax event="rowEditCancel"
+								listener="#{beanAdminRestaurante.onRowCancel}"
+								update=":form:messages tableRestaurantes" />
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de Restaurantes</h5>
+										</div>
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('restaurantesTable').filter()"
+												style="width:10rem" placeholder="Palabra clave" />
+											<p:commandButton value="Buscar" update="@form"
+												action="#{beanAdminRestaurante.toggleGlobalFilter()}"
+												class="btn btn-primary" />
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="Id" sortBy="#{restaurante.id}">
+								<h:outputText value="#{restaurante.id}" />
+							</p:column>
+
+							<p:column headerText="Nombre" sortBy="#{restaurante.nombre}"
+								filterBy="#{restaurante.nombre}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{restaurante.nombre}" />
+							</p:column>
+
+							<p:column headerText="Direcci&oacute;n"
+								sortBy="#{restaurante.direccion}"
+								filterBy="#{restaurante.direccion.calle}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{restaurante.direccion.calle} #{restaurante.direccion.numero}" />
+							</p:column>
+
+							<p:column headerText="Tel&eacute;fono"
+								sortBy="#{restaurante.telefono}"
+								filterBy="#{restaurante.telefono}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{restaurante.telefono}" />
+							</p:column>
+
+
+							<p:column headerText="Registro" filterBy="#{restaurante.estado}"
+								sortBy="#{restaurante.estado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge status-restaurante-#{restaurante.estado.toString().toLowerCase()}"
+											value="#{restaurante.estado.toString()}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{restaurante.estado}"
+											styleClass="custom-filter">
+
+											<f:selectItems
+												value="#{beanAdminRestaurante.restauranteEstado}"
+												var="estado" itemLAbel="#{estado.toString()}"
+												itemValue="#{estado}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{beanAdminRestaurante.restauranteEstado}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Bloqueado"
+								filterBy="#{restaurante.bloqueado}"
+								sortBy="#{restaurante.bloqueado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<div style="width: 3rem"
+											class="btn-sm bloqueado-restaurante-#{restaurante.bloqueado.toString().toLowerCase()}">
+											<i
+												class="pi pi-#{restaurante.bloqueado ?  'lock' : 'lock-open'}"></i>&nbsp;
+											<h:outputText value="#{restaurante.bloqueado ?  'Si' : 'No'}" />
+										</div>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectBooleanButton onLabel="Si" offLabel="No"
+											style="width:5rem" value="#{restaurante.bloqueado}"
+											onIcon="pi pi-lock" offIcon="pi pi-lock-open" />
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('restaurantesTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="#{true}"
+											noSelectionOption="false" />
+										<f:selectItem itemLabel="No" itemValue="#{false}"
+											noSelectionOption="false" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Calificacion"
+								sortBy="#{restaurante.calificacion.general}">
+								<p:rating readonly="true"
+									value="#{restaurante.calificacion.general}" />
+							</p:column>
+
+							<p:column style="width:3rem;text-align: center">
+								<p:commandButton update=":form:restauranteDetail"
+									oncomplete="PF('restauranteDialog').show()" icon="pi pi-search"
+									title="Ver">
+									<f:setPropertyActionListener value="#{restaurante}"
+										target="#{beanAdminRestaurante.selRestaurante}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column style="width:6rem">
+								<p:rowEditor editTitle="Editar Restaurante"
+									cancelTitle="Cancelar Edici&oacute;n"
+									saveTitle="Confirmar Edici&oacute;n" />
+							</p:column>
+						</p:dataTable>
+
+
+						<p:dialog header="Informaci&oacute;n Restaurante"
+							widgetVar="restauranteDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="restauranteDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanAdminRestaurante.selRestaurante}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-top">
+												<div>
+													<span
+														class="restaurante-badge font-weight-bold product-badge #{beanAdminRestaurante.selRestaurante.bloqueado ? 'text-danger': ''}">
+														<i
+														class="pi pi-#{beanAdminRestaurante.selRestaurante.bloqueado ?  'lock' : 'lock-open'}"></i>
+													</span> <span class="restaurante-name-card">#{beanAdminRestaurante.selRestaurante.nombre}</span>
+												</div>
+
+											</div>
+											<div class="product-grid-item-content">
+
+												<p:graphicImage
+													value="#{beanAdminRestaurante.selRestaurante.imagen.imagen}" />
+
+
+												<div class="product-grid-item-bottom">
+													<div class="product-name">Cantidad de men&uacute;s</div>
+													<h:outputText
+														value="#{beanAdminRestaurante.menuRestaurante.size()}"
+														styleClass="product-price">
+													</h:outputText>
+												</div>
+											</div>
+											<div class="product-grid-item-bottom">
+												<h:outputText
+													value="#{beanAdminRestaurante.menuRestaurante.size()}"
+													styleClass="product-price">
+												</h:outputText>
+												<p:commandButton value="Ver m&aacute;s" icon="pi pi-check">
+													<f:setPropertyActionListener
+														value="#{beanAdminRestaurante.selRestaurante}"
+														target="#{beanAdminRestaurante.selRestaurante}" />
+												</p:commandButton>
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+			
+		
+		
+	</script>
+</h:body>
+</html>

@@ -11,9 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.ImagenDTO;
 
 @Getter
 @Setter
@@ -34,7 +31,6 @@ public class Cliente extends Usuario {
 	}
 
 	private Boolean bloqueado;
-	private String idImagen;
 
 	@OneToMany
 	private List<Direccion> direcciones;

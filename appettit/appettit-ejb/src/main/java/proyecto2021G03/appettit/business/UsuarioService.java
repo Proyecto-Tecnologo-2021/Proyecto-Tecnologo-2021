@@ -15,11 +15,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.*;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
+import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.LoginDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Restaurante;
-import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
@@ -303,24 +309,7 @@ public class UsuarioService implements IUsuarioService {
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();
 //				res.setCalificacion(calificacionRestaurante(res));
-				ImagenDTO img = new ImagenDTO();
 
-				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
-					FileManagement fm = new FileManagement();
-
-					img.setIdentificador("Sin Imagen");
-					img.setImagen(fm.getFileAsByteArray("META-INF/img/cliente.png"));
-				} else {
-					try {
-						img = imgSrv.buscarPorId(res.getId_imagen());
-					} catch (Exception e) {
-						logger.error(e.getMessage());
-					}
-
-				}
-
-				res.setImagen(img);
-				clientes.add(res);
 			}
 
 			return clientes;

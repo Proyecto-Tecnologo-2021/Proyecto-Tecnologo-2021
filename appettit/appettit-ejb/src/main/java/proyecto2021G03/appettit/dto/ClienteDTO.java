@@ -15,7 +15,7 @@ public class ClienteDTO extends UsuarioDTO  {
                       String token, String tokenFireBase, Boolean bloqueado, List<DireccionDTO> direcciones,
                       CalificacionClienteDTO calificacion, String idImagen, ImagenDTO imagen) {
 
-        super(id, nombre, username, password, telefono, correo, token, tokenFireBase);
+        super(id, nombre, username, password, telefono, correo, tokenFireBase);
 
         this.bloqueado = bloqueado;
         this.direcciones = direcciones;
