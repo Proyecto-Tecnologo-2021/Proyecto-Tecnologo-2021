@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,9 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.jboss.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -29,16 +33,19 @@ import com.vividsolutions.jts.io.WKTReader;
 import proyecto2021G03.appettit.business.ICategoriaService;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IGeoService;
+import proyecto2021G03.appettit.business.IProductoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
+import proyecto2021G03.appettit.dto.CategoriaDTO;
 import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -66,6 +73,10 @@ public class AppInitSingleton implements Serializable {
 	
 	@EJB
 	ICategoriaService srvCategoria;
+	
+	@EJB
+	IProductoService prodSrv;
+	
 
 	WKTReader fromText;
 	Geometry geom;
@@ -91,6 +102,8 @@ public class AppInitSingleton implements Serializable {
 			parseRestaurante();
 			
 			parseCategoria();
+			
+			parseProducto();
 			
 			/*
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");
@@ -295,6 +308,72 @@ public class AppInitSingleton implements Serializable {
 		bufferedReader.close();
 
 		logger.info("Categorías ingresadas");
+	}
+
+	private void parseProducto() throws IOException, ParseException, AppettitException {
+
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL resource = classLoader.getResource("META-INF/input/productos.json");
+		File deptoFile = new File(resource.getFile());
+		
+		String correo = null;
+		String nombre = null;
+		String str_categoria = null;
+		CategoriaDTO categoria = null;
+		List<CategoriaDTO> categorias = srvCategoria.listar();
+		Iterator<CategoriaDTO> it = categorias.iterator();
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
+		
+		logger.info("Producto: " + bufferedReader.readLine().toString());
+		
+		JSONTokener tokener = new JSONTokener(bufferedReader);
+		JSONObject jsonObject = new JSONObject(tokener);
+		
+		JSONArray jsonArray = (JSONArray) jsonObject.get("restaurantes");
+		
+		
+		
+		for (Object res: jsonArray) {
+			JSONObject data = (JSONObject) res;
+			
+			correo = (String) data.getString("id");
+			RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+			
+			JSONArray productos = (JSONArray) data.get("articulos");
+			
+			for(Object art : productos) {
+				JSONObject pdata = (JSONObject) art;
+				nombre =  (String) pdata.getString("nombre");
+				str_categoria =  (String) pdata.getString("categoria");
+				
+				
+				while (it.hasNext()) {
+					
+					CategoriaDTO cDTO = it.next();
+					
+					if(cDTO.getNombre().equalsIgnoreCase(str_categoria)) {
+						categoria = cDTO;
+						break;
+					}
+				}
+				
+				ProductoDTO productoDTO = ProductoDTO.builder()
+						.id_categoria(categoria.getId())
+						.id_restaurante(restaurante.getId())
+						.nombre(nombre).build();;
+						
+				prodSrv.crear(productoDTO );
+				
+			}
+			
+		}
+		
+		
+		bufferedReader.close();
+
+		logger.info("Productos ingresadas");
 	}
 
 }

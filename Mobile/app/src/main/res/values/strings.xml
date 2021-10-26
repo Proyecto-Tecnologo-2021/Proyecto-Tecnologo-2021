@@ -1,6 +1,6 @@
 <resources>
     <!--GRAL-->
-    <string name="app_name">PCAppettit</string>
+    <string name="app_name">Appetit</string>
     <string name="login_welcome">¡Bienvenido!</string>
     <string name="google_login">Ingresar con Google</string>
     <string name="appettit_login">Ingresar de otra forma</string>

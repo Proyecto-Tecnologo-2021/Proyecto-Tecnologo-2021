@@ -11,10 +11,11 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DtLogin {
-    Boolean ok;
-    String mensaje;
-    DtUsuario usuario;
-
-
+public class DtProducto {
+    private Long id;
+    private Long id_restaurante;
+    private String nombre;
+    private Long id_categoria;
+    private DtRestaurante restaurante;
+    private DtCategoria categoria;
 }

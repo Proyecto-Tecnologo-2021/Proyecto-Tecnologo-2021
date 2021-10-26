@@ -61,7 +61,20 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form id="form">
-						<p:dataTable var="restaurante" editable="true" id="tableRestaurantes"
+						<p:toolbar>
+							<p:toolbarGroup align="right">
+								<p:commandButton value="Exportar" icon="pi pi-upload"
+									styleClass="ui-button-help" ajax="false">
+									<p:dataExporter type="pdf" target="tableRestaurantes"
+										fileName="Restaurantes" options="#{beanAdminRestaurante.pdfOpt}"
+										preProcessor="#{beanAdminRestaurante.preProcessPDF}"/>
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+
+
+						<p:dataTable var="restaurante" editable="true"
+							id="tableRestaurantes"
 							value="#{beanAdminRestaurante.restaurantes}"
 							widgetVar="restaurantesTable"
 							emptyMessage="No existen Restaurantes"
@@ -189,13 +202,13 @@
 								</f:facet>
 							</p:column>
 
-							<p:column headerText="Calificacion"
+							<p:column headerText="Calificaci&oacute;n"
 								sortBy="#{restaurante.calificacion.general}">
 								<p:rating readonly="true"
 									value="#{restaurante.calificacion.general}" />
 							</p:column>
 
-							<p:column style="width:3rem;text-align: center">
+							<p:column style="width:3rem;text-align: center" exportable="false">
 								<p:commandButton update=":form:restauranteDetail"
 									oncomplete="PF('restauranteDialog').show()" icon="pi pi-search"
 									title="Ver">
@@ -204,7 +217,7 @@
 								</p:commandButton>
 							</p:column>
 
-							<p:column style="width:6rem">
+							<p:column style="width:6rem" exportable="false">
 								<p:rowEditor editTitle="Editar Restaurante"
 									cancelTitle="Cancelar Edici&oacute;n"
 									saveTitle="Confirmar Edici&oacute;n" />

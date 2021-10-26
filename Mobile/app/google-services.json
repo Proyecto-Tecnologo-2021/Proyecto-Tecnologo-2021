@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "915134390722",
+    "project_id": "appetit-2c5d3",
+    "storage_bucket": "appetit-2c5d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915134390722:android:a5e096d416bc5224e7f65b",
+        "android_client_info": {
+          "package_name": "proyecto2021G03.appetit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915134390722-ml2rjr2kfgsn0l7sk8lrt1q8g4cmsai4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "proyecto2021G03.appetit",
+            "certificate_hash": "e574e7afe5577bd7fff92e707fce2d34a4aefc71"
+          }
+        },
+        {
+          "client_id": "915134390722-avo66p6v51lvs5u7q5ob7snq5gr0o4t9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC7BBD96LxbkgBdqlUYZZ97KBCNIC0LV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915134390722-avo66p6v51lvs5u7q5ob7snq5gr0o4t9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

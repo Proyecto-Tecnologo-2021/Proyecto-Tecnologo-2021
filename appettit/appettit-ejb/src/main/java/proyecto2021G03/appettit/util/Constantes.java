@@ -28,7 +28,7 @@ public class Constantes {
 	public static final String NODOS_PERIFERICOS_REST_URL = "https://nodos-perifericos.herokuapp.com";
 	public static final String NODOS_EXTERNOS_REST_URL = "https://nodos-externos.herokuapp.com";*/
 	
-	/* Notificaciones Firebase 
-	public static final String FIREBASE_API_KEY = "AAAA-gQUGLA:APA91bHmp4bPTOP1nX9zvKZWOG-kwJ6REZ7D66OJUtXHSavf1YxgRHLZJGG3jeQP8-1CQtUufu8GUSo_SxjC1GvoAJTiOvSxGlbKaFqoj1lnE75RUxQdIwatvGTvv_xSVdcbYjj7uPQh";
-	public static final String FIREBASE_FCM_URL = "https://fcm.googleapis.com/fcm/send";*/
+	/* Notificaciones Firebase*/ 
+	public static final String FIREBASE_API_KEY = "AAAA1RJCocI:APA91bGfs3tLn4xetOnQYtyjEWsLXRGQFm8h9ik6CJeL0JiNjde4Hdqz_RobPmWPE_sgeET2WE35eQpy4PQq_RD3UIQKYyR1vuoi4RIthbecPF9UejualHzAjUUgk7KJCulv6h26_x80";
+	public static final String FIREBASE_FCM_URL = "https://fcm.googleapis.com/fcm/send";
 }

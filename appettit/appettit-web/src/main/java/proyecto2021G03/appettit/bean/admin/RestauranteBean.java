@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.bean.admin;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +9,20 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.jboss.logging.Logger;
+import org.primefaces.component.export.PDFOptions;
 import org.primefaces.event.RowEditEvent;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,6 +55,7 @@ public class RestauranteBean implements Serializable {
 	private Boolean disabledBloquedado = true;
 	private Long id;
 	private boolean globalFilterOnly;
+	private PDFOptions pdfOpt;
 
 	@EJB
 	IUsuarioService usrSrv;
@@ -55,6 +65,7 @@ public class RestauranteBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		customizationOptions();
 		try {
 			restaurantes = usrSrv.listarRestaurantes();
 			logger.info("Restaurantes: " + restaurantes.size());
@@ -87,8 +98,6 @@ public class RestauranteBean implements Serializable {
 
 	}
 
-	
-
 	public List<MenuDTO> getMenuRestaurante() {
 		List<MenuDTO> menus = new ArrayList<MenuDTO>();
 
@@ -104,7 +113,7 @@ public class RestauranteBean implements Serializable {
 
 		return menus;
 	}
-	
+
 	public void onRowSelect(RowEditEvent<RestauranteDTO> event) {
 		disabledBloquedado = false;
 	}
@@ -113,14 +122,14 @@ public class RestauranteBean implements Serializable {
 
 		try {
 			selRestaurante = event.getObject();
-			
+
 			logger.info("onRowEdit - Bloqueddo: " + event.getObject().getBloqueado());
-			
+
 			if (!event.getObject().getBloqueado() && getMenuRestaurante().size() < 3) {
 				restaurantes = usrSrv.listarRestaurantes();
-				
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-						"Error", "El Restaurante tiene menos de 3 menús, no es posible desbloquearlo."));
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Error",
+						"El Restaurante tiene menos de 3 menús, no es posible desbloquearlo."));
 
 			} else {
 				usrSrv.editarRestaurante(event.getObject());
@@ -130,8 +139,6 @@ public class RestauranteBean implements Serializable {
 						new FacesMessage("Edición correcta", event.getObject().getNombre()));
 
 			}
-			
-			
 
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
@@ -140,12 +147,35 @@ public class RestauranteBean implements Serializable {
 		}
 	}
 
-	
-	
 	public void onRowCancel(RowEditEvent<RestauranteDTO> event) {
-		disabledBloquedado=true;
-	
+		disabledBloquedado = true;
+
 		FacesMessage msg = new FacesMessage("Edición cancelada", String.valueOf(event.getObject().getNombre()));
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
+
+	public void customizationOptions() {
+		pdfOpt = new PDFOptions();
+		pdfOpt.setFacetBgColor("#f2a22c");
+		pdfOpt.setFacetFontColor("#ffffff");
+		pdfOpt.setFacetFontStyle("BOLD");
+		pdfOpt.setCellFontSize("8");
+		pdfOpt.setFontName("Verdana");
+	}
+
+	public void preProcessPDF(Object document) throws IOException, BadElementException, DocumentException {
+		Document pdf = (Document) document;
+		pdf.open();
+		pdf.setMargins(1, 1, 1, 1);
+		pdf.setPageSize(PageSize.A4);
+
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
+		String separator = File.separator;
+		String logo = externalContext.getRealPath("") + separator + "resources" + separator + "images" + separator
+				+ "logo.png";
+
+		pdf.add(Image.getInstance(logo));
+	}
+
 }

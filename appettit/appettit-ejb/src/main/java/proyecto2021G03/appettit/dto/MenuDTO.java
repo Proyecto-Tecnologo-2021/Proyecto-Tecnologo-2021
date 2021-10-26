@@ -21,4 +21,5 @@ public class MenuDTO {
     private List<ProductoDTO> productos;
     private List<ExtraMenuDTO> extras;
     private String id_imagen;
+    private ImagenDTO imagen;
 }
