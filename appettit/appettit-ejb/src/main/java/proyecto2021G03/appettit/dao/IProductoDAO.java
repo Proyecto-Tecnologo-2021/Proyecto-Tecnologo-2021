@@ -14,7 +14,6 @@ public interface IProductoDAO {
 	public Producto crear(Producto producto);
 	public Producto editar(Producto producto);
 	public void eliminar(Producto producto);
-	
-	public  List<Producto> listarPorRestaurante(Long id);
+	public List<Producto> listarPorRestaurante(Long id);
 	
 }
