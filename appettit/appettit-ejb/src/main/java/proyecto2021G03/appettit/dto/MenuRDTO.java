@@ -1,7 +1,6 @@
 package proyecto2021G03.appettit.dto;
 
 import lombok.*;
-import proyecto2021G03.appettit.entity.Menu;
 
 import java.util.List;
 @Getter
@@ -11,7 +10,10 @@ import java.util.List;
 @Builder
 public class MenuRDTO {
 
+    private Long id; //ID DE MENU
     private Long id_restaurante;
+    private String nom_restaurante;
+    private Double descuento;
     private String nombre;
     private String descripcion;
     private Double precioSimple;
