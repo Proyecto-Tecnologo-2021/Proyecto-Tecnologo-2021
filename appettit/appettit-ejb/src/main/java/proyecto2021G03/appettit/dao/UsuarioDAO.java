@@ -16,6 +16,7 @@ import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
+import proyecto2021G03.appettit.entity.Direccion;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 
@@ -256,6 +257,12 @@ public class UsuarioDAO implements IUsuarioDAO {
 	}
 
 	@Override
+	public Cliente agregarDireccion(Cliente cliente) {
+		
+		return em.merge(cliente);
+	}
+	
+	@Override
 	public List<Cliente> listarClientes() {
 
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "cliente");
@@ -287,8 +294,19 @@ public class UsuarioDAO implements IUsuarioDAO {
 	}
 
 	@Override
+	public List<Cliente> buscarPorIdClienteInteger(Long id) {
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
+		consulta.setParameter("type", "cliente");
+		consulta.setParameter("id", id);
+
+		List<Cliente> usuarios = consulta.getResultList();
+		return usuarios;
+	}
+	
+	@Override
 	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData) {
 
 		return null;
 	}
+
 }

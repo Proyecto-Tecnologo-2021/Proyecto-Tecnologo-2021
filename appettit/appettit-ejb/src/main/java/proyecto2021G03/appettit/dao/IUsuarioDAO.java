@@ -44,9 +44,11 @@ public interface IUsuarioDAO {
 	/*CLIENTE*/
 	public Cliente crearCliente(Cliente cliente);
 	public Cliente editarCliente(Cliente cliente);
+	public Cliente agregarDireccion(Cliente cliente);
 	public List<Cliente> listarClientes();
 	public List<Cliente> buscarPorNombreCliente(String nombre);
 	public List<Cliente> buscarPorIdCliente(String id);
+	public List<Cliente> buscarPorIdClienteInteger(Long id);
 	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData);
 
 }

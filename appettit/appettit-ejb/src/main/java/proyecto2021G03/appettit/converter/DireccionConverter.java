@@ -30,6 +30,7 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 				.calle(e.getCalle())
 				.numero(e.getNumero())
 				.apartamento(e.getApartamento())
+				.referencias(e.getReferencias())
 				.barrio(localidadConverter.fromEntity(e.getBarrio()))
 				.geometry(e.getGeometry())
 				.build();
@@ -44,6 +45,7 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 				.calle(d.getCalle())
 				.numero(d.getNumero())
 				.apartamento(d.getApartamento())
+				.referencias(d.getReferencias())
 				.barrio(localidadConverter.fromDTO(d.getBarrio()))
 				.geometry(d.getGeometry())
 				.build();

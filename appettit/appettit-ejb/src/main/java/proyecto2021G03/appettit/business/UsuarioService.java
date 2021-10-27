@@ -23,6 +23,7 @@ import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
@@ -31,12 +32,12 @@ import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
+import proyecto2021G03.appettit.entity.Direccion;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 import proyecto2021G03.appettit.util.FileManagement;
-
 
 @Stateless
 public class UsuarioService implements IUsuarioService {
@@ -303,6 +304,8 @@ public class UsuarioService implements IUsuarioService {
 					.alias(clienteData.getDireccion().getAlias())
 					.apartamento(clienteData.getDireccion().getApartamento())
 					.calle(clienteData.getDireccion().getCalle())
+					.numero(clienteData.getDireccion().getNumero())
+					.referencias(clienteData.getDireccion().getReferencias())
 					.geometry(clienteData.getDireccion().getGeometry())
 					.barrio(barrio)
 					.quantity(0)
@@ -337,6 +340,49 @@ public class UsuarioService implements IUsuarioService {
 				return usrConverter.fromCliente(usrDAO.crearCliente(usuario));
 			}
 
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public ClienteDTO agregarDireccion(DireccionCrearDTO direccion) throws AppettitException {
+		
+		List<Cliente> usuarios = usrDAO.buscarPorIdClienteInteger(direccion.getId_cliente());
+		
+		try {
+			if (usuarios.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente usuario = usuarios.get(0);
+				
+				Boolean alias_repetido = existeAlias(usuario, direccion.getAlias());
+				
+				if (alias_repetido) {
+					throw new AppettitException("Alias ingresado previamente para el cliente.", AppettitException.EXISTE_REGISTRO);
+				} else {
+				
+					List<Direccion> direcciones = usuario.getDirecciones();
+					
+					LocalidadDTO barrio = geoSrv.localidadPorPunto(direccion.getGeometry());
+					
+					DireccionDTO dirDTO = DireccionDTO.builder()
+							.alias(direccion.getAlias())
+							.apartamento(direccion.getApartamento())
+							.calle(direccion.getCalle())
+							.numero(direccion.getNumero())
+							.referencias(direccion.getReferencias())
+							.geometry(direccion.getGeometry())
+							.barrio(barrio)
+							.quantity(0)
+							.build();
+					
+					Direccion nueva = dirConverter.fromDTO(dirDTO);
+					direcciones.add(nueva);
+					
+					return usrConverter.fromCliente(usrDAO.agregarDireccion(usuario));
+				}
+			}
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -442,6 +488,20 @@ public class UsuarioService implements IUsuarioService {
 				.claim("telefono", usuario.getTelefono())
 				.signWith(SignatureAlgorithm.HS512, Constantes.JWT_KEY)
 				.compact();
+	}
+	
+
+	
+	public Boolean existeAlias(Cliente cliente, String alias) {
+		
+		List<Direccion> direcciones = cliente.getDirecciones();
+		
+		for (Direccion d: direcciones) {
+			if (d.getAlias().equals(alias)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

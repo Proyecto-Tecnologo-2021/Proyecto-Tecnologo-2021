@@ -59,7 +59,7 @@ public class UsuarioREST {
 			}
 		}
 	}
-	/*
+	
 	@POST
 	@Path("/agregarDireccion")
 	//@RecursoProtegidoJWT
@@ -77,7 +77,7 @@ public class UsuarioREST {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
 			}
 		}
-	}*/
+	}
 	
 	@POST
 	@Path("/login")
