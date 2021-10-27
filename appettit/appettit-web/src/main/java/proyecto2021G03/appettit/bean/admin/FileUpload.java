@@ -214,7 +214,7 @@ public class FileUpload implements Serializable {
 		}
 	}
 
-	public void parseAdministrador(){
+	public void parseAdministrador() {
 		if (filea != null) {
 			BufferedReader bufferedReader = null;
 			try {
@@ -256,7 +256,7 @@ public class FileUpload implements Serializable {
 	}
 
 	public void parseRestaurante() {
-		if (filea != null) {
+		if (filer != null) {
 			BufferedReader bufferedReader = null;
 			try {
 
@@ -319,7 +319,7 @@ public class FileUpload implements Serializable {
 	}
 
 	public void parseCategoria() {
-		if (filea != null) {
+		if (filecat != null) {
 			BufferedReader bufferedReader = null;
 			try {
 
@@ -359,62 +359,53 @@ public class FileUpload implements Serializable {
 	}
 
 	public void parseProducto() throws IOException, ParseException, AppettitException {
-		if (filea != null) {
+		if (fileprod != null) {
 			BufferedReader bufferedReader = null;
 			try {
+				String linea;
+				String[] data;
 
-				String correo = null;
-				String nombre = null;
-				String str_categoria = null;
-				CategoriaDTO categoria = null;
 				List<CategoriaDTO> categorias = srvCategoria.listar();
-				Iterator<CategoriaDTO> it = categorias.iterator();
+				
 
 				bufferedReader = new BufferedReader(new InputStreamReader(fileprod.getInputStream(), "UTF-8"));
 
-				logger.info("Producto: " + bufferedReader.readLine().toString());
+				while ((linea = bufferedReader.readLine()) != null) {
+					data = linea.split(";");
 
-				JSONTokener tokener = new JSONTokener(bufferedReader);
-				JSONObject jsonObject = new JSONObject(tokener);
+					String correo = data[0].trim();
+					String nombre = data[1].trim();
+					String str_categoria = data[2].trim();
+					;
+					CategoriaDTO categoria = null;
 
-				JSONArray jsonArray = (JSONArray) jsonObject.get("restaurantes");
-
-				for (Object res : jsonArray) {
-					JSONObject data = (JSONObject) res;
-
-					correo = (String) data.getString("id");
 					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+					Iterator<CategoriaDTO> it = categorias.iterator();
+					
+					while (it.hasNext()) {
 
-					JSONArray productos = (JSONArray) data.get("articulos");
+						CategoriaDTO cDTO = it.next();
 
-					for (Object art : productos) {
-						JSONObject pdata = (JSONObject) art;
-						nombre = (String) pdata.getString("nombre");
-						str_categoria = (String) pdata.getString("categoria");
-
-						while (it.hasNext()) {
-
-							CategoriaDTO cDTO = it.next();
-
-							if (cDTO.getNombre().equalsIgnoreCase(str_categoria)) {
-								categoria = cDTO;
-								break;
-							}
+						if (cDTO.getNombre().equalsIgnoreCase(str_categoria)) {
+							categoria = cDTO;
+							break;
 						}
-
-						ProductoDTO productoDTO = ProductoDTO.builder().id_categoria(categoria.getId())
-								.id_restaurante(restaurante.getId()).nombre(nombre).build();
-						;
-
-						prodSrv.crear(productoDTO);
-
 					}
+					logger.info(linea.toString());
+					logger.info(categoria.getId());
+					logger.info(restaurante.getId());
+					logger.info(nombre);
 
+					ProductoDTO productoDTO = ProductoDTO.builder().id_categoria(categoria.getId())
+							.id_restaurante(restaurante.getId()).nombre(nombre).build();
+
+					
+					productoDTO = prodSrv.crear(productoDTO);
 				}
 
 				bufferedReader.close();
 
-				logger.info("Productos ingresadas");
+				logger.info("Productos ingresados");
 				FacesMessage message = new FacesMessage("Successful", fileprod.getFileName() + " is uploaded.");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 

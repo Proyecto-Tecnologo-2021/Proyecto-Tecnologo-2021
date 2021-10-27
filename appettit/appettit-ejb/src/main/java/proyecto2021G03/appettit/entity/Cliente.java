@@ -12,19 +12,18 @@ import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
 @DiscriminatorValue("cliente")
 public class Cliente extends Usuario {
 
 	private static final long serialVersionUID = 1L;
+	
+	public Cliente() {}
 
 	@Builder
 	public Cliente(Long id, String nombre, String username, String password, String telefono, String correo,
@@ -39,7 +38,6 @@ public class Cliente extends Usuario {
 
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_direccion", referencedColumnName="id")
-	@Builder.Default
 	private List<Direccion> direcciones = new ArrayList<Direccion>();
 
 }
