@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -61,14 +62,16 @@ public class Pedido implements Serializable {
 		@JoinColumn(name="id_menu", referencedColumnName="id"),
 		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
     })
-	private List<Menu> menus;
+	@Builder.Default
+	private List<Menu> menus = new ArrayList<Menu>();
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumns( {
 		@JoinColumn(name="id_promocion", referencedColumnName="id"),
 		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
     })
-	private List<Promocion> promociones;
+	@Builder.Default
+	private List<Promocion> promociones = new ArrayList<Promocion>();;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_entrega", referencedColumnName="id", insertable=false, updatable=false)

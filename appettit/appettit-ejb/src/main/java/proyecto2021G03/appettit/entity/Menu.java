@@ -1,6 +1,7 @@
 package proyecto2021G03.appettit.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -60,12 +62,16 @@ public class Menu implements Serializable {
 	private Double precioTotal;
 	
 	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name="id_producto", referencedColumnName="id")
-	private List<Producto> productos;
+	@JoinColumns( {
+		@JoinColumn(name="id_producto", referencedColumnName="id"),
+		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
+    })
+	@Builder.Default
+	private List<Producto> productos = new ArrayList<Producto>();
 	
 	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name="id_extramenu", referencedColumnName="id")
-	private List<ExtraMenu> extras;
+	@Builder.Default
+	private List<ExtraMenu> extras = new ArrayList<ExtraMenu>();
 	
 	private String id_imagen;
 	

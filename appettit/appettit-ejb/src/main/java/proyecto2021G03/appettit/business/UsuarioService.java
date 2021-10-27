@@ -293,30 +293,26 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
 		
-		/*
-		ClienteDTO cliente = new ClienteDTO();
-		cliente.setId(null);
-		cliente.setNombre(clienteData.getNombre());
-		cliente.setUsername(clienteData.getUsername());
-		cliente.setPassword(clienteData.getPassword());
-		cliente.setTelefono(clienteData.getTelefono());
-		cliente.setCorreo(clienteData.getCorreo());
-		cliente.setTokenFireBase(clienteData.getTokenFireBase());
-		cliente.setBloqueado(false);
-		*/
-		LocalidadDTO barrio = geoSrv.localidadPorPunto(clienteData.getDireccion().getGeometry()); 
+		 
+		List<DireccionDTO> direcciones = null;
 		
-		DireccionDTO dirDTO = DireccionDTO.builder()
-				.alias(clienteData.getDireccion().getAlias())
-				.apartamento(clienteData.getDireccion().getApartamento())
-				.calle(clienteData.getDireccion().getCalle())
-				.geometry(clienteData.getDireccion().getGeometry())
-				.barrio(barrio)
-				.quantity(0)
-				.build();
+		if(clienteData.getDireccion() != null) {
+			LocalidadDTO barrio = geoSrv.localidadPorPunto(clienteData.getDireccion().getGeometry());
+			
+			DireccionDTO dirDTO = DireccionDTO.builder()
+					.alias(clienteData.getDireccion().getAlias())
+					.apartamento(clienteData.getDireccion().getApartamento())
+					.calle(clienteData.getDireccion().getCalle())
+					.geometry(clienteData.getDireccion().getGeometry())
+					.barrio(barrio)
+					.quantity(0)
+					.build();
+			
+			direcciones = new ArrayList<DireccionDTO>();
+			direcciones.add(dirDTO);
+		}
 		
-		List<DireccionDTO> direcciones = new ArrayList<DireccionDTO>();
-		direcciones.add(dirDTO);
+		
 		
 		ClienteDTO cliente = new ClienteDTO(null, clienteData.getNombre(), 
 				clienteData.getUsername(),

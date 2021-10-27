@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -38,6 +39,7 @@ public class Cliente extends Usuario {
 
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_direccion", referencedColumnName="id")
-	private List<Direccion> direcciones;
+	@Builder.Default
+	private List<Direccion> direcciones = new ArrayList<Direccion>();
 
 }
