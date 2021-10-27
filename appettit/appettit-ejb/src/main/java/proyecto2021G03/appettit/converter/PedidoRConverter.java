@@ -7,8 +7,11 @@ import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.entity.Restaurante;
 
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
+
 import java.time.LocalDateTime;
 
+@Singleton
 public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
 
     @EJB

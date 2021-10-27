@@ -91,6 +91,7 @@ public class AppInitSingleton implements Serializable {
 
 		try {
 			
+			/*
 			parseDepto();
 			
 			parseCiudad();
@@ -104,6 +105,7 @@ public class AppInitSingleton implements Serializable {
 			parseCategoria();
 			
 			parseProducto();
+			*/
 			
 			/*
 			LocalidadDTO ldto = geoSrv.localidadPorPunto("POINT(575052.1054146929 6140591.11704534)");

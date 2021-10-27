@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+	
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Carga de archivos</title>
+
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+<h:body>
+	<p:growl id="messages" showDetail="true" />
+
+	<div class="card">
+		<h5>1 - DEPARTAMENTOS</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filed}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Deparetamentos" ajax="false"
+				action="#{beanFileUpload.parseDepto()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>2 - CIUDADES</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filec}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Ciudades" ajax="false"
+				action="#{beanFileUpload.parseCiudad()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>3 - LOCALIDAD</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filel}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de localidades" ajax="false"
+				action="#{beanFileUpload.parseLocalidad()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>4 - ADMINISTRADOR</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filea}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Administradores" ajax="false"
+				action="#{beanFileUpload.parseAdministrador()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>5 - RESTAURANTES</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filer}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Restaurantes" ajax="false"
+				action="#{beanFileUpload.parseRestaurante()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>6 - CATEGORIA</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filecat}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Categorias" ajax="false"
+				action="#{beanFileUpload.parseCategoria()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+<div class="card">
+		<h5>7 - PRODUCTO</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.fileprod}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Productos" ajax="false"
+				action="#{beanFileUpload.parseProducto()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+
+</h:body>
+
+</html>

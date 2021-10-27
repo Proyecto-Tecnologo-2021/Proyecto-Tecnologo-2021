@@ -24,8 +24,6 @@ import proyecto2021G03.appettit.exception.AppettitException;
 @SessionScoped
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class AdministradorBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
