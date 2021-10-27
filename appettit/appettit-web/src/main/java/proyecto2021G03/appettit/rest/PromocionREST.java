@@ -1,5 +1,7 @@
+
 package proyecto2021G03.appettit.rest;
-/*
+
+import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PromocionDTO;
@@ -18,14 +20,14 @@ import java.util.List;
 public class PromocionREST {
     @EJB
 
-    IServicioPromocion  iservicioPromocion;
+    IPromocionService iPromocionService;
 
     @GET
 
     public Response listar() {
         RespuestaREST<List<PromocionDTO>> respuesta = null;
         try {
-            List<PromocionDTO> promocionDTOS = iservicioPromocion.listar();
+            List<PromocionDTO> promocionDTOS = iPromocionService.listar();
             respuesta = new RespuestaREST<List<PromocionDTO>>(true, "Promociones listadas con éxito.", promocionDTOS);
             return Response.ok(respuesta).build();
         } catch (AppettitException e) {
@@ -36,4 +38,3 @@ public class PromocionREST {
 
 
 }
-*/
