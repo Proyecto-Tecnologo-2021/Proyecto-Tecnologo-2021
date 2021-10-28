@@ -77,4 +77,13 @@ public class ExtraMenuService implements IExtraMenuService{
         }
 
     }
+
+	@Override
+	public List<ExtraMenuDTO> listarPorRestaurante(Long id) throws AppettitException {
+		 try {
+	            return extraMenuConverter.fromEntity(iExtraMenuDAO.listarPorRestaurante(id));
+	        } catch (Exception e) {
+	            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+	        }
+	}
 }

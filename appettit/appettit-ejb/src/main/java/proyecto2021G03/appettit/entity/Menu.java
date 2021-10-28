@@ -12,9 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -52,7 +51,7 @@ public class Menu implements Serializable {
 	@Column(name = "nombre", nullable = false, length = 50)
 	private String nombre;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
 	private Restaurante restaurante;
 
@@ -61,15 +60,21 @@ public class Menu implements Serializable {
 	private Double precioSimple;
 	private Double precioTotal;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	/*
+	 @OneToMany(cascade=CascadeType.ALL)
+	 
 	@JoinColumns( {
 		@JoinColumn(name="id_producto", referencedColumnName="id"),
 		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
     })
+    */
+	
+	@ManyToMany
 	@Builder.Default
 	private List<Producto> productos = new ArrayList<Producto>();
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	//@OneToMany(cascade=CascadeType.ALL)
+	@ManyToMany
 	@Builder.Default
 	private List<ExtraMenu> extras = new ArrayList<ExtraMenu>();
 	

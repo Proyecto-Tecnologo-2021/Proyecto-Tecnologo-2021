@@ -1,12 +1,13 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.ExtraMenu;
+import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+
+import proyecto2021G03.appettit.entity.ExtraMenu;
 
 
 @Singleton
@@ -45,6 +46,18 @@ public class ExtraMenuDAO implements IExtraMenuDAO {
     public void eliminar(ExtraMenu extraMenu) {
     em.remove(extraMenu);
     }
+
+	@Override
+	public List<ExtraMenu> listarPorRestaurante(Long id) {
+		 List<ExtraMenu> extramenu = em.createQuery("select _e "
+			 		+ "from ExtraMenu _e "
+			 		+ "inner join _e.producto _p "
+			 		+ "inner join _p.restaurante _r "
+					+ "where _r.id =:id", ExtraMenu.class)
+					.setParameter("id", id).getResultList();
+			
+			return extramenu;
+	}
 
 
 }

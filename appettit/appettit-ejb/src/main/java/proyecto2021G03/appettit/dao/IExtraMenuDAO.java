@@ -10,4 +10,5 @@ public interface IExtraMenuDAO {
     public ExtraMenu crear(ExtraMenu extraMenu);
     public ExtraMenu editar(ExtraMenu extraMenu);
     public void eliminar(ExtraMenu extraMenu);
+	public List<ExtraMenu> listarPorRestaurante(Long id);
 }

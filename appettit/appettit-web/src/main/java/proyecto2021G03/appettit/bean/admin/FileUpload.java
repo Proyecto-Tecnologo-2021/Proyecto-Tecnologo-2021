@@ -1,12 +1,9 @@
 package proyecto2021G03.appettit.bean.admin;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,12 +16,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.jboss.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.primefaces.model.file.UploadedFile;
-
-import com.vividsolutions.jts.io.ParseException;
+import org.primefaces.shaded.json.JSONArray;
+import org.primefaces.shaded.json.JSONObject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +26,7 @@ import proyecto2021G03.appettit.business.ICategoriaService;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IExtraMenuService;
 import proyecto2021G03.appettit.business.IGeoService;
+import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IProductoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
@@ -45,9 +40,9 @@ import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ExtraMenuDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.entity.ExtraMenu;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanFileUpload")
@@ -83,6 +78,9 @@ public class FileUpload implements Serializable {
 
 	@EJB
 	IExtraMenuService extraMenuSrv;
+
+	@EJB
+	IMenuService menuSrv;
 
 	private UploadedFile filed;
 	private UploadedFile filec;
@@ -397,7 +395,7 @@ public class FileUpload implements Serializable {
 							break;
 						}
 					}
-					
+
 					ProductoDTO productoDTO = ProductoDTO.builder().id_categoria(categoria.getId())
 							.id_restaurante(restaurante.getId()).nombre(nombre).build();
 
@@ -459,8 +457,11 @@ public class FileUpload implements Serializable {
 						}
 					}
 
-					ExtraMenuDTO extraMenuDTO = ExtraMenuDTO.builder().producto(producto).precio(precio)
-							.build();
+					ExtraMenuDTO extraMenuDTO = ExtraMenuDTO.builder()
+							.id_producto(producto.getId())
+							.id_restaurante(restaurante.getId())
+							.producto(producto)
+							.precio(precio).build();
 
 					extraMenuDTO = extraMenuSrv.crear(extraMenuDTO);
 				}
@@ -495,21 +496,96 @@ public class FileUpload implements Serializable {
 
 				bufferedReader = new BufferedReader(new InputStreamReader(filemenu.getInputStream(), "UTF-8"));
 
-				logger.info("Menu: " + bufferedReader.readLine().toString());
+				String linea;
+				String strJson = "";
+				while ((linea = bufferedReader.readLine()) != null) {
+					strJson += linea;
+				}
+
+				logger.info("Menu: " + strJson);
 				String correo = null;
-				
-				JSONTokener tokener = new JSONTokener(bufferedReader);
-				JSONObject jsonObject = new JSONObject(tokener);
+				String nombre = null;
+				String descripcion = null;
+				Double precioSimple = null;
+				Double precioTotal = null;
+				String id_imagen = null;
+				List<ProductoDTO> productos = new ArrayList<ProductoDTO>();
+				List<ExtraMenuDTO> extras = new ArrayList<ExtraMenuDTO>();
 
-				JSONArray jsonArray = (JSONArray) jsonObject.get("menus");
+				JSONObject jsonObject = new JSONObject(strJson);
 
-				for (Object res : jsonArray) {
-					JSONObject data = (JSONObject) res;
+				if (jsonObject != null) {
+					logger.info(jsonObject.toString());
 
-					correo = (String) data.getString("restaurante");
-					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
-					
-					logger.info(restaurante.getNombre());
+					JSONArray jsonArray = jsonObject.getJSONArray("menus");
+
+					for (Object res : jsonArray) {
+						JSONObject data = (JSONObject) res;
+
+						correo = (String) data.get("restaurante");
+						RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+						productos = prodSrv.listarPorRestaurante(restaurante.getId());
+						extras = extraMenuSrv.listarPorRestaurante(restaurante.getId());
+
+						JSONArray menus = data.getJSONArray("menus");
+
+						for (Object menu : menus) {
+							JSONObject omenu = (JSONObject) menu;
+
+							nombre = omenu.getString("nombre");
+							descripcion = omenu.getString("descripcion");
+							precioSimple = omenu.getDouble("preciosimple");
+							precioTotal = omenu.getDouble("preciototal");
+							id_imagen = omenu.getString("imagen");
+
+							JSONArray aprod = omenu.getJSONArray("productos");
+							JSONArray aextra = omenu.getJSONArray("extras");
+							List<ProductoDTO> m_productos = new ArrayList<ProductoDTO>();
+							List<ExtraMenuDTO> m_extras = new ArrayList<ExtraMenuDTO>();
+
+
+							for (Object prod : aprod) {
+								String pname = (String) prod;
+
+								Iterator<ProductoDTO> it = productos.iterator();
+
+								while (it.hasNext()) {
+									ProductoDTO pDTO = it.next();
+									if (pDTO.getNombre().equalsIgnoreCase(pname)) {
+										m_productos.add(pDTO);
+										break;
+									}
+								}
+
+							}
+
+							for (Object oextra : aextra) {
+								String pextra = (String) oextra;
+
+								Iterator<ExtraMenuDTO> it = extras.iterator();
+
+								while (it.hasNext()) {
+									ExtraMenuDTO eDTO = it.next();
+									if (eDTO.getProducto().getNombre().equalsIgnoreCase(pextra)) {
+										m_extras.add(eDTO);
+										break;
+									}
+								}
+
+							}
+
+							try {
+								MenuDTO mDTO = new MenuDTO(null, restaurante.getId(), nombre, restaurante, descripcion,
+										precioSimple, precioTotal, m_productos, m_extras, id_imagen, null);
+								mDTO = menuSrv.crear(mDTO);
+							} catch (AppettitException e) {
+								logger.info(e.getMessage().trim());
+								FacesContext.getCurrentInstance().addMessage(null,
+										new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+							}
+						}
+
+					}
 
 				}
 
@@ -519,7 +595,11 @@ public class FileUpload implements Serializable {
 				FacesMessage message = new FacesMessage("Successful", filemenu.getFileName() + " is uploaded.");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 
-			} catch (Exception e) {
+			} catch (IOException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			} catch (AppettitException e) {
 				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
@@ -535,5 +615,4 @@ public class FileUpload implements Serializable {
 
 		}
 	}
-
 }

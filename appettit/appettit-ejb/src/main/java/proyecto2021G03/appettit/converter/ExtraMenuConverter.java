@@ -16,6 +16,8 @@ public class ExtraMenuConverter extends AbstractConverter<ExtraMenu, ExtraMenuDT
         if(extraMenu == null) return null;
         return ExtraMenuDTO.builder()
                 .id(extraMenu.getId())
+                .id_producto(extraMenu.getId_producto())
+                .id_restaurante(extraMenu.getId_restaurante())
                 .precio(extraMenu.getPrecio())
                 .producto(productoConverter.fromEntity(extraMenu.getProducto()))
                 .build();
@@ -27,6 +29,8 @@ public class ExtraMenuConverter extends AbstractConverter<ExtraMenu, ExtraMenuDT
         if(extraMenuDTO == null) return null;
         return ExtraMenu.builder()
                 .id(extraMenuDTO.getId())
+                .id_producto(extraMenuDTO.getId_producto())
+                .id_restaurante(extraMenuDTO.getId_restaurante())
                 .precio(extraMenuDTO.getPrecio())
                 .producto(productoConverter.fromDTO(extraMenuDTO.getProducto()))
                 .build();

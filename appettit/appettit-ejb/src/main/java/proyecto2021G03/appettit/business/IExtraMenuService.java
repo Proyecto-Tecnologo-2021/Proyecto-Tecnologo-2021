@@ -7,6 +7,7 @@ import java.util.List;
 public interface IExtraMenuService {
 
     public List<ExtraMenuDTO> listar() throws AppettitException;
+    public List<ExtraMenuDTO> listarPorRestaurante(Long id) throws AppettitException;
     public ExtraMenuDTO listarPorId(Long id) throws AppettitException;
     public ExtraMenuDTO crear(ExtraMenuDTO extraMenuDTO)throws AppettitException;
     public ExtraMenuDTO editar(Long id, ExtraMenuDTO extraMenuDTO)throws AppettitException;

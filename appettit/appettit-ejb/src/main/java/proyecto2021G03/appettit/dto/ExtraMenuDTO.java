@@ -10,6 +10,8 @@ import lombok.*;
 public class ExtraMenuDTO {
 
     private Long id;
+    private Long id_producto;
+	private Long id_restaurante; 
     private ProductoDTO producto;
     private Double precio;
 }

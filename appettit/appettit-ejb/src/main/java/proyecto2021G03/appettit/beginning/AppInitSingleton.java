@@ -18,9 +18,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.jboss.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -45,7 +42,6 @@ import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
-import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -329,47 +325,6 @@ public class AppInitSingleton implements Serializable {
 				new InputStreamReader(new FileInputStream(deptoFile), "UTF-8"));
 		
 		logger.info("Producto: " + bufferedReader.readLine().toString());
-		
-		JSONTokener tokener = new JSONTokener(bufferedReader);
-		JSONObject jsonObject = new JSONObject(tokener);
-		
-		JSONArray jsonArray = (JSONArray) jsonObject.get("restaurantes");
-		
-		for (Object res: jsonArray) {
-			JSONObject data = (JSONObject) res;
-			
-			correo = (String) data.getString("id");
-			RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
-			
-			JSONArray productos = (JSONArray) data.get("articulos");
-			
-			for(Object art : productos) {
-				JSONObject pdata = (JSONObject) art;
-				nombre =  (String) pdata.getString("nombre");
-				str_categoria =  (String) pdata.getString("categoria");
-				
-				
-				while (it.hasNext()) {
-					
-					CategoriaDTO cDTO = it.next();
-					
-					if(cDTO.getNombre().equalsIgnoreCase(str_categoria)) {
-						categoria = cDTO;
-						break;
-					}
-				}
-				
-				ProductoDTO productoDTO = ProductoDTO.builder()
-						.id_categoria(categoria.getId())
-						.id_restaurante(restaurante.getId())
-						.nombre(nombre).build();;
-						
-				prodSrv.crear(productoDTO );
-				
-			}
-			
-		}
-		
 		
 		bufferedReader.close();
 
