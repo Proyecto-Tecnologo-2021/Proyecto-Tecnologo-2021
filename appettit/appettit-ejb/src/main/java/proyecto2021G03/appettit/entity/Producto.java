@@ -50,12 +50,12 @@ public class Producto implements Serializable {
 
 	private Long id_categoria;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false)
 	//@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
 	private Restaurante restaurante;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false)
 	@JoinColumn(name="id_categoria", referencedColumnName="id", insertable=false, updatable=false)
 	private Categoria categoria;
 	

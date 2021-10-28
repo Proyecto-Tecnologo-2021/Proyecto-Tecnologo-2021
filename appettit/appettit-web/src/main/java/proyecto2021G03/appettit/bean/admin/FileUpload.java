@@ -30,6 +30,7 @@ import lombok.Getter;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.ICategoriaService;
 import proyecto2021G03.appettit.business.IDepartamentoService;
+import proyecto2021G03.appettit.business.IExtraMenuService;
 import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.business.IProductoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -42,9 +43,11 @@ import proyecto2021G03.appettit.dto.CiudadDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
+import proyecto2021G03.appettit.dto.ExtraMenuDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.entity.ExtraMenu;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanFileUpload")
@@ -78,6 +81,9 @@ public class FileUpload implements Serializable {
 	@EJB
 	IProductoService prodSrv;
 
+	@EJB
+	IExtraMenuService extraMenuSrv;
+
 	private UploadedFile filed;
 	private UploadedFile filec;
 	private UploadedFile filel;
@@ -85,6 +91,8 @@ public class FileUpload implements Serializable {
 	private UploadedFile filer;
 	private UploadedFile filecat;
 	private UploadedFile fileprod;
+	private UploadedFile filemenu;
+	private UploadedFile fileextramenu;
 
 	public void parseDepto() {
 		if (filed != null) {
@@ -284,7 +292,6 @@ public class FileUpload implements Serializable {
 					String numero = data[10].trim();
 					String geometry = data[11].trim();
 					String id_imagen = data[7].trim();
-					;
 
 					LocalidadDTO localidad = departamentoService.localidadPorId(id, idCiudad, idDepto);
 					DireccionDTO direccion = new DireccionDTO(null, "Restaurante", calle, numero, null, null, localidad,
@@ -358,7 +365,7 @@ public class FileUpload implements Serializable {
 		}
 	}
 
-	public void parseProducto() throws IOException, ParseException, AppettitException {
+	public void parseProducto() {
 		if (fileprod != null) {
 			BufferedReader bufferedReader = null;
 			try {
@@ -366,7 +373,6 @@ public class FileUpload implements Serializable {
 				String[] data;
 
 				List<CategoriaDTO> categorias = srvCategoria.listar();
-				
 
 				bufferedReader = new BufferedReader(new InputStreamReader(fileprod.getInputStream(), "UTF-8"));
 
@@ -376,12 +382,12 @@ public class FileUpload implements Serializable {
 					String correo = data[0].trim();
 					String nombre = data[1].trim();
 					String str_categoria = data[2].trim();
-					;
+
 					CategoriaDTO categoria = null;
 
 					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
 					Iterator<CategoriaDTO> it = categorias.iterator();
-					
+
 					while (it.hasNext()) {
 
 						CategoriaDTO cDTO = it.next();
@@ -391,15 +397,10 @@ public class FileUpload implements Serializable {
 							break;
 						}
 					}
-					logger.info(linea.toString());
-					logger.info(categoria.getId());
-					logger.info(restaurante.getId());
-					logger.info(nombre);
-
+					
 					ProductoDTO productoDTO = ProductoDTO.builder().id_categoria(categoria.getId())
 							.id_restaurante(restaurante.getId()).nombre(nombre).build();
 
-					
 					productoDTO = prodSrv.crear(productoDTO);
 				}
 
@@ -407,6 +408,115 @@ public class FileUpload implements Serializable {
 
 				logger.info("Productos ingresados");
 				FacesMessage message = new FacesMessage("Successful", fileprod.getFileName() + " is uploaded.");
+				FacesContext.getCurrentInstance().addMessage(null, message);
+
+			} catch (Exception e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			} finally {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					logger.info(e.getMessage().trim());
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+				}
+			}
+
+		}
+	}
+
+	public void parseExtraMenu() {
+		if (fileextramenu != null) {
+			BufferedReader bufferedReader = null;
+			try {
+				String linea;
+				String[] data;
+
+				bufferedReader = new BufferedReader(new InputStreamReader(fileextramenu.getInputStream(), "UTF-8"));
+
+				while ((linea = bufferedReader.readLine()) != null) {
+					data = linea.split(";");
+
+					String correo = data[0].trim();
+					String nombre = data[1].trim();
+					Double precio = Double.valueOf(data[2].trim());
+
+					ProductoDTO producto = null;
+
+					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+					List<ProductoDTO> productos = prodSrv.listarPorRestaurante(restaurante.getId());
+					Iterator<ProductoDTO> it = productos.iterator();
+
+					while (it.hasNext()) {
+
+						ProductoDTO pDTO = it.next();
+
+						if (pDTO.getNombre().equalsIgnoreCase(nombre)) {
+							producto = pDTO;
+							break;
+						}
+					}
+
+					ExtraMenuDTO extraMenuDTO = ExtraMenuDTO.builder().producto(producto).precio(precio)
+							.build();
+
+					extraMenuDTO = extraMenuSrv.crear(extraMenuDTO);
+				}
+
+				bufferedReader.close();
+
+				logger.info("Extra Productos ingresados");
+				FacesMessage message = new FacesMessage("Successful", fileextramenu.getFileName() + " is uploaded.");
+				FacesContext.getCurrentInstance().addMessage(null, message);
+
+			} catch (Exception e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			} finally {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					logger.info(e.getMessage().trim());
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+				}
+			}
+
+		}
+	}
+
+	public void parseMenu() {
+		if (filemenu != null) {
+			BufferedReader bufferedReader = null;
+			try {
+
+				bufferedReader = new BufferedReader(new InputStreamReader(filemenu.getInputStream(), "UTF-8"));
+
+				logger.info("Menu: " + bufferedReader.readLine().toString());
+				String correo = null;
+				
+				JSONTokener tokener = new JSONTokener(bufferedReader);
+				JSONObject jsonObject = new JSONObject(tokener);
+
+				JSONArray jsonArray = (JSONArray) jsonObject.get("menus");
+
+				for (Object res : jsonArray) {
+					JSONObject data = (JSONObject) res;
+
+					correo = (String) data.getString("restaurante");
+					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+					
+					logger.info(restaurante.getNombre());
+
+				}
+
+				bufferedReader.close();
+
+				logger.info("Productos ingresados");
+				FacesMessage message = new FacesMessage("Successful", filemenu.getFileName() + " is uploaded.");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 
 			} catch (Exception e) {

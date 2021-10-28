@@ -5,7 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" lang="sp">
-	
+
 <h:head>
 	<meta charset="ISO-8859-1"></meta>
 	<title>Appetit-Carga de archivos</title>
@@ -34,7 +34,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>2 - CIUDADES</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.filec}" mode="simple"
@@ -46,7 +46,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>3 - LOCALIDAD</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.filel}" mode="simple"
@@ -58,7 +58,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>4 - ADMINISTRADOR</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.filea}" mode="simple"
@@ -70,7 +70,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>5 - RESTAURANTES</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.filer}" mode="simple"
@@ -82,7 +82,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>6 - CATEGORIA</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.filecat}" mode="simple"
@@ -94,7 +94,7 @@
 		</h:form>
 	</div>
 
-<div class="card">
+	<div class="card">
 		<h5>7 - PRODUCTO</h5>
 		<h:form enctype="multipart/form-data">
 			<p:fileUpload value="#{beanFileUpload.fileprod}" mode="simple"
@@ -106,6 +106,29 @@
 		</h:form>
 	</div>
 
+	<div class="card">
+		<h5>8 - EXTRAMENU</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.fileextramenu}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Extra Menu" ajax="false"
+				action="#{beanFileUpload.parseExtraMenu()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
+	<div class="card">
+		<h5>9 - MENU</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.filemenu}" mode="simple"
+				skinSimple="true" />
+
+			<p:commandButton value="Carga de Menu" ajax="false"
+				action="#{beanFileUpload.parseMenu()}"
+				styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
 
 </h:body>
 

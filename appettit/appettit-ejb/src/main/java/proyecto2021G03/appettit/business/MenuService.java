@@ -109,9 +109,10 @@ public class MenuService implements IMenuService{
 
     @Override
     public MenuDTO crear(MenuDTO menuDTO) throws AppettitException {
-        Menu MenuService = iMenuDao.listarPorId(menuDTO.getId());
+        Menu menu = menuConverter.fromDTO(menuDTO);
+        
         try {
-            return menuConverter.fromEntity(iMenuDao.crear(MenuService));
+            return menuConverter.fromEntity(iMenuDao.crear(menu));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }

@@ -40,9 +40,9 @@ public class ExtraMenuService implements IExtraMenuService{
 
     @Override
     public ExtraMenuDTO crear(ExtraMenuDTO extraMenuDTO) throws AppettitException {
-        ExtraMenu extraMenuService = iExtraMenuDAO.listarPorId(extraMenuDTO.getId());
+        ExtraMenu extraMenu = extraMenuConverter.fromDTO(extraMenuDTO);
         try {
-            return extraMenuConverter.fromEntity(iExtraMenuDAO.crear(extraMenuService));
+            return extraMenuConverter.fromEntity(iExtraMenuDAO.crear(extraMenu));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }

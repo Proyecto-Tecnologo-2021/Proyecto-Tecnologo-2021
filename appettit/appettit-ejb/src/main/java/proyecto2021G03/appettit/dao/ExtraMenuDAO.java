@@ -11,6 +11,7 @@ import java.util.List;
 
 @Singleton
 public class ExtraMenuDAO implements IExtraMenuDAO {
+	
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
 
