@@ -1,7 +1,7 @@
 package proyecto2021G03.appettit.converter;
+import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.entity.Menu;
-
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
@@ -14,25 +14,18 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
     ExtraMenuConverter extraMenuConverter;
 
     @Override
-    public MenuRDTO fromEntity(Menu menu){
-        if (menu == null) {
-            return null;
-        }else {
-
-            return MenuRDTO.builder()
-                    .id(menu.getId())
-                    .nombre(menu.getNombre())
-                    .id_imagen(menu.getId_imagen())
-                    .id_restaurante(menu.getId_restaurante())
-                    .nom_restaurante(menu.getRestaurante().getNombre())
-                    .descripcion(menu.getDescripcion())
-                    .precioSimple(menu.getPrecioSimple())
-                    .precioTotal(menu.getPrecioTotal())
-                    .descuento(0D)
-                    .extras(extraMenuConverter.fromEntity(menu.getExtras()))
-                    .productos(productoConverter.fromEntity(menu.getProductos()))
-                    .build();
-        }
+    public MenuRDTO fromEntity(Menu menu) {
+        if (menu == null) return null;
+        return MenuRDTO.builder()
+                .nombre(menu.getNombre())
+                .id_imagen(menu.getId_imagen())
+                .id_restaurante(menu.getId_restaurante())
+                .descripcion(menu.getDescripcion())
+                .precioSimple(menu.getPrecioSimple())
+                .precioTotal(menu.getPrecioTotal())
+                .extras(extraMenuConverter.fromEntity(menu.getExtras()))
+                .productos(productoConverter.fromEntity(menu.getProductos()))
+                .build();
     }
 
     @Override

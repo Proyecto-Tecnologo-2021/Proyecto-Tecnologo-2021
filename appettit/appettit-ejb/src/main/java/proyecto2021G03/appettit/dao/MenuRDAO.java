@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
+import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.entity.Menu;
 
 import javax.ejb.Singleton;

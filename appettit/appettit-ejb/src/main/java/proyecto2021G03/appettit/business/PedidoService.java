@@ -1,9 +1,13 @@
 package proyecto2021G03.appettit.business;
 
 import proyecto2021G03.appettit.converter.PedidoConverter;
+import proyecto2021G03.appettit.converter.PedidoRConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IPedidoDao;
+import proyecto2021G03.appettit.dao.IPedidoRDAO;
+import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -21,6 +25,9 @@ public class PedidoService implements IPedidoService {
     PedidoConverter pedidoConverter;
     @EJB
     UsuarioConverter usuarioConverter;
+
+    @EJB
+    PedidoRConverter pedidoRConverter;
 
 
 
@@ -93,4 +100,17 @@ public class PedidoService implements IPedidoService {
                 throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
             }
         }
-    }}
+    }
+
+    @Override
+    public PedidoRDTO crearFront(PedidoRDTO pedidoRDTO) throws AppettitException {
+        Pedido pedido = pedidoRConverter.fromDTO(pedidoRDTO);
+        try {
+
+            return pedidoRConverter.fromEntity(iPedidoDao.crear(pedido));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+    }
+
+}

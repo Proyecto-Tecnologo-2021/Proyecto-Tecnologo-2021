@@ -80,5 +80,22 @@ public class Pedido implements Serializable {
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_reclamo", referencedColumnName="id")
 	private Reclamo reclamo;
-	
+
+
+	public Pedido( TipoPago tipo, Boolean pago, LocalDateTime fecha, Double total, Restaurante restaurante, Cliente cliente, List<Menu> menus, List<Promocion> promociones, Direccion entrega, EstadoPedido estado) {
+		this.id = 0L;
+		this.tipo = tipo;
+		this.pago = pago;
+		this.fecha = fecha;
+		this.total = total;
+		this.restaurante = restaurante;
+		this.cliente = cliente;
+		this.menus = menus;
+		this.promociones = promociones;
+		this.entrega = entrega;
+		this.estado = estado;
+
+	}
 }
+
+

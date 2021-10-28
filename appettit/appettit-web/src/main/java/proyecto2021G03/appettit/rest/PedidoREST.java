@@ -1,7 +1,9 @@
 package proyecto2021G03.appettit.rest;
 
 import proyecto2021G03.appettit.business.IPedidoService;
+import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import javax.ejb.EJB;
@@ -38,4 +40,25 @@ public class PedidoREST {
             }
         }
     }
+    @POST
+    @Path("/crearfront")
+    public Response crearFront(PedidoRDTO request){
+        RespuestaREST<PedidoRDTO> respuesta = null;
+        try {
+            PedidoRDTO pedido = iPedidoService.crearFront(request);
+            respuesta = new RespuestaREST<PedidoRDTO>(true, "Pedido creado con éxito.", pedido);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<PedidoRDTO>(false, e.getLocalizedMessage());
+            if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+            }
+        }
+        
+
+    }
 }
+
+

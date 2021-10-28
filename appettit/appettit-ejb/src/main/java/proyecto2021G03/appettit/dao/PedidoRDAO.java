@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Singleton
-public class PeridoRDAO implements IPedidoRDAO{
+public class PedidoRDAO implements IPedidoRDAO{
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
 
