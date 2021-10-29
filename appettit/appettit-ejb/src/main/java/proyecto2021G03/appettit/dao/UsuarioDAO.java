@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.dao;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.hql.ast.origin.hql.parse.HQLParser.member_of_key_return;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
@@ -260,6 +263,17 @@ public class UsuarioDAO implements IUsuarioDAO {
 	public Cliente agregarDireccion(Cliente cliente) {
 		
 		return em.merge(cliente);
+	}
+	
+	@Override
+	public Cliente eliminarDireccion(Cliente cliente, Direccion direccion) {
+
+		Cliente cliente_sin_direccion = em.merge(cliente);
+		
+		em.remove(direccion);
+		//Query consulta = em.createQuery("DELETE FROM direcciones where id = :id_direccion");
+		
+		return cliente_sin_direccion;
 	}
 	
 	@Override

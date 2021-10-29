@@ -27,6 +27,7 @@ import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteModificarDTO;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
+import proyecto2021G03.appettit.dto.EliminarDeClienteDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
@@ -434,6 +435,38 @@ public class UsuarioService implements IUsuarioService {
 						
 						return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
 					}
+				}
+			}
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	
+					
+	}
+	
+	@Override
+	public ClienteDTO eliminarDireccion(Long id_direccion, EliminarDeClienteDTO ec) throws AppettitException {
+		
+		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(ec.getId_cliente());
+		try {
+			if (clientes.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente cliente = clientes.get(0);
+				List<Direccion> direcciones = cliente.getDirecciones();
+				//obtengo la direccion
+				Boolean existe_direccion = false;
+				Direccion direccion = null;
+				for (Direccion d: direcciones) {
+					if (d.getId().compareTo(id_direccion) == 0) {
+						existe_direccion = true;
+						direccion = d;
+					}
+				}
+				if (!existe_direccion) {
+						throw new AppettitException("Direccion invalida para el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+				} else {
+					direcciones.remove(direccion);
+					return usrConverter.fromCliente(usrDAO.eliminarDireccion(cliente, direccion));
 				}
 			}
 		} catch (Exception e) {

@@ -10,6 +10,7 @@ import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
+import proyecto2021G03.appettit.entity.Direccion;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 
@@ -45,6 +46,7 @@ public interface IUsuarioDAO {
 	public Cliente crearCliente(Cliente cliente);
 	public Cliente editarCliente(Cliente cliente);
 	public Cliente agregarDireccion(Cliente cliente);
+	public Cliente eliminarDireccion(Cliente cliente, Direccion direccion);
 	public List<Cliente> listarClientes();
 	public List<Cliente> buscarPorNombreCliente(String nombre);
 	public List<Cliente> buscarPorIdCliente(String id);

@@ -17,6 +17,7 @@ import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteModificarDTO;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
+import proyecto2021G03.appettit.dto.EliminarDeClienteDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
@@ -109,6 +110,25 @@ public class UsuarioREST {
 		try {
 			ClienteDTO usuario = uService.editarDireccion(id, request);
 			respuesta = new RespuestaREST<ClienteDTO>(true, "Dirección editada con éxito.", usuario);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
+	@PUT
+	@Path("/eliminarDireccion/{id}")
+	//@RecursoProtegidoJWT
+	public Response eliminarDireccion(@PathParam("id") Long id, EliminarDeClienteDTO request) {
+		RespuestaREST<ClienteDTO> respuesta = null;
+		try {
+			ClienteDTO usuario = uService.eliminarDireccion(id, request);
+			respuesta = new RespuestaREST<ClienteDTO>(true, "Dirección eliminada con éxito.", usuario);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
