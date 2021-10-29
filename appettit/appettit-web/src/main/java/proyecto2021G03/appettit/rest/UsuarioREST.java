@@ -101,6 +101,25 @@ public class UsuarioREST {
 		}
 	}
 	
+	@PUT
+	@Path("/editarDireccion/{id}")
+	//@RecursoProtegidoJWT
+	public Response editarDireccion(@PathParam("id") Long id, DireccionCrearDTO request) {
+		RespuestaREST<ClienteDTO> respuesta = null;
+		try {
+			ClienteDTO usuario = uService.editarDireccion(id, request);
+			respuesta = new RespuestaREST<ClienteDTO>(true, "Dirección editada con éxito.", usuario);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
 	@POST
 	@Path("/login")
 	public Response login(LoginDTO request) {

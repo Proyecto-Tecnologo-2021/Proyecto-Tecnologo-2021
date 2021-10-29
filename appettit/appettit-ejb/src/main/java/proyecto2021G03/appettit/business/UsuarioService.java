@@ -16,6 +16,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import proyecto2021G03.appettit.converter.DireccionConverter;
+import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
@@ -34,6 +35,7 @@ import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
+import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -56,6 +58,9 @@ public class UsuarioService implements IUsuarioService {
 	
 	@EJB
 	DireccionConverter dirConverter;
+	
+	@EJB
+	LocalidadConverter locConverter;
 	
 	@EJB
 	IGeoService geoSrv;
@@ -378,6 +383,57 @@ public class UsuarioService implements IUsuarioService {
 					cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
 					
 					return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+				}
+			}
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	
+					
+	}
+	
+	@Override
+	public ClienteDTO editarDireccion(Long id, DireccionCrearDTO direccionDTO) throws AppettitException {
+		
+		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(direccionDTO.getId_cliente());
+		try {
+			if (clientes.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente cliente = clientes.get(0);
+				List<Direccion> direcciones = cliente.getDirecciones();
+				//obtengo la direccion
+				Boolean existe_direccion = false;
+				Direccion direccion = null;
+				for (Direccion d: direcciones) {
+					if (d.getId().compareTo(id) == 0) {
+						existe_direccion = true;
+						direccion = d;
+					}
+				}
+				if (!existe_direccion) {
+						throw new AppettitException("Direccion invalida para el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+				} else {
+					Boolean alias_existente = false;
+					for (Direccion d: direcciones) {
+						if ((d.getAlias().equals(direccionDTO.getAlias())) && (d.getId().compareTo(id) != 0)) {
+							alias_existente = true;
+							break;
+						}
+					}	
+					if (alias_existente) {
+						throw new AppettitException("Alias repetido.", AppettitException.EXISTE_REGISTRO);
+					}  else {
+						Localidad barrio = locConverter.fromDTO(geoSrv.localidadPorPunto(direccionDTO.getGeometry()));
+						direccion.setAlias(direccionDTO.getAlias());
+						direccion.setApartamento(direccionDTO.getApartamento());
+						direccion.setBarrio(barrio);
+						direccion.setCalle(direccionDTO.getCalle());
+						direccion.setGeometry(direccionDTO.getGeometry());
+						direccion.setNumero(direccionDTO.getNumero());
+						direccion.setReferencias(direccionDTO.getReferencias());
+						
+						return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+					}
 				}
 			}
 		} catch (Exception e) {

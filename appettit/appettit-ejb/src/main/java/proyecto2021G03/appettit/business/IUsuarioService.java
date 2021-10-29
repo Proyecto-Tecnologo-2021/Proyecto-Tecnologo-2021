@@ -35,6 +35,7 @@ public interface IUsuarioService {
 	/*CLIENTE*/
 	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException;
 	public ClienteDTO editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException;
+	public ClienteDTO editarDireccion(Long id, DireccionCrearDTO direccionDTO) throws AppettitException;
 	public List<ClienteDTO> listarClientes() throws AppettitException;
 	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException;
 	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException;
