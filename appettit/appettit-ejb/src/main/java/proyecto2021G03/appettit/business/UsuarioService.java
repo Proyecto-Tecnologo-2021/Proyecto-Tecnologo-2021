@@ -582,6 +582,29 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 	
+	@Override
+	public String loginFireBase(LoginDTO loginDTO) throws AppettitException {
+		/* Se valida que exista el correo electrónico*/
+		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
+		
+		if ((usuarios_correo.size() == 0)) {
+			throw new AppettitException("Usuario no registrado.", AppettitException.DATOS_INCORRECTOS);
+		} else {
+			
+			Usuario usuario = usuarios_correo.get(0);
+			if(usuario instanceof Cliente) {
+			
+				usuario.setTokenFireBase(loginDTO.getPassword());
+				usrDAO.editar(usuario);
+				
+				String token = crearJsonWebToken(usuario);
+				return token;
+			} else {
+				throw new AppettitException("Usuario no habilitado para mobile.", AppettitException.DATOS_INCORRECTOS);
+			}
+		}
+	}
+	
 	/* Función auxiliar para generar un JWT */
 	public String crearJsonWebToken(Usuario usuario) {
 		Date ahora = new Date();
