@@ -23,6 +23,7 @@ import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteModificarDTO;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
@@ -345,6 +346,46 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 
+	@Override
+	public ClienteDTO editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
+		
+		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(id);
+		try {
+			if (clientes.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente cliente = clientes.get(0);
+				if (!cliente.getTelefono().equals(clienteData.getTelefono())) {
+					List<Usuario> usuarios = usrDAO.buscarPorTelefono(clienteData.getTelefono());
+					if (usuarios.size() != 0) {
+						throw new AppettitException("Telefono utilizado por otro usuario.", AppettitException.EXISTE_REGISTRO);
+					} else {
+							cliente.setNombre(clienteData.getNombre());
+							cliente.setPassword(clienteData.getPassword());
+							cliente.setTelefono(clienteData.getTelefono());
+							cliente.setUsername(clienteData.getUsername());
+							
+							/* Se encripta la contraseña */
+							cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
+							
+							return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+					}
+				} else {
+					cliente.setNombre(clienteData.getNombre());
+					cliente.setPassword(clienteData.getPassword());
+					cliente.setUsername(clienteData.getUsername());
+					/* Se encripta la contraseña */
+					cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
+					
+					return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+				}
+			}
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	
+					
+	}
+	
 	@Override
 	public ClienteDTO agregarDireccion(DireccionCrearDTO direccion) throws AppettitException {
 		

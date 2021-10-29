@@ -4,7 +4,9 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
@@ -13,6 +15,7 @@ import com.vividsolutions.jts.io.ParseException;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteModificarDTO;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -53,6 +56,25 @@ public class UsuarioREST {
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
+	@PUT
+	@Path("/editar/{id}")
+	//@RecursoProtegidoJWT
+	public Response editar(@PathParam("id") Long id, ClienteModificarDTO request) {
+		RespuestaREST<ClienteDTO> respuesta = null;
+		try {
+			ClienteDTO usuario = uService.editarCliente(id, request);
+			respuesta = new RespuestaREST<ClienteDTO>(true, "Cliente editado con éxito.", usuario);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();

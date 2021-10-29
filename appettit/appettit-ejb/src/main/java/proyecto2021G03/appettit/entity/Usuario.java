@@ -31,7 +31,7 @@ public abstract class Usuario  implements Serializable  {
 	private String username;
 	private String password;
 	
-	@Column(name="telefono",unique=true, updatable = false, nullable = false)
+	@Column(name="telefono",unique=true, nullable = false)
 	private String telefono;
 
 	@Column(name="correo",unique=true, updatable = false, nullable = false)
