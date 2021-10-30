@@ -94,6 +94,7 @@ public class UsuarioService implements IUsuarioService {
 		if (usuario == null)
 			throw new AppettitException("El usuario indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
+			ClienteDTO dd = (ClienteDTO) usrConverter.fromEntity(usuario);
 			return usrConverter.fromEntity(usuario);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -656,6 +657,37 @@ public class UsuarioService implements IUsuarioService {
 			}
 		}
 		return false;
+	}
+
+
+	public Long obtenerIdDireccion(Long idUser, String alias) throws AppettitException {
+
+		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(idUser);
+		try {
+			if (clientes.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente cliente = clientes.get(0);
+				List<Direccion> direcciones = cliente.getDirecciones();
+				//obtengo la direccion
+				Boolean existe_direccion = false;
+				Long idDireccion = null;
+				for (Direccion d: direcciones) {
+					if (d.getAlias().compareTo(alias) == 0) {
+						existe_direccion = true;
+						idDireccion = d.getId();
+					}
+				}
+				if (!existe_direccion) {
+					throw new AppettitException("La direccion con ese alias no existe para el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+				} else {
+					return idDireccion;
+				}
+			}
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+
 	}
 	
 }

@@ -43,5 +43,6 @@ public interface IUsuarioService {
 	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException;
 	public CalificacionClienteDTO calificacionCliente(ClienteDTO restauranteDTO) throws AppettitException;
 	public ClienteDTO agregarDireccion(DireccionCrearDTO direccion) throws AppettitException;
+	public Long obtenerIdDireccion(Long idUser, String alias) throws AppettitException;
 
 }

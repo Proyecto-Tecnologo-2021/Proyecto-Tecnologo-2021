@@ -2,24 +2,15 @@ package proyecto2021G03.appettit.rest;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import com.vividsolutions.jts.io.ParseException;
 
 import proyecto2021G03.appettit.business.IUsuarioService;
-import proyecto2021G03.appettit.dto.ClienteCrearDTO;
-import proyecto2021G03.appettit.dto.ClienteDTO;
-import proyecto2021G03.appettit.dto.ClienteModificarDTO;
-import proyecto2021G03.appettit.dto.DireccionCrearDTO;
-import proyecto2021G03.appettit.dto.EliminarDeClienteDTO;
-import proyecto2021G03.appettit.dto.LoginDTO;
+import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
+
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
 
 @RequestScoped
@@ -50,6 +41,7 @@ public class UsuarioREST {
 	//@RecursoProtegidoJWT
 	public Response crear(ClienteCrearDTO request) throws ParseException {
 		RespuestaREST<ClienteDTO> respuesta = null;
+		System.out.println(request.getNombre());
 		try {
 			ClienteDTO cliente = uService.crearCliente(request);
 			respuesta = new RespuestaREST<ClienteDTO>(true, "Cliente creado con éxito.", cliente);
@@ -59,6 +51,7 @@ public class UsuarioREST {
 			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {
+				System.out.println(e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
 			}
 		}
@@ -173,6 +166,23 @@ public class UsuarioREST {
 			} else {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
 			}
+		}
+	}
+
+	@GET
+	@Path("/getAddressId")
+	public Response getDireccionId(DirreccionAliasDTO request) {
+		RespuestaREST<Long> respuesta = null;
+		try {
+
+			Long dirId = uService.obtenerIdDireccion(request.getUserId(), request.getAlias());
+
+			respuesta = new RespuestaREST<Long>(true, "Id de la dirección obtenida con éxito.", dirId);
+			return Response.ok(respuesta).build();
+
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
 		}
 	}
 	
