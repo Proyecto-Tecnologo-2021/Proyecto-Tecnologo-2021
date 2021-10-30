@@ -636,6 +636,7 @@ public class UsuarioService implements IUsuarioService {
 				.setExpiration(expiracion)
 				.claim("tipoUsuario", tipoUsuario)
 				.claim("idUsuario", usuario.getId())
+				.claim("userName", usuario.getUsername())
 				.claim("nombre", usuario.getNombre())
 				.claim("correo", usuario.getCorreo())
 				.claim("telefono", usuario.getTelefono())
