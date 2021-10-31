@@ -17,6 +17,9 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
     public MenuRDTO fromEntity(Menu menu) {
         if (menu == null) return null;
         return MenuRDTO.builder()
+                .id(menu.getId())
+                .nom_restaurante(menu.getRestaurante().getNombre())
+                .descuento(0D)
                 .nombre(menu.getNombre())
                 .id_imagen(menu.getId_imagen())
                 .id_restaurante(menu.getId_restaurante())
