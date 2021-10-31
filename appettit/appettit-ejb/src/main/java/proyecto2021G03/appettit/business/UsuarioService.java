@@ -689,5 +689,35 @@ public class UsuarioService implements IUsuarioService {
 		}
 
 	}
-	
+
+	public List<DireccionDTO> obtenerDireccionesCliente(Long idUser) throws AppettitException {
+
+		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(idUser);
+		try {
+			if (clientes.size() == 0) {
+				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				Cliente cliente = clientes.get(0);
+				List<Direccion> direcciones = cliente.getDirecciones();
+				List<DireccionDTO> direccionesDTO = new ArrayList<>();
+				Boolean existe_direccion = false;
+
+				if(direcciones != null) {
+					existe_direccion = true;
+					for (Direccion d : direcciones) {
+						direccionesDTO.add(dirConverter.fromEntity(d));
+					}
+				}
+				if (!existe_direccion) {
+					throw new AppettitException("El cliente no tiene direcciones.", AppettitException.NO_EXISTE_REGISTRO);
+				} else {
+					return direccionesDTO;
+				}
+			}
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+
+	}
+
 }

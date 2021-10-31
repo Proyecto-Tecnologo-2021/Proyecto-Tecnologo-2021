@@ -11,6 +11,8 @@ import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
 
+import java.util.List;
+
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
 
 @RequestScoped
@@ -178,6 +180,23 @@ public class UsuarioREST {
 			Long dirId = uService.obtenerIdDireccion(request.getUserId(), request.getAlias());
 
 			respuesta = new RespuestaREST<Long>(true, "Id de la dirección obtenida con éxito.", dirId);
+			return Response.ok(respuesta).build();
+
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+		}
+	}
+
+	@GET
+	@Path("/getAddresses/{userId}")
+	public Response getDireccionId(@PathParam("userId")Long userId) {
+		RespuestaREST<List<DireccionDTO>> respuesta = null;
+		try {
+
+			List<DireccionDTO> direcciones = uService.obtenerDireccionesCliente(userId);
+
+			respuesta = new RespuestaREST<List<DireccionDTO>>(true, "Lista de direcciones obtenida con éxito", direcciones);
 			return Response.ok(respuesta).build();
 
 		} catch (AppettitException e) {
