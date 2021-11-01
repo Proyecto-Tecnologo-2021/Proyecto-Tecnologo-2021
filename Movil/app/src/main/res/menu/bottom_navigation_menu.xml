@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_restaurantes"
+        android:id="@+id/menu_offer"
         android:enabled="true"
-        android:icon="@drawable/ic_calendar"
-        android:title="@string/menu_op1"/>
+        android:icon="@drawable/ic_menu"
+        android:title="@string/menu_offer"/>
     <item
-        android:id="@+id/menu_notificacion"
+        android:id="@+id/menu_order"
         android:enabled="true"
-        android:icon="@drawable/ic_bell"
-        android:title="@string/menu_op2"/>
+        android:icon="@drawable/ic_pedido"
+        android:title="@string/menu_order"/>
 
     <item
-        android:id="@+id/menu_vacunatorio"
-        android:enabled="true"
-        android:icon="@drawable/ic_building"
-        android:title="@string/menu_op3"/>
-
-    <item
-        android:id="@+id/menu_usuario"
+        android:id="@+id/menu_profile"
         android:enabled="true"
         android:icon="@drawable/ic_user"
-        android:title="@string/menu_op4"/>
-
+        android:title="@string/menu_profile"/>
 </menu>

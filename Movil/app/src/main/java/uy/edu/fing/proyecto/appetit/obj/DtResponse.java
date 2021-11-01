@@ -11,9 +11,9 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DtLogin {
+public class DtResponse {
     Boolean ok;
     String mensaje;
-    DtUsuario usuario;
+    Object cuerpo;
 
 }

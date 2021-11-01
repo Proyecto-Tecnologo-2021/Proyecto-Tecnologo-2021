@@ -2,12 +2,16 @@ package uy.edu.fing.proyecto.appetit.obj;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DtUsuario {
     private static DtUsuario uInstance= null;
@@ -20,8 +24,6 @@ public class DtUsuario {
     private String token;
     private String tokenFirebase;
     private List<DtDireccion> direcciones;
-
-    protected DtUsuario(){}
 
     public static synchronized DtUsuario getInstance() {
         if(uInstance == null){

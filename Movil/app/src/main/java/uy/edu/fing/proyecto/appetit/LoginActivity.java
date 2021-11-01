@@ -3,6 +3,7 @@ package uy.edu.fing.proyecto.appetit;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
@@ -29,9 +30,13 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
+import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtLogin;
+import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
 public class LoginActivity extends AppCompatActivity {
@@ -67,8 +72,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUsuario() {
-        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        networkInfo = connMgr.getActiveNetworkInfo();
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.API_USRLOGIN_URL;
         Log.i(TAG, stringUrl);
@@ -78,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetLoginUsuarioTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {
@@ -95,17 +101,17 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Object result) {
             progressBar.setVisibility(View.INVISIBLE);
 
-            if (result instanceof DtLogin) {
-                DtLogin login = (DtLogin) result;
-                //Toast.makeText(LoginActivity.this, login.getMensaje(), Toast.LENGTH_LONG).show();
-                Log.i(TAG, "ServerJWT:" + dtUsuario.getToken());
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+                Log.i(TAG, "ServerLoginFirebase:" + dtUsuario.getToken());
+
                 AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this).create();
                 dialog.setTitle(R.string.info_title);
-                dialog.setMessage(login.getMensaje()+": "+ dtUsuario.getTelefono());
+                dialog.setMessage(response.getMensaje()+": "+ dtUsuario.getTelefono());
                 dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which) {
-                        onBackPressed();
+                        //onBackPressed();
                     }
                 });
                 dialog.show();
@@ -131,19 +137,25 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private DtLogin LoginInfoGralUrl(String myurl) throws IOException {
+    private DtResponse LoginInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
+
+            //String authorization ="Bearer  " + usuario.getToken();
+
             URL url = new URL(myurl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            //conn.setRequestProperty("Authorization", authorization);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("PUT");
-            //conn.setDoInput(true);
+            conn.setRequestMethod("POST");
             conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+
 
             String data = LoginToJSON();
             Log.i(TAG, data);
@@ -155,10 +167,20 @@ public class LoginActivity extends AppCompatActivity {
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
-            Log.i(TAG, "ResponseCode:" + String.valueOf(response));
-            is = conn.getInputStream();
 
-            return readInfoGralJsonStream(is);
+            Log.i(TAG, "conn.getResponseCode: " + response +" - " + conn.getResponseMessage());
+            if (response == 200){
+                is = conn.getInputStream();
+                return readInfoGralJsonStream(is);
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is);
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is);
+            } else{
+                return new DtResponse(false, response +" - " + conn.getResponseMessage(), null);
+            }
 
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
@@ -170,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public DtLogin readInfoGralJsonStream(InputStream in) throws IOException {
+    public DtResponse readInfoGralJsonStream(InputStream in) throws IOException {
         //creating an InputStreamReader object
         InputStreamReader isReader = new InputStreamReader(in);
         //Creating a BufferedReader object
@@ -188,10 +210,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public DtLogin readRESTMessage(JsonReader reader) throws IOException {
+    public DtResponse readRESTMessage(JsonReader reader) throws IOException {
         Boolean ok = false;
         String mensaje = null;
-        DtLogin res = null;
+        Boolean body = false;
+        DtResponse res = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -201,19 +224,22 @@ public class LoginActivity extends AppCompatActivity {
             }else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
+                body = true;
                 readUsuario(reader);
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtLogin(ok, mensaje, dtUsuario);
+        if (body){
+            return new DtResponse(ok, mensaje, dtUsuario);
+        }else {
+            return new DtResponse(ok, mensaje, null);
+        }
+
     }
 
     public void readUsuario(JsonReader reader) throws IOException {
-        String correo = null;
-        String telefono = null;
-        String token = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -224,6 +250,10 @@ public class LoginActivity extends AppCompatActivity {
                 dtUsuario.setTelefono(reader.nextString());
             } else if (name.equals("token") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setToken(reader.nextString());
+            } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setNombre(reader.nextString());
+            } else if (name.equals("direcciones") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setDirecciones(readDireccionesArray(reader));
             } else {
                 reader.skipValue();
             }
@@ -232,13 +262,58 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public List<DtDireccion> readDireccionesArray(JsonReader reader) throws IOException {
+        List<DtDireccion> dosis = new ArrayList<DtDireccion>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            dosis.add(readDireccion(reader));
+        }
+        reader.endArray();
+        return dosis;
+    }
+
+    public DtDireccion readDireccion(JsonReader reader) throws IOException {
+        Long id = null;
+        String alias = null;
+        String calle = null;
+        String numero = null;
+        String apartamento = null;
+        String referencias = null;
+        String geometry = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("id") && reader.peek() != JsonToken.NULL) {
+                id = reader.nextLong();
+            } else if (name.equals("alias") && reader.peek() != JsonToken.NULL) {
+                alias = reader.nextString();
+            } else if (name.equals("calle") && reader.peek() != JsonToken.NULL) {
+                calle = reader.nextString();
+            } else if (name.equals("numero") && reader.peek() != JsonToken.NULL) {
+                numero = reader.nextString();
+            } else if (name.equals("apartamento") && reader.peek() != JsonToken.NULL) {
+                apartamento = reader.nextString();
+            } else if (name.equals("referencias") && reader.peek() != JsonToken.NULL) {
+                referencias = reader.nextString();
+            } else if (name.equals("geometry") && reader.peek() != JsonToken.NULL) {
+                geometry = reader.nextString();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+
+        return new DtDireccion(id, alias, calle, numero, apartamento, referencias, geometry);
+    }
+
     private String LoginToJSON(){
         String res = "";
 
         JSONObject jsonObject= new JSONObject();
         try {
-            jsonObject.put("correo", mail.getText());
-            jsonObject.put("password", password.getText());
+            jsonObject.put("usuario", dtUsuario.getCorreo());
+            jsonObject.put("password", dtUsuario.getPassword());
 
             res = jsonObject.toString();
         } catch (JSONException e) {

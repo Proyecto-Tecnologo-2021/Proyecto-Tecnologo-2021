@@ -1,6 +1,6 @@
 //plugins {
 //    id 'com.android.application'
-    // Se agrega para trabajar con Firebase
+// Se agrega para trabajar con Firebase
 //    id 'com.google.gms.google-services'
 //}
 
@@ -42,20 +42,27 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    //Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.4.0')
 
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-auth:20.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+
 
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    //Maps
+    implementation 'org.osmdroid:osmdroid-android:6.1.6'
+    implementation 'org.osmdroid:osmdroid-wms:6.1.6'
+    implementation 'org.osmdroid:osmdroid-mapsforge:6.1.6'
+    //implementation 'org.osmdroid:osmdroid-geopackage:6.1.6'
 
 
 }

@@ -12,7 +12,7 @@ tools:context=".AltaCliente">
     android:layout_height="match_parent"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp">
-
+<!--
     <LinearLayout
         android:id="@+id/map_op_dis"
         android:layout_width="match_parent"
@@ -102,11 +102,12 @@ tools:context=".AltaCliente">
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
+        android:layout_marginBottom="2dp"
         android:background="@color/menu_bar_bg"
         app:itemIconTint="@color/menu_bar_text"
         app:itemTextColor="@color/menu_bar_text"
-        app:menu="@menu/bottom_navigation_menu"/>
-
+        app:menu="@menu/bottom_navigation_menu" />
+-->
 </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

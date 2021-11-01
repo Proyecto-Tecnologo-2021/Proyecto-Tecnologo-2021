@@ -23,6 +23,10 @@
     <string name="text_load">Cargando…</string>
     <string name="text_load_btn">Reintentar</string>
     <string name="text_load_btn_main">Ir a Activiad Principal</string>
+    <string name="firebase_error">No es posible autenticar con Google</string>
+
+    <!-- VIEWS-->
+    <string name="title_addDireccion">Nueva Dirección</string>
 
 
     <!--LOGIN-->
@@ -30,12 +34,18 @@
     <string name="login_pass">Contraseña</string>
     <string name="login_input">Ingresar</string>
 
-
     <!--MENU-->
-    <string name="menu_op1">Restaurantes</string>
-    <string name="menu_op2">Menús</string>
-    <string name="menu_op3">Pedidos</string>
-    <string name="menu_op4">Yo</string>
+    <string name="menu_offer">Menús</string>
+    <string name="menu_order">Pedidos</string>
+    <string name="menu_profile">Mi perfil</string>
 
+    <!--VIEW MAP-->
+    <string name="map_text_srch">Filtrar</string>
+    <string name="map_text_distancia_title">Ingreso de distancia (Km)</string>
+    <string name="map_text_btn">Buscar</string>
+    <string name="map_text_loc">Ubicación Actual</string>
+    <string name="map_copyright">&#169; OpenStreetMap | VacunasUY</string>
+    <string name="map_text_loc_err">Activar ubicación</string>
+    <string name="map_text_loc_err_msg">Su ubicación esta desactivada.\nPor favor active su ubicación</string>
 
 </resources>
