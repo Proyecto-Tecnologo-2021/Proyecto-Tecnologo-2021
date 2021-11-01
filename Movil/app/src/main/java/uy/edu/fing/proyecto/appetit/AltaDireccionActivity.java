@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
@@ -99,6 +100,7 @@ public class AltaDireccionActivity extends AppCompatActivity implements Location
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 marker.setTitle(getString(R.string.map_text_loc));
                 addMarker(marker);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }else{
             AlertDialog dialog = new AlertDialog.Builder(this).create();
@@ -120,6 +122,14 @@ public class AltaDireccionActivity extends AppCompatActivity implements Location
             dialog.show();
 
         }
+
+        imlocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mc.setZoom(MapConstants.MAP_ZOOM);
+                mc.animateTo(center);
+            }
+        });
 
     }
 

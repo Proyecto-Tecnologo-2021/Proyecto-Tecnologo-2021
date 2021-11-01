@@ -3,6 +3,7 @@ package uy.edu.fing.proyecto.appetit;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -66,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
     final static Integer RC_SIGN_IN = 20213;
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
+    private boolean isConnected;
     private FirebaseAuth mAuth;
 
     SignInButton signInButton;
     Button loginButton;
-    Button logoutButton;
     ProgressBar progressBar;
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -96,9 +98,25 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = (TextView) signInButton.getChildAt(0);
         textView.setText(getString(R.string.google_login));
 
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
         loginButton.setOnClickListener(v -> {
-            Intent ilogin = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(ilogin);
+            if (isConnected) {
+                Intent ilogin = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(ilogin);
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(this).create();
+                dialog.setTitle(R.string.err_conntitle);
+                dialog.setMessage(getString(R.string.err_conectividad));
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+                dialog.show();
+            }
         });
 
         signInButton.setOnClickListener(v -> signIn());
@@ -114,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
     }
 
     @Override
@@ -123,15 +140,17 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, String.valueOf(requestCode));
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent adduseractivity = new Intent(MainActivity.this, AltaDireccionActivity.class);
+                startActivity(adduseractivity);
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(this).create();
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
                 dialog.setTitle(R.string.access_title_err);
                 dialog.setMessage(getString(R.string.access_msg_err));
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> requestPermissions(permissions, PERMISOS_REQUERIDOS));
                 dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> finish());
                 dialog.show();
+
 
             }
         }
@@ -140,31 +159,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //updateUI(account);
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-
-
+        if (isConnected) {
+            // Check if user is signed in (non-null) and update UI accordingly.
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            updateUI(currentUser);
+        } else {
+            AlertDialog dialog = new AlertDialog.Builder(this).create();
+            dialog.setTitle(R.string.err_conntitle);
+            dialog.setMessage(getString(R.string.err_conectividad));
+            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    onBackPressed();
+                }
+            });
+            dialog.show();
+        }
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        if (isConnected) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        } else {
+            AlertDialog dialog = new AlertDialog.Builder(this).create();
+            dialog.setTitle(R.string.err_conntitle);
+            dialog.setMessage(getString(R.string.err_conectividad));
+            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    onBackPressed();
+                }
+            });
+            dialog.show();
+        }
     }
 
-    private void signOut(){
+    private void signOut() {
         mGoogleSignInClient.signOut();
         FirebaseAuth.getInstance().signOut();
         updateUI(null);
     }
 
-    private void updateUI(FirebaseUser account){
-        if(account != null){
+    private void updateUI(FirebaseUser account) {
+        if (account != null) {
             account.getIdToken(true)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -183,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
                             AlertDialog dialog = new AlertDialog.Builder(this).create();
                             dialog.setTitle(R.string.access_title_err);
                             dialog.setMessage(getString(R.string.firebase_error));
-                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
-                            {
+                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //onBackPressed();
                                 }
@@ -193,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-        } else{
+        } else {
             dtUsuario.setCorreo(null);
             dtUsuario.setTokenFirebase(null);
             dtUsuario.setToken(null);
@@ -241,8 +276,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUsuario() {
-        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.API_USRLOGINFIREBASE_URL;
         Log.i(TAG, stringUrl);
@@ -273,37 +306,34 @@ public class MainActivity extends AppCompatActivity {
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
                 Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
-                /*
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.setTitle(R.string.info_title);
-                dialog.setMessage(response.getMensaje()+": "+ dtUsuario.getTelefono());
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //onBackPressed();
-                    }
-                });
-                dialog.show();
-                */
-                if(response.getOk()){
+
+                if (response.getOk()) {
                     Intent menuactivity = new Intent(MainActivity.this, MenuActivity.class);
                     startActivity(menuactivity);
-                }else{
-                    Intent adduseractivity = new Intent(MainActivity.this, AltaDireccionActivity.class);
-                    startActivity(adduseractivity);
+                } else {
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            //ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        //String[] permisos = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
+                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
+                    }else{
+                        Intent adduseractivity = new Intent(MainActivity.this, AltaDireccionActivity.class);
+                        startActivity(adduseractivity);
+                    }
+
                 }
-            }else{
+            } else {
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
                 dialog.setTitle(R.string.info_title);
 
-                if(result instanceof String){
+                if (result instanceof String) {
                     dialog.setMessage((String) result);
                 } else {
                     dialog.setMessage(getString(R.string.err_recuperarpag));
                     Log.i(TAG, getString(R.string.err_recuperarpag));
                 }
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
-                {
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onBackPressed();
                     }
@@ -332,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
             conn.setDoInput(true);
 
 
-
             String data = LoginToJSON();
             Log.i(TAG, data);
 
@@ -344,8 +373,8 @@ public class MainActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            Log.i(TAG, "conn.getResponseCode: " + response +" - " + conn.getResponseMessage());
-            if (response == 200){
+            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoGralJsonStream(is);
             } else if (response == 400) {
@@ -354,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (response == 500) {
                 is = conn.getErrorStream();
                 return readInfoGralJsonStream(is);
-            } else{
-                return new DtResponse(false, response +" - " + conn.getResponseMessage(), null);
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
             }
 
             // Makes sure that the InputStream is closed after the app is
@@ -375,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         BufferedReader breader = new BufferedReader(isReader);
         StringBuffer sb = new StringBuffer();
         String str;
-        while((str = breader.readLine())!= null){
+        while ((str = breader.readLine()) != null) {
             sb.append(str);
         }
         JsonReader reader = new JsonReader(new StringReader(sb.toString()));
@@ -397,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
             String name = reader.nextName();
             if (name.equals("ok")) {
                 ok = reader.nextBoolean();
-            }else if (name.equals("mensaje")) {
+            } else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
                 body = true;
@@ -407,9 +436,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         reader.endObject();
-        if (body){
+        if (body) {
             return new DtResponse(ok, mensaje, dtUsuario);
-        }else {
+        } else {
             return new DtResponse(ok, mensaje, null);
         }
 
@@ -483,10 +512,10 @@ public class MainActivity extends AppCompatActivity {
         return new DtDireccion(id, alias, calle, numero, apartamento, referencias, geometry);
     }
 
-    private String LoginToJSON(){
+    private String LoginToJSON() {
         String res = "";
 
-        JSONObject jsonObject= new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("usuario", dtUsuario.getCorreo());
             jsonObject.put("password", dtUsuario.getTokenFirebase());

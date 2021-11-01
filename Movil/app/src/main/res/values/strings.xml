@@ -10,6 +10,7 @@
     <string name="alert_btn_neutral">OK</string>
 
     <!--CONNECTION MESSAGES-->
+    <string name="err_conntitle">Error de conectiviad</string>
     <string name="err_conectividad">Error de conectiviad. No existe conexión de red disponible.</string>
     <string name="err_recuperarpag">Error de conectiviad. No se puede conectar con el servicio.</string>
     <string name="registros_err">Error del tipo de dato retornado</string>
