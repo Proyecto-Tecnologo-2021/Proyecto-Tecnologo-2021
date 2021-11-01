@@ -113,7 +113,6 @@ public class ProductoService implements IProductoService {
 
 	@Override
 	public ProductoDTO crear(ProductoDTO pcDTO) throws AppettitException {
-
 		try {
 			Producto producto = pConverter.fromDTO(pcDTO);
 			return pConverter.fromEntity(pDAO.crear(producto));
@@ -129,5 +128,6 @@ public class ProductoService implements IProductoService {
 			return pConverter.fromEntity(pDAO.editar(producto));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	}
+		}
+	}
 }
