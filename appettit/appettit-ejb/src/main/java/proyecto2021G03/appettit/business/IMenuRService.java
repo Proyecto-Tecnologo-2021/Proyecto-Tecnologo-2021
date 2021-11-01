@@ -1,10 +1,9 @@
 package proyecto2021G03.appettit.business;
 
-import proyecto2021G03.appettit.dto.MenuDTO;
+import java.util.List;
+
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
-
-import java.util.List;
 
 public interface IMenuRService {
 

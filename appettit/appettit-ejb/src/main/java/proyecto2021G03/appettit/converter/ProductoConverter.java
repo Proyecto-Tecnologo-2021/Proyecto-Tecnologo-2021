@@ -3,7 +3,6 @@ package proyecto2021G03.appettit.converter;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
-import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
 import proyecto2021G03.appettit.entity.Producto;
 

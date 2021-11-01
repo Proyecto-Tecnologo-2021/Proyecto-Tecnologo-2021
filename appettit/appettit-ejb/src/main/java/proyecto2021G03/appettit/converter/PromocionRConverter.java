@@ -1,15 +1,14 @@
 package proyecto2021G03.appettit.converter;
 
-import proyecto2021G03.appettit.dao.IPromocionDAO;
-import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.MenuRDTO;
-import proyecto2021G03.appettit.entity.Menu;
-import proyecto2021G03.appettit.entity.Promocion;
-import proyecto2021G03.appettit.entity.Restaurante;
+import java.util.ArrayList;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
-import java.util.ArrayList;
+
+import proyecto2021G03.appettit.dao.IPromocionDAO;
+import proyecto2021G03.appettit.dao.IUsuarioDAO;
+import proyecto2021G03.appettit.dto.MenuRDTO;
+import proyecto2021G03.appettit.entity.Promocion;
 
 @Singleton
 public class PromocionRConverter extends AbstractConverter<Promocion, MenuRDTO>{
@@ -50,7 +49,7 @@ public class PromocionRConverter extends AbstractConverter<Promocion, MenuRDTO>{
               //  .extras(extraMenuConverter.fromDTO(menuRDTO.getExtras()))
               //  .productos(productoConverter.fromDTO(menuRDTO.getProductos()))
                 .menus(iPromocionDAO.listarPorId(menuRDTO.getId()).getMenus())
-                .restaurante((Restaurante) iUsuarioDAO.buscarPorId(menuRDTO.getId_restaurante()))
+                .restaurante(iUsuarioDAO.buscarRestaurantePorId(menuRDTO.getId_restaurante()))
                 .build();
     }
 }

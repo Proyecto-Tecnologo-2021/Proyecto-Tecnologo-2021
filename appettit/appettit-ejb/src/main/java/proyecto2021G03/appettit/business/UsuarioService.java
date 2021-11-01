@@ -20,7 +20,7 @@ import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
-import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
+import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
@@ -32,7 +32,6 @@ import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -65,7 +64,8 @@ public class UsuarioService implements IUsuarioService {
 	
 	@EJB
 	IGeoService geoSrv;
-	
+
+	/*
 	@Override
 	public void eliminar(Long id) throws AppettitException {
 		// se valida que el usuario exista
@@ -78,6 +78,7 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+
 
 	@Override
 	public List<UsuarioDTO> listar() throws AppettitException {
@@ -100,6 +101,7 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+	
 
 	@Override
 	public List<UsuarioDTO> buscarPorNombre(String nombre) throws AppettitException {
@@ -109,7 +111,7 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
-
+*/
 	@Override
 	public List<AdministradorDTO> listarAdminsitradores() throws AppettitException {
 		try {
@@ -242,7 +244,7 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException {
-		Restaurante usuario = (Restaurante) usrDAO.buscarPorId(restauranteDTO.getId());
+		Restaurante usuario = (Restaurante) usrDAO.buscarRestaurantePorId(restauranteDTO.getId());
 		if (usuario == null)
 			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
@@ -355,7 +357,29 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteDTO editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(id);
+		if (cliente == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			cliente.setNombre(clienteData.getNombre());
+			cliente.setPassword(clienteData.getPassword());
+			cliente.setTelefono(clienteData.getTelefono());
+			cliente.setUsername(clienteData.getUsername());
+			
+			// Se encripta la contraseña 
+			cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
+			
+			return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 		
+		
+		
+		
+		/*
 		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(id);
 		try {
 			if (clientes.size() == 0) {
@@ -364,6 +388,7 @@ public class UsuarioService implements IUsuarioService {
 				Cliente cliente = clientes.get(0);
 				if (!cliente.getTelefono().equals(clienteData.getTelefono())) {
 					List<Usuario> usuarios = usrDAO.buscarPorTelefono(clienteData.getTelefono());
+					
 					if (usuarios.size() != 0) {
 						throw new AppettitException("Telefono utilizado por otro usuario.", AppettitException.EXISTE_REGISTRO);
 					} else {
@@ -372,7 +397,7 @@ public class UsuarioService implements IUsuarioService {
 							cliente.setTelefono(clienteData.getTelefono());
 							cliente.setUsername(clienteData.getUsername());
 							
-							/* Se encripta la contraseña */
+							// Se encripta la contraseña 
 							cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
 							
 							return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
@@ -381,7 +406,7 @@ public class UsuarioService implements IUsuarioService {
 					cliente.setNombre(clienteData.getNombre());
 					cliente.setPassword(clienteData.getPassword());
 					cliente.setUsername(clienteData.getUsername());
-					/* Se encripta la contraseña */
+					// Se encripta la contraseña 
 					cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
 					
 					return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
@@ -390,7 +415,7 @@ public class UsuarioService implements IUsuarioService {
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}	
-					
+		*/		
 	}
 	
 	@Override
@@ -527,7 +552,7 @@ public class UsuarioService implements IUsuarioService {
 			Iterator<ClienteDTO> it = usrConverter.fromCliente(usrDAO.listarClientes()).iterator();
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();
-//				res.setCalificacion(calificacionRestaurante(res));
+				res.setCalificacion(calificacionGralCliente(res));
 
 			}
 
@@ -544,13 +569,20 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 	@Override
-	public List<ClienteDTO> buscarPorIdCliente(String nombre) throws AppettitException {
+	public ClienteDTO buscarPorIdCliente(Long id) throws AppettitException {
 		return null;
 	}
 
 	@Override
-	public CalificacionClienteDTO calificacionCliente(ClienteDTO restauranteDTO) throws AppettitException {
-		return null;
+	public CalificacionGralClienteDTO calificacionGralCliente(ClienteDTO clienteDTO) throws AppettitException {
+		Cliente usuario = (Cliente) usrDAO.buscarPorIdCliente(clienteDTO.getId());
+		if (usuario == null)
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			return usrDAO.calificacionGralCliente(clienteDTO);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
@@ -596,7 +628,7 @@ public class UsuarioService implements IUsuarioService {
 			if(usuario instanceof Cliente) {
 			
 				usuario.setTokenFireBase(loginDTO.getPassword());
-				usrDAO.editar(usuario);
+				usrDAO.editarCliente((Cliente)usuario);
 				
 				String token = crearJsonWebToken(usuario);
 				return token;
@@ -718,6 +750,25 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 
+	}
+
+	@Override
+	public AdministradorDTO buscarAdministradorPorId(Long id) throws AppettitException {
+		try {
+			return usrConverter.fromAdministrador(usrDAO.buscarAdministradorPorId(id));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+
+	}
+
+	@Override
+	public RestauranteDTO buscarRestaurantePorId(Long id) throws AppettitException {
+		try {
+			return usrConverter.fromRestaurante(usrDAO.buscarRestaurantePorId(id));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 }

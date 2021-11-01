@@ -1,11 +1,10 @@
 package proyecto2021G03.appettit.business;
 
-import proyecto2021G03.appettit.dto.MenuRDTO;
+import java.util.List;
+
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
-
-import java.util.List;
 
 public interface IPedidoService {
     public List<PedidoDTO> listar() throws AppettitException;

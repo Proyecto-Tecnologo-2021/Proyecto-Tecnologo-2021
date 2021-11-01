@@ -13,7 +13,7 @@ public class ClienteDTO extends UsuarioDTO  {
     @Builder
     public ClienteDTO(Long id, String nombre, String username, String password, String telefono, String correo,
                       String tokenFireBase, Boolean bloqueado, List<DireccionDTO> direcciones,
-                      CalificacionClienteDTO calificacion) {
+                      CalificacionGralClienteDTO calificacion) {
 
         super(id, nombre, username, password, telefono, correo, tokenFireBase);
 
@@ -26,6 +26,6 @@ public class ClienteDTO extends UsuarioDTO  {
     private Boolean bloqueado;
     private List<DireccionDTO> direcciones;
 
-    private CalificacionClienteDTO calificacion;
+    private CalificacionGralClienteDTO calificacion;
   
 }

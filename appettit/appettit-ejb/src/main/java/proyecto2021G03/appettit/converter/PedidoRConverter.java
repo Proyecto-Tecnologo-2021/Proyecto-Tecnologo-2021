@@ -1,17 +1,14 @@
 package proyecto2021G03.appettit.converter;
 
-import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.EstadoPedido;
-import proyecto2021G03.appettit.dto.PedidoDTO;
-import proyecto2021G03.appettit.dto.PedidoRDTO;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Pedido;
-import proyecto2021G03.appettit.entity.Restaurante;
+import java.time.LocalDateTime;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
-import java.time.LocalDateTime;
+import proyecto2021G03.appettit.dao.IUsuarioDAO;
+import proyecto2021G03.appettit.dto.EstadoPedido;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.entity.Pedido;
 
 @Singleton
 public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
@@ -62,8 +59,8 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .pago(pedidoRDTO.getPago())
                 .fecha(LocalDateTime.now())
                 .total(pedidoRDTO.getTotal())
-                .restaurante((Restaurante) isuarioDAO.buscarPorId(pedidoRDTO.getIdrest()))
-                .cliente((Cliente) isuarioDAO.buscarPorId(pedidoRDTO.getIdcli()))
+                .restaurante(isuarioDAO.buscarRestaurantePorId(pedidoRDTO.getIdrest()))
+                .cliente(isuarioDAO.buscarPorIdCliente(pedidoRDTO.getIdcli()))
                 .menus(menuRConverter.fromDTO(pedidoRDTO.filtroMenu()))
                 .promociones(promocionRConverter.fromDTO(pedidoRDTO.filtroPromo()))
                 .estado(EstadoPedido.CONFIRMADO)

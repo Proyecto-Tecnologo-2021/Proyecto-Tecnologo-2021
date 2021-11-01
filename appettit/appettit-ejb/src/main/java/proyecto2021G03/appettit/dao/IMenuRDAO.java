@@ -1,9 +1,8 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.dto.MenuRDTO;
-import proyecto2021G03.appettit.entity.Menu;
-
 import java.util.List;
+
+import proyecto2021G03.appettit.entity.Menu;
 
 public interface IMenuRDAO {
 

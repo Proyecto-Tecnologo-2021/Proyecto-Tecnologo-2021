@@ -1,7 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,11 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.hibernate.hql.ast.origin.hql.parse.HQLParser.member_of_key_return;
 import org.jboss.logging.Logger;
 
+import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.CalificacionClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -32,7 +29,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	private EntityManager em;
 
-	/* GENERAL */
+	/* GENERAL 
 	@Override
 	public Usuario crear(Usuario usuario) {
 		em.persist(usuario);
@@ -70,7 +67,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 				.setParameter("nombre", nombre);
 		return consulta.getResultList();
 	}
-
+*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> buscarPorCorreo(String correo) {
@@ -87,6 +84,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return consulta.getResultList();
 	}
 
+
 	@Override
 	public Boolean existeCorreoTelefono(String correo, String telefono) {
 		Query consulta = em
@@ -98,6 +96,11 @@ public class UsuarioDAO implements IUsuarioDAO {
 	}
 
 	/* ADMINISTRADOR */
+
+	@Override
+	public Administrador buscarAdministradorPorId(Long id) {
+		return em.find(Administrador.class, id);
+	}
 
 	@Override
 	public Administrador crearAdministrador(Administrador administrador) {
@@ -115,18 +118,21 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return usuarios;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Administrador> buscarPorNombreAdministrador(String nombre) {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
-		consulta.setParameter("type", "administrador");
-		consulta.setParameter("nombre", nombre);
-
-		List<Administrador> usuarios = consulta.getResultList();
+		List<Administrador> usuarios = em.createQuery("from Adminsitrador _a where _a.nombre = :nombre", Administrador.class)
+		.setParameter("nombre", nombre)
+		.getResultList();
 		return usuarios;
 	}
 
 	/* RESTAURANTE */
+	
+	@Override
+	public Restaurante buscarRestaurantePorId(Long id) {
+		return em.find(Restaurante.class, id);
+	}
+
 
 	@Override
 	public Restaurante crearRestaurante(Restaurante restaurante) {
@@ -149,21 +155,17 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 		List<Restaurante> restaurantes = em.createQuery("select r "
 				+ "from Restaurante r", Restaurante.class)
-				.setHint("org.hibernate.cacheable", false)
 				.getResultList();
 
 		return restaurantes;
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre) {
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
-		consulta.setParameter("type", "restaurante");
-		consulta.setParameter("nombre", nombre);
-
-		List<Restaurante> usuarios = consulta.getResultList();
+		List<Restaurante> usuarios = em.createQuery("Select _r from Restaurante _r where _r.nombre = :nombre", Restaurante.class)
+		.setParameter("nombre", nombre)
+		.getResultList();
 		return usuarios;
 	}
 
@@ -278,49 +280,106 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	@Override
 	public List<Cliente> listarClientes() {
-
+		/*
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "cliente");
 
 		List<Cliente> usuarios = consulta.getResultList();
 		return usuarios;
+		*/
+
+		List<Cliente> clientes = em.createQuery("Select _c from Cliente", Cliente.class).getResultList();
+		return clientes;
+
 	}
 
 	@Override
 	public List<Cliente> buscarPorNombreCliente(String nombre) {
 
+		/*
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
 		consulta.setParameter("type", "cliente");
 		consulta.setParameter("nombre", nombre);
 
 		List<Cliente> usuarios = consulta.getResultList();
+		*/
+		List<Cliente> usuarios = em.createQuery("select _c from Cliente where _c.nombre=:nombre", Cliente.class)
+				.setParameter("nombre", nombre)
+				.getResultList();
+		
 		return usuarios;
 	}
 
 	@Override
-	public List<Cliente> buscarPorIdCliente(String id) {
+	public Cliente buscarPorIdCliente(Long id) {
 
+		/*
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
 		consulta.setParameter("type", "cliente");
 		consulta.setParameter("id", id);
 
 		List<Cliente> usuarios = consulta.getResultList();
 		return usuarios;
+		*/
+		
+		return em.find(Cliente.class, id);
 	}
 
 	@Override
 	public List<Cliente> buscarPorIdClienteInteger(Long id) {
+		/*
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
 		consulta.setParameter("type", "cliente");
 		consulta.setParameter("id", id);
 
 		List<Cliente> usuarios = consulta.getResultList();
+		*/
+		List<Cliente> usuarios = em.createQuery("select _c from Cliente where _c.id=:id", Cliente.class)
+				.setParameter("id", id)
+				.getResultList();
+		
 		return usuarios;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public CalificacionClienteDTO calificacionCliente(ClienteDTO clienteData) {
+	public CalificacionGralClienteDTO calificacionGralCliente(ClienteDTO clienteDTO) {
+		Query consulta = em
+				.createNativeQuery("SELECT "
+						+ "c.cla, "
+						+ "COUNT(CASE c.cla = cc.clasificacion "
+						+ "	WHEN TRUE THEN cc.clasificacion "
+						+ "	ELSE NULL "
+						+ "	END) AS clasifica, "
+						+ "COUNT(DISTINCT cc.id_restaurante) res "
+						+ "FROM clasificacionesclientes cc "
+						+ "RIGHT JOIN  generate_series(1, 5, 1) AS c(cla) ON 1=1 "
+						+ "and cc.id_cliente = :id_cliente "
+						+ "GROUP BY c.cla "
+						+ "");
+		
+		consulta.setParameter("id_cliente", clienteDTO.getId());
 
-		return null;
+		
+		List<Object[]> datos = consulta.getResultList();
+		Integer general = 0;
+		Integer tgeneral = 0;
+		Integer restaurantes = 0;
+		
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			general += Integer.valueOf(line[0].toString()) * Integer.valueOf(line[1].toString());
+			tgeneral += Integer.valueOf(line[1].toString());
+			restaurantes = Integer.valueOf(line[2].toString());
+			
+		}
+		if(tgeneral != 0)
+			general = general/tgeneral;
+		
+		return new CalificacionGralClienteDTO(general, restaurantes);
 	}
+
+	
 
 }

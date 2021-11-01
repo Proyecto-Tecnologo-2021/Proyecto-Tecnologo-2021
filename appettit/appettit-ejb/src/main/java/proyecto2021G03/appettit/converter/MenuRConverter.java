@@ -1,9 +1,9 @@
 package proyecto2021G03.appettit.converter;
-import proyecto2021G03.appettit.dto.MenuDTO;
-import proyecto2021G03.appettit.dto.MenuRDTO;
-import proyecto2021G03.appettit.entity.Menu;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+
+import proyecto2021G03.appettit.dto.MenuRDTO;
+import proyecto2021G03.appettit.entity.Menu;
 
 @Singleton
 public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{

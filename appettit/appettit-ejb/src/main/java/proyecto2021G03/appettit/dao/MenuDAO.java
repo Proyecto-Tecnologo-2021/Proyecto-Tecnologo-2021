@@ -65,8 +65,11 @@ public class MenuDAO implements IMenuDAO {
 		return menus;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Menu> listara() {
 		Query consulta = em.createQuery("SELECT m FROM Menu m");
-		return consulta.getResultList();	}
+		return consulta.getResultList();	
+		
+	}
 }
