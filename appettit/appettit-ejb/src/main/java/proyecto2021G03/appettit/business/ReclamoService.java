@@ -11,10 +11,10 @@ import java.util.List;
 
 public class ReclamoService implements IReclamoService{
     @EJB
-    IReclamoDao iReclamoDao;
+    public IReclamoDao iReclamoDao;
 
     @EJB
-    ReclamoConverter reclamoConverter;
+    public ReclamoConverter reclamoConverter;
 
     @Override
     public List<ReclamoDTO> listar() throws AppettitException {
@@ -46,7 +46,7 @@ public class ReclamoService implements IReclamoService{
     public ReclamoDTO editar(Long id, ReclamoDTO reclamoDTO) throws AppettitException {
         Reclamo reclamo = iReclamoDao.listarPorId(reclamoDTO.getId());
         if (reclamo == null)
-            throw new AppettitException("El departamento indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+            throw new AppettitException("El reclamo indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
         try {
 

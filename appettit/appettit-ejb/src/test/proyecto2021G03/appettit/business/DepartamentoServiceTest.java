@@ -1,4 +1,4 @@
-package resources.proyecto2021G03.appettit.business;
+package proyecto2021G03.appettit.business;
 
 import static org.junit.Assert.*;
 
