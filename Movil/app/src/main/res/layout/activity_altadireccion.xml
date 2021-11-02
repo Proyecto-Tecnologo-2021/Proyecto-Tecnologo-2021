@@ -21,14 +21,71 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/map_textView_usr"
-                android:layout_width="0dp"
+            <EditText
+                android:id="@+id/dir_alias"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="@string/map_text_alias"
+                android:layout_marginTop="5dp"/>
+            <EditText
+                android:id="@+id/dir_calle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:editable="false"
+                android:inputType="none"
+                android:hint="@string/map_text_calle"
+                android:layout_marginTop="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/dir_nro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:hint="@string/map_text_apto"
+                    android:layout_marginTop="5dp"/>
+
+                <EditText
+                    android:id="@+id/dir_apto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="@string/map_text_apto"
+                    android:layout_marginTop="5dp"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/dir_referencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="@string/map_text_ref"
+                android:layout_marginTop="5dp"/>
+
+
+            <Button
+                android:id="@+id/buttonB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:text="@string/map_text_srch" />
+                android:text="@string/map_text_btn"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </LinearLayout>
 

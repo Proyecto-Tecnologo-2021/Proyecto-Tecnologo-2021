@@ -133,7 +133,26 @@ public class MenuService implements IMenuService{
             menus.setPrecioTotal(menuDTO.getPrecioTotal());
             menus.setDescripcion(menuDTO.getDescripcion());
 
-            return menuConverter.fromEntity(iMenuDao.editar(menus));
+            MenuDTO men = menuConverter.fromEntity(iMenuDao.editar(menus));
+    		ImagenDTO img = new ImagenDTO();
+
+    		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+    			FileManagement fm = new FileManagement();
+
+    			img.setIdentificador("Sin Imagen");
+    			img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+    		} else {
+    			try {
+    				img = imgSrv.buscarPorId(men.getId_imagen());	
+    			} catch (Exception e) {
+    				logger.error(e.getMessage());
+    			}
+
+    		}
+    		men.setImagen(img);
+    		
+    		return men;
+            
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }

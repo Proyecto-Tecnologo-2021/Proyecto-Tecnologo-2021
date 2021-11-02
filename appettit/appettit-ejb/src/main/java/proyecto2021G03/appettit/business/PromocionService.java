@@ -1,20 +1,29 @@
 package proyecto2021G03.appettit.business;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.converter.PromocionConverter;
 import proyecto2021G03.appettit.dao.ICategoriaDAO;
 import proyecto2021G03.appettit.dao.IPromocionDAO;
+import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.PromocionDTO;
+import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.entity.Promocion;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.FileManagement;
 
 @Stateless
 public class PromocionService implements IPromocionService {
+	
+	static Logger logger = Logger.getLogger(PromocionService.class);
 
     @EJB
     public IPromocionDAO pDAO;
@@ -24,23 +33,84 @@ public class PromocionService implements IPromocionService {
 
     @EJB
     public PromocionConverter pConverter;
+    
+    @EJB
+    IImagenService imgSrv;
+
 
     @Override
     public List<PromocionDTO> listar() throws AppettitException {
-        try {
+        /*
+    	try {
             return pConverter.fromEntity(pDAO.listar());
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
+        */
+    	
+    	List<PromocionDTO> promociones = new ArrayList<PromocionDTO>();
+		try {
+			Iterator<PromocionDTO> it = pConverter.fromEntity(pDAO.listar())
+					.iterator();
+			while (it.hasNext()) {
+				PromocionDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				promociones.add(men);
+
+			}
+
+			return promociones;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
     }
 
     @Override
     public PromocionDTO listarPorId(Long id) throws AppettitException {
+    	/*
         try {
             return pConverter.fromEntity(pDAO.listarPorId(id));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
+        */
+    	
+    	PromocionDTO men = pConverter.fromEntity(pDAO.listarPorId(id));
+		ImagenDTO img = new ImagenDTO();
+
+		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+			FileManagement fm = new FileManagement();
+
+			img.setIdentificador("Sin Imagen");
+			img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+		} else {
+			try {
+				img = imgSrv.buscarPorId(men.getId_imagen());	
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+
+		}
+		men.setImagen(img);
+		
+		return men;
+    	
+    	
     }
 
     @Override
@@ -53,9 +123,29 @@ public class PromocionService implements IPromocionService {
             try {
                 Promocion promo = pDAO.listarPorId(id);
                 promo.setNombre(pcDTO.getNombre());
-                //Categoria categoria = cDAO.listarPorId(pcDTO.getId_categoria());
                 
-                return pConverter.fromEntity(pDAO.editar(promo));
+                PromocionDTO men = pConverter.fromEntity(pDAO.editar(promo));
+        		ImagenDTO img = new ImagenDTO();
+
+        		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+        			FileManagement fm = new FileManagement();
+
+        			img.setIdentificador("Sin Imagen");
+        			img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+        		} else {
+        			try {
+        				img = imgSrv.buscarPorId(men.getId_imagen());	
+        			} catch (Exception e) {
+        				logger.error(e.getMessage());
+        			}
+
+        		}
+        		men.setImagen(img);
+        		
+        		return men;
+                
+                
+                
             } catch (Exception e) {
                 throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
             }
@@ -80,11 +170,45 @@ public class PromocionService implements IPromocionService {
 
     @Override
     public List<PromocionDTO> listarPorRestaurante(Long id) throws AppettitException {
-        try {
+       /*
+    	try {
             return pConverter.fromEntity(pDAO.listarPorRestaurante(id));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
+        */
+    	
+    	List<PromocionDTO> promociones = new ArrayList<PromocionDTO>();
+		try {
+			Iterator<PromocionDTO> it = pConverter.fromEntity(pDAO.listarPorRestaurante(id))
+					.iterator();
+			while (it.hasNext()) {
+				PromocionDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				promociones.add(men);
+
+			}
+
+			return promociones;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+    	
     }
 
     @Override
@@ -102,23 +226,33 @@ public class PromocionService implements IPromocionService {
     public PromocionDTO editar(PromocionDTO ccDTO) throws AppettitException {
         try {
             Promocion promo = pConverter.fromDTO(ccDTO);
-            return pConverter.fromEntity(pDAO.editar(promo));
+            PromocionDTO men = pConverter.fromEntity(pDAO.editar(promo));
+    		ImagenDTO img = new ImagenDTO();
+
+    		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+    			FileManagement fm = new FileManagement();
+
+    			img.setIdentificador("Sin Imagen");
+    			img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+    		} else {
+    			try {
+    				img = imgSrv.buscarPorId(men.getId_imagen());	
+    			} catch (Exception e) {
+    				logger.error(e.getMessage());
+    			}
+
+    		}
+    		men.setImagen(img);
+    		
+    		return men;
+            
+            
+            
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
     }
 
-    // AUXILIARES
-//    public boolean existeNombreProducto(String nombre) {
-//
-//        List<PromocionDTO> promoData = pConverter.fromEntity(pDAO.listar());
-//        for (PromocionDTO p : promoData) {
-//            if (p.getNombre().equals(nombre)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public boolean existeNombreProductoExcluirId(Long id, String nombre) {
 
@@ -132,4 +266,38 @@ public class PromocionService implements IPromocionService {
         }
         return false;
     }
+
+	@Override
+	public List<PromocionRDTO> listarRPromocion() throws AppettitException {
+		List<PromocionRDTO> promociones = new ArrayList<PromocionRDTO>();
+		try {
+			Iterator<PromocionRDTO> it = pConverter.fromEntityToRDTO(pDAO.listar())
+					.iterator();
+			while (it.hasNext()) {
+				PromocionRDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				promociones.add(men);
+
+			}
+
+			return promociones;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 }

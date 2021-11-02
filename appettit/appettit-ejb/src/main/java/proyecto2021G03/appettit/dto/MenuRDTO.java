@@ -18,7 +18,8 @@ public class MenuRDTO {
     private String descripcion;
     private Double precioSimple;
     private Double precioTotal;
-    private List<ExtraMenuDTO> extras;
-    private List<ProductoDTO> productos;
+    private List<ExtraMenuRDTO> extras;
+    private List<ProductoRDTO> productos;
     private String id_imagen;
+    private ImagenDTO imagen;
 }

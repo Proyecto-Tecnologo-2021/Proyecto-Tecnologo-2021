@@ -67,5 +67,7 @@ public class Promocion implements Serializable {
     */
 	@ManyToMany
 	private List<Menu> menus;
+	
+	private String id_imagen;
 
 }

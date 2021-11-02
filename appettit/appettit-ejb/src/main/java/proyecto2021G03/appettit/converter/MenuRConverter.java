@@ -1,4 +1,6 @@
 package proyecto2021G03.appettit.converter;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
@@ -26,8 +28,8 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
                 .descripcion(menu.getDescripcion())
                 .precioSimple(menu.getPrecioSimple())
                 .precioTotal(menu.getPrecioTotal())
-                .extras(extraMenuConverter.fromEntity(menu.getExtras()))
-                .productos(productoConverter.fromEntity(menu.getProductos()))
+                .extras(extraMenuConverter.fromEntityToRDTO(menu.getExtras()))
+                .productos(productoConverter.fromEntityToRDTO(menu.getProductos()))
                 .build();
     }
 
@@ -42,9 +44,10 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
                 .descripcion(menuRDTO.getDescripcion())
                 .precioSimple(menuRDTO.getPrecioSimple())
                 .precioTotal(menuRDTO.getPrecioTotal())
-                .extras(extraMenuConverter.fromDTO(menuRDTO.getExtras()))
-                .productos(productoConverter.fromDTO(menuRDTO.getProductos()))
+                .extras(extraMenuConverter.fromRDTO(menuRDTO.getExtras()))
+                .productos(productoConverter.fromRDTO(menuRDTO.getProductos()))
                 .build();
     }
+
 
 }

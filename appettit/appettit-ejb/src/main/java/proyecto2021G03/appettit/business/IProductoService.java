@@ -6,6 +6,7 @@ import javax.ejb.Local;
 
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
+import proyecto2021G03.appettit.dto.ProductoRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Local
@@ -19,5 +20,7 @@ public interface IProductoService {
 	public void eliminar(Long id)throws AppettitException;
 	
 	public List<ProductoDTO> listarPorRestaurante(Long id) throws AppettitException;
+	
+	public List<ProductoRDTO> listarRProducto() throws AppettitException;
 	
 }

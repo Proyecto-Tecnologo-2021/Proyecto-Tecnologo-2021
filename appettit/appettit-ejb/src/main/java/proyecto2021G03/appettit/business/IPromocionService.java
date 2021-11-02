@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.business;
 
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.PromocionDTO;
+import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public interface IPromocionService {
 
     public List<PromocionDTO> listar() throws AppettitException;
+    
+    public List<PromocionRDTO> listarRPromocion() throws AppettitException;
 
     public PromocionDTO listarPorId(Long id) throws AppettitException;
 

@@ -10,6 +10,7 @@ import proyecto2021G03.appettit.dao.ICategoriaDAO;
 import proyecto2021G03.appettit.dao.IProductoDAO;
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
+import proyecto2021G03.appettit.dto.ProductoRDTO;
 import proyecto2021G03.appettit.entity.Categoria;
 import proyecto2021G03.appettit.entity.Producto;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -126,6 +127,15 @@ public class ProductoService implements IProductoService {
 		try {
 			Producto producto = pConverter.fromDTO(ccDTO);
 			return pConverter.fromEntity(pDAO.editar(producto));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<ProductoRDTO> listarRProducto() throws AppettitException {
+		try {
+			return pConverter.fromEntityToRDTO(pDAO.listar());
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

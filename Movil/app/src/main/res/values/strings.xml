@@ -41,11 +41,14 @@
     <string name="menu_profile">Mi perfil</string>
 
     <!--VIEW MAP-->
-    <string name="map_text_srch">Filtrar</string>
+    <string name="map_text_calle">Calle</string>
+    <string name="map_text_alias">Alias</string>
+    <string name="map_text_ref">Referencias</string>
+    <string name="map_text_apto">Apto.</string>
     <string name="map_text_distancia_title">Ingreso de distancia (Km)</string>
-    <string name="map_text_btn">Buscar</string>
-    <string name="map_text_loc">Ubicación Actual</string>
-    <string name="map_copyright">&#169; OpenStreetMap | VacunasUY</string>
+    <string name="map_text_btn">Confirmar</string>
+    <string name="map_text_loc">Mi Ubicación</string>
+    <string name="map_copyright">&#169; OpenStreetMap | Appetit</string>
     <string name="map_text_loc_err">Activar ubicación</string>
     <string name="map_text_loc_err_msg">Su ubicación esta desactivada.\nPor favor active su ubicación</string>
 

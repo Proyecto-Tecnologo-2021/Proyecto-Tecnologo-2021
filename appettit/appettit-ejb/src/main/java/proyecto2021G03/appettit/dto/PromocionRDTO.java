@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PromocionDTO {
+public class PromocionRDTO {
 
 	private Long id;
 	private String nombre;
@@ -21,7 +21,7 @@ public class PromocionDTO {
 	private String descripcion;
 	private Double descuento;
 	private Double precio;
-	private List<MenuDTO> menus;
+	private List<MenuRDTO> menus;
 	private String id_imagen;
     private ImagenDTO imagen;
 

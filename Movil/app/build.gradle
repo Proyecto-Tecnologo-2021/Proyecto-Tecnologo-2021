@@ -62,8 +62,11 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.6'
     implementation 'org.osmdroid:osmdroid-wms:6.1.6'
     implementation 'org.osmdroid:osmdroid-mapsforge:6.1.6'
-    //implementation 'org.osmdroid:osmdroid-geopackage:6.1.6'
 
+    //reverse geocoding osmdroid
+    implementation 'com.github.MKergall:osmbonuspack:6.7.0'
+    //Proj4J
+    implementation 'org.locationtech.proj4j:proj4j:1.1.3'
 
 }
 
