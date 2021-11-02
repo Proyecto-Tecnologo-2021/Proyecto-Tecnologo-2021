@@ -5,109 +5,118 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".AltaCliente">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
 
 <RelativeLayout
     android:id="@+id/map_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp">
-<!--
+    tools:layout_editor_absoluteY="0dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp">
+
     <LinearLayout
-        android:id="@+id/map_op_dis"
+        android:id="@+id/data_gral"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/map_textView_usr"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/map_text_srch" />
-
-        <Spinner
-            android:id="@+id/spinnerFilterMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearMap"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomNavigationViewMap"
-        android:layout_below="@+id/map_op_dis"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="0dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
-        <FrameLayout
+
+        <EditText
+            android:id="@+id/data_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical">
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:hint="@string/datos_name"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/data_correo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:hint="@string/datos_email"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/data_tel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="phone"
+            android:hint="@string/datos_phone"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/data_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="@string/datos_pass"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:id="@+id/data_pass2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="@string/datos_pass2"
+            android:layout_marginTop="5dp"/>
 
-            <org.osmdroid.views.MapView
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <ImageButton
-                android:id="@+id/imageButtonLocation"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="top|left"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/imgbutton_location"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:padding="4dp"
-                android:contentDescription="@string/map_text_loc"
-                app:srcCompat="@drawable/ic_focus_b" />
-
-            <TextView
-                android:id="@+id/map_copyright"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginRight="5dp"
-                android:textSize="12sp"
-                android:textColor="@color/purple_500"
-                android:text="@string/map_copyright" />
-            <ProgressBar
-                android:id="@+id/progressBarMapView"
-                style="?android:attr/progressBarStyleLarge"
-                android:progressDrawable="@drawable/circular_progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:indeterminate="false"
-                android:layout_gravity="center"
-                android:max="100"
-                android:progress="20" />
-        </FrameLayout>
+        <TextView
+            android:id="@+id/DirTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:text="@string/title_addDireccion" />
+        <TextView
+            android:id="@+id/DirTAlias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:text="" />
+        <TextView
+            android:id="@+id/DirDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="" />
 
     </LinearLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationViewMap"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="2dp"
-        android:background="@color/menu_bar_bg"
-        app:itemIconTint="@color/menu_bar_text"
-        app:itemTextColor="@color/menu_bar_text"
-        app:menu="@menu/bottom_navigation_menu" />
--->
-</RelativeLayout>
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
+        <Button
+            android:id="@+id/data_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/main_color"
+            android:text="@string/map_text_btn"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
+</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/pBarLogin"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/circular_progressbar"
+            android:max="100"
+            android:progress="20" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
