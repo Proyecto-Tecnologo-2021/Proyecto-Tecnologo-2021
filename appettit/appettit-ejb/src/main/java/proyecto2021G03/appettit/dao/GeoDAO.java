@@ -103,7 +103,7 @@ public class GeoDAO implements IGeoDAO {
 			promociones =  em.createQuery("select p "
 					+ "from Promocion p "
 					+ "inner join p.restaurante "
-					+ "where contains(m.restaurante.areaentrega, :point) = true", Promocion.class)
+					+ "where contains(p.restaurante.areaentrega, :point) = true", Promocion.class)
 					.setParameter("point", point)
 					.getResultList();
 			

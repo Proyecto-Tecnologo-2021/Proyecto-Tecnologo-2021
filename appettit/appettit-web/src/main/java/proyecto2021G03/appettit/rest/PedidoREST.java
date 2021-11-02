@@ -24,6 +24,7 @@ public class PedidoREST {
     IPedidoService iPedidoService;
 
     @POST
+    @Path("/pedido1")
     //@RecursoProtegidoJWT
     public Response crear(PedidoDTO request) {
         RespuestaREST<PedidoDTO> respuesta = null;
@@ -41,7 +42,7 @@ public class PedidoREST {
         }
     }
     @POST
-    @Path("/crearfront")
+    @Path("/pedido2")
     public Response crearFront(PedidoRDTO request){
         RespuestaREST<PedidoRDTO> respuesta = null;
         try {
