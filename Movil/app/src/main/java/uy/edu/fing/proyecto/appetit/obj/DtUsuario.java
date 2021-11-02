@@ -24,6 +24,8 @@ public class DtUsuario {
     private String telefono;
     private String token;
     private String tokenFirebase;
+    private DtCalificacion calificacion;
+    private Boolean bloqueado;
 
     @Builder.Default
     private List<DtDireccion> direcciones = new ArrayList<DtDireccion>();

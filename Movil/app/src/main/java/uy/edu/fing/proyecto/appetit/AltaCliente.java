@@ -15,12 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,9 +36,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
+import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
@@ -56,6 +60,7 @@ public class AltaCliente extends AppCompatActivity {
     TextView textAlias;
     TextView textDetalle;
     Button confirm;
+    ProgressBar progressBar;
 
 
     private final DtUsuario dtUsuario = DtUsuario.getInstance();
@@ -81,6 +86,8 @@ public class AltaCliente extends AppCompatActivity {
         confirm = findViewById(R.id.data_confirm);
         textAlias = findViewById(R.id.DirTAlias);
         textDetalle = findViewById(R.id.DirDetalle);
+        progressBar = findViewById(R.id.pBarAddCliente);
+        progressBar.setVisibility(View.INVISIBLE);
 
         if(dtUsuario.getCorreo()!= null && !dtUsuario.getCorreo().equals("")){
             textCorreo.setText(dtUsuario.getCorreo());
@@ -148,7 +155,7 @@ public class AltaCliente extends AppCompatActivity {
                 dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
                 });
                 dialog.show();
-            } else if(textpass.getText().toString().equals(textpass2.getText().toString())) {
+            } else if(!textpass.getText().toString().equals(textpass2.getText().toString())) {
                 AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
                 dialog.setTitle(R.string.alert_t_error);
                 dialog.setIcon(android.R.drawable.ic_dialog_alert);
@@ -157,7 +164,13 @@ public class AltaCliente extends AppCompatActivity {
                 });
                 dialog.show();
             } else{
-
+                dtUsuario.setNombre(textNombre.getText().toString());
+                dtUsuario.setCorreo(textCorreo.getText().toString());
+                dtUsuario.setUsername(textCorreo.getText().toString());
+                dtUsuario.setTelefono(textTelefono.getText().toString());
+                dtUsuario.setPassword(textpass.getText().toString());
+                progressBar.setVisibility(View.VISIBLE);
+                addCliente();
             }
         });
     }
@@ -192,39 +205,42 @@ public class AltaCliente extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
+                //Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
 
                 if (response.getOk()) {
-                    Intent menuactivity = new Intent(MainActivity.this, MenuActivity.class);
-                    startActivity(menuactivity);
-                } else {
-                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            //ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        //String[] permisos = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
-                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
-                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
-                        Intent adduseractivity = new Intent(MainActivity.this, AltaDireccionActivity.class);
-                        startActivity(adduseractivity);
-                    }
+                    AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
+                    dialog.setTitle(R.string.alert_t_info);
+                    dialog.setIcon(android.R.drawable.ic_dialog_info);
+                    dialog.setMessage(response.getMensaje());
 
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                        Intent menuactivity = new Intent(AltaCliente.this, MenuActivity.class);
+                        startActivity(menuactivity);
+                    });
+                    dialog.show();
+
+                } else {
+                    AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
+                    dialog.setTitle(R.string.alert_t_error);
+                    dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+                    dialog.setMessage(response.getMensaje());
+
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {});
+                    dialog.show();
                 }
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.setTitle(R.string.info_title);
+                AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
+                dialog.setTitle(R.string.alert_t_error);
+                dialog.setIcon(android.R.drawable.ic_dialog_alert);
 
                 if (result instanceof String) {
                     dialog.setMessage((String) result);
                 } else {
                     dialog.setMessage(getString(R.string.err_recuperarpag));
-                    Log.i(TAG, getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
                 }
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onBackPressed();
-                    }
-                });
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> onBackPressed());
                 dialog.show();
             }
         }
@@ -332,11 +348,6 @@ public class AltaCliente extends AppCompatActivity {
     }
 
     public void readUsuario(JsonReader reader) throws IOException {
-
-                "bloqueado": false,
-                "calificacion": null
-
-
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -356,6 +367,10 @@ public class AltaCliente extends AppCompatActivity {
                 dtUsuario.setUsername(reader.nextString());
             } else if (name.equals("password") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setPassword(reader.nextString());
+            } else if (name.equals("bloqueado") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setBloqueado(reader.nextBoolean());
+            } else if (name.equals("calificacion") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setCalificacion(readCalifiacion(reader));
             } else {
                 reader.skipValue();
             }
@@ -409,13 +424,52 @@ public class AltaCliente extends AppCompatActivity {
         return new DtDireccion(id, alias, calle, numero, apartamento, referencias, geometry);
     }
 
+    public DtCalificacion readCalifiacion(JsonReader reader) throws IOException {
+        Integer clasificacion = 0;
+        Integer restaurantes = 0;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("clasificacion") && reader.peek() != JsonToken.NULL) {
+                clasificacion = reader.nextInt();
+            } else if (name.equals("restaurantes") && reader.peek() != JsonToken.NULL) {
+                restaurantes = reader.nextInt();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtCalificacion(clasificacion, restaurantes);
+
+    }
+
+
     private String AddClienteToJSON() {
         String res = "";
 
         JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         try {
-            jsonObject.put("usuario", dtUsuario.getCorreo());
-            jsonObject.put("password", dtUsuario.getTokenFirebase());
+            jsonObject.put("nombre", dtUsuario.getNombre());
+            jsonObject.put("username", dtUsuario.getUsername());
+            jsonObject.put("password", dtUsuario.getPassword());
+            jsonObject.put("telefono", dtUsuario.getTelefono());
+            jsonObject.put("correo", dtUsuario.getCorreo());
+            jsonObject.put("tokenFireBase", dtUsuario.getTokenFirebase());
+
+            DtDireccion dir = dtUsuario.getDirecciones().get(0);
+
+            JSONObject jsonDir = new JSONObject();
+            jsonDir.put("id_cliente", dtUsuario.getId());
+            jsonDir.put("alias", dir.getAlias());
+            jsonDir.put("calle", dir.getCalle());
+            jsonDir.put("numero", dir.getNumero());
+            jsonDir.put("apartamento", dir.getApartamento());
+            jsonDir.put("referencias", dir.getReferencias());
+            jsonDir.put("geometry", dir.getGeometry());
+
+            jsonObject.put("direccion", jsonDir);
 
             res = jsonObject.toString();
         } catch (JSONException e) {
@@ -426,6 +480,4 @@ public class AltaCliente extends AppCompatActivity {
 
         return res;
     }
-
-
 }

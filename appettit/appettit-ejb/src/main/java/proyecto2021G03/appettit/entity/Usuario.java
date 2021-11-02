@@ -37,5 +37,6 @@ public abstract class Usuario  implements Serializable  {
 	@Column(name="correo",unique=true, updatable = false, nullable = false)
 	private String correo;
 
+	@Column(name="tokenfirebase", columnDefinition="TEXT")
 	private String tokenFireBase;
 }
