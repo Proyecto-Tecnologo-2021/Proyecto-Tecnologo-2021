@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                             //Log.i(TAG, "Google Firebase Token: " + task.getResult().getToken());
                             dtUsuario.setNombre(account.getDisplayName());
                             dtUsuario.setCorreo(account.getEmail());
+                            dtUsuario.setUsername(account.getEmail());
                             dtUsuario.setTelefono(account.getPhoneNumber());
                             progressBar.setVisibility(View.VISIBLE);
                             loginUsuario();
