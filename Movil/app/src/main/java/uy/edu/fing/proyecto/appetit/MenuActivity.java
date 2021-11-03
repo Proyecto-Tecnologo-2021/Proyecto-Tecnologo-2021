@@ -102,9 +102,6 @@ public class MenuActivity extends AppCompatActivity {
         if(menus.size()!=0){
             recyclerView = findViewById(R.id.recyclerView);
 
-            // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-            // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-            // elements are laid out.
 
             // Nuestro RecyclerView usará un linear layout manager
             LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.this);
@@ -113,7 +110,6 @@ public class MenuActivity extends AppCompatActivity {
             adapter = new ProductAdapter(MenuActivity.this, menus);
             // Set CustomAdapter as the adapter for RecyclerView.
             recyclerView.setAdapter(adapter);
-            // END_INCLUDE(initializeRecyclerView)
         }
 
 

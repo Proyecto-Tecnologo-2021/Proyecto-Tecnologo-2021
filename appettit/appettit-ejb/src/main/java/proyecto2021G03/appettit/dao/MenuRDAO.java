@@ -20,4 +20,20 @@ public class MenuRDAO implements IMenuRDAO{
             Query consulta = em.createQuery("SELECT m FROM Menu m");
             return consulta.getResultList();
         }
-    }
+
+	@Override
+	public Menu listarPorId(Long id_restaurante, Long id) {
+
+		Menu menu = null;
+
+		menu = em.createQuery("SELECT _m "
+						+ "from Menu as _m "
+						+ "where _m.id_restaurante = :id_restaurante "
+						+ "and _m.id = :id", Menu.class)
+				.setParameter("id_restaurante", id_restaurante)
+				.setParameter("id", id)
+				.getSingleResult();
+
+		return menu;
+	}
+}

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -107,6 +108,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         String precio = context.getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
         viewHolder.getMenu_precio().setText(precio);
         viewHolder.getMenu_restaurante().setText(dtp.getNom_restaurante());
+
+
+        viewHolder.itemView.setOnClickListener(v -> Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show());
 
     }
 

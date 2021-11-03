@@ -8,4 +8,5 @@ import proyecto2021G03.appettit.exception.AppettitException;
 public interface IMenuRService {
 
     public List<MenuRDTO> listar() throws AppettitException;
+    public MenuRDTO listarPorId(Long id_restaurante, Long id) throws AppettitException;
 }

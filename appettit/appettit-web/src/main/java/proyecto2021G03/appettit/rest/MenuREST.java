@@ -1,11 +1,6 @@
 package proyecto2021G03.appettit.rest;
 
-import proyecto2021G03.appettit.business.IMenuRService;
-import proyecto2021G03.appettit.business.IMenuService;
-import proyecto2021G03.appettit.dto.CategoriaDTO;
-import proyecto2021G03.appettit.dto.MenuDTO;
-import proyecto2021G03.appettit.dto.MenuRDTO;
-import proyecto2021G03.appettit.exception.AppettitException;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -14,7 +9,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import java.util.List;
+
+import proyecto2021G03.appettit.business.IMenuRService;
+import proyecto2021G03.appettit.dto.MenuRDTO;
+import proyecto2021G03.appettit.exception.AppettitException;
 
 @RequestScoped
 @Path("/menu")
@@ -40,6 +38,20 @@ public class MenuREST {
     }
 
 
+    @GET
+	@Path("/getMenu")
+  //@RecursoProtegidoJWT
+	public Response listarPorId(MenuRDTO request) {
+		RespuestaREST<MenuRDTO> respuesta = null;
+		try {
+            MenuRDTO menuDTOS = iMenuRService.listarPorId(request.getId_restaurante(), request.getId());
+            respuesta = new RespuestaREST<MenuRDTO>(true, "Menú listado con éxito.", menuDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+	}
 
 
 }

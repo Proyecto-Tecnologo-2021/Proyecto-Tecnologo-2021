@@ -12,7 +12,6 @@ import org.jboss.logging.Logger;
 import proyecto2021G03.appettit.converter.MenuRConverter;
 import proyecto2021G03.appettit.dao.IMenuRDAO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
-import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
@@ -74,5 +73,32 @@ public class MenuRService implements IMenuRService{
     	
     	
     }
+
+	@Override
+	public MenuRDTO listarPorId(Long id_restaurante, Long id) throws AppettitException {
+		try {
+			MenuRDTO men = menuRConverter.fromEntity(iMenuRDAO.listarPorId(id_restaurante, id));
+			ImagenDTO img = new ImagenDTO();
+
+			if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+				FileManagement fm = new FileManagement();
+
+				img.setIdentificador("Sin Imagen");
+				img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+			} else {
+				try {
+					img = imgSrv.buscarPorId(men.getId_imagen());	
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+
+			}
+			men.setImagen(img);
+
+            return men;
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+	}
 }
 

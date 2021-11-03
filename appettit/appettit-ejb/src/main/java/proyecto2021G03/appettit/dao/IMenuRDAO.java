@@ -7,5 +7,6 @@ import proyecto2021G03.appettit.entity.Menu;
 public interface IMenuRDAO {
 
     public List<Menu> listar();
+    public Menu listarPorId(Long id_restaurante, Long id);
 
 }
