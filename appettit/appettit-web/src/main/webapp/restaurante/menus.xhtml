@@ -51,8 +51,8 @@
 						aria-expanded="false"> Men&uacute; </a>
 						<div class="dropdown-menu" aria-labelledby="navbarMenu">
 							<a class="dropdown-item"
-								href="/appettit-web/menu/productos.xhtml">Productos</a> <a
-								class="dropdown-item" href="/appettit-web/menu/menus.xhtml">Men&uacute;s</a>
+								href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
+								class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Men&uacute;s</a>
 							<a class="dropdown-item" href="#">Promociones</a>
 						</div></li>
 					<li class="nav-item dropdown"><a
@@ -116,7 +116,7 @@
 							</p:column>
 
 							<p:column headerText="Id" sortBy="#{menu.id}">
-								<h:outputText value="#{menu.id} #{menu.imagen.identificador} #{menu.imagen.id}" />
+								<h:outputText value="#{menu.id}" />
 							</p:column>
 
 							<p:column headerText="Imagen">

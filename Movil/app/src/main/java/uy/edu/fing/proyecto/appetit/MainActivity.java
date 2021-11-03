@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
+import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtLogin;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
@@ -94,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         signInButton.setColorScheme(SignInButton.COLOR_DARK);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         progressBar.setVisibility(View.INVISIBLE);
+        progressBar.getIndeterminateDrawable()
+                .setColorFilter(getColor(R.color.second_color), PorterDuff.Mode.SRC_IN);
+
 
         TextView textView = (TextView) signInButton.getChildAt(0);
         textView.setText(getString(R.string.google_login));
@@ -447,7 +452,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void readUsuario(JsonReader reader) throws IOException {
-
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -461,6 +465,16 @@ public class MainActivity extends AppCompatActivity {
                 dtUsuario.setNombre(reader.nextString());
             } else if (name.equals("direcciones") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setDirecciones(readDireccionesArray(reader));
+            } else if (name.equals("id") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setId(reader.nextLong());
+            } else if (name.equals("username") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setUsername(reader.nextString());
+            } else if (name.equals("password") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setPassword(reader.nextString());
+            } else if (name.equals("bloqueado") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setBloqueado(reader.nextBoolean());
+            } else if (name.equals("calificacion") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setCalificacion(readCalifiacion(reader));
             } else {
                 reader.skipValue();
             }
@@ -512,6 +526,26 @@ public class MainActivity extends AppCompatActivity {
         reader.endObject();
 
         return new DtDireccion(id, alias, calle, numero, apartamento, referencias, geometry);
+    }
+
+    public DtCalificacion readCalifiacion(JsonReader reader) throws IOException {
+        Integer clasificacion = 0;
+        Integer restaurantes = 0;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("clasificacion") && reader.peek() != JsonToken.NULL) {
+                clasificacion = reader.nextInt();
+            } else if (name.equals("restaurantes") && reader.peek() != JsonToken.NULL) {
+                restaurantes = reader.nextInt();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtCalificacion(clasificacion, restaurantes);
+
     }
 
     private String LoginToJSON() {
