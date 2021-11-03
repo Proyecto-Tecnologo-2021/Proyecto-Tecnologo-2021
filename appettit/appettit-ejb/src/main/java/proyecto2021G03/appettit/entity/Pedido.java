@@ -86,6 +86,10 @@ public class Pedido implements Serializable {
 	@JoinColumn(name="id_reclamo", referencedColumnName="id")
 	private Reclamo reclamo;
 
+	@ManyToMany
+	@Builder.Default
+	private List<ExtraMenu> extraMenus = new ArrayList<ExtraMenu>();
+
 
 	public Pedido( TipoPago tipo, Boolean pago, LocalDateTime fecha, Double total, Restaurante restaurante, Cliente cliente, List<Menu> menus, List<Promocion> promociones, Direccion entrega, EstadoPedido estado) {
 		this.id = 0L;
@@ -99,6 +103,7 @@ public class Pedido implements Serializable {
 		this.promociones = promociones;
 		this.entrega = entrega;
 		this.estado = estado;
+
 
 	}
 }

@@ -24,6 +24,7 @@ public class PedidoDTO {
     private Cliente cliente;
     private List<MenuDTO> menus;
     private List<PromocionDTO> promociones;
+    private List<ExtraMenuDTO> extraMenu;
     private DireccionDTO entrega;
     private ReclamoDTO reclamo;
 
