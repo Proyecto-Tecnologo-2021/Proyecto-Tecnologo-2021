@@ -39,16 +39,19 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
     @Override
     public PedidoRDTO fromEntity(Pedido pedido) {
         if(pedido== null) return null;
-        return PedidoRDTO.builder()
+        Pedido test = pedido ;
+
+               PedidoRDTO pedidofinal = PedidoRDTO.builder()
                 .idcli(pedido.getId())
                 .iddir(pedido.getCliente().getId())
-                .menus(menuRConverter.fromEntity(pedido.getMenus()))
+                .menus(menuRConverter.fromEntityList(pedido.getMenus()))
                 .pago(pedido.getPago())
                 .tipo(pedido.getTipo())
                 .total(pedido.getTotal())
                 .idrest(pedido.getRestaurante().getId())
                 .fecha(LocalDateTime.now())
                 .build();
+               return pedidofinal;
     }
 
     @Override

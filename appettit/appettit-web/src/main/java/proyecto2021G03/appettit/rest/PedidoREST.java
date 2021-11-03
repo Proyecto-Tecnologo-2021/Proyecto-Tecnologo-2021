@@ -23,7 +23,7 @@ public class PedidoREST {
     @EJB
     IPedidoService iPedidoService;
 
-    @POST
+    /*@POST
     @Path("/pedido1")
     //@RecursoProtegidoJWT
     public Response crear(PedidoDTO request) {
@@ -41,9 +41,12 @@ public class PedidoREST {
             }
         }
     }
+
+
+     */
     @POST
     @Path("/pedido2")
-    public Response crearFront(PedidoRDTO request){
+    public Response crear(PedidoRDTO request){
         RespuestaREST<PedidoRDTO> respuesta = null;
         try {
             PedidoRDTO pedido = iPedidoService.crearFront(request);
