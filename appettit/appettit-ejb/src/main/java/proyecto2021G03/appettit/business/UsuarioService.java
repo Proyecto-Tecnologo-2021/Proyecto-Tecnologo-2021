@@ -24,6 +24,7 @@ import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteMDTO;
 import proyecto2021G03.appettit.dto.ClienteModificarDTO;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
@@ -606,6 +607,50 @@ public class UsuarioService implements IUsuarioService {
 				String token = crearJsonWebToken(usuario);
 				return token;
 			} else {
+				throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
+			}
+		}
+	}
+	
+	@Override
+	public ClienteMDTO loginMobile(LoginDTO loginDTO) throws AppettitException {
+		/* Se valida que exista el correo electrónico o el teléfono*/
+		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
+		List<Usuario> usuarios_telefono = usrDAO.buscarPorTelefono(loginDTO.getUsuario());
+		
+		if ((usuarios_correo.size() == 0) && (usuarios_telefono.size() == 0)) {
+			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
+		} else {
+			/* Se verifica que la contraseña sea válida */
+			
+			Usuario usuario;
+			
+			if (usuarios_correo.size() != 0) {
+				usuario = usuarios_correo.get(0);
+			}else {
+				usuario = usuarios_telefono.get(0);
+			}
+			
+			if (usuario instanceof Cliente) {
+				Cliente cliente = (Cliente) usuario;
+				BCrypt.Result resultado = null;
+				resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
+				if(resultado.verified) {
+					
+					ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
+					CalificacionGralClienteDTO califDTO = calificacionGralCliente(clienteDTO);
+					
+					ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
+					String token = crearJsonWebToken(usuario);
+					clienteMDTO.setCalificacion(califDTO);
+					clienteMDTO.setJwt(token);
+					
+					return clienteMDTO;
+				} else {
+					throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
+				}
+			}
+			else {
 				throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 			}
 		}

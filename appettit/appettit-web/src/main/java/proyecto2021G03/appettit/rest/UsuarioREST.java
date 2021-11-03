@@ -154,6 +154,24 @@ public class UsuarioREST {
 	}
 	
 	@POST
+	@Path("/loginMobile")
+	public Response loginMobile(LoginDTO request) {
+		RespuestaREST<ClienteMDTO> respuesta = null;
+		try {
+			ClienteMDTO clienteMDTO = uService.loginMobile(request);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Inicio de sesión correcto.", clienteMDTO);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteMDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
+	@POST
 	@Path("/loginFireBase")
 	public Response loginFireBase(LoginDTO request) {
 		RespuestaREST<String> respuesta = null;

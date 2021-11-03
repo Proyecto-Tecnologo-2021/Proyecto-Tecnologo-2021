@@ -12,6 +12,7 @@ import com.vividsolutions.jts.io.ParseException;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteMDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -143,6 +144,21 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 	public ClienteDTO fromCliente(Cliente c) {
 		if(c == null) return null;
 		return ClienteDTO.builder()
+				.id(c.getId())
+				.nombre(c.getNombre())
+				.username(c.getUsername())
+				.password(c.getPassword())
+				.telefono(c.getTelefono())
+				.correo(c.getCorreo())
+				.tokenFireBase(c.getTokenFireBase())
+				.bloqueado(c.getBloqueado())
+				.direcciones(direccionConverter.fromEntity(c.getDirecciones()))
+				.build();
+	}
+	
+	public ClienteMDTO ClienteMDTOfromCliente(Cliente c) {
+		if(c == null) return null;
+		return ClienteMDTO.builder()
 				.id(c.getId())
 				.nombre(c.getNombre())
 				.username(c.getUsername())
