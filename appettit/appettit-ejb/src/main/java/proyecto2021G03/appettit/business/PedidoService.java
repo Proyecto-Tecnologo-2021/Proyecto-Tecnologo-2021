@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import proyecto2021G03.appettit.converter.ExtraMenuConverter;
 import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.converter.PedidoRConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
@@ -26,6 +27,9 @@ public class PedidoService implements IPedidoService {
 
     @EJB
     PedidoRConverter pedidoRConverter;
+
+    @EJB
+    ExtraMenuConverter extraMenuConverter;
 
 
 
@@ -77,6 +81,7 @@ public class PedidoService implements IPedidoService {
             pedido.setTiempoEstimado(pedido.getTiempoEstimado());
             pedido.setTotal(pedido.getTotal());
             pedido.setTipo(pedido.getTipo());
+            pedido.setExtraMenus(pedido.getExtraMenus());
 
             return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
         } catch (Exception e) {

@@ -23,6 +23,9 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
 	@EJB
 	UsuarioConverter usrConverter;
 
+    @EJB
+    ExtraMenuConverter extraMenuConverter;
+
     @Override
     public PedidoDTO fromEntity(Pedido pedido) {
         if(pedido== null) return null;
@@ -41,6 +44,7 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .tiempoEstimado(pedido.getTiempoEstimado())
                 .tipo(pedido.getTipo())
                 .total(pedido.getTotal())
+                .extraMenu(extraMenuConverter.fromEntity(pedido.getExtraMenus()))
 
                 .build();
     }
@@ -63,6 +67,7 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .tiempoEstimado(pedidoDTO.getTiempoEstimado())
                 .tipo(pedidoDTO.getTipo())
                 .total(pedidoDTO.getTotal())
+                .extraMenus(extraMenuConverter.fromDTO(pedidoDTO.getExtraMenu()))
                 .build();
     }
 }
