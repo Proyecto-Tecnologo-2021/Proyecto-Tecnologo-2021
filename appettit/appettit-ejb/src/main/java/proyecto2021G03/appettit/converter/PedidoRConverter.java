@@ -60,6 +60,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
     public Pedido fromDTO(PedidoRDTO pedidoRDTO) {
         if(pedidoRDTO== null) return null;
         return Pedido.builder()
+
                 .tipo(pedidoRDTO.getTipo())
                 .pago(pedidoRDTO.getPago())
                 .fecha(LocalDateTime.now())
