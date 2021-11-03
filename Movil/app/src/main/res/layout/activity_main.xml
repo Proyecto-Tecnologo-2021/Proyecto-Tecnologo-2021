@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -18,85 +18,86 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp">
 
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        android:background="@color/main_color">
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:src="@drawable/appetitlogo"
-            android:contentDescription="@string/app_name" />
-
-        <TextView
-            android:id="@+id/log_textView_usr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="32sp"
-            android:textStyle="bold|italic"
-            android:text="@string/login_welcome" />
-    </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/main_color"
                 android:orientation="vertical"
                 tools:layout_editor_absoluteX="1dp"
                 tools:layout_editor_absoluteY="1dp">
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/sign_in_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="55dp"
-                android:layout_marginEnd="10dp" />
+                <ImageView
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/appetitlogo" />
 
-            <Button
-                android:id="@+id/login_button"
+                <TextView
+                    android:id="@+id/log_textView_usr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_welcome"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold|italic" />
+            </LinearLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
-                android:insetLeft="8dp"
-                android:insetTop="8dp"
-                android:insetRight="8dp"
-                android:insetBottom="8dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/appettit_login"
-                android:textColor="@color/white"
-                app:strokeColor="@color/white"
-                app:strokeWidth="3dp" />
-            </LinearLayout>
+                android:layout_alignParentBottom="true"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    tools:layout_editor_absoluteX="1dp"
+                    tools:layout_editor_absoluteY="1dp">
+
+                    <com.google.android.gms.common.SignInButton
+                        android:id="@+id/sign_in_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="55dp"
+                        android:layout_marginEnd="10dp" />
+
+                    <Button
+                        android:id="@+id/login_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:insetLeft="8dp"
+                        android:insetTop="8dp"
+                        android:insetRight="8dp"
+                        android:insetBottom="8dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/appettit_login"
+                        android:textColor="@color/white"
+                        app:strokeColor="@color/white"
+                        app:strokeWidth="3dp" />
+                </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
-        </RelativeLayout>
-         <ProgressBar
+
+        <ProgressBar
             android:id="@+id/pBarLogin"
             style="?android:attr/progressBarStyleLarge"
-            android:indeterminateTint="@color/second_color"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:indeterminate="false"
             android:layout_gravity="center"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/circular_progressbar"
             android:max="100"
-            android:progress="20"
-            />
+            android:progress="20" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

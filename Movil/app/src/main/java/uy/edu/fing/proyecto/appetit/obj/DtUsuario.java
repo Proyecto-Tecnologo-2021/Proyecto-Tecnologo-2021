@@ -1,5 +1,6 @@
 package uy.edu.fing.proyecto.appetit.obj;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +24,9 @@ public class DtUsuario {
     private String telefono;
     private String token;
     private String tokenFirebase;
-    private List<DtDireccion> direcciones;
+
+    @Builder.Default
+    private List<DtDireccion> direcciones = new ArrayList<DtDireccion>();
 
     public static synchronized DtUsuario getInstance() {
         if(uInstance == null){

@@ -206,7 +206,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Send token to your backend via HTTPS
                             dtUsuario.setTokenFirebase(task.getResult().getToken());
-                            Log.i(TAG, "Google Firebase Token: " + task.getResult().getToken());
+                            //Log.i(TAG, "Google Firebase Token: " + task.getResult().getToken());
+                            dtUsuario.setNombre(account.getDisplayName());
                             dtUsuario.setCorreo(account.getEmail());
                             dtUsuario.setTelefono(account.getPhoneNumber());
                             progressBar.setVisibility(View.VISIBLE);
@@ -285,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
+    //@SuppressLint("StaticFieldLeak")
     private class GetLoginUsuarioTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {

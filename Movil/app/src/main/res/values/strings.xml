@@ -5,6 +5,8 @@
     <string name="google_login">Ingresar con Google</string>
     <string name="appettit_login">Ingresar de otra forma</string>
     <string name="appettit_logout">Salir</string>
+    <string name="alert_t_info">Infomración</string>
+    <string name="alert_t_error">Error</string>
     <string name="alert_btn_positive">Si</string>
     <string name="alert_btn_negative">No</string>
     <string name="alert_btn_neutral">OK</string>
@@ -27,7 +29,8 @@
     <string name="firebase_error">No es posible autenticar con Google</string>
 
     <!-- VIEWS-->
-    <string name="title_addDireccion">Nueva Dirección</string>
+    <string name="title_addDireccion">Mi Dirección</string>
+    <string name="title_addDatos">Mis Datos</string>
 
 
     <!--LOGIN-->
@@ -45,11 +48,29 @@
     <string name="map_text_alias">Alias</string>
     <string name="map_text_ref">Referencias</string>
     <string name="map_text_apto">Apto.</string>
+    <string name="map_text_nro">Nro.</string>
     <string name="map_text_distancia_title">Ingreso de distancia (Km)</string>
     <string name="map_text_btn">Confirmar</string>
     <string name="map_text_loc">Mi Ubicación</string>
     <string name="map_copyright">&#169; OpenStreetMap | Appetit</string>
     <string name="map_text_loc_err">Activar ubicación</string>
     <string name="map_text_loc_err_msg">Su ubicación esta desactivada.\nPor favor active su ubicación</string>
+    <string name="map_err_talias">Error</string>
+    <string name="map_err_alias">Se debe colocar un alias</string>
+
+    <!-- Mis Datos -->
+    <string name="datos_name">Nombre</string>
+    <string name="datos_email">Correo</string>
+    <string name="datos_phone">Teléfono</string>
+    <string name="datos_pass">Contraseña</string>
+    <string name="datos_pass2">Verificar contraseña</string>
+    <string name="datos_err_name">Debe ingresar un nombre</string>
+    <string name="datos_err_email">Debe ingresar un correo</string>
+    <string name="datos_err_phone">Debe ingresar un teléfono</string>
+    <string name="datos_err_pass">Debe ingresar un contraseña</string>
+    <string name="datos_err_pass2">Las contraseñas no coinciden</string>
+
+
+
 
 </resources>

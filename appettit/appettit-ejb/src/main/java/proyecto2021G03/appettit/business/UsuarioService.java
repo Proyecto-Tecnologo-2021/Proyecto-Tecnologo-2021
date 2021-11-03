@@ -347,7 +347,11 @@ public class UsuarioService implements IUsuarioService {
 				/* Se encripta la contraseña */
 				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
 
-				return usrConverter.fromCliente(usrDAO.crearCliente(usuario));
+				ClienteDTO ret = usrConverter.fromCliente(usrDAO.crearCliente(usuario));
+				ret.setCalificacion(calificacionGralCliente(ret));
+				
+				return ret; 
+				
 			}
 
 		} catch (Exception e) {
@@ -370,52 +374,13 @@ public class UsuarioService implements IUsuarioService {
 			// Se encripta la contraseña 
 			cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
 			
-			return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente)); 
+			ret.setCalificacion(calificacionGralCliente(ret));
+			return ret; 
 			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-		
-		
-		
-		
-		/*
-		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(id);
-		try {
-			if (clientes.size() == 0) {
-				throw new AppettitException("No existe el cliente.", AppettitException.NO_EXISTE_REGISTRO);
-			} else {
-				Cliente cliente = clientes.get(0);
-				if (!cliente.getTelefono().equals(clienteData.getTelefono())) {
-					List<Usuario> usuarios = usrDAO.buscarPorTelefono(clienteData.getTelefono());
-					
-					if (usuarios.size() != 0) {
-						throw new AppettitException("Telefono utilizado por otro usuario.", AppettitException.EXISTE_REGISTRO);
-					} else {
-							cliente.setNombre(clienteData.getNombre());
-							cliente.setPassword(clienteData.getPassword());
-							cliente.setTelefono(clienteData.getTelefono());
-							cliente.setUsername(clienteData.getUsername());
-							
-							// Se encripta la contraseña 
-							cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
-							
-							return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-					}
-				} else {
-					cliente.setNombre(clienteData.getNombre());
-					cliente.setPassword(clienteData.getPassword());
-					cliente.setUsername(clienteData.getUsername());
-					// Se encripta la contraseña 
-					cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
-					
-					return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-				}
-			}
-		} catch (Exception e) {
-			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	
-		*/		
 	}
 	
 	@Override
@@ -459,7 +424,10 @@ public class UsuarioService implements IUsuarioService {
 						direccion.setNumero(direccionDTO.getNumero());
 						direccion.setReferencias(direccionDTO.getReferencias());
 						
-						return usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+						ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+						ret.setCalificacion(calificacionGralCliente(ret));
+						
+						return ret;
 					}
 				}
 			}
@@ -492,7 +460,10 @@ public class UsuarioService implements IUsuarioService {
 						throw new AppettitException("Direccion invalida para el cliente.", AppettitException.NO_EXISTE_REGISTRO);
 				} else {
 					direcciones.remove(direccion);
-					return usrConverter.fromCliente(usrDAO.eliminarDireccion(cliente, direccion));
+					
+					ClienteDTO ret = usrConverter.fromCliente(usrDAO.eliminarDireccion(cliente, direccion));
+					ret.setCalificacion(calificacionGralCliente(ret));
+					return ret;
 				}
 			}
 		} catch (Exception e) {
@@ -536,7 +507,9 @@ public class UsuarioService implements IUsuarioService {
 					Direccion nueva = dirConverter.fromDTO(dirDTO);
 					direcciones.add(nueva);
 					
-					return usrConverter.fromCliente(usrDAO.agregarDireccion(usuario));
+					ClienteDTO ret = usrConverter.fromCliente(usrDAO.agregarDireccion(usuario));
+					ret.setCalificacion(calificacionGralCliente(ret));
+					return ret;
 				}
 			}
 		} catch (Exception e) {
@@ -553,7 +526,8 @@ public class UsuarioService implements IUsuarioService {
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();
 				res.setCalificacion(calificacionGralCliente(res));
-
+				
+				clientes.add(res);
 			}
 
 			return clientes;
@@ -565,12 +539,34 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException {
-		return null;
+		List<ClienteDTO> clientes = new ArrayList<ClienteDTO>();
+		try {
+
+			Iterator<ClienteDTO> it = usrConverter.fromCliente(usrDAO.buscarPorNombreCliente(nombre)).iterator();
+			while (it.hasNext()) {
+				ClienteDTO res = it.next();
+				res.setCalificacion(calificacionGralCliente(res));
+
+				clientes.add(res);
+			}
+
+			return clientes;
+
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public ClienteDTO buscarPorIdCliente(Long id) throws AppettitException {
-		return null;
+		ClienteDTO cliente = null;
+		cliente = usrConverter.fromCliente(usrDAO.buscarPorIdCliente(id));
+
+		if(cliente != null) {	
+			cliente.setCalificacion(calificacionGralCliente(cliente));
+		}
+		
+		return cliente;
 	}
 
 	@Override
