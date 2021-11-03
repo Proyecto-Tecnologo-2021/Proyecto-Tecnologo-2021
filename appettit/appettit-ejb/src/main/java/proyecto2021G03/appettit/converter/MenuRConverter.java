@@ -45,6 +45,7 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
 
         if (menuRDTO == null) return null;
         return Menu.builder()
+                .id(menuRDTO.getId())
                 .nombre(menuRDTO.getNombre())
                 .id_imagen(menuRDTO.getId_imagen())
                 .id_restaurante(menuRDTO.getId_restaurante())
