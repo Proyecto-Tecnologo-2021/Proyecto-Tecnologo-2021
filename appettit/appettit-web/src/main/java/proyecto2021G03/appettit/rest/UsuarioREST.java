@@ -42,14 +42,13 @@ public class UsuarioREST {
 	@POST
 	//@RecursoProtegidoJWT
 	public Response crear(ClienteCrearDTO request) throws ParseException {
-		RespuestaREST<ClienteDTO> respuesta = null;
-		System.out.println(request.getNombre());
+		RespuestaREST<ClienteMDTO> respuesta = null;
 		try {
-			ClienteDTO cliente = uService.crearCliente(request);
-			respuesta = new RespuestaREST<ClienteDTO>(true, "Cliente creado con éxito.", cliente);
+			ClienteMDTO cliente = uService.crearCliente(request);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Cliente creado con éxito.", cliente);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
-			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			respuesta = new RespuestaREST<ClienteMDTO>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {

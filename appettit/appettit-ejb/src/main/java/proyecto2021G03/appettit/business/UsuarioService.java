@@ -303,7 +303,7 @@ public class UsuarioService implements IUsuarioService {
 
 
 	@Override
-	public ClienteDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
+	public ClienteMDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
 		
 		 
 		List<DireccionDTO> direcciones = null;
@@ -326,8 +326,6 @@ public class UsuarioService implements IUsuarioService {
 			direcciones.add(dirDTO);
 		}
 		
-		
-		
 		ClienteDTO cliente = new ClienteDTO(null, clienteData.getNombre(), 
 				clienteData.getUsername(),
 				clienteData.getPassword(),
@@ -348,10 +346,15 @@ public class UsuarioService implements IUsuarioService {
 				/* Se encripta la contraseña */
 				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
 
-				ClienteDTO ret = usrConverter.fromCliente(usrDAO.crearCliente(usuario));
-				ret.setCalificacion(calificacionGralCliente(ret));
+				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(usrDAO.crearCliente(usuario));
 				
-				return ret; 
+				ClienteDTO ret = usrConverter.fromCliente(usrDAO.crearCliente(usuario));
+				clienteMDTO.setCalificacion(calificacionGralCliente(ret));
+				
+				String token = crearJsonWebToken(usuario);
+				clienteMDTO.setJwt(token);
+				
+				return clienteMDTO; 
 				
 			}
 
