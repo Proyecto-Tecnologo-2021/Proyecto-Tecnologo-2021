@@ -28,6 +28,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.auth0.android.jwt.Claim;
+import com.auth0.android.jwt.JWT;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -221,15 +223,13 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // Handle error -> task.getException();
                             // Google Sign In failed, update UI appropriately
-                            Log.w(TAG, "Google sign in failed", task.getException());
+                            //Log.w(TAG, "Google sign in failed", task.getException());
 
                             AlertDialog dialog = new AlertDialog.Builder(this).create();
                             dialog.setTitle(R.string.access_title_err);
                             dialog.setMessage(getString(R.string.firebase_error));
-                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //onBackPressed();
-                                }
+                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                                //onBackPressed();
                             });
                             dialog.show();
                         }
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                //Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -271,21 +271,23 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
+                        //Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        //Log.w(TAG, "signInWithCredential:failure", task.getException());
                         updateUI(null);
                     }
                 });
     }
 
     private void loginUsuario() {
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.API_USRLOGINFIREBASE_URL;
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new MainActivity.GetLoginUsuarioTask().execute(stringUrl);
@@ -312,16 +314,14 @@ public class MainActivity extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
+                //Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
 
                 if (response.getOk()) {
                     Intent menuactivity = new Intent(MainActivity.this, MenuActivity.class);
                     startActivity(menuactivity);
                 } else {
                     if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            //ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                             ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        //String[] permisos = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
                     }else{
@@ -338,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.setMessage((String) result);
                 } else {
                     dialog.setMessage(getString(R.string.err_recuperarpag));
-                    Log.i(TAG, getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
                 }
                 dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             String data = LoginToJSON();
-            Log.i(TAG, data);
+            //Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoGralJsonStream(is);
@@ -437,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
                 body = true;
+                //readJWTUsuario(reader.nextString());
                 readUsuario(reader);
             } else {
                 reader.skipValue();
@@ -451,6 +452,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void readJWTUsuario(String token) {
+        JWT jwt = new JWT(token);
+        String subject = jwt.getSubject();
+        Log.i(TAG, subject);
+        Claim claim = jwt.getClaim("correo");
+        Log.i(TAG, claim.asString());
+
+    }
+
     public void readUsuario(JsonReader reader) throws IOException {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -459,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
                 dtUsuario.setCorreo(reader.nextString());
             } else if (name.equals("telefono") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setTelefono(reader.nextString());
-            } else if (name.equals("token") && reader.peek() != JsonToken.NULL) {
+            } else if (name.equals("jwt") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setToken(reader.nextString());
             } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setNombre(reader.nextString());

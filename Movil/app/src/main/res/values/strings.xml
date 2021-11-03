@@ -11,6 +11,7 @@
     <string name="alert_btn_negative">No</string>
     <string name="alert_btn_neutral">OK</string>
 
+
     <!--CONNECTION MESSAGES-->
     <string name="err_conntitle">Error de conectiviad</string>
     <string name="err_conectividad">Error de conectiviad. No existe conexión de red disponible.</string>
@@ -31,6 +32,7 @@
     <!-- VIEWS-->
     <string name="title_addDireccion">Mi Dirección</string>
     <string name="title_addDatos">Mis Datos</string>
+    <string name="title_PedidosGral">Menús</string>
 
 
     <!--LOGIN-->
@@ -70,6 +72,8 @@
     <string name="datos_err_pass">Debe ingresar un contraseña</string>
     <string name="datos_err_pass2">Las contraseñas no coinciden</string>
 
+    <!-- Carrito -->
+    <string name="carr_symbol">$U </string>
 
 
 

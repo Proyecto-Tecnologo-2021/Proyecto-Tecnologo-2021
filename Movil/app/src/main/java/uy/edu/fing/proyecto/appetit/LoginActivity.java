@@ -1,11 +1,16 @@
 package uy.edu.fing.proyecto.appetit;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -42,8 +47,10 @@ import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-    ConnectivityManager connMgr;
-    NetworkInfo networkInfo;
+    private static final int PERMISOS_REQUERIDOS = 1;
+    private ConnectivityManager connMgr;
+    private NetworkInfo networkInfo;
+    private boolean isConnected;
     Button confirmButton;
     EditText mail;
     EditText password;
@@ -62,18 +69,20 @@ public class LoginActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.INVISIBLE);
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                loginUsuario();
-            }
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
+
+        confirmButton.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            loginUsuario();
         });
     }
 
     private void loginUsuario() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.API_USRLOGIN_URL;
         Log.i(TAG, stringUrl);
@@ -103,31 +112,33 @@ public class LoginActivity extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                Log.i(TAG, "ServerLoginFirebase:" + dtUsuario.getToken());
+                //Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
 
-                AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this).create();
-                dialog.setTitle(R.string.info_title);
-                dialog.setMessage(response.getMensaje()+": "+ dtUsuario.getTelefono());
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //onBackPressed();
+                if (response.getOk()) {
+                    Intent menuactivity = new Intent(LoginActivity.this, MenuActivity.class);
+                    startActivity(menuactivity);
+                } else {
+                    if (ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
+                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
+                    }else{
+                        Intent adduseractivity = new Intent(LoginActivity.this, AltaDireccionActivity.class);
+                        startActivity(adduseractivity);
                     }
-                });
-                dialog.show();
 
-            }else{
+                }
+            } else {
                 AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this).create();
                 dialog.setTitle(R.string.info_title);
 
-                if(result instanceof String){
+                if (result instanceof String) {
                     dialog.setMessage((String) result);
                 } else {
                     dialog.setMessage(getString(R.string.err_recuperarpag));
-                    Log.i(TAG, getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
                 }
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener()
-                {
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onBackPressed();
                     }
@@ -248,7 +259,7 @@ public class LoginActivity extends AppCompatActivity {
                 dtUsuario.setCorreo(reader.nextString());
             } else if (name.equals("telefono") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setTelefono(reader.nextString());
-            } else if (name.equals("token") && reader.peek() != JsonToken.NULL) {
+            } else if (name.equals("jwt") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setToken(reader.nextString());
             } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setNombre(reader.nextString());
@@ -323,6 +334,28 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return res;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, String.valueOf(requestCode));
+        if (requestCode == PERMISOS_REQUERIDOS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent adduseractivity = new Intent(LoginActivity.this, AltaDireccionActivity.class);
+                startActivity(adduseractivity);
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this).create();
+                dialog.setTitle(R.string.access_title_err);
+                dialog.setMessage(getString(R.string.access_msg_err));
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> requestPermissions(permissions, PERMISOS_REQUERIDOS));
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> finish());
+                dialog.show();
+
+
+            }
+        }
     }
 
 }

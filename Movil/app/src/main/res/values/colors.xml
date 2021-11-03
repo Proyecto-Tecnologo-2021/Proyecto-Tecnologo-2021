@@ -14,5 +14,6 @@
     <color name="menu_bar_bg">#FFF2A22C</color>
     <color name="menu_bar_text">#FFFFFFFF</color>
     <color name="shadow">#11FFFFFF</color>
+    <color name="menu_bg_card_name">#66000000</color>
 
 </resources>

@@ -45,7 +45,7 @@ public class MenuRService implements IMenuRService{
 					.iterator();
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
-			/*	ImagenDTO img = new ImagenDTO();
+				ImagenDTO img = new ImagenDTO();
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -61,7 +61,7 @@ public class MenuRService implements IMenuRService{
 
 				}
 				men.setImagen(img);
-*/
+
 				menus.add(men);
 
 			}

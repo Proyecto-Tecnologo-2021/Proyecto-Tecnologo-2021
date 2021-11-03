@@ -11,13 +11,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DtDireccion {
+public class DtExtraMenu {
     private Long id;
-    private String alias;
-    private String calle;
-    private String numero;
-    private String apartamento;
-    private String referencias;
-    private String geometry;
-    //private String barrio;
+    private Long id_producto;
+    private Long id_restaurante;
+    private String producto;
+    private Double precio;
 }
