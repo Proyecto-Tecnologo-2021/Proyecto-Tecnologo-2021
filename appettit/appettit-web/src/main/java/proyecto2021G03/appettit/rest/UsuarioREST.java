@@ -173,13 +173,13 @@ public class UsuarioREST {
 	@POST
 	@Path("/loginFireBase")
 	public Response loginFireBase(LoginDTO request) {
-		RespuestaREST<String> respuesta = null;
+		RespuestaREST<ClienteMDTO> respuesta = null;
 		try {
-			String token = uService.loginFireBase(request);
-			respuesta = new RespuestaREST<String>(true, "Inicio de sesión correcto.", token);
+			ClienteMDTO clienteMDTO = uService.loginFireBase(request);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Inicio de sesión correcto.", clienteMDTO);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
-			respuesta = new RespuestaREST<String>(false, e.getLocalizedMessage());
+			respuesta = new RespuestaREST<ClienteMDTO>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {

@@ -660,7 +660,7 @@ public class UsuarioService implements IUsuarioService {
 	}
 	
 	@Override
-	public String loginFireBase(LoginDTO loginDTO) throws AppettitException {
+	public ClienteMDTO loginFireBase(LoginDTO loginDTO) throws AppettitException {
 		/* Se valida que exista el correo electrónico*/
 		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
 		
@@ -674,8 +674,15 @@ public class UsuarioService implements IUsuarioService {
 				usuario.setTokenFireBase(loginDTO.getPassword());
 				usrDAO.editarCliente((Cliente)usuario);
 				
+				ClienteDTO clienteDTO = usrConverter.fromCliente((Cliente)usuario);
+				CalificacionGralClienteDTO califDTO = calificacionGralCliente(clienteDTO);
+				
+				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente((Cliente)usuario);
+				clienteMDTO.setCalificacion(califDTO);
 				String token = crearJsonWebToken(usuario);
-				return token;
+				clienteMDTO.setJwt(token);
+				
+				return clienteMDTO;
 			} else {
 				throw new AppettitException("Usuario no habilitado para mobile.", AppettitException.DATOS_INCORRECTOS);
 			}

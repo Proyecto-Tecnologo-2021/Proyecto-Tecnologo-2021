@@ -18,7 +18,7 @@ public interface IUsuarioService {
 	//public List<UsuarioDTO> buscarPorNombre(String nombre) throws AppettitException;
 	public String login(LoginDTO loginDTO) throws AppettitException;
 	public ClienteMDTO loginMobile(LoginDTO loginDTO) throws AppettitException;
-	public String loginFireBase(LoginDTO loginDTO) throws AppettitException;
+	public ClienteMDTO loginFireBase(LoginDTO loginDTO) throws AppettitException;
 	
 	/*ADMINISTRADOR*/
 	public AdministradorDTO crear(AdministradorDTO administradorDTO) throws AppettitException;
