@@ -14,5 +14,6 @@ public class ConnConstants {
 
     //MENUS
     final public static String API_GETMENUS_URL = "http://192.168.56.1:8080/appettit-web/rest/menu";
+    final public static String API_GETMENU_URL = "http://192.168.56.1:8080/appettit-web/rest/menu/getMenu/{id_restaurante}/{id}";
 
 }

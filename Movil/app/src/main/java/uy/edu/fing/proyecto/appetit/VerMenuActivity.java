@@ -1,10 +1,17 @@
 package uy.edu.fing.proyecto.appetit;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,45 +21,48 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 
-public class MenuActivity extends AppCompatActivity {
+public class VerMenuActivity extends AppCompatActivity {
     private static final String TAG = "MenuActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
     private boolean isConnected;
-    private RecyclerView recyclerView;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    protected ProductAdapter adapter;
+    Long id_restaurante;
+    Long id_menu;
 
+    ImageView menu_img;
+    TextView menu_name;
+    TextView menu_detalle;
+    TextView menu_precio;
+    TextView menu_restaurante;
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
 
@@ -60,22 +70,30 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String title = getString(R.string.title_PedidosGral);
-        setTitle(title);
+        Bundle bundle = this.getIntent().getExtras();
+        id_menu = bundle.getLong("id");
+        id_restaurante = bundle.getLong("id_restaurante");
 
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_ver_menu);
 
+        menu_img = findViewById(R.id.vmenu_img);
+        menu_name = findViewById(R.id.vmenu_name);
+        menu_detalle = findViewById(R.id.vmenu_detalle);
+        menu_precio = findViewById(R.id.vmenu_precio);
+        menu_restaurante = findViewById(R.id.vmenu_restaurante);
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
 
-        buscarMenus();
+        buscarMenu();
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bottomNavViewMenu);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
 
                 case R.id.menu_menus:
+                    Intent imenu = new Intent(VerMenuActivity.this, MenuActivity.class);
+                    startActivity(imenu);
                     return true;
                 case R.id.menu_pedido:
                     return true;
@@ -86,41 +104,45 @@ public class MenuActivity extends AppCompatActivity {
         });
 
     }
-
-    private void addMenus(List<DtMenu> menus){
-
-        if(menus.size()!=0){
-            recyclerView = findViewById(R.id.recyclerView);
+    private void addMenu(DtMenu dtp){
+        Log.i(TAG, dtp.getNombre());
+        Log.i(TAG, id_restaurante.toString());
 
 
-            // Nuestro RecyclerView usará un linear layout manager
-            LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.this);
-            recyclerView.setLayoutManager(layoutManager);
 
-            adapter = new ProductAdapter(MenuActivity.this, menus);
-            // Set CustomAdapter as the adapter for RecyclerView.
-            recyclerView.setAdapter(adapter);
-        }
+        Bitmap bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+        menu_img.setImageBitmap(bmp);
+
+        menu_name.setText(dtp.getNombre());
+        menu_detalle.setText(dtp.getDescripcion());
+        String precio = getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
+        menu_precio.setText(precio);
+        menu_restaurante.setText(dtp.getNom_restaurante());
+
     }
 
-    private void buscarMenus() {
+    private void buscarMenu() {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connMgr.getActiveNetworkInfo();
 
-        String stringUrl = ConnConstants.API_GETMENUS_URL;
+        String stringUrl = ConnConstants.API_GETMENU_URL;
+        stringUrl = stringUrl.replace("{id}", id_menu.toString());
+        stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
+
+        Log.i(TAG, "buscarMenu:" + stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            new MenuActivity.DownloadMenusTask().execute(stringUrl);
+            new VerMenuActivity.DownloadMenuTask().execute(stringUrl);
         } else {
         }
     }
 
-    private class DownloadMenusTask extends AsyncTask<String, Void, Object> {
+    private class DownloadMenuTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return MenusInfoGralUrl(urls[0]);
+                return MenuInfoGralUrl(urls[0]);
             } catch (IOException e) {
                 return getString(R.string.err_recuperarpag);
             }
@@ -133,22 +155,27 @@ public class MenuActivity extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                //Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
+                Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
-                    List<DtMenu> menus = (List<DtMenu>) response.getCuerpo();
-                    addMenus(menus);
+                    DtMenu menu = (DtMenu) response.getCuerpo();
+                    addMenu(menu);
                 } else {
-                    if (ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
                     }else{
-                        onBackPressed();
+                        AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
+                        dialog.setTitle(R.string.access_title_err);
+                        dialog.setMessage(response.getMensaje());
+                        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_positive), (dialog1, which) -> onBackPressed());
+                        dialog.show();
+
                     }
 
                 }
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
                 dialog.setTitle(R.string.info_title);
 
                 if (result instanceof String) {
@@ -167,7 +194,7 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private DtResponse MenusInfoGralUrl(String myurl) throws IOException {
+    private DtResponse MenuInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
@@ -185,8 +212,7 @@ public class MenuActivity extends AppCompatActivity {
             //conn.setDoOutput(true);
             conn.setDoInput(true);
 
-
-            //String data = LoginToJSON();
+            //String data = MenuToJSON();
             //Log.i(TAG, data);
 
             //byte[] out = data.getBytes(StandardCharsets.UTF_8);
@@ -197,7 +223,7 @@ public class MenuActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoGralJsonStream(is);
@@ -243,7 +269,7 @@ public class MenuActivity extends AppCompatActivity {
         Boolean ok = false;
         String mensaje = null;
         DtResponse res = null;
-        List<DtMenu> menus = null;
+        DtMenu menu = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -253,24 +279,14 @@ public class MenuActivity extends AppCompatActivity {
             } else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
-                menus = readMenusArray(reader);
+                menu = readMenu(reader);
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtResponse(ok, mensaje, menus);
+        return new DtResponse(ok, mensaje, menu);
 
-    }
-
-    public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
-        List<DtMenu> menus = new ArrayList<DtMenu>();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            menus.add(readMenu(reader));
-        }
-        reader.endArray();
-        return menus;
     }
 
     public DtMenu readMenu(JsonReader reader) throws IOException {
@@ -418,7 +434,23 @@ public class MenuActivity extends AppCompatActivity {
         return imagen;
     }
 
+    private String MenuToJSON() {
+        String res = "";
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", id_menu);
+            jsonObject.put("id_restaurante", id_restaurante);
+
+            res = jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+            res = "";
+        }
+
+        return res;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -427,10 +459,10 @@ public class MenuActivity extends AppCompatActivity {
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent adduseractivity = new Intent(MenuActivity.this, AltaDireccionActivity.class);
+                Intent adduseractivity = new Intent(VerMenuActivity.this, AltaDireccionActivity.class);
                 startActivity(adduseractivity);
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
                 dialog.setTitle(R.string.access_title_err);
                 dialog.setMessage(getString(R.string.access_msg_err));
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> requestPermissions(permissions, PERMISOS_REQUERIDOS));
@@ -440,10 +472,5 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
     }
 }

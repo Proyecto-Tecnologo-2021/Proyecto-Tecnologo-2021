@@ -1,6 +1,7 @@
 package uy.edu.fing.proyecto.appetit.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import uy.edu.fing.proyecto.appetit.MenuActivity;
 import uy.edu.fing.proyecto.appetit.R;
+import uy.edu.fing.proyecto.appetit.VerMenuActivity;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 
@@ -96,7 +99,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
 
-        Log.i(TAG, dtp.getImagen().toString());
         Bitmap bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
         ImageView image = viewHolder.getMenu_img();
 
@@ -110,7 +112,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         viewHolder.getMenu_restaurante().setText(dtp.getNom_restaurante());
 
 
-        viewHolder.itemView.setOnClickListener(v -> Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show());
+        viewHolder.itemView.setOnClickListener(v -> {
+            //Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show()
+            Intent ivmenu = new Intent(context, VerMenuActivity.class);
+            ivmenu.putExtra("id", dtp.getId());
+            ivmenu.putExtra("id_restaurante", dtp.getId_restaurante());
+            context.startActivity(ivmenu);
+        });
 
     }
 

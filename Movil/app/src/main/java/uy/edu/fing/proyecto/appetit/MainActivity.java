@@ -1,10 +1,7 @@
 package uy.edu.fing.proyecto.appetit;
 
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -54,15 +50,12 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
-import uy.edu.fing.proyecto.appetit.obj.DtLogin;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 

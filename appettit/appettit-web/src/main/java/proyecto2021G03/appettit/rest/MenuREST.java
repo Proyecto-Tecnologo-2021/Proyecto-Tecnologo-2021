@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
@@ -24,7 +25,6 @@ public class MenuREST {
     IMenuRService iMenuRService;
 
     @GET
-
     public Response listar() {
         RespuestaREST<List<MenuRDTO>> respuesta = null;
         try {
@@ -39,12 +39,14 @@ public class MenuREST {
 
 
     @GET
-	@Path("/getMenu")
+	//@Path("/getMenu/")
+    @Path("/getMenu/{id_restaurante}/{id}")
   //@RecursoProtegidoJWT
-	public Response listarPorId(MenuRDTO request) {
+	//public Response listarPorId(MenuRDTO request) {
+    public Response listarPorId(@PathParam("id_restaurante") Long id_restaurante, @PathParam("id") Long id) {
 		RespuestaREST<MenuRDTO> respuesta = null;
 		try {
-            MenuRDTO menuDTOS = iMenuRService.listarPorId(request.getId_restaurante(), request.getId());
+            MenuRDTO menuDTOS = iMenuRService.listarPorId(id_restaurante, id);
             respuesta = new RespuestaREST<MenuRDTO>(true, "Menú listado con éxito.", menuDTOS);
             return Response.ok(respuesta).build();
         } catch (AppettitException e) {
