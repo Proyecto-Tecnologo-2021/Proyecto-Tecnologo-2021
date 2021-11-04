@@ -25,4 +25,6 @@ public class MenuRDTO {
     
     @Builder.Default
     private String tipo = "MENU";
+    
+    private Integer cal_restaurante;
 }

@@ -33,6 +33,10 @@ public class MenuRService implements IMenuRService{
     @EJB
     IImagenService imgSrv;
 
+    @EJB
+    IUsuarioService usrSrv;
+
+    
     @Override
     public List<MenuRDTO> listar() throws AppettitException {
     	/*
@@ -50,6 +54,7 @@ public class MenuRService implements IMenuRService{
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -84,6 +89,7 @@ public class MenuRService implements IMenuRService{
 		try {
 			MenuRDTO men = menuRConverter.fromEntity(iMenuRDAO.listarPorId(id_restaurante, id));
 			ImagenDTO img = new ImagenDTO();
+			men.setCal_restaurante(usrSrv.calificacionRestaurante(id_restaurante).getGeneral());
 
 			if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 				FileManagement fm = new FileManagement();
@@ -115,6 +121,7 @@ public class MenuRService implements IMenuRService{
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(id_restaurante).getGeneral());
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -151,7 +158,8 @@ public class MenuRService implements IMenuRService{
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
+				
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
 

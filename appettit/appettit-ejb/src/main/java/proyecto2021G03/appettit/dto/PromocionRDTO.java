@@ -28,5 +28,7 @@ public class PromocionRDTO {
     
     @Builder.Default
     private String tipo = "PROM";
+    
+    private Integer cal_restaurante;
 
 }

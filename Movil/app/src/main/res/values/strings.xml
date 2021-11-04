@@ -33,6 +33,7 @@
     <string name="title_addDireccion">Mi Dirección</string>
     <string name="title_addDatos">Mis Datos</string>
     <string name="title_PedidosGral">Menús</string>
+    <string name="title_Pedido">Mi pedido</string>
 
 
     <!--LOGIN-->

@@ -32,7 +32,7 @@ public interface IUsuarioService {
 	public List<RestauranteDTO> listarRestaurantes() throws AppettitException;
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException;
 	public RestauranteDTO buscarPorCorreoRestaurante(String correo) throws AppettitException;
-	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
+	public CalificacionRestauranteDTO calificacionRestaurante(Long id) throws AppettitException;
 	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
 	
 
@@ -45,7 +45,7 @@ public interface IUsuarioService {
 	public List<ClienteDTO> listarClientes() throws AppettitException;
 	public List<ClienteDTO> buscarPorNombreCliente(String nombre) throws AppettitException;
 	public ClienteDTO buscarPorIdCliente(Long id) throws AppettitException;
-	public CalificacionGralClienteDTO calificacionGralCliente(ClienteDTO restauranteDTO) throws AppettitException;
+	public CalificacionGralClienteDTO calificacionGralCliente(Long id) throws AppettitException;
 	public ClienteDTO agregarDireccion(DireccionCrearDTO direccion) throws AppettitException;
 	public Long obtenerIdDireccion(Long idUser, String alias) throws AppettitException;
 	public List<DireccionDTO> obtenerDireccionesCliente(Long idUser) throws AppettitException;

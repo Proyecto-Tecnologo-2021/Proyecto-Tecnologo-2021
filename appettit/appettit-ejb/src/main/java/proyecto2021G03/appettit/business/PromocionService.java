@@ -41,6 +41,9 @@ public class PromocionService implements IPromocionService {
     @EJB
     IImagenService imgSrv;
 
+    @EJB
+    IUsuarioService usrSrv;
+
 
     @Override
     public List<PromocionDTO> listar() throws AppettitException {
@@ -59,7 +62,7 @@ public class PromocionService implements IPromocionService {
 			while (it.hasNext()) {
 				PromocionDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
+				
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
 
@@ -280,6 +283,8 @@ public class PromocionService implements IPromocionService {
 			while (it.hasNext()) {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
+				
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -314,6 +319,8 @@ public class PromocionService implements IPromocionService {
 			while (it.hasNext()) {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
+				
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -343,6 +350,8 @@ public class PromocionService implements IPromocionService {
 	public PromocionRDTO buscarPorId(Long id_restaurante, Long id) throws AppettitException {
 		PromocionRDTO men = pConverter.fromEntityToRDTO(pDAO.listarPorId(id, id_restaurante));
 		ImagenDTO img = new ImagenDTO();
+		men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
+		
 
 		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 			FileManagement fm = new FileManagement();
@@ -371,6 +380,8 @@ public class PromocionService implements IPromocionService {
 			while (it.hasNext()) {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
+				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
+				
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();

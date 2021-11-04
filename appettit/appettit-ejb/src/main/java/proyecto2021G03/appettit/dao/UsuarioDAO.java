@@ -12,8 +12,6 @@ import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
-import proyecto2021G03.appettit.dto.ClienteDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -184,7 +182,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public CalificacionRestauranteDTO calificacionRestaurante(RestauranteDTO restauranteDTO) {
+	public CalificacionRestauranteDTO calificacionRestaurante(Long id) {
 		Query consulta = em
 				.createNativeQuery("SELECT"
 						+ "	c.cla, "
@@ -207,7 +205,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 						+ " GROUP BY c.cla"
 						+ "");
 		
-		consulta.setParameter("id_restaurante", restauranteDTO.getId());
+		consulta.setParameter("id_restaurante", id);
 
 		
 		List<Object[]> datos = consulta.getResultList();
@@ -342,7 +340,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public CalificacionGralClienteDTO calificacionGralCliente(ClienteDTO clienteDTO) {
+	public CalificacionGralClienteDTO calificacionGralCliente(Long id) {
 		Query consulta = em
 				.createNativeQuery("SELECT "
 						+ "c.cla, "
@@ -357,7 +355,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 						+ "GROUP BY c.cla "
 						+ "");
 		
-		consulta.setParameter("id_cliente", clienteDTO.getId());
+		consulta.setParameter("id_cliente", id);
 
 		
 		List<Object[]> datos = consulta.getResultList();

@@ -16,12 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.core.widget.NestedScrollView
-
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".VerMenuActivity"
-                tools:showIn="@layout/activity_main">
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_above="@+id/vmenu_add_pedido"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -119,7 +122,7 @@
 
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
+            </ScrollView>
 
             <Button
                 android:id="@+id/vmenu_add_pedido"

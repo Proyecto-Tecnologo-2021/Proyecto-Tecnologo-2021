@@ -47,6 +47,7 @@ import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
+import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 
 public class VerMenuActivity extends AppCompatActivity {
@@ -72,6 +73,7 @@ public class VerMenuActivity extends AppCompatActivity {
     ImageButton add_cantidad;
     ImageButton menos_cantidad;
     DtMenu viewMenu = null;
+    DtPromocion viewProm = null;
 
     DtPedido dtPedido = DtPedido.getInstance();
     Integer cantidad = 1;
@@ -142,20 +144,39 @@ public class VerMenuActivity extends AppCompatActivity {
         });
 
     }
-    private void addMenu(DtMenu dtp){
-        viewMenu = dtp;
-        Bitmap bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
-        menu_img.setImageBitmap(bmp);
+    private void addMenu(Object obj){
+        Bitmap bmp = null;
+        String nombre = null;
+        String precio = null;
+        String detalle = null;
+        String restaurante = null;
 
-        menu_name.setText(dtp.getNombre());
-        menu_detalle.setText(dtp.getDescripcion());
-        total = dtp.getPrecioTotal();
-        String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
+
+        if (obj instanceof DtMenu){
+            DtMenu dtp = (DtMenu) obj;
+            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+            nombre = dtp.getNombre();
+            precio = getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
+            detalle = dtp.getDescripcion();
+            restaurante = dtp.getNom_restaurante();
+
+        } else if (obj instanceof DtPromocion){
+            DtPromocion dtp = (DtPromocion) obj;
+            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+            nombre = dtp.getDescuento() + getString(R.string.carr_dto) +
+                    " " + dtp.getNombre();
+            precio = getString(R.string.carr_symbol) + " " + dtp.getPrecio();
+            detalle = dtp.getDescripcion();
+            restaurante = dtp.getNom_restaurante();
+        }
+        menu_img.setImageBitmap(bmp);
+        menu_name.setText(nombre);
+        menu_detalle.setText(detalle);
         menu_precio.setText(precio);
-        menu_restaurante.setText(dtp.getNom_restaurante());
-        String b_text = getString(R.string.carr_add_prod) + " " + precio;
-        add_pedido.setText(b_text);
+        menu_restaurante.setText(restaurante);
         menu_cantidad.setText(cantidad.toString());
+        String b_text = getString(R.string.carr_add_prod) + " " +  precio;
+        add_pedido.setText(b_text);
 
     }
 
@@ -202,7 +223,8 @@ public class VerMenuActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 //Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
-                    DtMenu menu = (DtMenu) response.getCuerpo();
+                    //DtMenu menu = (DtMenu) response.getCuerpo();
+                    Object menu = (Object) response.getCuerpo();
                     addMenu(menu);
                 } else {
                     if (ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
@@ -257,13 +279,6 @@ public class VerMenuActivity extends AppCompatActivity {
             //conn.setDoOutput(true);
             conn.setDoInput(true);
 
-            //String data = MenuToJSON();
-            //Log.i(TAG, data);
-
-            //byte[] out = data.getBytes(StandardCharsets.UTF_8);
-            //OutputStream stream = conn.getOutputStream();
-            //stream.write(out);
-
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
@@ -314,7 +329,7 @@ public class VerMenuActivity extends AppCompatActivity {
         Boolean ok = false;
         String mensaje = null;
         DtResponse res = null;
-        DtMenu menu = null;
+        Object menu = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -334,7 +349,17 @@ public class VerMenuActivity extends AppCompatActivity {
 
     }
 
-    public DtMenu readMenu(JsonReader reader) throws IOException {
+    public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
+        List<DtMenu> menus = new ArrayList<DtMenu>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            menus.add((DtMenu) readMenu(reader));
+        }
+        reader.endArray();
+        return menus;
+    }
+
+    public Object readMenu(JsonReader reader) throws IOException {
         Long id = null;
         Long id_restaurante = null;
         String nom_restaurante = null;
@@ -343,9 +368,12 @@ public class VerMenuActivity extends AppCompatActivity {
         String descripcion = null;
         Double precioSimple = null;
         Double precioTotal = null;
+        Double precio = null;
         List<DtExtraMenu> extras = null;
+        List<DtMenu> menus = null;
         List<DtProducto> productos = null;
         byte[] imagen = null;
+        String tipo = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -366,21 +394,34 @@ public class VerMenuActivity extends AppCompatActivity {
                 precioSimple = reader.nextDouble();
             } else if (name.equals("precioTotal") && reader.peek() != JsonToken.NULL) {
                 precioTotal = reader.nextDouble();
+            } else if (name.equals("precio") && reader.peek() != JsonToken.NULL) {
+                precio = reader.nextDouble();
             } else if (name.equals("extras") && reader.peek() != JsonToken.NULL) {
                 extras = readExtrasMenusArray(reader);
             } else if (name.equals("productos") && reader.peek() != JsonToken.NULL) {
                 productos = readProductosArray(reader);
+            } else if (name.equals("menus") && reader.peek() != JsonToken.NULL) {
+                menus = readMenusArray(reader);
             } else if (name.equals("imagen") && reader.peek() != JsonToken.NULL) {
                 imagen = readImagenObj(reader);;
+            }else if (name.equals("tipo") && reader.peek() != JsonToken.NULL) {
+                tipo = reader.nextString();
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
 
-        return new DtMenu(id, id_restaurante, nom_restaurante,
-                descuento, nombre, descripcion, precioSimple,
-                precioTotal, extras, productos, imagen);
+        if(tipo.equalsIgnoreCase("MENU")){
+            return new DtMenu(id, id_restaurante, nom_restaurante,
+                    descuento, nombre, descripcion, precioSimple,
+                    precioTotal, extras, productos, imagen);
+        } else if (tipo.equalsIgnoreCase("PROM")){
+            return new DtPromocion(id, nombre, id_restaurante, nom_restaurante,
+                    descripcion, descuento, precio, menus, imagen);
+        } else {
+            return null;
+        }
     }
 
     public List<DtExtraMenu> readExtrasMenusArray(JsonReader reader) throws IOException {
