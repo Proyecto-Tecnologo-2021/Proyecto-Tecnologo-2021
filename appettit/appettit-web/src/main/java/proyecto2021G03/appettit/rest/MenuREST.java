@@ -39,15 +39,26 @@ public class MenuREST {
 
 
     @GET
-	//@Path("/getMenu/")
     @Path("/getMenu/{id_restaurante}/{id}")
-  //@RecursoProtegidoJWT
-	//public Response listarPorId(MenuRDTO request) {
     public Response listarPorId(@PathParam("id_restaurante") Long id_restaurante, @PathParam("id") Long id) {
 		RespuestaREST<MenuRDTO> respuesta = null;
 		try {
             MenuRDTO menuDTOS = iMenuRService.listarPorId(id_restaurante, id);
             respuesta = new RespuestaREST<MenuRDTO>(true, "Menú listado con éxito.", menuDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+	}
+
+    @GET
+    @Path("/getMenu/{id_restaurante}")
+    public Response listarPorRestaurante(@PathParam("id_restaurante") Long id_restaurante) {
+    	RespuestaREST<List<MenuRDTO>> respuesta = null;
+        try {
+            List<MenuRDTO> menuDTOS = iMenuRService.listarPorRestaurnate(id_restaurante);
+            respuesta = new RespuestaREST<List<MenuRDTO>>(true, "Menues listados con éxito.", menuDTOS);
             return Response.ok(respuesta).build();
         } catch (AppettitException e) {
             respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());

@@ -8,5 +8,6 @@ public interface IMenuRDAO {
 
     public List<Menu> listar();
     public Menu listarPorId(Long id_restaurante, Long id);
+	public List<Menu> listarPorRestaurate(Long id_restaurante);
 
 }

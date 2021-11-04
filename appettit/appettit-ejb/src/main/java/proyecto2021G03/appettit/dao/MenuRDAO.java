@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -7,9 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.entity.Menu;
 @Singleton
 public class MenuRDAO implements IMenuRDAO{
+	
+	static Logger logger = Logger.getLogger(MenuRDAO.class);
 
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
@@ -35,5 +40,21 @@ public class MenuRDAO implements IMenuRDAO{
 				.getSingleResult();
 
 		return menu;
+	}
+
+	@Override
+	public List<Menu> listarPorRestaurate(Long id_restaurante) {
+		List<Menu> menus = new ArrayList<Menu>();
+		try {
+			menus = em.createQuery("select _m " 
+					+ "from Menu _m "
+					+ "inner join _m.restaurante _r "
+					+ "where _r.id =:id", Menu.class)
+					.setParameter("id", id_restaurante).getResultList();
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+
+		return menus;
 	}
 }
