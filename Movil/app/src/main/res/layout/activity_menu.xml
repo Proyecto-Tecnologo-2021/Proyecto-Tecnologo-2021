@@ -32,7 +32,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp" />
+                tools:layout_editor_absoluteY="0dp"
+                android:layout_above="@+id/bottomNavigationView"
+                android:layout_alignParentTop="@id/bottomNavigationView"
+                />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
