@@ -19,12 +19,14 @@ public class PromocionRDTO {
 	private String nombre;
     private Long id_restaurante;
     private String nom_restaurante;
-	//private RestauranteDTO restaurante;
 	private String descripcion;
 	private Double descuento;
 	private Double precio;
 	private List<MenuRDTO> menus;
 	private String id_imagen;
     private ImagenDTO imagen;
+    
+    @Builder.Default
+    private String tipo = "PROM";
 
 }

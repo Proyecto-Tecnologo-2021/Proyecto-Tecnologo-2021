@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IMenuDAO {
     public List<Menu> listar();
-    public Menu listarPorId(Long id);
+    public Menu listarPorId(Long id, Long id_restaurante);
     public Menu crear(Menu menu);
     public Menu editar(Menu menu);
     public void eliminar(Menu menu);

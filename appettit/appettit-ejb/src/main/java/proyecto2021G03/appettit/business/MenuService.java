@@ -76,7 +76,7 @@ public class MenuService implements IMenuService{
     }
 
     @Override
-    public MenuDTO listarPorId(Long id) throws AppettitException {
+    public MenuDTO listarPorId(Long id, Long id_restaurante) throws AppettitException {
         /*
     	try {
             return menuConverter.fromEntity(iMenuDao.listarPorId(id));
@@ -85,7 +85,7 @@ public class MenuService implements IMenuService{
         }
         */
     	
-    	MenuDTO men = menuConverter.fromEntity(iMenuDao.listarPorId(id));
+    	MenuDTO men = menuConverter.fromEntity(iMenuDao.listarPorId(id, id_restaurante));
 		ImagenDTO img = new ImagenDTO();
 
 		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
@@ -120,7 +120,7 @@ public class MenuService implements IMenuService{
 
     @Override
     public MenuDTO editar(Long id, MenuDTO menuDTO) throws AppettitException {
-        Menu menus = iMenuDao.listarPorId(menuDTO.getId());
+        Menu menus = iMenuDao.listarPorId(menuDTO.getId(), menuDTO.getId_restaurante());
         if (menus == null)
             throw new AppettitException("El departamento indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
@@ -159,8 +159,8 @@ public class MenuService implements IMenuService{
     }
 
     @Override
-    public void eliminar(Long id) throws AppettitException {
-        Menu menu= iMenuDao.listarPorId(id);
+    public void eliminar(Long id, Long id_restaurante) throws AppettitException {
+        Menu menu= iMenuDao.listarPorId(id, id_restaurante);
         if(menu == null) {
             throw new AppettitException("El Menu indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
         } else {

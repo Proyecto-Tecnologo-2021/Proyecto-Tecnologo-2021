@@ -1,6 +1,8 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.Menu;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -8,8 +10,7 @@ import javax.persistence.Query;
 
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import proyecto2021G03.appettit.entity.Menu;
 
 @Singleton
 public class MenuDAO implements IMenuDAO {
@@ -27,8 +28,18 @@ public class MenuDAO implements IMenuDAO {
 	}
 
 	@Override
-	public Menu listarPorId(Long id) {
-		return em.find(Menu.class, id);
+	public Menu listarPorId(Long id, Long id_restaurante) {
+		Menu menu = null;
+
+		menu = em.createQuery("SELECT _m "
+						+ "from Menu as _m "
+						+ "where _m.id_restaurante = :id_restaurante "
+						+ "and _m.id = :id", Menu.class)
+				.setParameter("id_restaurante", id_restaurante)
+				.setParameter("id", id)
+				.getSingleResult();
+
+		return menu;
 
 	}
 

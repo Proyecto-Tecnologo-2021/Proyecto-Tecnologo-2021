@@ -85,7 +85,7 @@ public class PromocionService implements IPromocionService {
     }
 
     @Override
-    public PromocionDTO listarPorId(Long id) throws AppettitException {
+    public PromocionDTO listarPorId(Long id, Long id_restaurante) throws AppettitException {
     	/*
         try {
             return pConverter.fromEntity(pDAO.listarPorId(id));
@@ -94,7 +94,7 @@ public class PromocionService implements IPromocionService {
         }
         */
     	
-    	PromocionDTO men = pConverter.fromEntity(pDAO.listarPorId(id));
+    	PromocionDTO men = pConverter.fromEntity(pDAO.listarPorId(id, id_restaurante));
 		ImagenDTO img = new ImagenDTO();
 
 		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
@@ -118,14 +118,14 @@ public class PromocionService implements IPromocionService {
     }
 
     @Override
-    public PromocionDTO editar(Long id, ProductoCrearDTO pcDTO) throws AppettitException {
+    public PromocionDTO editar(Long id, Long id_restaurante, ProductoCrearDTO pcDTO) throws AppettitException {
 
         // HACER EL CONTROL POR RESTAURANTE Y NO GENERAL
         if (existeNombreProductoExcluirId(id, pcDTO.getNombre())) {
             throw new AppettitException("Ya existe un producto con ese nombre.", AppettitException.EXISTE_REGISTRO);
         } else {
             try {
-                Promocion promo = pDAO.listarPorId(id);
+                Promocion promo = pDAO.listarPorId(id, id_restaurante);
                 promo.setNombre(pcDTO.getNombre());
                 
                 PromocionDTO men = pConverter.fromEntity(pDAO.editar(promo));
@@ -157,9 +157,9 @@ public class PromocionService implements IPromocionService {
     }
 
     @Override
-    public void eliminar(Long id) throws AppettitException {
+    public void eliminar(Long id, Long id_restaurante) throws AppettitException {
         /* Se valida que exista la promocion */
-        Promocion promo = pDAO.listarPorId(id);
+        Promocion promo = pDAO.listarPorId(id, id_restaurante);
         if (promo == null) {
             throw new AppettitException("La promocion indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
         } 
@@ -341,7 +341,7 @@ public class PromocionService implements IPromocionService {
 
 	@Override
 	public PromocionRDTO buscarPorId(Long id_restaurante, Long id) throws AppettitException {
-		PromocionRDTO men = pConverter.fromEntityToRDTO(pDAO.listarPorId(id));
+		PromocionRDTO men = pConverter.fromEntityToRDTO(pDAO.listarPorId(id, id_restaurante));
 		ImagenDTO img = new ImagenDTO();
 
 		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {

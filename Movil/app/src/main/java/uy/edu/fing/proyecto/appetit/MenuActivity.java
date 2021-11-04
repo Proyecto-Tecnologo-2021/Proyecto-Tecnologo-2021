@@ -118,7 +118,7 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    private void addMenus(List<DtMenu> menus){
+    private void addMenus(List<Object> menus){
 
         if(menus.size()!=0){
             recyclerView = findViewById(R.id.recyclerView);
@@ -139,29 +139,21 @@ public class MenuActivity extends AppCompatActivity {
         networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = "";
-        String stringPUrl = "";
 
         if(dtPedido.getIdrest() == null){
-            stringUrl = ConnConstants.API_GETMENUSPOINT_URL;
+            stringUrl = ConnConstants.API_GETMENUSPROMOPOINT_URL;
             stringUrl = stringUrl.replace("{point}", dtPedido.getGeometry());
 
-            stringPUrl = ConnConstants.API_GETPROMOSPOINT_URL;
-            stringPUrl = stringUrl.replace("{point}", dtPedido.getGeometry());
-
-
         } else {
-            stringUrl = ConnConstants.API_GETMENUSRESTAURANTE_URL;
+            stringUrl = ConnConstants.API_GETMENUSPROMORESTAURANTE_URL;
             stringUrl = stringUrl.replace("{id_restaurante}", dtPedido.getIdrest().toString());
-
-            stringPUrl = ConnConstants.API_GETPROMOSRESTAURANTE_URL;
-            stringPUrl = stringUrl.replace("{id_restaurante}", dtPedido.getIdrest().toString());
 
         }
 
         Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            new MenuActivity.DownloadMenusTask().execute(stringUrl, stringPUrl);
+            new MenuActivity.DownloadMenusTask().execute(stringUrl);
         } else {
         }
     }
@@ -171,7 +163,7 @@ public class MenuActivity extends AppCompatActivity {
         protected Object doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return MenusInfoGralUrl(urls[0], 1);
+                return MenusInfoGralUrl(urls[0]);
             } catch (IOException e) {
                 return getString(R.string.err_recuperarpag);
             }
@@ -186,7 +178,7 @@ public class MenuActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
                 if (response.getOk()) {
-                    List<DtMenu> menus = (List<DtMenu>) response.getCuerpo();
+                    List<Object> menus = (List<Object>) response.getCuerpo();
                     addMenus(menus);
                 } else {
                     if (ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
@@ -217,7 +209,7 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private DtResponse MenusInfoGralUrl(String myurl, Integer tipo) throws IOException {
+    private DtResponse MenusInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
@@ -242,13 +234,13 @@ public class MenuActivity extends AppCompatActivity {
             //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
-                return readInfoGralJsonStream(is, tipo);
+                return readInfoGralJsonStream(is);
             } else if (response == 400) {
                 is = conn.getErrorStream();
-                return readInfoGralJsonStream(is, tipo);
+                return readInfoGralJsonStream(is);
             } else if (response == 500) {
                 is = conn.getErrorStream();
-                return readInfoGralJsonStream(is, tipo);
+                return readInfoGralJsonStream(is);
             } else {
                 return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
             }
@@ -263,7 +255,7 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    public DtResponse readInfoGralJsonStream(InputStream in, Integer tipo) throws IOException {
+    public DtResponse readInfoGralJsonStream(InputStream in) throws IOException {
         //creating an InputStreamReader object
         InputStreamReader isReader = new InputStreamReader(in);
         //Creating a BufferedReader object
@@ -275,13 +267,13 @@ public class MenuActivity extends AppCompatActivity {
         }
         JsonReader reader = new JsonReader(new StringReader(sb.toString()));
         try {
-            return readRESTMessage(reader, tipo);
+            return readRESTMessage(reader);
         } finally {
             reader.close();
         }
     }
 
-    public DtResponse readRESTMessage(JsonReader reader, Integer tipo) throws IOException {
+    public DtResponse readRESTMessage(JsonReader reader) throws IOException {
         Boolean ok = false;
         String mensaje = null;
         DtResponse res = null;
@@ -295,14 +287,7 @@ public class MenuActivity extends AppCompatActivity {
             } else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
-                if(tipo==1){
-                    menus = new ArrayList<Object>();
-                    menus.addAll(readMenusArray(reader));
-                }else if(tipo==2){
-                    menus = new ArrayList<Object>();
-                    menus.addAll(readPromocionesArray(reader));
-                }
-
+                    menus = readOBJArray(reader);
             } else {
                 reader.skipValue();
             }
@@ -312,8 +297,8 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
-        List<DtMenu> menus = new ArrayList<DtMenu>();
+    public List<Object> readOBJArray(JsonReader reader) throws IOException {
+        List<Object> menus = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
             menus.add(readMenu(reader));
@@ -322,17 +307,18 @@ public class MenuActivity extends AppCompatActivity {
         return menus;
     }
 
-    public List<DtPromocion> readPromocionesArray(JsonReader reader) throws IOException {
-        List<DtPromocion> promociones = new ArrayList<DtPromocion>();
+
+    public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
+        List<DtMenu> menus = new ArrayList<DtMenu>();
         reader.beginArray();
         while (reader.hasNext()) {
-            promociones.add(readPromocion(reader));
+            menus.add((DtMenu) readMenu(reader));
         }
         reader.endArray();
-        return promociones;
+        return menus;
     }
 
-    public DtMenu readMenu(JsonReader reader) throws IOException {
+    public Object readMenu(JsonReader reader) throws IOException {
         Long id = null;
         Long id_restaurante = null;
         String nom_restaurante = null;
@@ -341,9 +327,12 @@ public class MenuActivity extends AppCompatActivity {
         String descripcion = null;
         Double precioSimple = null;
         Double precioTotal = null;
+        Double precio = null;
         List<DtExtraMenu> extras = null;
+        List<DtMenu> menus = null;
         List<DtProducto> productos = null;
         byte[] imagen = null;
+        String tipo = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -364,63 +353,34 @@ public class MenuActivity extends AppCompatActivity {
                 precioSimple = reader.nextDouble();
             } else if (name.equals("precioTotal") && reader.peek() != JsonToken.NULL) {
                 precioTotal = reader.nextDouble();
+            } else if (name.equals("precio") && reader.peek() != JsonToken.NULL) {
+                precio = reader.nextDouble();
             } else if (name.equals("extras") && reader.peek() != JsonToken.NULL) {
                 extras = readExtrasMenusArray(reader);
             } else if (name.equals("productos") && reader.peek() != JsonToken.NULL) {
                 productos = readProductosArray(reader);
-            } else if (name.equals("imagen") && reader.peek() != JsonToken.NULL) {
-                imagen = readImagenObj(reader);;
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-
-        return new DtMenu(id, id_restaurante, nom_restaurante,
-                descuento, nombre, descripcion, precioSimple,
-                precioTotal, extras, productos, imagen);
-    }
-
-    public DtPromocion readPromocion(JsonReader reader) throws IOException {
-        Long id = null;
-        Long id_restaurante = null;
-        String nom_restaurante = null;
-        Double descuento = null;
-        String nombre = null;
-        String descripcion = null;
-        Double precio = null;
-        List<DtMenu> menus = null;
-        byte[] imagen = null;
-
-        reader.beginObject();
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (name.equals("id") && reader.peek() != JsonToken.NULL) {
-                id = reader.nextLong();
-            } else if (name.equals("id_restaurante") && reader.peek() != JsonToken.NULL) {
-                id_restaurante = reader.nextLong();
-            } else if (name.equals("nom_restaurante") && reader.peek() != JsonToken.NULL) {
-                nom_restaurante = reader.nextString();
-            } else if (name.equals("descuento") && reader.peek() != JsonToken.NULL) {
-                descuento = reader.nextDouble();
-            } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
-                nombre = reader.nextString();
-            } else if (name.equals("descripcion") && reader.peek() != JsonToken.NULL) {
-                descripcion = reader.nextString();
-            } else if (name.equals("precio") && reader.peek() != JsonToken.NULL) {
-                precio = reader.nextDouble();
             } else if (name.equals("menus") && reader.peek() != JsonToken.NULL) {
                 menus = readMenusArray(reader);
             } else if (name.equals("imagen") && reader.peek() != JsonToken.NULL) {
                 imagen = readImagenObj(reader);;
+            }else if (name.equals("tipo") && reader.peek() != JsonToken.NULL) {
+                tipo = reader.nextString();
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
 
-        return new DtPromocion(id, nombre, id_restaurante, nom_restaurante,
-                descripcion, descuento, precio, menus, imagen);
+        if(tipo.equalsIgnoreCase("MENU")){
+            return new DtMenu(id, id_restaurante, nom_restaurante,
+                    descuento, nombre, descripcion, precioSimple,
+                    precioTotal, extras, productos, imagen);
+        } else if (tipo.equalsIgnoreCase("PROM")){
+            return new DtPromocion(id, nombre, id_restaurante, nom_restaurante,
+                    descripcion, descuento, precio, menus, imagen);
+        } else {
+            return null;
+        }
     }
 
     public List<DtExtraMenu> readExtrasMenusArray(JsonReader reader) throws IOException {
@@ -517,59 +477,6 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return imagen;
-    }
-
-
-    private class DownloadPromocionesTask extends AsyncTask<String, Void, Object> {
-        @Override
-        protected Object doInBackground(String... urls) {
-            // params comes from the execute() call: params[0] is the url.
-            try {
-                return MenusInfoGralUrl(urls[0], 2);
-            } catch (IOException e) {
-                return getString(R.string.err_recuperarpag);
-            }
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(Object result) {
-            progressBar.setVisibility(View.INVISIBLE);
-
-            if (result instanceof DtResponse) {
-                DtResponse response = (DtResponse) result;
-                Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
-                if (response.getOk()) {
-                    List<DtMenu> menus = (List<DtMenu>) response.getCuerpo();
-                    addMenus(menus);
-                } else {
-                    if (ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
-                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
-                        onBackPressed();
-                    }
-
-                }
-            } else {
-                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).create();
-                dialog.setTitle(R.string.info_title);
-
-                if (result instanceof String) {
-                    dialog.setMessage((String) result);
-                } else {
-                    dialog.setMessage(getString(R.string.err_recuperarpag));
-                    //Log.i(TAG, getString(R.string.err_recuperarpag));
-                }
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onBackPressed();
-                    }
-                });
-                dialog.show();
-            }
-        }
     }
 
     @Override

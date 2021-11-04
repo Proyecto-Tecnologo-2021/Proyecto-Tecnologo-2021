@@ -27,9 +27,18 @@ public class PromocionDAO implements IPromocionDAO {
     }
 
     @Override
-    public Promocion listarPorId(Long id) {
+    public Promocion listarPorId(Long id, Long id_restaurante) {
+    	Promocion promocion = null;
 
-        return em.find(Promocion.class, id);
+		promocion = em.createQuery("SELECT _p "
+						+ "from Promocion as _p "
+						+ "where _p.id_restaurante = :id_restaurante "
+						+ "and _p.id = :id", Promocion.class)
+				.setParameter("id_restaurante", id_restaurante)
+				.setParameter("id", id)
+				.getSingleResult();
+
+		return promocion;
     }
 
     @Override

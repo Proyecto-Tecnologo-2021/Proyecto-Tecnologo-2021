@@ -151,8 +151,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             //Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show()
             Intent ivmenu = new Intent(context, VerMenuActivity.class);
 
-            ivmenu.putExtra("id", finalId.toString());
-            ivmenu.putExtra("id_restaurante", finalId_restaurante.toString());
+            ivmenu.putExtra("id", finalId);
+            ivmenu.putExtra("id_restaurante", finalId_restaurante);
             ivmenu.putExtra("tipo", finalTipo);
             context.startActivity(ivmenu);
         });

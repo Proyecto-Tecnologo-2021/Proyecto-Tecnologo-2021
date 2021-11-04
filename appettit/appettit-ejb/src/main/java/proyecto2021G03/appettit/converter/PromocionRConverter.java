@@ -48,7 +48,7 @@ public class PromocionRConverter extends AbstractConverter<Promocion, MenuRDTO>{
                 .descuento(menuRDTO.getDescuento())
               //  .extras(extraMenuConverter.fromDTO(menuRDTO.getExtras()))
               //  .productos(productoConverter.fromDTO(menuRDTO.getProductos()))
-                .menus(iPromocionDAO.listarPorId(menuRDTO.getId()).getMenus())
+                .menus(iPromocionDAO.listarPorId(menuRDTO.getId(), menuRDTO.getId_restaurante()).getMenus())
                 .restaurante(iUsuarioDAO.buscarRestaurantePorId(menuRDTO.getId_restaurante()))
                 .build();
     }

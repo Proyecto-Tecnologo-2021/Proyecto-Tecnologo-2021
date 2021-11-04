@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -172,6 +173,8 @@ public class VerMenuActivity extends AppCompatActivity {
 
         stringUrl = stringUrl.replace("{id}", id_menu.toString());
         stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
+
+        Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new VerMenuActivity.DownloadMenuTask().execute(stringUrl);

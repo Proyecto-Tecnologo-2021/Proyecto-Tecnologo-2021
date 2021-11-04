@@ -22,4 +22,7 @@ public class MenuRDTO {
     private List<ProductoRDTO> productos;
     private String id_imagen;
     private ImagenDTO imagen;
+    
+    @Builder.Default
+    private String tipo = "MENU";
 }

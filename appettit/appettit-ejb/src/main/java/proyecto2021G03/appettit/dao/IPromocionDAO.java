@@ -10,7 +10,7 @@ public interface IPromocionDAO {
 
     public List<Promocion> listar();
 
-    public Promocion listarPorId(Long id);
+    public Promocion listarPorId(Long id, Long id_restaurante);
 
     public Promocion crear(Promocion promo);
 

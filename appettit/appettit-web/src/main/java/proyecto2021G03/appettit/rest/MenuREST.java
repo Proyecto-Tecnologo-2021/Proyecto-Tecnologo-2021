@@ -104,4 +104,22 @@ public class MenuREST {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
         }
     }
+    
+    @GET
+    @Path("/getMenuAll/{id_restaurante}")
+    public Response listarPorRestauranteAll(@PathParam("id_restaurante") Long id_restaurante) {
+    	RespuestaREST<List<Object>> respuesta = null;
+        try {
+        	List<Object> allDTOS = new ArrayList<Object>();
+            allDTOS.addAll(iMenuRService.listarPorRestaurnate(id_restaurante));
+            allDTOS.addAll(iPromocionService.listarPorRestaurnateRest(id_restaurante));
+            
+            respuesta = new RespuestaREST<List<Object>>(true, "Menues listados con éxito.", allDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+	}
+
 }

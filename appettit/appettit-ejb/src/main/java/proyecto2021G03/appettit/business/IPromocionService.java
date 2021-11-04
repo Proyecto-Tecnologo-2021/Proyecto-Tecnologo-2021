@@ -13,11 +13,11 @@ public interface IPromocionService {
     
     public List<PromocionRDTO> listarRPromocion() throws AppettitException;
 
-    public PromocionDTO listarPorId(Long id) throws AppettitException;
+    public PromocionDTO listarPorId(Long id, Long id_restaurante) throws AppettitException;
 
-    public PromocionDTO editar(Long id, ProductoCrearDTO pcDTO) throws AppettitException;
+    public PromocionDTO editar(Long id, Long id_restaurnate, ProductoCrearDTO pcDTO) throws AppettitException;
 
-    public void eliminar(Long id) throws AppettitException;
+    public void eliminar(Long id, Long id_restaurante) throws AppettitException;
 
     public List<PromocionDTO> listarPorRestaurante(Long id) throws AppettitException;
 
