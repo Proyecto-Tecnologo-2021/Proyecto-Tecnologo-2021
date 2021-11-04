@@ -15,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import lombok.SneakyThrows;
 import org.jboss.logging.Logger;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.shaded.json.JSONArray;
@@ -22,27 +23,10 @@ import org.primefaces.shaded.json.JSONObject;
 
 import lombok.Getter;
 import lombok.Setter;
-import proyecto2021G03.appettit.business.ICategoriaService;
-import proyecto2021G03.appettit.business.IDepartamentoService;
-import proyecto2021G03.appettit.business.IExtraMenuService;
-import proyecto2021G03.appettit.business.IGeoService;
-import proyecto2021G03.appettit.business.IMenuService;
-import proyecto2021G03.appettit.business.IProductoService;
-import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.business.*;
 import proyecto2021G03.appettit.converter.DepartamentoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
-import proyecto2021G03.appettit.dto.AdministradorDTO;
-import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
-import proyecto2021G03.appettit.dto.CategoriaDTO;
-import proyecto2021G03.appettit.dto.CiudadDTO;
-import proyecto2021G03.appettit.dto.DepartamentoDTO;
-import proyecto2021G03.appettit.dto.DireccionDTO;
-import proyecto2021G03.appettit.dto.EstadoRegistro;
-import proyecto2021G03.appettit.dto.ExtraMenuDTO;
-import proyecto2021G03.appettit.dto.LocalidadDTO;
-import proyecto2021G03.appettit.dto.MenuDTO;
-import proyecto2021G03.appettit.dto.ProductoDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @Named("beanFileUpload")
@@ -81,6 +65,8 @@ public class FileUpload implements Serializable {
 
 	@EJB
 	IMenuService menuSrv;
+	@EJB
+	IPromocionService promoService;
 
 	private UploadedFile filed;
 	private UploadedFile filec;
@@ -91,6 +77,8 @@ public class FileUpload implements Serializable {
 	private UploadedFile fileprod;
 	private UploadedFile filemenu;
 	private UploadedFile fileextramenu;
+	private UploadedFile promociones;
+
 
 	public void parseDepto() {
 		if (filed != null) {
@@ -588,6 +576,139 @@ public class FileUpload implements Serializable {
 					}
 
 				}
+
+				bufferedReader.close();
+
+				logger.info("Productos ingresados");
+				FacesMessage message = new FacesMessage("Successful", filemenu.getFileName() + " is uploaded.");
+				FacesContext.getCurrentInstance().addMessage(null, message);
+
+			} catch (IOException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			} catch (AppettitException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			} finally {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					logger.info(e.getMessage().trim());
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+				}
+			}
+
+		}
+	}
+
+
+
+
+	public void parsePromocion() {
+		if (promociones != null) {
+			BufferedReader bufferedReader = null;
+			try {
+
+				bufferedReader = new BufferedReader(new InputStreamReader(promociones.getInputStream(), "UTF-8"));
+
+				String linea;
+				String strJson = "";
+				while ((linea = bufferedReader.readLine()) != null) {
+					strJson += linea;
+				}
+
+				logger.info("Promocion: " + strJson);
+
+				String correo = null;
+				Long id = null;
+				String nombre = null;
+				//RestauranteDTO restaurante =null;
+				String descripcion = null;
+				Double descuento = null;
+				Double precio = null;
+				String id_imagen = null;
+				List<MenuDTO> menus = new ArrayList<MenuDTO>();
+
+
+				JSONObject jsonObject = new JSONObject(strJson);
+
+				if (jsonObject != null) {
+					logger.info(jsonObject.toString());
+
+					JSONArray jsonArray = jsonObject.getJSONArray("menus");
+
+					for (Object res : jsonArray) {
+						JSONObject data = (JSONObject) res;
+
+						correo = (String) data.get("restaurante");
+						RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+						//	productos = prodSrv.listarPorRestaurante(restaurante.getId());
+						//	extras = extraMenuSrv.listarPorRestaurante(restaurante.getId());
+
+						JSONArray promo = data.getJSONArray("promo");
+
+						for (Object menu : menus) {
+							JSONObject omenu = (JSONObject) menu;
+
+							nombre = omenu.getString("nombre");
+							descripcion = omenu.getString("descripcion");
+							descuento = omenu.getDouble("precio");
+							precio = omenu.getDouble("preciototal");
+							id_imagen = omenu.getString("imagen");
+
+							//JSONArray aprod = omenu.getJSONArray("productos");
+							//JSONArray aextra = omenu.getJSONArray("extras");
+							//List<ProductoDTO> m_productos = new ArrayList<ProductoDTO>();
+							//List<ExtraMenuDTO> m_extras = new ArrayList<ExtraMenuDTO>();
+
+
+							/*for (Object prod : aprod) {
+								String pname = (String) prod;
+
+								Iterator<ProductoDTO> it = productos.iterator();
+
+								while (it.hasNext()) {
+									ProductoDTO pDTO = it.next();
+									if (pDTO.getNombre().equalsIgnoreCase(pname)) {
+										m_productos.add(pDTO);
+										break;
+									}
+								}
+
+							}
+
+							for (Object oextra : aextra) {
+								String pextra = (String) oextra;
+
+								Iterator<ExtraMenuDTO> it = extras.iterator();
+
+								while (it.hasNext()) {
+									ExtraMenuDTO eDTO = it.next();
+									if (eDTO.getProducto().getNombre().equalsIgnoreCase(pextra)) {
+										m_extras.add(eDTO);
+										break;
+									}
+								}*/
+
+						}
+
+						try {
+							PromocionDTO pDTO = new PromocionDTO(null, nombre, restaurante, descripcion,
+									precio, descuento, menus, id_imagen, null);
+							pDTO = promoService.crear(pDTO);
+						} catch (AppettitException e) {
+							logger.info(e.getMessage().trim());
+							FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+						}
+					}
+
+				}
+
+
 
 				bufferedReader.close();
 

@@ -130,6 +130,18 @@
 		</h:form>
 	</div>
 
+	<div class="card">
+		<h5>10 - PROMOCIONES</h5>
+		<h:form enctype="multipart/form-data">
+			<p:fileUpload value="#{beanFileUpload.promocion}" mode="simple"
+						  skinSimple="true" />
+
+			<p:commandButton value="Carga de Promocion" ajax="false"
+							 action="#{beanFileUpload.parsePromocion()}"
+							 styleClass="p-mt-3 ui-button-outlined p-d-block" />
+		</h:form>
+	</div>
+
 </h:body>
 
 </html>
