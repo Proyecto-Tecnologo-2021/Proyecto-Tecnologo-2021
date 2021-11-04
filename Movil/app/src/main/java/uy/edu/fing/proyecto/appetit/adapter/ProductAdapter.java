@@ -23,11 +23,13 @@ import uy.edu.fing.proyecto.appetit.R;
 import uy.edu.fing.proyecto.appetit.VerMenuActivity;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
+import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
     private static final String TAG = "ProductAdapter";
     private Context context;
-    private List<DtMenu> menus;
+    //private List<DtMenu> menus;
+    private List<Object> menus;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -77,7 +79,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
      * @param dataSet List<DtProducto> containing the data to populate views to be used
      * by RecyclerView.
      */
-    public ProductAdapter(Context context, List<DtMenu> dataSet) {
+    //public ProductAdapter(Context context, List<DtMenu> dataSet) {
+    public ProductAdapter(Context context, List<Object> dataSet) {
         this.context = context;
         this.menus = dataSet;
     }
@@ -95,28 +98,62 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        DtMenu dtp = menus.get(position);
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+        Bitmap bmp = null;
+        String nombre = null;
+        String precio = null;
+        String detalle = null;
+        String restaurante = null;
+        Long id = null;
+        Long id_restaurante = null;
+        String tipo = null;
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+
+        if (menus.get(position) instanceof DtMenu){
+            DtMenu dtp = (DtMenu) menus.get(position);
+            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+            nombre = dtp.getNombre();
+            precio = context.getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
+            detalle = dtp.getDescripcion();
+            restaurante = dtp.getNom_restaurante();
+            id = dtp.getId();
+            id_restaurante = dtp.getId_restaurante();
+            tipo = "M";
+
+        } else if (menus.get(position) instanceof DtPromocion){
+            DtPromocion dtp = (DtPromocion) menus.get(position);
+            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
+            nombre = dtp.getDescuento() + context.getString(R.string.carr_dto) +
+                    " " + dtp.getNombre();
+            precio = context.getString(R.string.carr_symbol) + " " + dtp.getPrecio();
+            detalle = dtp.getDescripcion();
+            restaurante = dtp.getNom_restaurante();
+            id = dtp.getId();
+            id_restaurante = dtp.getId_restaurante();
+            tipo = "P";
+        }
+
+
         ImageView image = viewHolder.getMenu_img();
-
         image.setImageBitmap(bmp);
 
         viewHolder.getMenu_name().setBackgroundColor(context.getColor(R.color.menu_bg_card_name));
-        viewHolder.getMenu_name().setText(dtp.getNombre());
-        viewHolder.getMenu_detalle().setText(dtp.getDescripcion());
-        String precio = context.getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
-        viewHolder.getMenu_precio().setText(precio);
-        viewHolder.getMenu_restaurante().setText(dtp.getNom_restaurante());
+        viewHolder.getMenu_name().setText(nombre);
 
+        viewHolder.getMenu_detalle().setText(detalle);
+        viewHolder.getMenu_precio().setText(precio);
+        viewHolder.getMenu_restaurante().setText(restaurante);
+
+        Long finalId = id;
+        Long finalId_restaurante = id_restaurante;
+        String finalTipo = tipo;
 
         viewHolder.itemView.setOnClickListener(v -> {
             //Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show()
             Intent ivmenu = new Intent(context, VerMenuActivity.class);
-            ivmenu.putExtra("id", dtp.getId());
-            ivmenu.putExtra("id_restaurante", dtp.getId_restaurante());
+
+            ivmenu.putExtra("id", finalId.toString());
+            ivmenu.putExtra("id_restaurante", finalId_restaurante.toString());
+            ivmenu.putExtra("tipo", finalTipo);
             context.startActivity(ivmenu);
         });
 

@@ -620,12 +620,10 @@ public class FileUpload implements Serializable {
 					strJson += linea;
 				}
 
-				logger.info("Promocion: " + strJson);
+				//logger.info("Promocion: " + strJson);
 
 				String correo = null;
-				Long id = null;
 				String nombre = null;
-				//RestauranteDTO restaurante =null;
 				String descripcion = null;
 				Double descuento = null;
 				Double precio = null;
@@ -638,72 +636,56 @@ public class FileUpload implements Serializable {
 				if (jsonObject != null) {
 					logger.info(jsonObject.toString());
 
-					JSONArray jsonArray = jsonObject.getJSONArray("menus");
+					JSONArray jsonArray = jsonObject.getJSONArray("promos");
 
 					for (Object res : jsonArray) {
 						JSONObject data = (JSONObject) res;
 
 						correo = (String) data.get("restaurante");
 						RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
-						//	productos = prodSrv.listarPorRestaurante(restaurante.getId());
-						//	extras = extraMenuSrv.listarPorRestaurante(restaurante.getId());
+						menus = menuSrv.listarPorRestaurante(restaurante.getId());
+						
+						JSONArray promo = data.getJSONArray("promos");
+						
+						for (Object menu : promo) {
+							JSONObject opromo = (JSONObject) menu;
 
-						JSONArray promo = data.getJSONArray("promo");
+							List<MenuDTO> prom_menus = new ArrayList<MenuDTO>();
+							nombre = opromo.getString("nombre");
+							descripcion = opromo.getString("descripcion");
+							descuento = opromo.getDouble("descuento");
+							precio = opromo.getDouble("precio");
+							id_imagen = opromo.getString("imagen");
 
-						for (Object menu : menus) {
-							JSONObject omenu = (JSONObject) menu;
-
-							nombre = omenu.getString("nombre");
-							descripcion = omenu.getString("descripcion");
-							descuento = omenu.getDouble("precio");
-							precio = omenu.getDouble("preciototal");
-							id_imagen = omenu.getString("imagen");
-
-							//JSONArray aprod = omenu.getJSONArray("productos");
-							//JSONArray aextra = omenu.getJSONArray("extras");
-							//List<ProductoDTO> m_productos = new ArrayList<ProductoDTO>();
-							//List<ExtraMenuDTO> m_extras = new ArrayList<ExtraMenuDTO>();
-
-
-							/*for (Object prod : aprod) {
-								String pname = (String) prod;
-
-								Iterator<ProductoDTO> it = productos.iterator();
-
+							
+							
+							JSONArray amenus = opromo.getJSONArray("menus");
+							
+							for (Object omenu : amenus) {
+								String pextra = (String) omenu;
+								
+								Iterator<MenuDTO> it = menus.iterator();
 								while (it.hasNext()) {
-									ProductoDTO pDTO = it.next();
-									if (pDTO.getNombre().equalsIgnoreCase(pname)) {
-										m_productos.add(pDTO);
+									MenuDTO pDTO = it.next();
+									if (pDTO.getNombre().equalsIgnoreCase(pextra)) {
+										prom_menus.add(pDTO);
 										break;
 									}
-								}
-
+								}	
 							}
 
-							for (Object oextra : aextra) {
-								String pextra = (String) oextra;
-
-								Iterator<ExtraMenuDTO> it = extras.iterator();
-
-								while (it.hasNext()) {
-									ExtraMenuDTO eDTO = it.next();
-									if (eDTO.getProducto().getNombre().equalsIgnoreCase(pextra)) {
-										m_extras.add(eDTO);
-										break;
-									}
-								}*/
-
+							try {
+								PromocionDTO pDTO = new PromocionDTO(null, restaurante.getId(), nombre, restaurante, descripcion,
+										descuento, precio,prom_menus, id_imagen, null);
+								pDTO = promoService.crear(pDTO);
+							} catch (AppettitException e) {
+								logger.info(e.getMessage().trim());
+								FacesContext.getCurrentInstance().addMessage(null,
+										new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+							}
 						}
 
-						try {
-							PromocionDTO pDTO = new PromocionDTO(null, nombre, restaurante, descripcion,
-									precio, descuento, menus, id_imagen, null);
-							pDTO = promoService.crear(pDTO);
-						} catch (AppettitException e) {
-							logger.info(e.getMessage().trim());
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-						}
+						
 					}
 
 				}
@@ -712,8 +694,8 @@ public class FileUpload implements Serializable {
 
 				bufferedReader.close();
 
-				logger.info("Productos ingresados");
-				FacesMessage message = new FacesMessage("Successful", filemenu.getFileName() + " is uploaded.");
+				logger.info("Promociones ingresadas");
+				FacesMessage message = new FacesMessage("Successful", promociones.getFileName() + " is uploaded.");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 
 			} catch (IOException e) {

@@ -14,7 +14,14 @@ public class ConnConstants {
 
     //MENUS
     final public static String API_GETMENUS_URL = "http://192.168.56.1:8080/appettit-web/rest/menu";
-    final public static String API_GETMENUSPOINT_URL = "http://192.168.56.1:8080/appettit-web/rest/menugetZona/{point}";
+    final public static String API_GETMENUSPOINT_URL = "http://192.168.56.1:8080/appettit-web/rest/menu/getZona/{point}";
     final public static String API_GETMENU_URL = "http://192.168.56.1:8080/appettit-web/rest/menu/getMenu/{id_restaurante}/{id}";
     final public static String API_GETMENUSRESTAURANTE_URL = "http://192.168.56.1:8080/appettit-web/rest/menu/getMenu/{id_restaurante}";
+
+    //PROMOS
+    final public static String API_GETPROMOS_URL = "http://192.168.56.1:8080/appettit-web/rest/promo";
+    final public static String API_GETPROMOSPOINT_URL = "http://192.168.56.1:8080/appettit-web/rest/promo/getZona/{point}";
+    final public static String API_GETPROMO_URL = "http://192.168.56.1:8080/appettit-web/rest/promo/getPromo/{id_restaurante}/{id}";
+    final public static String API_GETPROMOSRESTAURANTE_URL = "http://192.168.56.1:8080/appettit-web/rest/promo/getPromo/{id_restaurante}";
+
 }

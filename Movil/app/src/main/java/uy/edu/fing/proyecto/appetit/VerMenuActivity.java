@@ -57,6 +57,7 @@ public class VerMenuActivity extends AppCompatActivity {
     private boolean isConnected;
     Long id_restaurante;
     Long id_menu;
+    String tipo;
 
     ImageView menu_img;
     TextView menu_name;
@@ -82,6 +83,8 @@ public class VerMenuActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         id_menu = bundle.getLong("id");
         id_restaurante = bundle.getLong("id_restaurante");
+        tipo = bundle.getString("tipo");
+
 
         setContentView(R.layout.activity_ver_menu);
 
@@ -159,7 +162,14 @@ public class VerMenuActivity extends AppCompatActivity {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connMgr.getActiveNetworkInfo();
 
-        String stringUrl = ConnConstants.API_GETMENU_URL;
+        String stringUrl = null;
+
+        if(tipo.equalsIgnoreCase("M")){
+            stringUrl = ConnConstants.API_GETMENU_URL;
+        } else if (tipo.equalsIgnoreCase("P")){
+            stringUrl = ConnConstants.API_GETPROMO_URL;
+        }
+
         stringUrl = stringUrl.replace("{id}", id_menu.toString());
         stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
 

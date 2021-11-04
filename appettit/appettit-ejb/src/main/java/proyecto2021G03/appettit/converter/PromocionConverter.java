@@ -27,6 +27,7 @@ public class PromocionConverter extends AbstractConverter<Promocion, PromocionDT
 		if(e == null) return null;
 		return PromocionDTO.builder()
 				.id(e.getId())
+				.id_restaurante(e.getId_restaurante())
 				.nombre(e.getNombre())
 				.restaurante(usrConverter.fromRestaurante(e.getRestaurante()))
 				.descripcion(e.getDescripcion())
@@ -42,6 +43,7 @@ public class PromocionConverter extends AbstractConverter<Promocion, PromocionDT
 		if(d == null) return null;
 		return Promocion.builder()
 				.id(d.getId())
+				.id_restaurante(d.getId_restaurante())
 				.nombre(d.getNombre())
 				.restaurante(usrConverter.fromRestauranteDTO(d.getRestaurante()))
 				.descripcion(d.getDescripcion())

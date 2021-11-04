@@ -50,7 +50,7 @@ public class Promocion implements Serializable {
 	@Column(name = "nombre", nullable = false, length = 50)
 	private String nombre;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
 	private Restaurante restaurante;
 

@@ -73,7 +73,8 @@
     <string name="datos_err_pass2">Las contraseñas no coinciden</string>
 
     <!-- Carrito -->
-    <string name="carr_symbol">$U </string>
+    <string name="carr_symbol">$U</string>
+    <string name="carr_dto">% OFF</string>
     <string name="carr_add_prod">Agregar a mi pedido</string>
     <string name="carr_add_cant">Cantidad</string>
 

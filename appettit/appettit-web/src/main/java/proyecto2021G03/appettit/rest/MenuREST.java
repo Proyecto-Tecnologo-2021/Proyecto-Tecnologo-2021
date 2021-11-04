@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import proyecto2021G03.appettit.business.IMenuRService;
+import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -24,6 +26,10 @@ public class MenuREST {
 
     @EJB
     IMenuRService iMenuRService;
+    
+    @EJB
+    IPromocionService iPromocionService;
+
 
     @GET
     public Response listar() {
@@ -81,4 +87,21 @@ public class MenuREST {
         }
     }
 
+    @GET
+    @Path("/getZonaAll/{punto}")
+    public Response listarZonaRepartoAll(@PathParam("punto") String punto) {
+    	RespuestaREST<List<Object>> respuesta = null;
+        try {
+        	List<Object> allDTOS = new ArrayList<Object>();
+            //List<MenuRDTO> menuDTOS = iMenuRService.listarPorPunto(punto);
+            allDTOS.addAll(iMenuRService.listarPorPunto(punto));
+            allDTOS.addAll(iPromocionService.listarPorPunto(punto));
+            
+            respuesta = new RespuestaREST<List<Object>>(true, "Menues listados con éxito.", allDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+    }
 }
