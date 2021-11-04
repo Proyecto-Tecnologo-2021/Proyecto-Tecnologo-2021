@@ -39,6 +39,7 @@ import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
+import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 
@@ -46,6 +47,7 @@ public class MenuActivity extends AppCompatActivity {
     private static final String TAG = "MenuActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
+    DtPedido dtPedido = DtPedido.getInstance();
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
     private boolean isConnected;
@@ -68,7 +70,7 @@ public class MenuActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
 
-        buscarMenus();
+        //buscarMenus();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -107,7 +109,16 @@ public class MenuActivity extends AppCompatActivity {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connMgr.getActiveNetworkInfo();
 
-        String stringUrl = ConnConstants.API_GETMENUS_URL;
+        String stringUrl = "";
+
+        if(dtPedido.getIdrest() == null){
+            stringUrl = ConnConstants.API_GETMENUS_URL;
+
+        } else {
+            stringUrl = ConnConstants.API_GETMENUSRESTAURANTE_URL;
+            stringUrl = stringUrl.replace("{id_restaurante}", dtPedido.getIdrest().toString());
+
+        }
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new MenuActivity.DownloadMenusTask().execute(stringUrl);
@@ -423,7 +434,7 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i(TAG, String.valueOf(requestCode));
+        //Log.i(TAG, String.valueOf(requestCode));
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -445,5 +456,11 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        buscarMenus();
     }
 }

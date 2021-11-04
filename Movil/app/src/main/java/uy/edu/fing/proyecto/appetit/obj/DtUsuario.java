@@ -11,9 +11,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DtUsuario {
     private static DtUsuario uInstance= null;
     private Long id;
@@ -29,6 +26,8 @@ public class DtUsuario {
 
     @Builder.Default
     private List<DtDireccion> direcciones = new ArrayList<DtDireccion>();
+
+    private DtUsuario(){}
 
     public static synchronized DtUsuario getInstance() {
         if(uInstance == null){

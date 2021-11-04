@@ -1,10 +1,5 @@
 package uy.edu.fing.proyecto.appetit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,11 +14,17 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -34,17 +35,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
+import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 
@@ -63,8 +63,17 @@ public class VerMenuActivity extends AppCompatActivity {
     TextView menu_detalle;
     TextView menu_precio;
     TextView menu_restaurante;
+    TextView menu_cantidad;
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
+    Button add_pedido;
+    ImageButton add_cantidad;
+    ImageButton menos_cantidad;
+    DtMenu viewMenu = null;
+
+    DtPedido dtPedido = DtPedido.getInstance();
+    Integer cantidad = 1;
+    Double total = 0.0;
 
 
     @Override
@@ -81,12 +90,37 @@ public class VerMenuActivity extends AppCompatActivity {
         menu_detalle = findViewById(R.id.vmenu_detalle);
         menu_precio = findViewById(R.id.vmenu_precio);
         menu_restaurante = findViewById(R.id.vmenu_restaurante);
+        add_pedido = findViewById(R.id.vmenu_add_pedido);
+        add_cantidad = findViewById(R.id.addCantidad);
+        menos_cantidad = findViewById(R.id.minusCantidad);
+        menu_cantidad = findViewById(R.id.vmenu_cantidad);
+
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
 
         buscarMenu();
 
         bottomNavigationView = findViewById(R.id.bottomNavViewMenu);
+
+        add_cantidad.setOnClickListener(v -> {
+            cantidad ++;
+            menu_cantidad.setText(cantidad.toString());
+
+            String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
+            String b_text = getString(R.string.carr_add_prod) + " " + precio;
+            add_pedido.setText(b_text);
+        });
+
+        menos_cantidad.setOnClickListener(v -> {
+            if(cantidad > 1){
+                cantidad --;
+            }
+            menu_cantidad.setText(cantidad.toString());
+            String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
+            String b_text = getString(R.string.carr_add_prod) + " " + precio;
+            add_pedido.setText(b_text);
+        });
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -105,19 +139,19 @@ public class VerMenuActivity extends AppCompatActivity {
 
     }
     private void addMenu(DtMenu dtp){
-        Log.i(TAG, dtp.getNombre());
-        Log.i(TAG, id_restaurante.toString());
-
-
-
+        viewMenu = dtp;
         Bitmap bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
         menu_img.setImageBitmap(bmp);
 
         menu_name.setText(dtp.getNombre());
         menu_detalle.setText(dtp.getDescripcion());
-        String precio = getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
+        total = dtp.getPrecioTotal();
+        String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
         menu_precio.setText(precio);
         menu_restaurante.setText(dtp.getNom_restaurante());
+        String b_text = getString(R.string.carr_add_prod) + " " + precio;
+        add_pedido.setText(b_text);
+        menu_cantidad.setText(cantidad.toString());
 
     }
 
@@ -128,8 +162,6 @@ public class VerMenuActivity extends AppCompatActivity {
         String stringUrl = ConnConstants.API_GETMENU_URL;
         stringUrl = stringUrl.replace("{id}", id_menu.toString());
         stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
-
-        Log.i(TAG, "buscarMenu:" + stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new VerMenuActivity.DownloadMenuTask().execute(stringUrl);
@@ -155,7 +187,7 @@ public class VerMenuActivity extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                Log.i(TAG, "onPostExecute:" + response.getMensaje());
+                //Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
                     DtMenu menu = (DtMenu) response.getCuerpo();
                     addMenu(menu);
@@ -223,7 +255,7 @@ public class VerMenuActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoGralJsonStream(is);
@@ -455,7 +487,7 @@ public class VerMenuActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i(TAG, String.valueOf(requestCode));
+        //Log.i(TAG, String.valueOf(requestCode));
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -473,4 +505,6 @@ public class VerMenuActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

@@ -1,5 +1,6 @@
 package uy.edu.fing.proyecto.appetit.obj;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,10 +12,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class DtPedido {
+    private static DtPedido uInstance= null;
     private Long idcli;
     private Long iddir;
     private Long idrest;
@@ -22,7 +21,18 @@ public class DtPedido {
     private ETipoPago tipo;
     private Double total;
     private Date fecha;
-    private List<DtMenu> menus;
+
+    @Builder.Default
+    private List<DtMenu> menus = new ArrayList<DtMenu>();
+
+    private DtPedido(){}
+
+    public static synchronized DtPedido getInstance() {
+        if(uInstance == null){
+            uInstance = new DtPedido();
+        }
+        return uInstance;
+    }
 }
 
 
