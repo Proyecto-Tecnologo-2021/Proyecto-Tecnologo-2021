@@ -15,15 +15,24 @@
             android:id="@+id/login_rl"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dir_spinner"
+                android:layout_alignParentEnd="true"
+                android:spinnerMode="dialog"
+                android:prompt="@string/mp_direccion"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp"
+                android:layout_below="@+id/dir_spinner"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"

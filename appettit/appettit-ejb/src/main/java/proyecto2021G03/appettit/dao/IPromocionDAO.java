@@ -19,4 +19,7 @@ public interface IPromocionDAO {
     public void eliminar(Promocion promo);
 
     public List<Promocion> listarPorRestaurante(Long id);
+    
+    public Promocion buscarPorId(Long id_restaurante, Long id);
+
 }

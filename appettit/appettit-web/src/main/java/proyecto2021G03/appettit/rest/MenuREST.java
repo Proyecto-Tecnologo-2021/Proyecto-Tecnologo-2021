@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import proyecto2021G03.appettit.business.IMenuRService;
 import proyecto2021G03.appettit.dto.MenuRDTO;
+import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @RequestScoped
@@ -66,5 +67,18 @@ public class MenuREST {
         }
 	}
 
+    @GET
+    @Path("/getZona/{punto}")
+    public Response listarZonareparto(@PathParam("punto") String punto) {
+    	RespuestaREST<List<MenuRDTO>> respuesta = null;
+        try {
+            List<MenuRDTO> menuDTOS = iMenuRService.listarPorPunto(punto);
+            respuesta = new RespuestaREST<List<MenuRDTO>>(true, "Menues listados con éxito.", menuDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+    }
 
 }

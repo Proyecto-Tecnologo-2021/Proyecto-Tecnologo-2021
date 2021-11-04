@@ -17,7 +17,9 @@ public class PromocionRDTO {
 
 	private Long id;
 	private String nombre;
-	private RestauranteDTO restaurante;
+    private Long id_restaurante;
+    private String nom_restaurante;
+	//private RestauranteDTO restaurante;
 	private String descripcion;
 	private Double descuento;
 	private Double precio;

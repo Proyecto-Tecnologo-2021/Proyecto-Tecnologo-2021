@@ -1,12 +1,14 @@
 package proyecto2021G03.appettit.dao;
 
-import org.jboss.logging.Logger;
+import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.entity.Promocion;
 
 @Singleton
@@ -58,4 +60,20 @@ public class PromocionDAO implements IPromocionDAO {
 
         return promos;
     }
+
+	@Override
+	public Promocion buscarPorId(Long id_restaurante, Long id) {
+		Promocion promocion = null;
+
+		promocion = em.createQuery("SELECT _p "
+						+ "from Promocion as _p "
+						+ "where _p.id_restaurante = :id_restaurante "
+						+ "and _p.id = :id", Promocion.class)
+				.setParameter("id_restaurante", id_restaurante)
+				.setParameter("id", id)
+				.getSingleResult();
+
+		return promocion;
+	}
+
 }

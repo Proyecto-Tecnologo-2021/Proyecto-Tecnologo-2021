@@ -14,7 +14,11 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -35,19 +39,23 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import uy.edu.fing.proyecto.appetit.adapter.DireccionAdapter;
 import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
+import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
+import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
 public class MenuActivity extends AppCompatActivity {
     private static final String TAG = "MenuActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
     DtPedido dtPedido = DtPedido.getInstance();
+    DtUsuario dtUsuario = DtUsuario.getInstance();
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
     private boolean isConnected;
@@ -57,6 +65,7 @@ public class MenuActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
+    Spinner sp;
 
 
     @Override
@@ -67,10 +76,29 @@ public class MenuActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_menu);
 
+        sp = findViewById(R.id.dir_spinner);
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
 
         //buscarMenus();
+        DireccionAdapter adapter = new DireccionAdapter(MenuActivity.this, R.layout.dir_spinner, dtUsuario.getDirecciones());
+        sp.setAdapter(adapter);
+        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                DtDireccion dir = adapter.getItem(position);
+                dtPedido.setIddir(dir.getId());
+                dtPedido.setGeometry(dir.getGeometry());
+                buscarMenus();
+                //Toast.makeText(MenuActivity.this, dir.getGeometry(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -112,7 +140,8 @@ public class MenuActivity extends AppCompatActivity {
         String stringUrl = "";
 
         if(dtPedido.getIdrest() == null){
-            stringUrl = ConnConstants.API_GETMENUS_URL;
+            stringUrl = ConnConstants.API_GETMENUSPOINT_URL;
+            stringUrl = stringUrl.replace("{point}", dtPedido.getGeometry());
 
         } else {
             stringUrl = ConnConstants.API_GETMENUSRESTAURANTE_URL;
@@ -461,6 +490,6 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        buscarMenus();
+        //buscarMenus();
     }
 }

@@ -21,6 +21,7 @@ public class DtPedido {
     private ETipoPago tipo;
     private Double total;
     private Date fecha;
+    private String geometry;
 
     @Builder.Default
     private List<DtMenu> menus = new ArrayList<DtMenu>();

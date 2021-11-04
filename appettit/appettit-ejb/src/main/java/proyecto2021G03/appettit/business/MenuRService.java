@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.converter.MenuRConverter;
+import proyecto2021G03.appettit.dao.IGeoDAO;
 import proyecto2021G03.appettit.dao.IMenuRDAO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
@@ -22,6 +23,10 @@ public class MenuRService implements IMenuRService{
 	
     @EJB
     IMenuRDAO iMenuRDAO;
+    
+    @EJB
+    public IGeoDAO geoDAO;
+    
     @EJB
     MenuRConverter menuRConverter;
     
@@ -135,6 +140,41 @@ public class MenuRService implements IMenuRService{
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
     	
+	}
+
+	@Override
+	public List<MenuRDTO> listarPorPunto(String punto) throws AppettitException {
+		List<MenuRDTO> menus = new ArrayList<MenuRDTO>();
+		try {
+			Iterator<MenuRDTO> it = menuRConverter.fromEntity(geoDAO.menuRestaurantesPorPunto(punto))
+					.iterator();
+			while (it.hasNext()) {
+				MenuRDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+
+				menus.add(men);
+
+			}
+
+			return menus;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 }
 

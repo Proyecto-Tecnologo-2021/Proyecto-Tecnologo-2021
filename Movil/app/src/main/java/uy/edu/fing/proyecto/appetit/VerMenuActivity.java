@@ -506,5 +506,10 @@ public class VerMenuActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
+
 
 }

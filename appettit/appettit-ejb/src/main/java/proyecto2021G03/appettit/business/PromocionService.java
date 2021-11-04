@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.converter.PromocionConverter;
 import proyecto2021G03.appettit.dao.ICategoriaDAO;
+import proyecto2021G03.appettit.dao.IGeoDAO;
 import proyecto2021G03.appettit.dao.IPromocionDAO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
@@ -30,6 +31,9 @@ public class PromocionService implements IPromocionService {
 
     @EJB
     public ICategoriaDAO cDAO;
+    
+    @EJB
+    public IGeoDAO geoDAO;
 
     @EJB
     public PromocionConverter pConverter;
@@ -272,6 +276,97 @@ public class PromocionService implements IPromocionService {
 		List<PromocionRDTO> promociones = new ArrayList<PromocionRDTO>();
 		try {
 			Iterator<PromocionRDTO> it = pConverter.fromEntityToRDTO(pDAO.listar())
+					.iterator();
+			while (it.hasNext()) {
+				PromocionRDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				promociones.add(men);
+
+			}
+
+			return promociones;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<PromocionRDTO> listarPorPunto(String punto) throws AppettitException {
+		List<PromocionRDTO> promociones = new ArrayList<PromocionRDTO>();
+		try {
+			Iterator<PromocionRDTO> it = pConverter.fromEntityToRDTO(geoDAO.promocionRestaurantesPorPunto(punto))
+					.iterator();
+			while (it.hasNext()) {
+				PromocionRDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				promociones.add(men);
+
+			}
+
+			return promociones;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public PromocionRDTO buscarPorId(Long id_restaurante, Long id) throws AppettitException {
+		PromocionRDTO men = pConverter.fromEntityToRDTO(pDAO.listarPorId(id));
+		ImagenDTO img = new ImagenDTO();
+
+		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+			FileManagement fm = new FileManagement();
+
+			img.setIdentificador("Sin Imagen");
+			img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+		} else {
+			try {
+				img = imgSrv.buscarPorId(men.getId_imagen());	
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+
+		}
+		men.setImagen(img);
+		
+		return men;
+	}
+
+	@Override
+	public List<PromocionRDTO> listarPorRestaurnateRest(Long id_restaurante) throws AppettitException {
+		List<PromocionRDTO> promociones = new ArrayList<PromocionRDTO>();
+		try {
+			Iterator<PromocionRDTO> it = pConverter.fromEntityToRDTO(pDAO.listarPorRestaurante(id_restaurante))
 					.iterator();
 			while (it.hasNext()) {
 				PromocionRDTO men = it.next();

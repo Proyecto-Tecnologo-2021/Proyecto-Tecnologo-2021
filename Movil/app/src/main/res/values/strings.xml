@@ -77,4 +77,7 @@
     <string name="carr_add_prod">Agregar a mi pedido</string>
     <string name="carr_add_cant">Cantidad</string>
 
+    <!--MENUS PROMOCIONES-->
+    <string name="mp_direccion">Dirección de entrega</string>
+
 </resources>
