@@ -371,12 +371,8 @@ public class UsuarioService implements IUsuarioService {
 		try {
 			
 			cliente.setNombre(clienteData.getNombre());
-			cliente.setPassword(clienteData.getPassword());
 			cliente.setTelefono(clienteData.getTelefono());
 			cliente.setUsername(clienteData.getUsername());
-			
-			// Se encripta la contraseña 
-			cliente.setPassword(BCrypt.withDefaults().hashToString(12, cliente.getPassword().toCharArray()));
 			
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente)); 
 			ret.setCalificacion(calificacionGralCliente(ret));

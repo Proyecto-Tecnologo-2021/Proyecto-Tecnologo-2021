@@ -10,7 +10,6 @@ public class ClienteModificarDTO {
 
     private String nombre;
     private String username;
-    private String password;
     private String telefono;
     
 }
