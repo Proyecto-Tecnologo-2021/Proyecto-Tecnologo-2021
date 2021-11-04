@@ -364,7 +364,30 @@ public class UsuarioService implements IUsuarioService {
 	}
 
 	@Override
-	public ClienteDTO editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
+	public String editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(id);
+		if (cliente == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			cliente.setNombre(clienteData.getNombre());
+			cliente.setTelefono(clienteData.getTelefono());
+			cliente.setUsername(clienteData.getUsername());
+			
+			@SuppressWarnings("unused")
+			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			
+			String token = crearJsonWebToken(cliente);
+			
+			return token; 
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+	
+	@Override
+	public ClienteMDTO editarClienteRE(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
 			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
@@ -376,7 +399,12 @@ public class UsuarioService implements IUsuarioService {
 			
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente)); 
 			ret.setCalificacion(calificacionGralCliente(ret));
-			return ret; 
+			
+			ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
+			String token = crearJsonWebToken(cliente);
+			clienteMDTO.setJwt(token);
+			
+			return clienteMDTO; 
 			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);

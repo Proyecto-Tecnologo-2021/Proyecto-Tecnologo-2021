@@ -59,16 +59,35 @@ public class UsuarioREST {
 	}
 	
 	@PUT
+	@Path("/editarRespuestaExtendida/{id}")
+	//@RecursoProtegidoJWT
+	public Response editarRespuestaExtendida(@PathParam("id") Long id, ClienteModificarDTO request) {
+		RespuestaREST<ClienteMDTO> respuesta = null;
+		try {
+			ClienteMDTO usuario = uService.editarClienteRE(id, request);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Cliente editado con éxito.", usuario);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ClienteMDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
+	@PUT
 	@Path("/editar/{id}")
 	//@RecursoProtegidoJWT
 	public Response editar(@PathParam("id") Long id, ClienteModificarDTO request) {
-		RespuestaREST<ClienteDTO> respuesta = null;
+		RespuestaREST<String> respuesta = null;
 		try {
-			ClienteDTO usuario = uService.editarCliente(id, request);
-			respuesta = new RespuestaREST<ClienteDTO>(true, "Cliente editado con éxito.", usuario);
+			String jwt = uService.editarCliente(id, request);
+			respuesta = new RespuestaREST<String>(true, "Cliente editado con éxito.", jwt);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
-			respuesta = new RespuestaREST<ClienteDTO>(false, e.getLocalizedMessage());
+			respuesta = new RespuestaREST<String>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {
