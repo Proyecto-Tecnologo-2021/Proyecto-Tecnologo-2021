@@ -160,22 +160,12 @@
 								</f:facet>
 							</p:column>
 
-<!--
 							<p:column headerText="Calificaci&oacute;n"
-								sortBy="#{cliente.calificacion.clasificacion}/#{cliente.calificacion.restaurantes}">
+								sortBy="#{cliente.calificacion.clasificacion}">
 								<p:rating readonly="true"
-									value="#{cliente.calificacion.clasificacion}/#{cliente.calificacion.restaurantes}" />
+									value="#{cliente.calificacion.clasificacion}" />
 							</p:column>
-
-							<p:column style="width:3rem;text-align: center" exportable="false">
-								<p:commandButton update=":form:clienteDetail"
-									oncomplete="PF('clienteDialog').show()" icon="pi pi-search"
-									title="Ver">
-									<f:setPropertyActionListener value="#{cliente}"
-										target="#{beanAdminCliente.selCliente}" />
-								</p:commandButton>
-							</p:column>
-  -->
+ 
 							<p:column style="width:6rem" exportable="false">
 								<p:rowEditor editTitle="Editar cliente"
 									cancelTitle="Cancelar edici&oacute;n"
