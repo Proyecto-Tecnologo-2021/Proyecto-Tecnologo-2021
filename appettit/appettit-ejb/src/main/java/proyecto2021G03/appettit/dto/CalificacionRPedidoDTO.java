@@ -1,21 +1,20 @@
 package proyecto2021G03.appettit.dto;
 
 import lombok.*;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Pedido;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CalificacionPedidoDTO {
+
+public class CalificacionRPedidoDTO {
+
     private Long id;
     private Integer rapidez;
     private Integer comida;
     private Integer servicio;
     private String comentario;
-    private Pedido pedido;
-    private Cliente cliente;
-
+    private Long id_pedido;
+    private Long id_cliente;
 }

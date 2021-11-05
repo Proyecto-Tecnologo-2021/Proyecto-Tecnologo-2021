@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.rest;
 
+import proyecto2021G03.appettit.business.ICalificacionRRService;
 import proyecto2021G03.appettit.business.ICalificacionRService;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -25,6 +26,8 @@ public class PedidoREST {
     IUsuarioService iUsuarioService;
     @EJB
     ICalificacionRService iCalificacionRService;
+    @EJB
+    ICalificacionRRService iCalificacionRRService;
 
 
     /*@POST
@@ -79,14 +82,14 @@ public class PedidoREST {
     @PUT
     @Path("/calificar/")
     //@RecursoProtegidoJWT
-    public Response calificar(CalificacionPedidoDTO request) {
-        RespuestaREST<CalificacionPedidoDTO> respuesta = null;
+    public Response calificar(CalificacionRPedidoDTO request) {
+        RespuestaREST<CalificacionRPedidoDTO> respuesta = null;
         try{
-            CalificacionPedidoDTO pedido = iCalificacionRService.crear(request);
-            respuesta = new RespuestaREST<CalificacionPedidoDTO>(true, "Categoria editada con éxito.", pedido);
+            CalificacionRPedidoDTO pedido = iCalificacionRRService.crear(request);
+            respuesta = new RespuestaREST<CalificacionRPedidoDTO>(true, "Categoria editada con éxito.", pedido);
             return Response.ok(respuesta).build();
         }catch (AppettitException e) {
-            respuesta = new RespuestaREST<CalificacionPedidoDTO>(false, e.getLocalizedMessage());
+            respuesta = new RespuestaREST<CalificacionRPedidoDTO>(false, e.getLocalizedMessage());
             if(e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO || e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
             } else {

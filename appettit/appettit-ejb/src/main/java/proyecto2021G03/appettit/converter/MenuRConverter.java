@@ -7,6 +7,7 @@ import javax.ejb.Singleton;
 
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.business.UsuarioService;
+import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.entity.Menu;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -21,6 +22,7 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
 
 @EJB
     IUsuarioService iUsuarioService;
+
 
     @Override
     public MenuRDTO fromEntity(Menu menu) {
