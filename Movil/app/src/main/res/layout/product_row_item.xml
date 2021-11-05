@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="0dp">
@@ -8,7 +9,6 @@
         android:id="@+id/cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         card_view:cardElevation="2dp"
         card_view:cardCornerRadius="5dp"
         android:layout_margin="5dp">
@@ -20,13 +20,35 @@
 
             <TextView
                 android:id="@+id/menu_restaurante"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:paddingEnd="10dp"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_alignParentLeft="true"/>
 
+
+            <RatingBar
+                android:id="@+id/menu_star"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_toStartOf="@+id/menu_restaurante_rating"
+                android:isIndicator="false"
+                android:numStars="1"
+                android:stepSize="0.2" />
+            <TextView
+                android:id="@+id/menu_restaurante_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:textSize="15sp"
+                android:layout_alignParentRight="true"
+                />
             <FrameLayout
                 android:id="@+id/menu_fl_img"
                 android:layout_width="match_parent"

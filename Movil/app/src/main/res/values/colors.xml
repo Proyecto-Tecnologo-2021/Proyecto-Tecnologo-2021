@@ -16,4 +16,12 @@
     <color name="shadow">#11FFFFFF</color>
     <color name="menu_bg_card_name">#66000000</color>
 
+
+    <color name="star_1">#FFFF2400</color>
+    <color name="star_2">#FFFF6700</color>
+    <color name="star_3">#FFFFDD00</color>
+    <color name="star_4">#FF5AFF15</color>
+    <color name="star_5">#FF0BAB64</color>
+
+
 </resources>

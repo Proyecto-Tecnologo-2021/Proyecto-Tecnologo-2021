@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -41,6 +44,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         private final TextView menu_detalle;
         private final TextView menu_precio;
         private final TextView menu_restaurante;
+        private final TextView menu_restaurante_cal;
+        private final RatingBar menu_star;
 
         public ViewHolder(View view) {
             super(view);
@@ -50,6 +55,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             menu_detalle = view.findViewById(R.id.menu_detalle);
             menu_precio = view.findViewById(R.id.menu_precio);
             menu_restaurante = view.findViewById(R.id.menu_restaurante);
+            menu_restaurante_cal = view.findViewById(R.id.menu_restaurante_rating);
+            menu_star = view.findViewById(R.id.menu_star);
         }
 
         public ImageView getMenu_img() {
@@ -70,6 +77,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         public TextView getMenu_restaurante() {
             return menu_restaurante;
+        }
+
+        public TextView getMenu_restaurante_cal() {
+            return menu_restaurante_cal;
+        }
+
+        public RatingBar getMenu_star() {
+            return menu_star;
         }
     }
 
@@ -103,9 +118,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         String precio = null;
         String detalle = null;
         String restaurante = null;
+        Integer calificacion = null;
         Long id = null;
         Long id_restaurante = null;
         String tipo = null;
+
 
 
         if (menus.get(position) instanceof DtMenu){
@@ -118,6 +135,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             id = dtp.getId();
             id_restaurante = dtp.getId_restaurante();
             tipo = "M";
+            calificacion = dtp.getCalificacion();
 
         } else if (menus.get(position) instanceof DtPromocion){
             DtPromocion dtp = (DtPromocion) menus.get(position);
@@ -130,6 +148,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             id = dtp.getId();
             id_restaurante = dtp.getId_restaurante();
             tipo = "P";
+            calificacion = dtp.getCalificacion();
         }
 
 
@@ -142,6 +161,61 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         viewHolder.getMenu_detalle().setText(detalle);
         viewHolder.getMenu_precio().setText(precio);
         viewHolder.getMenu_restaurante().setText(restaurante);
+        viewHolder.getMenu_restaurante_cal().setText(calificacion.toString());
+
+        viewHolder.getMenu_star().setRating(5);
+
+        Drawable progressDrawable = viewHolder.getMenu_star().getProgressDrawable();
+
+
+        switch (calificacion) {
+            case 0:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.white_trans));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.white_trans));
+                break;
+            case 1:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_1));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_1));
+                break;
+            case 2:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_2));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_2));
+                break;
+            case 3:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_3));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_3));
+                break;
+            case 4:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_4));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_4));
+                break;
+            case 5:
+                DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_5));
+                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_5));
+                break;
+        }
+
+
+/*
+        switch (calificacion) {
+            case 1:
+                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.dark_red));
+                break;
+            case 2:
+                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_orange));
+                break;
+            case 3:
+                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_yellow));
+                break;
+            case 4:
+                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_green_review));
+                break;
+            case 5:
+                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.dark_green));
+                break;
+        }
+*/
+
 
         Long finalId = id;
         Long finalId_restaurante = id_restaurante;

@@ -23,4 +23,5 @@ public class DtPromocion {
     private Double precio;
     private List<DtMenu> menus;
     private byte[] imagen;
+    private Integer calificacion;
 }

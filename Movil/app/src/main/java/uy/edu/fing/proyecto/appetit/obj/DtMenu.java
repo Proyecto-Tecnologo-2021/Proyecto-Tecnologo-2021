@@ -25,4 +25,5 @@ public class DtMenu {
     private List<DtExtraMenu> extras;
     private List<DtProducto> productos;
     private byte[] imagen;
+    private Integer calificacion;
 }

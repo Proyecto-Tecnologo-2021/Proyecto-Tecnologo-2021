@@ -374,6 +374,7 @@ public class VerMenuActivity extends AppCompatActivity {
         List<DtProducto> productos = null;
         byte[] imagen = null;
         String tipo = null;
+        Integer cal_restaurante = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -406,6 +407,8 @@ public class VerMenuActivity extends AppCompatActivity {
                 imagen = readImagenObj(reader);;
             }else if (name.equals("tipo") && reader.peek() != JsonToken.NULL) {
                 tipo = reader.nextString();
+            }else if (name.equals("cal_restaurante") && reader.peek() != JsonToken.NULL) {
+                cal_restaurante = reader.nextInt();
             } else {
                 reader.skipValue();
             }
@@ -415,10 +418,10 @@ public class VerMenuActivity extends AppCompatActivity {
         if(tipo.equalsIgnoreCase("MENU")){
             return new DtMenu(id, id_restaurante, nom_restaurante,
                     descuento, nombre, descripcion, precioSimple,
-                    precioTotal, extras, productos, imagen);
+                    precioTotal, extras, productos, imagen, cal_restaurante);
         } else if (tipo.equalsIgnoreCase("PROM")){
             return new DtPromocion(id, nombre, id_restaurante, nom_restaurante,
-                    descripcion, descuento, precio, menus, imagen);
+                    descripcion, descuento, precio, menus, imagen, cal_restaurante);
         } else {
             return null;
         }
