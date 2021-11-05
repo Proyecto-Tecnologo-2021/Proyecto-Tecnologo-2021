@@ -276,18 +276,13 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return cliente_sin_direccion;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Cliente> listarClientes() {
-		/*
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type").setParameter("type", "cliente");
+		Query consulta = em.createQuery("from Usuario _usr where dtype = :type order by id asc").setParameter("type", "cliente");
 
 		List<Cliente> usuarios = consulta.getResultList();
 		return usuarios;
-		*/
-
-		List<Cliente> clientes = em.createQuery("Select _c from Cliente", Cliente.class).getResultList();
-		return clientes;
-
 	}
 
 	@Override

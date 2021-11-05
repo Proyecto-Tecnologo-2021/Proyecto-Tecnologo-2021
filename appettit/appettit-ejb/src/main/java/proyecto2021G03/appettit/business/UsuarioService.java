@@ -811,4 +811,36 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 
+	@Override
+	public void bloquearCliente(Long id) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(id);
+		if (cliente == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			cliente.setBloqueado(true);
+			@SuppressWarnings("unused")
+			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+	
+	@Override
+	public void desbloquearCliente(Long id) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(id);
+		if (cliente == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			
+			cliente.setBloqueado(false);
+			@SuppressWarnings("unused")
+			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+	
 }
