@@ -117,14 +117,10 @@ public class ProductoServiceTest extends TestCase {
         }
     }
 
-    @Test
-    public void testEliminarNull() {
+    @Test(expected = AppettitException.class)
+    public void testEliminarNull() throws AppettitException {
         Mockito.when(productoServiceI.pDAO.listarPorId(1L)).thenReturn(null);
-        try {
-            productoServiceI.eliminar(1L);
-        } catch (AppettitException e) {
-            e.printStackTrace();
-        }
+        productoServiceI.eliminar(1L);
     }
 
     @Test

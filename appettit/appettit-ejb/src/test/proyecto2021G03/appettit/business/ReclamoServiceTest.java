@@ -111,19 +111,15 @@ public class ReclamoServiceTest extends TestCase {
         }
     }
 
-    @Test
-    public void testEditarNull() {
+    @Test(expected = AppettitException.class)
+    public void testEditarNull()  throws AppettitException {
         Reclamo reclamo = new Reclamo(1L, "motivo prueba", "detalles", LocalDateTime.now());
         ReclamoDTO reclamoDTO = new ReclamoDTO(1L, "motivo prueba", "detalles", LocalDateTime.now());
 
         Mockito.when(reclamoServiceI.iReclamoDao.listarPorId(1L)).thenReturn(null);
 
-        try {
-            ReclamoDTO obtenido = reclamoServiceI.editar(1L, reclamoDTO);
-            assertEquals(obtenido, reclamoDTO);
-        } catch (AppettitException e) {
-            e.printStackTrace();
-        }
+        ReclamoDTO obtenido = reclamoServiceI.editar(1L, reclamoDTO);
+
     }
 
     @Test
@@ -140,18 +136,13 @@ public class ReclamoServiceTest extends TestCase {
         }
     }
 
-    @Test
-    public void testEliminarNull() {
+    @Test(expected = AppettitException.class)
+    public void testEliminarNull() throws AppettitException {
         Reclamo reclamo = new Reclamo(1L, "motivo prueba", "detalles", LocalDateTime.now());
         ReclamoDTO reclamoDTO = new ReclamoDTO(1L, "motivo prueba", "detalles", LocalDateTime.now());
 
         Mockito.when(reclamoServiceI.iReclamoDao.listarPorId(1L)).thenReturn(null);
 
-        try {
-            reclamoServiceI.eliminar(1L);
-        } catch (AppettitException e) {
-            e.printStackTrace();
-        }
+        reclamoServiceI.eliminar(1L);
     }
-
 }
