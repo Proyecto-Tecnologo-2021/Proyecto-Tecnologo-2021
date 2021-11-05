@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -40,7 +40,7 @@ public interface IUsuarioDAO {
 	public List<Restaurante> listarRestaurantes();
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
 	public Restaurante buscarPorCorreoRestaurante(String correo);
-	public CalificacionRestauranteDTO calificacionRestaurante(Long id);
+	public CalificacionGralRestauranteDTO calificacionRestaurante(Long id);
 
 	/*CLIENTE*/
 	public Cliente crearCliente(Cliente cliente);
@@ -52,5 +52,6 @@ public interface IUsuarioDAO {
 	public Cliente buscarPorIdCliente(Long id);
 	public List<Cliente> buscarPorIdClienteInteger(Long id);
 	public CalificacionGralClienteDTO calificacionGralCliente(Long id);
+	public Direccion buscarDireccionPorId(Long id);
 
 }

@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CalificacionRestauranteDTO {
+public class CalificacionGralRestauranteDTO {
 
 	private Integer rapidez; 
 	private Integer comida;

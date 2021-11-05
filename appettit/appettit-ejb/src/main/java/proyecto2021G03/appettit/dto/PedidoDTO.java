@@ -27,5 +27,8 @@ public class PedidoDTO {
     private List<ExtraMenuDTO> extraMenu;
     private DireccionDTO entrega;
     private ReclamoDTO reclamo;
+    private Long id_restaurante;
+	private Long id_cliente;
+	private Long id_entrega;
 
 }

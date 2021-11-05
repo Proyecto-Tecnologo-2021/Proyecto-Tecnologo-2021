@@ -45,7 +45,7 @@ public class RestauranteDTO extends UsuarioDTO  {
 	//private MultiPolygon areaentrega;
 	private String areaentrega;
 	private DireccionDTO direccion;
-	private CalificacionRestauranteDTO calificacion;
+	private CalificacionGralRestauranteDTO calificacion;
 	private String id_imagen;
 	private ImagenDTO imagen;
 	

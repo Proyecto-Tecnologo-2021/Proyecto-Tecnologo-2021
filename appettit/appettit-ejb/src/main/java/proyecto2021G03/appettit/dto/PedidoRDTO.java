@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PedidoRDTO {
+	private Long id;
+	private EstadoPedido estado;
     private Long iddir;
     private TipoPago tipo;
     private Boolean pago;
@@ -19,23 +21,29 @@ public class PedidoRDTO {
     private Long idcli;
     private Long idrest;
     private List<MenuRDTO> menus;
-
+    private List<ExtraMenuRDTO> extras;
+    
 
 
     public List<MenuRDTO> filtroMenu(){
        //FILTRA SOLO LOS MENUS
-        List<MenuRDTO> listafinal= new ArrayList<>();
+        List<MenuRDTO> listafinal= new ArrayList<MenuRDTO>();
         for(MenuRDTO menu: this.menus) {
-            if (menu.getDescuento() == 0D) {
+        	if(menu.getTipo().equalsIgnoreCase("MENU")) {
+        		listafinal.add(menu);
+        	}
+            /*
+        	if (menu.getDescuento() == 0D) {
                 listafinal.add(menu);
             }
+            */
         }
         return listafinal;
     }
 
 
 
-
+    /*
     public List<MenuRDTO> filtroPromo(){
                 //FILTRA SOLO LAS PROMOCIONES
         List<MenuRDTO> listafinal= new ArrayList<>();
@@ -43,6 +51,18 @@ public class PedidoRDTO {
             if (menu.getDescuento() != 0D) {
                 listafinal.add(menu);
             }
+        }
+        return listafinal;
+    }
+    */
+    
+    public List<PromocionRDTO> filtroPromo(){
+    	List<PromocionRDTO> listafinal = new ArrayList<PromocionRDTO>();
+    	for(MenuRDTO menu: this.menus) {
+        	if(menu.getTipo().equalsIgnoreCase("PROM")) {
+        		listafinal.add(new PromocionRDTO(menu.getId(), menu.getNombre(), menu.getId_restaurante(), 
+        				menu.getNom_restaurante(), null, null, null, null, null, null, null, null));
+        	}
         }
         return listafinal;
     }

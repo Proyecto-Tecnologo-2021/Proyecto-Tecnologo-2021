@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -20,12 +21,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -72,8 +75,8 @@ public class VerMenuActivity extends AppCompatActivity {
     Button add_pedido;
     ImageButton add_cantidad;
     ImageButton menos_cantidad;
-    DtMenu viewMenu = null;
-    DtPromocion viewProm = null;
+    TextView menu_restaurante_cal;
+    RatingBar menu_star;
 
     DtPedido dtPedido = DtPedido.getInstance();
     Integer cantidad = 1;
@@ -100,6 +103,8 @@ public class VerMenuActivity extends AppCompatActivity {
         add_cantidad = findViewById(R.id.addCantidad);
         menos_cantidad = findViewById(R.id.minusCantidad);
         menu_cantidad = findViewById(R.id.vmenu_cantidad);
+        menu_restaurante_cal = findViewById(R.id.vmenu_restaurante_rating);
+        menu_star = findViewById(R.id.vmenu_star);
 
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
@@ -150,6 +155,7 @@ public class VerMenuActivity extends AppCompatActivity {
         String precio = null;
         String detalle = null;
         String restaurante = null;
+        Integer calificacion = null;
 
 
         if (obj instanceof DtMenu){
@@ -159,6 +165,8 @@ public class VerMenuActivity extends AppCompatActivity {
             precio = getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
             detalle = dtp.getDescripcion();
             restaurante = dtp.getNom_restaurante();
+            calificacion = dtp.getCalificacion();
+            total = dtp.getPrecioTotal();
 
         } else if (obj instanceof DtPromocion){
             DtPromocion dtp = (DtPromocion) obj;
@@ -168,6 +176,8 @@ public class VerMenuActivity extends AppCompatActivity {
             precio = getString(R.string.carr_symbol) + " " + dtp.getPrecio();
             detalle = dtp.getDescripcion();
             restaurante = dtp.getNom_restaurante();
+            calificacion = dtp.getCalificacion();
+            total = dtp.getPrecio();
         }
         menu_img.setImageBitmap(bmp);
         menu_name.setText(nombre);
@@ -177,6 +187,42 @@ public class VerMenuActivity extends AppCompatActivity {
         menu_cantidad.setText(cantidad.toString());
         String b_text = getString(R.string.carr_add_prod) + " " +  precio;
         add_pedido.setText(b_text);
+
+        menu_restaurante_cal.setText(calificacion.toString());
+        menu_star.setRating(5);
+
+        Drawable progressDrawable = menu_star.getProgressDrawable();
+
+
+        switch (calificacion) {
+            case 0:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.white_trans));
+                menu_restaurante_cal.setTextColor(getColor(R.color.white_trans));
+                break;
+            case 1:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
+                menu_restaurante_cal.setTextColor(getColor(R.color.star_1));
+                break;
+            case 2:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_2));
+                menu_restaurante_cal.setTextColor(getColor(R.color.star_2));
+                break;
+            case 3:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3));
+                menu_restaurante_cal.setTextColor(getColor(R.color.star_3));
+                break;
+            case 4:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_4));
+                menu_restaurante_cal.setTextColor(getColor(R.color.star_4));
+                break;
+            case 5:
+                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_5));
+                menu_restaurante_cal.setTextColor(getColor(R.color.star_5));
+                break;
+        }
+
+
+
 
     }
 

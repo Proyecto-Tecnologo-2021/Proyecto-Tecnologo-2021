@@ -25,14 +25,15 @@ public class CalificacionRDAO implements ICalificacionRDao {
     }
 
     @Override
-    public ClasificacionPedido listarPorId(Long id) {
+    public ClasificacionPedido listarPorId(Long id_pedido, Long id_cliente) {
         ClasificacionPedido clasificacion = null;
 
         try {
             clasificacion =  em.createQuery("select c "
                             + "from ClasificacionPedido c "
-                            + "where id_pedido = :id", ClasificacionPedido.class)
-                    .setParameter("id", id)
+                            + "where id_pedido = :id_pedido "
+                            + "and id_cliente = :id_cliente", ClasificacionPedido.class)
+                    .setParameter("id", id_pedido)
                     .getSingleResult();
 
         } catch (Exception e) {

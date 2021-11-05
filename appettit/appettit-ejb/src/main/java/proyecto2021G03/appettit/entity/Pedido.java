@@ -47,42 +47,34 @@ public class Pedido implements Serializable {
 	private String motivo;
 	private LocalDateTime fecha;
 	private Double total;
+	private Long id_restaurante;
+	private Long id_cliente;
+	private Long id_entrega;
+	//private Long id_reclamo;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)
 	private Restaurante restaurante;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_cliente", referencedColumnName="id", insertable=false, updatable=false)
 	private Cliente cliente;
 
-	/*
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumns( {
-		@JoinColumn(name="id_menu", referencedColumnName="id"),
-		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
-    })
-    */
+	
 	@ManyToMany
 	@Builder.Default
 	private List<Menu> menus = new ArrayList<Menu>();
 	
-	/*
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumns( {
-		@JoinColumn(name="id_promocion", referencedColumnName="id"),
-		@JoinColumn(name="id_restaurante", referencedColumnName="id_restaurante"),
-    })
-    */
+	
 	@ManyToMany
 	@Builder.Default
 	private List<Promocion> promociones = new ArrayList<Promocion>();;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_entrega", referencedColumnName="id", insertable=false, updatable=false)
 	private Direccion entrega;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name="id_reclamo", referencedColumnName="id")
 	private Reclamo reclamo;
 
@@ -90,7 +82,7 @@ public class Pedido implements Serializable {
 	@Builder.Default
 	private List<ExtraMenu> extraMenus = new ArrayList<ExtraMenu>();
 
-
+/*
 	public Pedido( TipoPago tipo, Boolean pago, LocalDateTime fecha, Double total, Restaurante restaurante, Cliente cliente, List<Menu> menus, List<Promocion> promociones, Direccion entrega, EstadoPedido estado) {
 		this.id = 0L;
 		this.tipo = tipo;
@@ -103,9 +95,8 @@ public class Pedido implements Serializable {
 		this.promociones = promociones;
 		this.entrega = entrega;
 		this.estado = estado;
-
-
 	}
+*/
 }
 
 

@@ -1,15 +1,12 @@
 package proyecto2021G03.appettit.converter;
 
-import proyecto2021G03.appettit.business.IUsuarioService;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+
 import proyecto2021G03.appettit.dao.IPedidoDao;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.CalificacionRPedidoDTO;
-import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
-import proyecto2021G03.appettit.entity.Menu;
-
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
 
 @Singleton
 public class CalificacionRRestConverter {
@@ -25,7 +22,6 @@ public class CalificacionRRestConverter {
     public CalificacionRPedidoDTO fromEntity(ClasificacionPedido clasificacionPedido) {
         if (clasificacionPedido == null) return null;
         return CalificacionRPedidoDTO.builder()
-                .id(clasificacionPedido.getId_pedido())
                 .id_cliente(clasificacionPedido.getId_cliente())
                 .id_pedido(clasificacionPedido.getId_pedido())
                 .comentario(clasificacionPedido.getComentario())
@@ -40,13 +36,14 @@ public class CalificacionRRestConverter {
 
         if (calificacionRPedidoDTO == null) return null;
         return ClasificacionPedido.builder()
-                .id(calificacionRPedidoDTO.getId())
                 .cliente(iUsuarioDAO.buscarPorIdCliente(calificacionRPedidoDTO.getId_cliente()))
                 .pedido(iPedidoDao.listarPorId(calificacionRPedidoDTO.getId_cliente()))
                 .servicio(calificacionRPedidoDTO.getServicio())
                 .rapidez(calificacionRPedidoDTO.getRapidez())
                 .comida(calificacionRPedidoDTO.getComida())
                 .comentario(calificacionRPedidoDTO.getComentario())
+                .id_cliente(calificacionRPedidoDTO.getId_cliente())
+                .id_pedido(calificacionRPedidoDTO.getId_pedido())
                 .build();
     }
 }

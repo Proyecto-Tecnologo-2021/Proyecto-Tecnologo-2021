@@ -1,11 +1,13 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.entity.Pedido;
+import java.util.List;
+
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+
+import proyecto2021G03.appettit.entity.Pedido;
 
 @Singleton
 public class PedidoDAO implements IPedidoDao {
@@ -37,4 +39,18 @@ public class PedidoDAO implements IPedidoDao {
     public void eliminar(Pedido pedido) {
         em.remove(pedido);
     }
+
+	@Override
+	public List<Pedido> listarPorCliente(Long id_cliente) {
+		List<Pedido> pedido = null;
+
+		pedido = em.createQuery("SELECT _p "
+						+ "from Pedido as _p "
+						+ "where _p.id_cliente = :id", Pedido.class)
+				.setParameter("id", id_cliente)
+				.getResultList();
+
+		return pedido;
+
+	}
 }

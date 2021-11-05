@@ -21,9 +21,7 @@ import lombok.Setter;
 public class ClasificacionPedido implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+
 	@Id
 	private Long id_pedido;
 	
@@ -36,11 +34,11 @@ public class ClasificacionPedido implements Serializable {
 	private Integer servicio;
 	private String comentario;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_pedido", referencedColumnName="id", insertable=false, updatable=false)
 	private Pedido pedido;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="id_cliente", referencedColumnName="id", insertable=false, updatable=false)
 	private Cliente cliente;
 

@@ -45,7 +45,9 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .tipo(pedido.getTipo())
                 .total(pedido.getTotal())
                 .extraMenu(extraMenuConverter.fromEntity(pedido.getExtraMenus()))
-
+                .id_restaurante(pedido.getId_restaurante())
+            	.id_cliente(pedido.getId_cliente())
+            	.id_entrega(pedido.getId_entrega())
                 .build();
     }
 
@@ -68,6 +70,9 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .tipo(pedidoDTO.getTipo())
                 .total(pedidoDTO.getTotal())
                 .extraMenus(extraMenuConverter.fromDTO(pedidoDTO.getExtraMenu()))
-                .build();
+                .id_restaurante(pedidoDTO.getId_restaurante())
+            	.id_cliente(pedidoDTO.getId_cliente())
+            	.id_entrega(pedidoDTO.getId_entrega())
+            	.build();
     }
 }

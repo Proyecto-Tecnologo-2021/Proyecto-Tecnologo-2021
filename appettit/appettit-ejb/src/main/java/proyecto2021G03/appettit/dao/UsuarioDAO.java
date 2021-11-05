@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
-import proyecto2021G03.appettit.dto.CalificacionRestauranteDTO;
+import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -182,7 +182,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public CalificacionRestauranteDTO calificacionRestaurante(Long id) {
+	public CalificacionGralRestauranteDTO calificacionRestaurante(Long id) {
 		Query consulta = em
 				.createNativeQuery("SELECT"
 						+ "	c.cla, "
@@ -241,7 +241,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 		if(tgeneral != 0)
 			general = general/tgeneral;
 		
-		return new CalificacionRestauranteDTO(rapidez, comida, servicio, general);
+		return new CalificacionGralRestauranteDTO(rapidez, comida, servicio, general);
 				  	
 	}
 
@@ -376,6 +376,11 @@ public class UsuarioDAO implements IUsuarioDAO {
 			general = general/tgeneral;
 		
 		return new CalificacionGralClienteDTO(general, restaurantes);
+	}
+
+	@Override
+	public Direccion buscarDireccionPorId(Long id) {
+		return em.find(Direccion.class, id);
 	}
 
 	

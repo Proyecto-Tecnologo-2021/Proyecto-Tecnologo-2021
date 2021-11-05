@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.business;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -10,6 +11,7 @@ import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.converter.PedidoRConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IPedidoDao;
+import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.entity.Pedido;
@@ -42,12 +44,11 @@ public class PedidoService implements IPedidoService {
         }    }
 
     @Override
-    public PedidoDTO listarPorId(Long id) {
+    public PedidoDTO listarPorId(Long id) throws AppettitException {
         try {
             return pedidoConverter.fromEntity(iPedidoDao.listarPorId(id));
         } catch (Exception e) {
-            //throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-            return null;//verlo
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
     }
 
@@ -107,6 +108,11 @@ public class PedidoService implements IPedidoService {
 
     @Override
     public PedidoRDTO crearFront(PedidoRDTO pedidoRDTO) throws AppettitException {
+    	//AL CREAR UN PEDIOD EL ESTADO ES SOLICITADO
+    	//LA FECHA DEL PEDIDO ES LA FECHA HORA ACTUAL
+    	pedidoRDTO.setEstado(EstadoPedido.SOLICITADO);
+    	pedidoRDTO.setFecha(LocalDateTime.now());
+    	
         Pedido pedido = pedidoRConverter.fromDTO(pedidoRDTO);
         try {
 
@@ -115,5 +121,15 @@ public class PedidoService implements IPedidoService {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
     }
+
+
+	@Override
+	public List<PedidoRDTO> listarPorClienteREST(Long id) throws AppettitException {
+		try {
+            return pedidoRConverter.fromEntity(iPedidoDao.listarPorCliente(id));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+	}
 
 }

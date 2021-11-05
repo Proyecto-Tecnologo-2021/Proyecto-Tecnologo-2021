@@ -11,8 +11,8 @@ import javax.ejb.Local;
 public interface ICalificacionRService {
 
     public List<CalificacionPedidoDTO> listar() throws AppettitException;
-    public CalificacionPedidoDTO listarPorId(Long id);
-    public CalificacionPedidoDTO crear(CalificacionPedidoDTO calificacionPedidoDTO)throws AppettitException;
+    public CalificacionPedidoDTO listarPorId(Long id_pedido, Long id_cliente) throws AppettitException;;
+    public CalificacionPedidoDTO crear(CalificacionPedidoDTO calificacionPedidoDTO) throws AppettitException;
     public CalificacionPedidoDTO editar(Long id, CalificacionPedidoDTO calificacionPedidoDTO)throws AppettitException;
-    public void eliminar(Long id)throws AppettitException;
+    public void eliminar(Long id_pedido, Long id_cliente)throws AppettitException;
 }

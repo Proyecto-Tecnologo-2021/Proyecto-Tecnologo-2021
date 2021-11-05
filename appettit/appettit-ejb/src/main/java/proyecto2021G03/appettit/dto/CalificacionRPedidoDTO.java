@@ -10,7 +10,6 @@ import lombok.*;
 
 public class CalificacionRPedidoDTO {
 
-    private Long id;
     private Integer rapidez;
     private Integer comida;
     private Integer servicio;

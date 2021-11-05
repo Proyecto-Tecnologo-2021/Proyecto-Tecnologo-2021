@@ -9,4 +9,5 @@ public interface IPedidoDao {
     public Pedido crear(Pedido pedido);
     public Pedido editar(Pedido pedido);
     public void eliminar(Pedido pedido);
+	public List<Pedido> listarPorCliente(Long id_cliente);
 }
