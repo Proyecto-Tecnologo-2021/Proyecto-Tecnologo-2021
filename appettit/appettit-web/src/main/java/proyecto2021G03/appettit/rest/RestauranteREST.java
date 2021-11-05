@@ -30,7 +30,7 @@ public class RestauranteREST {
 		RespuestaREST<RestauranteDTO> respuesta = null;
 		try {
 			RestauranteDTO cliente = uService.buscarRestaurantePorId(id);
-			respuesta = new RespuestaREST<RestauranteDTO>(true, "Dirección agregada con éxito.", cliente);
+			respuesta = new RespuestaREST<RestauranteDTO>(true, "Restaurante encontrado!.", cliente);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<RestauranteDTO>(false, e.getLocalizedMessage());
