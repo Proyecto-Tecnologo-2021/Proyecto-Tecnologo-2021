@@ -65,7 +65,7 @@ public class PedidoService implements IPedidoService {
     public PedidoDTO editar(Long id, PedidoDTO pedidoDTO) throws AppettitException {
         Pedido pedido = iPedidoDao.listarPorId(pedidoDTO.getId());
         if (pedido == null)
-            throw new AppettitException("El departamento indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+            throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
         try {
             pedido.setCliente(pedido.getCliente());
