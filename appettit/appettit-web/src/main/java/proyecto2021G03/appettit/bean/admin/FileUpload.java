@@ -570,8 +570,10 @@ public class FileUpload implements Serializable {
 								logger.info(e.getMessage().trim());
 								FacesContext.getCurrentInstance().addMessage(null,
 										new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-							}
-						}
+							} catch (com.vividsolutions.jts.io.ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
 					}
 

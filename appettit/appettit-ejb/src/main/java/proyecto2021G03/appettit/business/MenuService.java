@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import com.vividsolutions.jts.io.ParseException;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.converter.MenuConverter;
@@ -108,7 +109,7 @@ public class MenuService implements IMenuService{
     }
 
     @Override
-    public MenuDTO crear(MenuDTO menuDTO) throws AppettitException {
+    public MenuDTO crear(MenuDTO menuDTO) throws AppettitException, ParseException {
         Menu menu = menuConverter.fromDTO(menuDTO);
         
         try {
