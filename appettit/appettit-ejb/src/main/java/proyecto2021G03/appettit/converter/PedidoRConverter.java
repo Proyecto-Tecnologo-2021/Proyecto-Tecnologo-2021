@@ -78,6 +78,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .fecha(LocalDateTime.now())
                 .estado(pedido.getEstado())
                 .extras(extraConverter.fromEntityToRDTO(pedido.getExtraMenus()))
+                .id_paypal(pedido.getId_paypal())
                 .build();
         
                return pedidofinal;
@@ -118,6 +119,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .entrega(isuarioDAO.buscarDireccionPorId(pedidoRDTO.getIddir()))
                 .id_entrega(pedidoRDTO.getIddir())
                 .reclamo(null)
+                .id_paypal(pedidoRDTO.getId_paypal())
         		.build();
         
     }

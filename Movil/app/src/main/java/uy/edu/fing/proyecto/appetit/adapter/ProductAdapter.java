@@ -195,28 +195,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 break;
         }
 
-
-/*
-        switch (calificacion) {
-            case 1:
-                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.dark_red));
-                break;
-            case 2:
-                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_orange));
-                break;
-            case 3:
-                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_yellow));
-                break;
-            case 4:
-                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.light_green_review));
-                break;
-            case 5:
-                setRatingStarColor(drawable.getDrawable(2), ContextCompat.getColor(mContext, R.color.dark_green));
-                break;
-        }
-*/
-
-
         Long finalId = id;
         Long finalId_restaurante = id_restaurante;
         String finalTipo = tipo;

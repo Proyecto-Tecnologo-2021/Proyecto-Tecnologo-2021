@@ -30,5 +30,6 @@ public class PedidoDTO {
     private Long id_restaurante;
 	private Long id_cliente;
 	private Long id_entrega;
+	private String id_paypal;
 
 }

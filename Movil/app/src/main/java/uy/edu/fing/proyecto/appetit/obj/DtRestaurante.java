@@ -17,4 +17,6 @@ public class DtRestaurante {
     private String telefono;
     private String correo;
     private DtDireccion direccion;
+    private byte[] imagen;
+    private DtRCalificacion calificacion;
 }

@@ -796,7 +796,32 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public RestauranteDTO buscarRestaurantePorId(Long id) throws AppettitException {
 		try {
-			return usrConverter.fromRestaurante(usrDAO.buscarRestaurantePorId(id));
+			RestauranteDTO res = usrConverter.fromRestaurante(usrDAO.buscarRestaurantePorId(id));
+			
+			res.setCalificacion(calificacionRestaurante(res.getId()));
+			ImagenDTO img = new ImagenDTO();
+
+			if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
+				FileManagement fm = new FileManagement();
+
+				img.setIdentificador("Sin Imagen");
+				img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+			} else {
+				try {
+					img = imgSrv.buscarPorId(res.getId_imagen());
+				} catch (Exception e) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+					logger.error(e.getMessage());
+				}
+
+			}
+
+			res.setImagen(img);
+			
+			return res;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

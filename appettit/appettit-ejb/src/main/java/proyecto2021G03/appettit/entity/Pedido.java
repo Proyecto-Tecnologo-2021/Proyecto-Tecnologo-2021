@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -50,7 +50,8 @@ public class Pedido implements Serializable {
 	private Long id_restaurante;
 	private Long id_cliente;
 	private Long id_entrega;
-	//private Long id_reclamo;
+	@Column(name="id_paypal", columnDefinition="TEXT")
+	private String id_paypal;
 	
 	@ManyToOne
 	@JoinColumn(name="id_restaurante", referencedColumnName="id", insertable=false, updatable=false)

@@ -10,7 +10,8 @@
     <string name="alert_btn_positive">Si</string>
     <string name="alert_btn_negative">No</string>
     <string name="alert_btn_neutral">OK</string>
-
+    <string name="alert_btn_cancel">Cancelar</string>
+    <string name="alert_btn_confirmar">Confirmar</string>
 
     <!--CONNECTION MESSAGES-->
     <string name="err_conntitle">Error de conectiviad</string>
@@ -78,6 +79,10 @@
     <string name="carr_dto">% OFF</string>
     <string name="carr_add_prod">Agregar a mi pedido</string>
     <string name="carr_add_cant">Cantidad</string>
+    <string name="carr_confirmar">Confirmar pedido</string>
+    <string name="carr_t_fp">Seleccionar Forma de pago</string>
+    <string name="carr_quitar_item">¿Desea quitar el producto?</string>
+
 
     <!--MENUS PROMOCIONES-->
     <string name="mp_direccion">Dirección de entrega</string>

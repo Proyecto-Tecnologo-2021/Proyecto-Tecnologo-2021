@@ -24,7 +24,7 @@ public class DtPedido {
     private String geometry;
 
     @Builder.Default
-    private List<DtMenu> menus = new ArrayList<DtMenu>();
+    private List<Object> menus = new ArrayList<Object>();
 
     private DtPedido(){}
 
@@ -34,6 +34,16 @@ public class DtPedido {
         }
         return uInstance;
     }
+
+    public void addMenu(Object producto){
+        menus.add(producto);
+    }
+
+    public void remMenu(int index){
+        menus.remove(index);
+    }
+
+
 }
 
 

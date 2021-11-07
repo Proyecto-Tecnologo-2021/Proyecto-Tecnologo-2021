@@ -52,9 +52,10 @@ import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
+import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
 public class VerMenuActivity extends AppCompatActivity {
-    private static final String TAG = "MenuActivity";
+    private static final String TAG = "VerMenuActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
     private ConnectivityManager connMgr;
@@ -79,6 +80,8 @@ public class VerMenuActivity extends AppCompatActivity {
     RatingBar menu_star;
 
     DtPedido dtPedido = DtPedido.getInstance();
+    DtUsuario dtUsuario = DtUsuario.getInstance();
+    Object producto = null;
     Integer cantidad = 1;
     Double total = 0.0;
 
@@ -141,11 +144,25 @@ public class VerMenuActivity extends AppCompatActivity {
                     startActivity(imenu);
                     return true;
                 case R.id.menu_pedido:
+                    Intent ipedido = new Intent(VerMenuActivity.this, VerPedidoActivity.class);
+                    startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
                     return true;
             }
             return false;
+        });
+
+        add_pedido.setOnClickListener(v -> {
+            dtPedido.setIdrest(id_restaurante);
+            dtPedido.setIdcli(dtUsuario.getId());
+
+            for (int cant = 0 ; cant < cantidad; cant++){
+                dtPedido.addMenu(producto);
+            }
+
+            Intent menuactivity = new Intent(VerMenuActivity.this, MenuActivity.class);
+            startActivity(menuactivity);
         });
 
     }
@@ -156,7 +173,6 @@ public class VerMenuActivity extends AppCompatActivity {
         String detalle = null;
         String restaurante = null;
         Integer calificacion = null;
-
 
         if (obj instanceof DtMenu){
             DtMenu dtp = (DtMenu) obj;
@@ -269,8 +285,8 @@ public class VerMenuActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 //Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
-                    //DtMenu menu = (DtMenu) response.getCuerpo();
                     Object menu = (Object) response.getCuerpo();
+                    producto = menu;
                     addMenu(menu);
                 } else {
                     if (ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||

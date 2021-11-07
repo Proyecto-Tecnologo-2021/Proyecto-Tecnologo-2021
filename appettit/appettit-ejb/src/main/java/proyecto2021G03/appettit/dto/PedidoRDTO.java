@@ -22,6 +22,7 @@ public class PedidoRDTO {
     private Long idrest;
     private List<MenuRDTO> menus;
     private List<ExtraMenuRDTO> extras;
+    private String id_paypal;
     
 
 
