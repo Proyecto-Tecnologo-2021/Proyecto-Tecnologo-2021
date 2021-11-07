@@ -33,6 +33,7 @@
                 android:id="@+id/producto_nombre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="0dp"
                 android:layout_toEndOf="@+id/producto_img"

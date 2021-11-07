@@ -71,5 +71,8 @@ dependencies {
     implementation 'com.auth0.android:jwtdecode:2.0.0'
     //CardView
     implementation "androidx.cardview:cardview:1.0.0"
+
+    api("com.paypal.retail:here-sdk-debug:$PUBLISH_VERSION@aar") { transitive = true }
+
 }
 

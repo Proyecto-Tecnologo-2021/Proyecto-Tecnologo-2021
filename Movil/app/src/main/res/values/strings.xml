@@ -82,7 +82,7 @@
     <string name="carr_confirmar">Confirmar pedido</string>
     <string name="carr_t_fp">Seleccionar Forma de pago</string>
     <string name="carr_quitar_item">¿Desea quitar el producto?</string>
-
+    <string name="carr_titulo">Total:</string>
 
     <!--MENUS PROMOCIONES-->
     <string name="mp_direccion">Dirección de entrega</string>

@@ -205,24 +205,6 @@ public class AltaDireccionActivity extends AppCompatActivity implements Location
                     }
                 }, 100)
         );
-        /*
-        map.setMapListener(new DelayedMapListener(new MapListener() {
-            public boolean onZoom(final ZoomEvent e) {
-                GeoPoint point = new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude());
-                marker.setPosition(point);
-                new AltaDireccionActivity.GetDireccionTask().execute(point);
-                return true;
-            }
-
-            public boolean onScroll(final ScrollEvent e) {
-                GeoPoint point = new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude());
-                marker.setPosition(point);
-                new AltaDireccionActivity.GetDireccionTask().execute(point);
-                return true;
-            }
-        }, 100 ));
-
-         */
     }
 
     public void addMarker(Marker marker) {

@@ -1,5 +1,7 @@
 package uy.edu.fing.proyecto.appetit.obj;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,32 +45,17 @@ public class DtPedido {
         menus.remove(index);
     }
 
+    public Double getTotal(){
+        Double ret = 0.0;
+        for (int t = 0; t < menus.size(); t++){
+            if (menus.get(t) instanceof DtMenu){
+                ret += ((DtMenu) menus.get(t)).getPrecioTotal();
+            } else if (menus.get(t) instanceof DtPromocion){
+                ret += ((DtPromocion) menus.get(t)).getPrecio();
+            }
+        }
+
+        return ret;
+    }
 
 }
-
-
-/*
-{
-    "idcli":10,
-    "iddir":1,
-    "menus":[{
-"id": 2,
-"id_restaurante": 9,
-"nom_restaurante": "Como en Casa GlutenFree",
-"descuento": 0.0,
-"nombre": "Hamburguesa al pan",
-"descripcion": "Hamburguesa al pan con lechuga tomate queso",
-"precioSimple": 100.0,
-"precioTotal": 100.0,
-"extras": null,
-"productos": null,
-"id_imagen": null,
-"imagen": null
-}],
-    "pago":true,
-    "tipo":"EFECTIVO",
-    "total":"500",
-    "idrest":9,
-    "fecha":null
-}
- */

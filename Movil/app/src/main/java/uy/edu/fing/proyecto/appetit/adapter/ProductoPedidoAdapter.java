@@ -75,7 +75,7 @@ public class ProductoPedidoAdapter  extends BaseAdapter {
 
         menu_img.setImageBitmap(bmp);
 
-        if(nombre.length() > 20){
+        if(nombre.length() > 17){
             nombre = nombre.substring(0, 20) + "...";
         }
 

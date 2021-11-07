@@ -35,13 +35,22 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.adapter.ProductoPedidoAdapter;
@@ -54,11 +63,17 @@ import uy.edu.fing.proyecto.appetit.obj.DtRCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
+import uy.edu.fing.proyecto.appetit.obj.ETipoPago;
 
 public class VerPedidoActivity extends AppCompatActivity {
     private static final String TAG = "VerPedidoActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
+    private static final int PAYPAL_REQUEST_CODE = 20213;
     final static Integer RC_SIGN_IN = 20213;
+    final CharSequence[] itemsFP = {"Contado", "PayPal"};
+    private ETipoPago opFP = ETipoPago.EFECTIVO;
+    private String paypal_answer = null;
+
     DtPedido dtPedido = DtPedido.getInstance();
     DtUsuario dtUsuario = DtUsuario.getInstance();
     private ConnectivityManager connMgr;
@@ -68,6 +83,7 @@ public class VerPedidoActivity extends AppCompatActivity {
     ListAdapter listAdapter;
 
 
+
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
     ImageView rest_img;
@@ -75,6 +91,7 @@ public class VerPedidoActivity extends AppCompatActivity {
     TextView rest_cal;
     RatingBar rest_star;
     Button pedido_confirm;
+
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,19 +138,30 @@ public class VerPedidoActivity extends AppCompatActivity {
         });
 
         pedido_confirm.setOnClickListener(v -> {
-            final CharSequence[] items = {"Contado", "PayPal"};
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.carr_t_fp);
-            builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            builder.setSingleChoiceItems(itemsFP, 0, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+                    if(item ==0 ){
+                        opFP = ETipoPago.EFECTIVO;
+                    } else if(item == 1){
+                        opFP = ETipoPago.PAYPAL;
+                    }
                 }
             });
             AlertDialog dialog = builder.create();
             dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_confirmar), new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_confirmar,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_confirmar,Toast.LENGTH_SHORT).show();
+                    if (opFP == ETipoPago.EFECTIVO){
+                        dtPedido.setPago(false);
+                        confirmarPContado();
+                    } else if (opFP == ETipoPago.PAYPAL){
+                        Toast.makeText(VerPedidoActivity.this, "PayPal",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -189,42 +217,43 @@ public class VerPedidoActivity extends AppCompatActivity {
             listAdapter = new ProductoPedidoAdapter(this, productos);
             listView.setAdapter(listAdapter);
 
+            String titulo = getString(R.string.title_Pedido) +" - " +
+                    getString(R.string.carr_titulo) + " " +
+                    getString(R.string.carr_symbol) + " " +
+                    dtPedido.getTotal();
+
+            setTitle(titulo);
+
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                    String mensaje = getString(R.string.carr_quitar_item) +"\n";
+
                     if (productos.get(position) instanceof DtMenu){
                         DtMenu dtp = (DtMenu) productos.get(position);
-                        Toast.makeText(getApplicationContext(), "Has pulsado: "+  dtp.getNombre(), Toast.LENGTH_LONG).show();
-
+                        mensaje += dtp.getNombre();
                     } else if (productos.get(position) instanceof DtPromocion){
                         DtPromocion dtp = (DtPromocion) productos.get(position);
-                        Toast.makeText(getApplicationContext(), "Has pulsado: "+  dtp.getNombre(), Toast.LENGTH_LONG).show();
+                        mensaje += dtp.getNombre();
                     }
 
                     AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
                     dialog.setTitle(R.string.info_title);
-                    dialog.setMessage(getString(R.string.carr_quitar_item));
+                    dialog.setMessage(mensaje);
                     dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> {
-                        Log.i(TAG, String.valueOf(dtPedido.getMenus().size()));
                         dtPedido.remMenu(position);
                         addProductos(dtPedido.getMenus());
-                        Log.i(TAG, String.valueOf(dtPedido.getMenus().size()));
 
                     });
                     dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> {});
                     dialog.show();
-
-
-
                 }
             });
 
         }else {
             onBackPressed();
         }
-
-
     }
 
     private void buscarRestaurnate() {
@@ -234,7 +263,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         String stringUrl = ConnConstants.API_GETRESTAURANTE_URL;
         stringUrl = stringUrl.replace("{id}", dtPedido.getIdrest().toString());
 
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new VerPedidoActivity.DownloadRestauranteTask().execute(stringUrl);
@@ -324,13 +353,13 @@ public class VerPedidoActivity extends AppCompatActivity {
             //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
-                return readInfoGralJsonStream(is);
+                return readInfoGralJsonStream(is, "GETR");
             } else if (response == 400) {
                 is = conn.getErrorStream();
-                return readInfoGralJsonStream(is);
+                return readInfoGralJsonStream(is, "GETR");
             } else if (response == 500) {
                 is = conn.getErrorStream();
-                return readInfoGralJsonStream(is);
+                return readInfoGralJsonStream(is, "GETR");
             } else {
                 return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
             }
@@ -345,7 +374,8 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
     }
 
-    public DtResponse readInfoGralJsonStream(InputStream in) throws IOException {
+    public DtResponse readInfoGralJsonStream(InputStream in, String mType) throws IOException {
+        DtResponse ret = null;
         //creating an InputStreamReader object
         InputStreamReader isReader = new InputStreamReader(in);
         //Creating a BufferedReader object
@@ -357,7 +387,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
         JsonReader reader = new JsonReader(new StringReader(sb.toString()));
         try {
-            return readRESTMessage(reader);
+            if(mType.equalsIgnoreCase("GETR")){
+                ret = readRESTMessage(reader);
+            } else if (mType.equalsIgnoreCase("POSTP")){
+                ret = readPOSTMessage(reader);
+            }
+
+            return  ret;
         } finally {
             reader.close();
         }
@@ -385,6 +421,27 @@ public class VerPedidoActivity extends AppCompatActivity {
         return new DtResponse(ok, mensaje, restaurante);
 
     }
+
+    public DtResponse readPOSTMessage(JsonReader reader) throws IOException {
+        Boolean ok = false;
+        String mensaje = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("ok")) {
+                ok = reader.nextBoolean();
+            } else if (name.equals("mensaje")) {
+                mensaje = reader.nextString();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtResponse(ok, mensaje, null);
+
+    }
+
 
     public DtRestaurante readRestaurante(JsonReader reader) throws IOException {
 
@@ -501,6 +558,202 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
 
         return imagen;
+    }
+
+    private void confirmarPContado() {
+
+        String stringUrl = ConnConstants.API_ADDPEDIDO_URL;
+        Log.i(TAG, stringUrl);
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new VerPedidoActivity.POSTAddPedidoTask().execute(stringUrl);
+        }
+    }
+
+    private class POSTAddPedidoTask extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return AddPedido(urls[0]);
+            } catch (IOException e) {
+                //return getString(R.string.err_recuperarpag);
+                return e.getMessage();
+            }
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(Object result) {
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+
+                if (response.getOk()) {
+                    //Se vacía el pedido
+                    dtPedido.setMenus(new ArrayList<>());
+                    dtPedido.setIdrest(null);
+
+                    AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
+                    dialog.setTitle(R.string.alert_t_info);
+                    dialog.setIcon(android.R.drawable.ic_dialog_info);
+                    dialog.setMessage(response.getMensaje());
+
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                        Intent menuactivity = new Intent(VerPedidoActivity.this, MenuActivity.class);
+                        startActivity(menuactivity);
+                    });
+                    dialog.show();
+
+                } else {
+                    AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
+                    dialog.setTitle(R.string.alert_t_error);
+                    dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+                    dialog.setMessage(response.getMensaje());
+
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {});
+                    dialog.show();
+                }
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
+                dialog.setTitle(R.string.alert_t_error);
+                dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+                if (result instanceof String) {
+                    dialog.setMessage((String) result);
+                } else {
+                    dialog.setMessage(getString(R.string.err_recuperarpag));
+                }
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> onBackPressed());
+                dialog.show();
+            }
+        }
+    }
+
+    private DtResponse AddPedido(String myurl) throws IOException {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+
+            //String authorization ="Bearer  " + usuario.getToken();
+
+            URL url = new URL(myurl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            //conn.setRequestProperty("Authorization", authorization);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+
+            String data = AddPedidoToJSON();
+            //Log.i(TAG, data);
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            OutputStream stream = conn.getOutputStream();
+            stream.write(out);
+
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
+                is = conn.getInputStream();
+                return readInfoGralJsonStream(is, "POSTP");
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "POSTP");
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "POSTP");
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
+            }
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+                conn.disconnect();
+            }
+        }
+    }
+
+    private String AddPedidoToJSON() {
+        String res = "";
+
+        /*
+        {
+    "idcli":10,
+    "iddir":2,
+    "menus":[{
+              "id": 2,
+              "id_restaurante": 9,
+              "tipo": "MENU"
+             },
+             {
+              "id": 2,
+              "id_restaurante": 9,
+              "tipo": "PROM"
+             }],
+    "pago":true,
+    "tipo":"EFECTIVO",
+    "id_paypal": null,
+    "total":"516",
+    "idrest":9,
+    "fecha":null
+}
+         */
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray menusArray = new JSONArray();
+        try {
+            jsonObject.put("idcli", dtPedido.getIdcli());
+            jsonObject.put("iddir", dtPedido.getIddir());
+            jsonObject.put("pago", dtPedido.getPago());
+            jsonObject.put("tipo", opFP);
+            jsonObject.put("id_paypal", paypal_answer);
+            jsonObject.put("total", dtPedido.getTotal());
+            jsonObject.put("idrest", dtPedido.getIdrest());
+            jsonObject.put("fecha", null);
+
+            for (int p =0; p < dtPedido.getMenus().size(); p++){
+                JSONObject prodObject = new JSONObject();
+                Long id = null;
+                String tipo = null;
+
+                if (dtPedido.getMenus().get(p) instanceof DtMenu){
+                    id = ((DtMenu) dtPedido.getMenus().get(p)).getId();
+                    tipo = "MENU";
+                } else if (dtPedido.getMenus().get(p) instanceof DtPromocion){
+                   id = ((DtPromocion) dtPedido.getMenus().get(p)).getId();
+                   tipo = "PROM";
+                }
+
+                prodObject.put("id", id);
+                prodObject.put("id_restaurante", dtPedido.getIdrest());
+                prodObject.put("tipo", tipo);
+
+                menusArray.put(prodObject);
+            }
+
+            jsonObject.put("menus", menusArray);
+
+            res = jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+            res = "";
+        }
+
+        return res;
     }
 
 
