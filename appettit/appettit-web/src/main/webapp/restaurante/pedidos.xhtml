@@ -133,17 +133,17 @@
 								<h:outputText value="#{pedido.id}" />
 							</p:column>
 
-							<p:column headerText="Cliente" sortBy="#{pedido.id_cliente}"
-								filterBy="#{pedido.id_cliente}">
+							<p:column headerText="Cliente" sortBy="#{beanPedidos.getNombreCliente(pedido.id_cliente)}"
+								filterBy="#{beanPedidos.getNombreCliente(pedido.id_cliente)}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{pedido.id_cliente}" />
+									value="#{beanPedidos.getNombreCliente(pedido.id_cliente)}" />
 							</p:column>
 
 							<p:column headerText="Direcci&oacute;n"
-								sortBy="#{pedido.id_entrega}"
-								filterBy="#{pedido.id_entrega}">
+								sortBy="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}"
+								filterBy="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{pedido.id_entrega}" />
+									value="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}" />
 							</p:column>
 
 							<!--  

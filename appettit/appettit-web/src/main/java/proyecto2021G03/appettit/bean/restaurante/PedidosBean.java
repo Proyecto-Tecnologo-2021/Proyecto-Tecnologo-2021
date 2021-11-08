@@ -112,6 +112,14 @@ public class PedidosBean implements Serializable {
 
 	}
 
+	public String getNombreCliente (Long id) throws AppettitException {
+		return usrSrv.buscarPorIdCliente(id).getNombre();
+	}
+	
+	public String getAliasDireccion (Long id) throws AppettitException {
+		return usrSrv.buscarDireccionPorId(id).getAlias();
+	}
+	
 	/*
 	public List<MenuDTO> getMenuRestaurante() {
 		List<MenuDTO> menus = new ArrayList<MenuDTO>();

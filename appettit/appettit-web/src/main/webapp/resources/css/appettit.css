@@ -251,7 +251,7 @@ div.product-grid-item img {
 	color: #fff!important;
 }
 
-.status-restaurante-confirmado, .status-pedido-enviado{
+.status-pedido-confirmado, .status-pedido-enviado{
 	background-color: #f2a22c!important;
 	color: #343a40!important;
 }
