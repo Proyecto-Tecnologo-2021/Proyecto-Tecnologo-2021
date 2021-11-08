@@ -33,6 +33,7 @@ import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.LoginDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -162,6 +163,45 @@ public class UsuarioService implements IUsuarioService {
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
 				res.setCalificacion(calificacionRestaurante(res.getId()));
+				ImagenDTO img = new ImagenDTO();
+
+				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(res.getId_imagen());
+					} catch (Exception e) {
+						FileManagement fm = new FileManagement();
+
+						img.setIdentificador("Sin Imagen");
+						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+						logger.error(e.getMessage());
+					}
+
+				}
+
+				res.setImagen(img);
+				restaurantes.add(res);
+			}
+
+			return restaurantes;
+
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+	
+	@Override
+	public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
+		List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
+		try {
+
+			Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(usrDAO.listarRestaurantesAbiertos()).iterator();
+			while (it.hasNext()) {
+				RestauranteRDTO res = it.next();
 				ImagenDTO img = new ImagenDTO();
 
 				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {

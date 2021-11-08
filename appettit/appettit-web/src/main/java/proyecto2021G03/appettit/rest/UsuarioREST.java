@@ -241,6 +241,23 @@ public class UsuarioREST {
 		}
 	}
 	
+	@GET
+	@Path("/listarAbiertos")
+	public Response listarAbiertos() {
+		RespuestaREST<List<RestauranteRDTO>> respuesta = null;
+		try {
+
+			List<RestauranteRDTO> rests = uService.listarRestaurantesAbiertos();
+
+			respuesta = new RespuestaREST<List<RestauranteRDTO>>(true, "Lista de restaurantes abiertos.", rests);
+			return Response.ok(respuesta).build();
+
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+		}
+	}
+	
 /*
 	@PUT
 	@Path("/editar/{id}")

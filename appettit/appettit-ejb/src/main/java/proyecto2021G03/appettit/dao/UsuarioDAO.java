@@ -158,6 +158,18 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return restaurantes;
 
 	}
+	
+	@Override
+	public List<Restaurante> listarRestaurantesAbiertos() {
+
+		List<Restaurante> restaurantes = em.createQuery("select r "
+				+ "from Restaurante r "
+				+ "where abierto=true", Restaurante.class)
+				.getResultList();
+
+		return restaurantes;
+
+	}
 
 	@Override
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre) {

@@ -38,6 +38,7 @@ public interface IUsuarioDAO {
 	public Restaurante crearRestaurante(Restaurante restaurante);
 	public Restaurante editarRestaurante(Restaurante restaurante);
 	public List<Restaurante> listarRestaurantes();
+	public List<Restaurante> listarRestaurantesAbiertos();
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
 	public Restaurante buscarPorCorreoRestaurante(String correo);
 	public CalificacionGralRestauranteDTO calificacionRestaurante(Long id);
