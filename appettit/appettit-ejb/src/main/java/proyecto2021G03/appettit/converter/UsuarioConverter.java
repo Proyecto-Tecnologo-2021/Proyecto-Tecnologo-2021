@@ -113,6 +113,9 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.horarioCierre(e.getHorarioCierre())
 				.abierto(e.getAbierto())
 				.id_imagen(e.getId_imagen())
+				.direccion(e.getDireccion().getCalle() + " " 
+				+ e.getDireccion().getNumero() + " - " 
+				+ e.getDireccion().getBarrio().getNombre())
 				.build();
 	}
 
