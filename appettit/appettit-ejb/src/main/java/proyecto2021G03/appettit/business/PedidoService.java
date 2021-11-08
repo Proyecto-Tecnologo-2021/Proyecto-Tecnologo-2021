@@ -62,6 +62,8 @@ public class PedidoService implements IPedidoService {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }    }
 
+    
+    //ESTA OPERACION TIENE ERRORES
     @Override
     public PedidoDTO editar(Long id, PedidoDTO pedidoDTO) throws AppettitException {
         Pedido pedido = iPedidoDao.listarPorId(pedidoDTO.getId());
@@ -87,9 +89,24 @@ public class PedidoService implements IPedidoService {
             return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }    }
+        }    
+    }
 
+    @Override
+    public PedidoDTO editarEstadoPago(PedidoDTO pedidoDTO) throws AppettitException {
+        Pedido pedido = iPedidoDao.listarPorId(pedidoDTO.getId());
+        if (pedido == null)
+            throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
+        try {
+            pedido.setEstado(pedidoDTO.getEstado());
+            pedido.setPago(pedidoDTO.getPago());
+            
+            return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }    
+    }
 
     @Override
     public void eliminar(Long id) throws AppettitException {
@@ -127,6 +144,15 @@ public class PedidoService implements IPedidoService {
 	public List<PedidoRDTO> listarPorClienteREST(Long id) throws AppettitException {
 		try {
             return pedidoRConverter.fromEntity(iPedidoDao.listarPorCliente(id));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+	}
+	
+	@Override
+	public List<PedidoDTO> listarPorRestaurante(Long id) throws AppettitException {
+		try {
+            return pedidoConverter.fromEntity(iPedidoDao.listarPorRestaurante(id));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }

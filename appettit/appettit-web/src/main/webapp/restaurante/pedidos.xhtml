@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Pedidos</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+				class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
+				class="appettit-logo"
+				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Men&uacute; </a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item"
+								href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
+								class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Men&uacute;s</a> <a
+								class="dropdown-item" href="#">Promociones</a>
+						</div></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Clientes </a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item" href="#">Pedidos</a> <a
+								class="dropdown-item" href="#">Reclamos</a> <a
+								class="dropdown-item" href="#">Calificar</a>
+						</div></li>
+					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
+				</ul>
+			</div>
+			</nav>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="card">
+					<h:form id="form">
+						<p:toolbar>
+							<p:toolbarGroup align="right">
+								<p:commandButton value="Exportar" icon="pi pi-upload"
+									styleClass="ui-button-help" ajax="false">
+									<p:dataExporter type="pdf" target="tablePedidos"
+										fileName="Pedidos" options="#{beanPedidos.pdfOpt}"
+										preProcessor="#{beanPedidos.preProcessPDF}"/>
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+
+						<p:dataTable var="pedido" editable="true"
+							id="tablePedidos"
+							value="#{beanPedidos.pedidos}"
+							widgetVar="pedidosTable"
+							emptyMessage="No existen pedidos"
+							globalFilterOnly="#{beanPedidos.globalFilterOnly}"
+							filteredValue="#{beanPedidos.filterPedidos}"
+							rows="10" paginator="true" rowKey="#{pedido.id}"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+							<p:ajax event="rowEdit"
+								listener="#{beanPedidos.onRowEdit}"
+								update=":form:messages tablePedidos" />
+
+							<p:ajax event="rowEditCancel"
+								listener="#{beanPedidos.onRowCancel}"
+								update=":form:messages tablePedidos" />
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de pedidos</h5>
+										</div>
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('pedidosTable').filter()"
+												style="width:10rem" placeholder="Palabra clave" />
+											<!--  <p:commandButton value="Buscar" update="@form"
+												action="#{beanAdminRestaurante.toggleGlobalFilter()}"
+												class="btn btn-primary" />-->
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="Id" sortBy="#{pedido.id}">
+								<h:outputText value="#{pedido.id}" />
+							</p:column>
+
+							<p:column headerText="Cliente" sortBy="#{pedido.id_cliente}"
+								filterBy="#{pedido.id_cliente}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{pedido.id_cliente}" />
+							</p:column>
+
+							<p:column headerText="Direcci&oacute;n"
+								sortBy="#{pedido.id_entrega}"
+								filterBy="#{pedido.id_entrega}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{pedido.id_entrega}" />
+							</p:column>
+
+							<!--  
+							<p:column headerText="Tel&eacute;fono"
+								sortBy="#{pedido.telefono_cliente}"
+								filterBy="#{pedido.telefono_cliente}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{pedido.telefono_cliente}" />
+							</p:column>
+-->
+							<p:column headerText="Estado" filterBy="#{pedido.estado}"
+								sortBy="#{pedido.estado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
+											value="#{pedido.estado.toString()}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{pedido.estado}"
+											styleClass="custom-filter">
+
+											<f:selectItems
+												value="#{beanPedidos.pedidoEstado}"
+												var="estado" itemLAbel="#{estado.toString()}"
+												itemValue="#{estado}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('pedidosTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{beanPedidos.pedidoEstado}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+							
+							<p:column headerText="Tipo" sortBy="#{pedido.tipo}"
+								filterBy="#{pedido.tipo}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{pedido.tipo}" />
+							</p:column>
+							
+							<p:column headerText="Pago"
+								filterBy="#{pedido.pago}"
+								sortBy="#{pedido.pago}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<div style="width: 5rem"
+											class="btn-sm bloqueado-restaurante-#{!(pedido.pago).toString().toLowerCase()}">
+											<i
+												class="pi pi-#{pedido.pago ?  'lock' : 'lock-open'}"></i>&nbsp;
+											<h:outputText value="#{pedido.pago ?  'Si' : 'No'}" />
+										</div>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectBooleanButton onLabel="Si" offLabel="No"
+											style="width:5rem" value="#{pedido.pago}"
+											onIcon="pi pi-lock" offIcon="pi pi-lock-open" />
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('pedidosTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="#{true}"
+											noSelectionOption="false" />
+										<f:selectItem itemLabel="No" itemValue="#{false}"
+											noSelectionOption="false" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+							
+							<!--  
+							<p:column headerText="Calificaci&oacute;n"
+								sortBy="#{restaurante.calificacion.general}">
+								<p:rating readonly="true"
+									value="#{restaurante.calificacion.general}" />
+							</p:column>
+							-->
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:pedidoDetail"
+									oncomplete="PF('pedidoDialog').show()" icon="pi pi-search"
+									title="Ver" value="Ver detalles">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column style="width:6rem" exportable="false">
+								<p:rowEditor editTitle="Editar pedido"
+									cancelTitle="Cancelar Edici&oacute;n"
+									saveTitle="Confirmar Edici&oacute;n" />
+							</p:column>
+						</p:dataTable>
+						
+						<p:dialog header="Informaci&oacute;n del pedido"
+							widgetVar="pedidoDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="pedidoDetail" style="text-align:center;">
+								
+								  <p:column>
+								  <h4>Hola che</h4>
+									
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+			
+	</script>
+</h:body>
+</html>

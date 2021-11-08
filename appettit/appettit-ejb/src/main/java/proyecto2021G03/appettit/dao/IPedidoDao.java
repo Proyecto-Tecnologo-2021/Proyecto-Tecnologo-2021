@@ -10,4 +10,5 @@ public interface IPedidoDao {
     public Pedido editar(Pedido pedido);
     public void eliminar(Pedido pedido);
 	public List<Pedido> listarPorCliente(Long id_cliente);
+	public List<Pedido> listarPorRestaurante(Long id_restaurante);
 }

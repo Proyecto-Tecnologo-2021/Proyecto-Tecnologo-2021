@@ -319,17 +319,18 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public List<Cliente> buscarPorIdClienteInteger(Long id) {
-		/*
+		
 		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
 		consulta.setParameter("type", "cliente");
 		consulta.setParameter("id", id);
 
+		@SuppressWarnings("unchecked")
 		List<Cliente> usuarios = consulta.getResultList();
-		*/
+		/*
 		List<Cliente> usuarios = em.createQuery("select _c from Cliente where _c.id=:id", Cliente.class)
 				.setParameter("id", id)
 				.getResultList();
-		
+		*/
 		return usuarios;
 	}
 	

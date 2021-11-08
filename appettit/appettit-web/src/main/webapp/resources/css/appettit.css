@@ -236,20 +236,27 @@ div.product-grid-item img {
     justify-content: space-between;
 }
 
-.status-restaurante-pendiente{
+.status-restaurante-pendiente, .status-pedido-solicitado{
 	background-color: #ffc107!important;
 	color: #343a40!important;
 }
 
-.status-restaurante-aprobado, .bloqueado-restaurante-false{
+.status-restaurante-aprobado, .bloqueado-restaurante-false, .status-pedido-entregado{
 	background-color: #28a745!important;
 	color: #fff!important;
 }
 
-.status-restaurante-rechazado, .bloqueado-restaurante-true {
+.status-restaurante-rechazado, .bloqueado-restaurante-true, .status-pedido-rechazado, .status-pedido-cancelado {
 	background-color: #dc3545!important;
 	color: #fff!important;
 }
+
+.status-restaurante-confirmado, .status-pedido-enviado{
+	background-color: #f2a22c!important;
+	color: #343a40!important;
+}
+
+
 
 .restaurante-badge {
     border-radius: 2px;

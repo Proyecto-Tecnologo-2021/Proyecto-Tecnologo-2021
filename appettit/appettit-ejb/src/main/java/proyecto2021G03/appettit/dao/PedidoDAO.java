@@ -53,4 +53,19 @@ public class PedidoDAO implements IPedidoDao {
 		return pedido;
 
 	}
+	
+	@Override
+	public List<Pedido> listarPorRestaurante(Long id_restaurante) {
+		List<Pedido> pedido = null;
+
+		pedido = em.createQuery("SELECT _p "
+						+ "from Pedido as _p "
+						+ "where _p.id_restaurante = :id "
+						+ "order by id asc", Pedido.class)
+				.setParameter("id", id_restaurante)
+				.getResultList();
+
+		return pedido;
+
+	}
 }
