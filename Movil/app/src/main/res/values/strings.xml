@@ -83,6 +83,8 @@
     <string name="carr_t_fp">Seleccionar Forma de pago</string>
     <string name="carr_quitar_item">¿Desea quitar el producto?</string>
     <string name="carr_titulo">Total:</string>
+    <string name="carr_cancelpaypal">El pago fue cancelado</string>
+    <string name="carr_errpaypal">Transacción inválida</string>
 
     <!--MENUS PROMOCIONES-->
     <string name="mp_direccion">Dirección de entrega</string>

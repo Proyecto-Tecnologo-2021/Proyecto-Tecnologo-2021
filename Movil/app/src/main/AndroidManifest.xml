@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
         <activity
+            android:name=".PayPalActivity"
+            android:exported="false" />
+        <activity
             android:name=".VerPedidoActivity"
             android:exported="false" />
         <activity

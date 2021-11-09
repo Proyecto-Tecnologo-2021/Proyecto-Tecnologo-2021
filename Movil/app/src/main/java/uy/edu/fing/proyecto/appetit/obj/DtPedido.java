@@ -24,8 +24,9 @@ public class DtPedido {
     private Double total;
     private Date fecha;
     private String geometry;
+    private DtCotizacion cotizacion;
+    private String id_paypal;
 
-    @Builder.Default
     private List<Object> menus = new ArrayList<Object>();
 
     private DtPedido(){}

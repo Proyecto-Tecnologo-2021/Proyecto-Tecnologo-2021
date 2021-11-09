@@ -24,7 +24,6 @@ public class DtUsuario {
     private DtCalificacion calificacion;
     private Boolean bloqueado;
 
-    @Builder.Default
     private List<DtDireccion> direcciones = new ArrayList<DtDireccion>();
 
     private DtUsuario(){}
