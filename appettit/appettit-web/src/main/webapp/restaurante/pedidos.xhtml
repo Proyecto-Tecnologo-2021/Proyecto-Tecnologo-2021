@@ -140,10 +140,19 @@
 							</p:column>
 
 							<p:column headerText="Direcci&oacute;n"
-								sortBy="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}"
-								filterBy="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}">
+								sortBy="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}"
+								filterBy="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{beanPedidos.getAliasDireccion(pedido.id_entrega)}" />
+									value="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}" />
+							</p:column>
+
+							<p:column style="width:3rem;text-align: center" exportable="false">
+								<p:commandButton update=":form:direccionDetail"
+									oncomplete="PF('direccionDialog').show()" icon="pi pi-search"
+									title="Ver direccion completa">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
 							</p:column>
 
 							<!--  
@@ -258,6 +267,34 @@
 
 							</p:outputPanel>
 						</p:dialog>
+						
+						<p:dialog header="Detalles:"
+							widgetVar="direccionDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="direccionDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<h:outputText
+													value="#{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).calle} #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).numero}&lt;br /&gt;Apartamento: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).apartamento}&lt;br /&gt;Barrio/Localidad: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).barrio.nombre}&lt;br /&gt;Referencias: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).referencias}"                  
+													styleClass="product-price" escape="false"/>
+												<div class="product-grid-item-bottom">
+													<!--  <div class="product-name">Cantidad de men&uacute;s</div>-->
+											
+												</div>
+											</div>
+											<div class="product-grid-item-bottom">
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						
 						<div class="col-12">
 							<p:growl id="messages" showDetail="true" />
 						</div>
