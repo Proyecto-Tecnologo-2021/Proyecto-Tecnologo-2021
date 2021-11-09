@@ -35,6 +35,8 @@ public interface IUsuarioService {
 	public RestauranteDTO buscarPorCorreoRestaurante(String correo) throws AppettitException;
 	public CalificacionGralRestauranteDTO calificacionRestaurante(Long id) throws AppettitException;
 	public RestauranteDTO editarRestaurante(RestauranteDTO restauranteDTO) throws AppettitException;
+	//public RestauranteRDTO buscarPorId(Long id) throws AppettitException;
+
 	
 
 	/*CLIENTE*/

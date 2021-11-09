@@ -25,11 +25,11 @@ public class RestauranteREST {
 	@GET
 	@Path("/listar/{id}")
 	//@RecursoProtegidoJWT
-	public Response listarPorId(@PathParam("id") Long id) {
+	public Response buscarRestaurantePorId(@PathParam("id") Long id) {
 		RespuestaREST<RestauranteDTO> respuesta = null;
 		try {
 			RestauranteDTO cliente = uService.buscarRestaurantePorId(id);
-			respuesta = new RespuestaREST<RestauranteDTO>(true, "Restaurante encontrado!.", cliente);
+			respuesta = new RespuestaREST<RestauranteDTO>(true, "Dirección agregada con éxito.", cliente);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<RestauranteDTO>(false, e.getLocalizedMessage());

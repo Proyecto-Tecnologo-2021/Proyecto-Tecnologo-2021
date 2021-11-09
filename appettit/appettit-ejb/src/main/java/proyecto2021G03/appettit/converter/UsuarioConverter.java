@@ -14,7 +14,6 @@ import proyecto2021G03.appettit.dto.ClienteCrearDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
 import proyecto2021G03.appettit.dto.ClienteMDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
@@ -103,21 +102,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.id_imagen(e.getId_imagen())
 				.build();
 	}
-	
-	public RestauranteRDTO RDTOfromRestaurante(Restaurante e) {
-		if(e == null) return null;
-		return RestauranteRDTO.builder()
-				.id(e.getId())
-				.nombre(e.getNombre())
-				.horarioApertura(e.getHorarioApertura())
-				.horarioCierre(e.getHorarioCierre())
-				.abierto(e.getAbierto())
-				.id_imagen(e.getId_imagen())
-				.direccion(e.getDireccion().getCalle() + " " 
-				+ e.getDireccion().getNumero() + " - " 
-				+ e.getDireccion().getBarrio().getNombre())
-				.build();
-	}
 
 	public Restaurante fromRestauranteDTO(RestauranteDTO d) {
 		if(d == null) return null;
@@ -146,13 +130,6 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 		if(entities == null) return null;
 		return entities.stream()
 			.map(e -> fromRestaurante(e))
-			.collect(Collectors.toList());
-	}
-	
-	public List<RestauranteRDTO> RDTOfromRestaurante(List<Restaurante> entities){
-		if(entities == null) return null;
-		return entities.stream()
-			.map(e -> RDTOfromRestaurante(e))
 			.collect(Collectors.toList());
 	}
 	

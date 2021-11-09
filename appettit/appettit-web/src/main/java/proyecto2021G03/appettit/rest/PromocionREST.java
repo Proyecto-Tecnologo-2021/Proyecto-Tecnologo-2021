@@ -1,6 +1,7 @@
 
 package proyecto2021G03.appettit.rest;
 
+import proyecto2021G03.appettit.business.IMenuRService;
 import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
@@ -23,9 +24,9 @@ public class PromocionREST {
     @EJB
 
     IPromocionService iPromocionService;
+    IMenuRService iMenuRService;
 
     @GET
-
     public Response listar() {
         RespuestaREST<List<PromocionDTO>> respuesta = null;
         try {
@@ -81,5 +82,17 @@ public class PromocionREST {
         }
 	}
 
-
+    @GET
+    @Path("/promoRDTO}")
+    public Response listarPromoR() {
+        RespuestaREST<List<PromocionRDTO>> respuesta = null;
+        try {
+            List<PromocionRDTO> promoRDTO = iPromocionService.listarRPromocion();
+            respuesta = new RespuestaREST<List<PromocionRDTO>>(true, "Menues listadas con éxito.", promoRDTO);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+    }
 }

@@ -12,6 +12,7 @@ import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -118,7 +119,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public List<Administrador> buscarPorNombreAdministrador(String nombre) {
-		List<Administrador> usuarios = em.createQuery("from Adminsitrador _a where _a.nombre = :nombre", Administrador.class)
+		List<Administrador> usuarios = em.createQuery("from Administrador _a where _a.nombre = :nombre", Administrador.class)
 		.setParameter("nombre", nombre)
 		.getResultList();
 		return usuarios;
@@ -256,6 +257,14 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return new CalificacionGralRestauranteDTO(rapidez, comida, servicio, general);
 				  	
 	}
+
+	@Override
+	public RestauranteRDTO buscarPorId(Long id) {
+		return null;
+	}
+
+
+
 
 	/* CLIENTE */
 

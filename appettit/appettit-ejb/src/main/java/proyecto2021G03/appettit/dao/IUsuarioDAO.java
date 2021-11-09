@@ -6,6 +6,7 @@ import javax.ejb.Local;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -42,6 +43,7 @@ public interface IUsuarioDAO {
 	public List<Restaurante> buscarPorNombreRestaurante(String nombre);
 	public Restaurante buscarPorCorreoRestaurante(String correo);
 	public CalificacionGralRestauranteDTO calificacionRestaurante(Long id);
+ 	public RestauranteRDTO buscarPorId(Long id);
 
 	/*CLIENTE*/
 	public Cliente crearCliente(Cliente cliente);

@@ -193,46 +193,52 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
-	
+
 	@Override
 	public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
-		List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
-		try {
-
-			Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(usrDAO.listarRestaurantesAbiertos()).iterator();
-			while (it.hasNext()) {
-				RestauranteRDTO res = it.next();
-				ImagenDTO img = new ImagenDTO();
-
-				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
-					FileManagement fm = new FileManagement();
-
-					img.setIdentificador("Sin Imagen");
-					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
-				} else {
-					try {
-						img = imgSrv.buscarPorId(res.getId_imagen());
-					} catch (Exception e) {
-						FileManagement fm = new FileManagement();
-
-						img.setIdentificador("Sin Imagen");
-						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
-						logger.error(e.getMessage());
-					}
-
-				}
-
-				res.setImagen(img);
-				restaurantes.add(res);
-			}
-
-			return restaurantes;
-
-		} catch (Exception e) {
-			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}
+		return null;
 	}
 
+
+	/*@Override
+    public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
+        List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
+        try {
+
+            Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(usrDAO.listarRestaurantesAbiertos()).iterator();
+            while (it.hasNext()) {
+                RestauranteRDTO res = it.next();
+                ImagenDTO img = new ImagenDTO();
+
+                if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
+                    FileManagement fm = new FileManagement();
+
+                    img.setIdentificador("Sin Imagen");
+                    img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+                } else {
+                    try {
+                        img = imgSrv.buscarPorId(res.getId_imagen());
+                    } catch (Exception e) {
+                        FileManagement fm = new FileManagement();
+
+                        img.setIdentificador("Sin Imagen");
+                        img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+                        logger.error(e.getMessage());
+                    }
+
+                }
+
+                res.setImagen(img);
+                restaurantes.add(res);
+            }
+
+            return restaurantes;
+
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+    }
+*/
 	@Override
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException {
 		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
