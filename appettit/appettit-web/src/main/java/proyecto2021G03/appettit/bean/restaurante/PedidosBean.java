@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
@@ -116,8 +117,8 @@ public class PedidosBean implements Serializable {
 		return usrSrv.buscarPorIdCliente(id).getNombre();
 	}
 	
-	public String getAliasDireccion (Long id) throws AppettitException {
-		return usrSrv.buscarDireccionPorId(id).getAlias();
+	public  DireccionDTO getDireccion (Long id) throws AppettitException {
+		return usrSrv.buscarDireccionPorId(id);
 	}
 	
 	/*

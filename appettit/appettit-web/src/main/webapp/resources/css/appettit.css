@@ -256,7 +256,9 @@ div.product-grid-item img {
 	color: #343a40!important;
 }
 
-
+.mostrar-PAYPAL{
+	display:none;
+}
 
 .restaurante-badge {
     border-radius: 2px;
