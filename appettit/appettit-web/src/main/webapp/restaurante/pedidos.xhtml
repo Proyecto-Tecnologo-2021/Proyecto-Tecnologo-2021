@@ -196,26 +196,25 @@
 							
 							<p:column headerText="Tipo" sortBy="#{pedido.tipo}"
 								filterBy="#{pedido.tipo}">
-								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+								<h:outputText 
 									value="#{pedido.tipo}" />
 							</p:column>
 							
 							<p:column headerText="Pago"
 								filterBy="#{pedido.pago}"
 								sortBy="#{pedido.pago}" filterMatchMode="exact">
-								<p:cellEditor>
+								<p:cellEditor class="mostrar-#{pedido.tipo}">
 									<f:facet name="output">
-										<div style="width: 5rem"
-											class="btn-sm bloqueado-restaurante-#{!(pedido.pago).toString().toLowerCase()}">
-											<i
-												class="pi pi-#{pedido.pago ?  'lock' : 'lock-open'}"></i>&nbsp;
+										<div style="width: 4rem;text-align:center;"
+											class="btn-sm mostrar-#{pedido.tipo} bloqueado-restaurante-#{!(pedido.pago).toString().toLowerCase()}">
 											<h:outputText value="#{pedido.pago ?  'Si' : 'No'}" />
 										</div>
 									</f:facet>
 									<f:facet name="input">
-										<p:selectBooleanButton onLabel="Si" offLabel="No"
-											style="width:5rem" value="#{pedido.pago}"
-											onIcon="pi pi-lock" offIcon="pi pi-lock-open" />
+										<div class="mostrar-#{pedido.tipo}">
+											<p:selectBooleanButton onLabel="Si" offLabel="No"
+												style="width:4rem" value="#{pedido.pago}" />
+										</div>
 									</f:facet>
 								</p:cellEditor>
 								<f:facet name="filter">
