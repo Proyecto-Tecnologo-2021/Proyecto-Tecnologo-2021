@@ -4,7 +4,11 @@ public class ConnConstants {
     //GENERAL
     final public static String USER_AGENT = "Appetit.Android/1.0";
     final public static String WEB_CLIENT_ID = "915134390722-avo66p6v51lvs5u7q5ob7snq5gr0o4t9.apps.googleusercontent.com";
-    final public static String PAYPAL_CLIENT_ID = "Ab477dOemQtkojKjQmt-yIq0Bvk26ddR1wv5DzBC4y1u-fKpEW_GWHeMRJgoK8hdU2Bbu-lX2QnoJhaM";
+    final public static String PAYPAL_CLIENT_ID = "AWnJhlBsiTCohUxd2HKlE_vZCOZErmodDR7uJXUlFk26yDj5VTpS-JNZTaUJYE_mUFQToNhxq6nir-mh";
+    //final public static String PAYPAL_CLIENT_ID = "AX1tidD2Nabve-nXf9dR6UqFx6LtKK4-FJZ9QCzXJgoM8pjYrDNCCPF6KzOLgDDrGZSpaDA2psnjfP5l";
+
+    //COTIZACION
+    final public static String GET_COTIZACION = "https://cotizaciones-brou.herokuapp.com/api/currency/{date}";
 
     //USUARIO
     final public static String API_USRLOGIN_URL = "http://192.168.56.1:8080/appettit-web/rest/usuarios/loginMobile";

@@ -50,13 +50,21 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
+import uy.edu.fing.proyecto.appetit.obj.DtCotizacion;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
+import uy.edu.fing.proyecto.appetit.obj.DtPedido;
+import uy.edu.fing.proyecto.appetit.obj.DtProducto;
+import uy.edu.fing.proyecto.appetit.obj.DtRCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
+import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
 public class MainActivity extends AppCompatActivity {
@@ -83,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        buscarCotizacion();
 
         signInButton = findViewById(R.id.sign_in_button);
         loginButton = findViewById(R.id.login_button);
@@ -133,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -287,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //@SuppressLint("StaticFieldLeak")
     private class GetLoginUsuarioTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {
@@ -567,6 +577,208 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return res;
+    }
+
+    private void buscarCotizacion() {
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+
+        String fecha = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+
+        String stringUrl = ConnConstants.GET_COTIZACION;
+        stringUrl = stringUrl.replace("{date}", fecha);
+        Log.i(TAG, stringUrl);
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new MainActivity.GetCotizaTask().execute(stringUrl);
+        }
+    }
+
+    private class GetCotizaTask extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return CotizaInfoGralUrl(urls[0]);
+            } catch (IOException e) {
+                //return getString(R.string.err_recuperarpag);
+                return e.getMessage();
+            }
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(Object result) {
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+                if (response.getOk()) {
+                    DtCotizacion dtCotizacion = (DtCotizacion) response.getCuerpo();
+                    DtPedido dtPedido = DtPedido.getInstance();
+                    dtPedido.setCotizacion(dtCotizacion);
+                } else {
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
+                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
+                    }
+
+                }
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+
+                if (result instanceof String) {
+                    dialog.setMessage((String) result);
+                } else {
+                    dialog.setMessage(getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
+                }
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
+
+
+
+    private DtResponse CotizaInfoGralUrl(String myurl) throws IOException {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+
+            //String authorization ="Bearer  " + usuario.getToken();
+
+            URL url = new URL(myurl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            //conn.setRequestProperty("Authorization", authorization);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
+                is = conn.getInputStream();
+                return readCotizaJsonStream(is);
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readCotizaJsonStream(is);
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readCotizaJsonStream(is);
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
+            }
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+                conn.disconnect();
+            }
+        }
+    }
+
+    public DtResponse readCotizaJsonStream(InputStream in) throws IOException {
+        //creating an InputStreamReader object
+        InputStreamReader isReader = new InputStreamReader(in);
+        //Creating a BufferedReader object
+        BufferedReader breader = new BufferedReader(isReader);
+        StringBuffer sb = new StringBuffer();
+        String str;
+        while ((str = breader.readLine()) != null) {
+            sb.append(str);
+        }
+        JsonReader reader = new JsonReader(new StringReader(sb.toString()));
+        try {
+            return readGETMessage(reader);
+        } finally {
+            reader.close();
+        }
+    }
+
+    public DtResponse readGETMessage(JsonReader reader) throws IOException {
+        Boolean ok = false;
+        String mensaje = null;
+        String base = null;
+        DtCotizacion dtCotizacion= null;
+
+        try {
+            reader.beginObject();
+            dtCotizacion = new DtCotizacion();
+            ok = true;
+            mensaje = "GET cotizacion ok";
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                if (name.equals("base")) {
+                    base = reader.nextString();
+                } else if (name.equals("rates")) {
+                    dtCotizacion =  readCotizacionObj(reader);
+                } else {
+                    reader.skipValue();
+                }
+            }
+            dtCotizacion.setBase(base);
+        } catch (Exception e){
+            ok = false;
+            mensaje = "GET cotizacion false";
+            dtCotizacion = null;
+
+        }
+
+        reader.endObject();
+        return new DtResponse(ok, mensaje, dtCotizacion);
+
+    }
+
+    public DtCotizacion readCotizacionObj(JsonReader reader) throws IOException {
+        DtCotizacion dtCotizacion = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("USD") && reader.peek() != JsonToken.NULL) {
+                dtCotizacion = readCotizacion(reader);
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return dtCotizacion;
+    }
+
+    public DtCotizacion readCotizacion(JsonReader reader) throws IOException {
+
+        Double sell = null;
+        Double buy = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("sell") && reader.peek() != JsonToken.NULL) {
+                sell = reader.nextDouble();
+            } else if (name.equals("buy")) {
+                buy = reader.nextDouble();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtCotizacion(null, sell, buy);
     }
 
 
