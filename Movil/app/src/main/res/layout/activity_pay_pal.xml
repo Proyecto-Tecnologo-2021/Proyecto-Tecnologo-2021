@@ -7,6 +7,9 @@
     android:orientation="vertical"
     tools:context=".PayPalActivity">
 
-
+    <com.paypal.checkout.paymentbutton.PayPalButton
+        android:id="@+id/payPalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

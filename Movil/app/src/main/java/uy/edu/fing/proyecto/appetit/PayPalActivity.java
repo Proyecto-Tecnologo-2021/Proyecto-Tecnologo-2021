@@ -1,8 +1,35 @@
 package uy.edu.fing.proyecto.appetit;
 
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.paypal.checkout.PayPalCheckout;
+import com.paypal.checkout.approve.Approval;
+import com.paypal.checkout.approve.OnApprove;
+import com.paypal.checkout.config.CheckoutConfig;
+import com.paypal.checkout.config.Environment;
+import com.paypal.checkout.config.SettingsConfig;
+import com.paypal.checkout.createorder.CreateOrder;
+import com.paypal.checkout.createorder.CreateOrderActions;
+import com.paypal.checkout.createorder.CurrencyCode;
+import com.paypal.checkout.createorder.OrderIntent;
+import com.paypal.checkout.createorder.UserAction;
+import com.paypal.checkout.order.Amount;
+import com.paypal.checkout.order.AppContext;
+import com.paypal.checkout.order.CaptureOrderResult;
+import com.paypal.checkout.order.OnCaptureComplete;
+import com.paypal.checkout.order.Order;
+import com.paypal.checkout.order.PurchaseUnit;
+import com.paypal.checkout.paymentbutton.PayPalButton;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 
 public class PayPalActivity extends AppCompatActivity {
     private static final String TAG = "PayPalActivity";
@@ -10,14 +37,14 @@ public class PayPalActivity extends AppCompatActivity {
     private static final int PAYPAL_REQUEST_CODE = 20213;
     final static Integer RC_SIGN_IN = 20213;
 
+    PayPalButton payPalButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_pal);
 
-
-/*
+        payPalButton = findViewById(R.id.payPalButton);
 
         CheckoutConfig config = new CheckoutConfig(
                 this.getApplication(),
@@ -30,10 +57,9 @@ public class PayPalActivity extends AppCompatActivity {
         );
         PayPalCheckout.setConfig(config);
 
-        payPalButton = findViewById(R.id.payPalButton);
 
- */
-/*
+
+
         PayPalCheckout.start(
                 createOrderActions -> {
                     ArrayList purchaseUnits = new ArrayList<>();
@@ -45,7 +71,7 @@ public class PayPalActivity extends AppCompatActivity {
                             ).build());
                 }
         );
-*/
+
         /*
         PayPalCheckout.start(
                 createOrderActions -> {
@@ -84,8 +110,8 @@ public class PayPalActivity extends AppCompatActivity {
                     // Optional error callback
                 }
         );
-*/
-/*
+
+
         payPalButton.setup(
                 new CreateOrder() {
                     @Override
@@ -108,7 +134,8 @@ public class PayPalActivity extends AppCompatActivity {
                                         .build(),
                                 purchaseUnits
                         );
-                        createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
+                        //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
+                        //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
                         //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
                     }
                 },
@@ -127,9 +154,7 @@ public class PayPalActivity extends AppCompatActivity {
         );
 
 
- */
+         */
     }
-
-
 
 }

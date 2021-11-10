@@ -34,11 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,12 +47,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,12 +91,13 @@ public class VerPedidoActivity extends AppCompatActivity {
     TextView rest_cal;
     RatingBar rest_star;
     Button pedido_confirm;
-
+/*
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(ConnConstants.PAYPAL_CLIENT_ID)
-            .acceptCreditCards(true);
-
+            .acceptCreditCards(false)
+            .merchantName("Appetit");
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +105,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         setTitle(title);
         
         setContentView(R.layout.activity_ver_pedido);
+/*
+        Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
+        ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        startService(ipaypals);
 
+
+ */
         if(dtPedido.getIdrest() == null){
             Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
             startActivity(imenu);
@@ -168,10 +169,6 @@ public class VerPedidoActivity extends AppCompatActivity {
                         dtPedido.setPago(false);
                         confirmarPContado();
                     } else if (opFP == ETipoPago.PAYPAL){
-                        Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
-                        ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-                        startService(ipaypals);
-
                         confirmarPPayPal();
                     }
                 }
@@ -750,28 +747,35 @@ public class VerPedidoActivity extends AppCompatActivity {
         BigDecimal pmonto = new BigDecimal(Double.toString(monto));
         pmonto = pmonto.setScale(2, RoundingMode.HALF_UP);
 
-        Log.i(TAG, pmonto.toString());
+        Intent ipaypal = new Intent(VerPedidoActivity.this, PayPalActivity.class);
+        startActivity(ipaypal);
+/*
 
         PayPalPayment payPalPayment = new PayPalPayment(pmonto, "USD",
-                dtUsuario.getCorreo(), PayPalPayment.PAYMENT_INTENT_SALE);
+                dtUsuario.getNombre() +" "+ dtUsuario.getCorreo(), PayPalPayment.PAYMENT_INTENT_SALE);
 
         Log.i(TAG, payPalPayment.toString());
         Log.i(TAG, config.toString());
+
         Intent ipaypal = new Intent(VerPedidoActivity.this, PaymentActivity.class);
 
         ipaypal.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         ipaypal.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
         startActivityForResult(ipaypal, PAYPAL_REQUEST_CODE);
+
+ */
     }
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(VerPedidoActivity.this, PayPalService.class));
+ //       stopService(new Intent(VerPedidoActivity.this, PayPalService.class));
         super.onDestroy();
     }
 
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         if (requestCode == PAYPAL_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
@@ -811,4 +815,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
+
+ */
 }
