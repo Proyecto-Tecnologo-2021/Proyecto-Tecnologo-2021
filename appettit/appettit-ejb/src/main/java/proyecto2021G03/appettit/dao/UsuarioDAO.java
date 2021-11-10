@@ -8,16 +8,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.sql.Select;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.dto.RestauranteRDTO;
-import proyecto2021G03.appettit.entity.Administrador;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Direccion;
-import proyecto2021G03.appettit.entity.Restaurante;
-import proyecto2021G03.appettit.entity.Usuario;
+import proyecto2021G03.appettit.entity.*;
 
 @Singleton
 public class UsuarioDAO implements IUsuarioDAO {
@@ -400,6 +398,19 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return em.find(Direccion.class, id);
 	}
 
-	
+	@Override
+	public PedidoRDTO buscarultimo(Long id) {
+		Query ultimo = 	em.createQuery("SELECT u from Usuario u order by u.id desc ");
+				List<Usuario> listita= ultimo.setMaxResults(1).getResultList();
+				for(Usuario usr:listita){
+					System.out.println(usr.getId());
+					System.out.println("imprimo char pija");
+
+				}
+		return null;
+
+
+	}
+
 
 }

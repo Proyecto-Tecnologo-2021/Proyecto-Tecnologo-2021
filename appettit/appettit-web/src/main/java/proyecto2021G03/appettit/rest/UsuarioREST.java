@@ -8,7 +8,9 @@ import javax.ws.rs.core.Response;
 import com.vividsolutions.jts.io.ParseException;
 
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
+import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.util.List;
@@ -23,21 +25,12 @@ public class UsuarioREST {
 
 	@EJB
 	IUsuarioService uService;
+	@EJB
+	IUsuarioDAO iUsuarioDAO;
+
+
 	
-	/*@GET
-	public Response listar() {
-		RespuestaREST<List<CategoriaDTO>> respuesta = null;
-		try {
-			List<CategoriaDTO> categorias = cService.listar();
-			respuesta = new RespuestaREST<List<CategoriaDTO>>(true, "Categorias listadas con éxito.", categorias);
-			return Response.ok(respuesta).build();
-		} catch (AppettitException e) {
-			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
-		}
-	}
-	
-	*/
+
 	
 	@POST
 	//@RecursoProtegidoJWT
@@ -297,6 +290,7 @@ public class UsuarioREST {
 		}
 	}
 */
+
 
 
 }

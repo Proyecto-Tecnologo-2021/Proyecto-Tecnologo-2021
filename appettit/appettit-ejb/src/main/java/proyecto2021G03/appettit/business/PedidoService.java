@@ -157,5 +157,12 @@ public class PedidoService implements IPedidoService {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
 	}
-
+    @Override
+    public PedidoRDTO ultimo(Long id) throws AppettitException {
+        try {
+            return pedidoRConverter.fromEntity(iPedidoDao.ultimo(id));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+    }
 }
