@@ -67,37 +67,7 @@ public class UsuarioService implements IUsuarioService {
 	@EJB
 	IGeoService geoSrv;
 	
-	
-	/*
-	 * @Override public void eliminar(Long id) throws AppettitException { // se
-	 * valida que el usuario exista Usuario usuario = usrDAO.buscarPorId(id); if
-	 * (usuario == null) throw new
-	 * AppettitException("El usuario indicado no existe.",
-	 * AppettitException.NO_EXISTE_REGISTRO); try { usrDAO.eliminar(usuario); }
-	 * catch (Exception e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * 
-	 * @Override public List<UsuarioDTO> listar() throws AppettitException { try {
-	 * return usrConverter.fromEntity(usrDAO.listar()); } catch (Exception e) {
-	 * throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * @Override public UsuarioDTO buscarPorId(Long id) throws AppettitException {
-	 * Usuario usuario = usrDAO.buscarPorId(id); if (usuario == null) throw new
-	 * AppettitException("El usuario indicado no existe.",
-	 * AppettitException.NO_EXISTE_REGISTRO); try { ClienteDTO dd = (ClienteDTO)
-	 * usrConverter.fromEntity(usuario); return usrConverter.fromEntity(usuario); }
-	 * catch (Exception e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * 
-	 * @Override public List<UsuarioDTO> buscarPorNombre(String nombre) throws
-	 * AppettitException { try { return
-	 * usrConverter.fromEntity(usrDAO.buscarPorNombre(nombre)); } catch (Exception
-	 * e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 */
+
 	@Override
 	public List<AdministradorDTO> listarAdminsitradores() throws AppettitException {
 		try {
@@ -321,11 +291,8 @@ public class UsuarioService implements IUsuarioService {
 		if (restaurante == null)
 			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-
 			restaurante = usrConverter.fromRestauranteDTO(restauranteDTO);
-
 			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -383,7 +350,7 @@ public class UsuarioService implements IUsuarioService {
 	public String editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 
 			cliente.setNombre(clienteData.getNombre());
@@ -406,7 +373,7 @@ public class UsuarioService implements IUsuarioService {
 	public ClienteMDTO editarClienteRE(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 
 			cliente.setNombre(clienteData.getNombre());
@@ -612,7 +579,7 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public CalificacionGralClienteDTO calificacionGralCliente(Long id) throws AppettitException {
-		Cliente usuario = (Cliente) usrDAO.buscarPorIdCliente(id);
+		Cliente usuario = usrDAO.buscarPorIdCliente(id);
 		if (usuario == null)
 			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {

@@ -26,45 +26,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	private EntityManager em;
 
-	/* GENERAL 
-	@Override
-	public Usuario crear(Usuario usuario) {
-		em.persist(usuario);
-
-		return usuario;
-	}
-
-	@Override
-	public Usuario editar(Usuario usuario) {
-		em.merge(usuario);
-		return usuario;
-	}
-
-	@Override
-	public void eliminar(Usuario usuario) {
-		em.remove(usuario);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Usuario> listar() {
-		Query consulta = em.createQuery("SELECT _usu FROM Usuario as _usu");
-		return consulta.getResultList();
-	}
-
-	@Override
-	public Usuario buscarPorId(Long id) {
-		return em.find(Usuario.class, id);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Usuario> buscarPorNombre(String nombre) {
-		Query consulta = em.createQuery("SELECT _usu FROM Usuario as _usu where nombre = :nombre")
-				.setParameter("nombre", nombre);
-		return consulta.getResultList();
-	}
-*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> buscarPorCorreo(String correo) {
@@ -323,16 +284,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public Cliente buscarPorIdCliente(Long id) {
-
-		/*
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
-		consulta.setParameter("type", "cliente");
-		consulta.setParameter("id", id);
-
-		List<Cliente> usuarios = consulta.getResultList();
-		return usuarios;
-		*/
-		
 		return em.find(Cliente.class, id);
 	}
 
