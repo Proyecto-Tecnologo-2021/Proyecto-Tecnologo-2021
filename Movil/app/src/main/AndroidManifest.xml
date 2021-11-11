@@ -20,6 +20,7 @@
         <activity
             android:name=".PayPalActivity"
             android:exported="false"
+            android:theme="@style/Theme.NoActionBar"
             tools:ignore="AppLinkUrlError">
             <intent-filter android:label="uy.edu.fing.proyecto.appetit://paypalpay">
                 <action android:name="android.intent.action.VIEW" />

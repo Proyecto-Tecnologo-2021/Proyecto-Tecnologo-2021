@@ -88,7 +88,6 @@ public class VerPedidoActivity extends AppCompatActivity {
     ListAdapter listAdapter;
 
 
-
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
     ImageView rest_img;
@@ -108,13 +107,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String title = getString(R.string.title_Pedido);
         setTitle(title);
-        
+
         setContentView(R.layout.activity_ver_pedido);
         Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
         ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(ipaypals);
 
-        if(dtPedido.getIdrest() == null){
+        if (dtPedido.getIdrest() == null) {
             Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
             startActivity(imenu);
         } else {
@@ -155,22 +154,21 @@ public class VerPedidoActivity extends AppCompatActivity {
             builder.setSingleChoiceItems(itemsFP, 0, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     //Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
-                    if(item ==0 ){
+                    if (item == 0) {
                         opFP = ETipoPago.EFECTIVO;
-                    } else if(item == 1){
+                    } else if (item == 1) {
                         opFP = ETipoPago.PAYPAL;
                     }
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_confirmar), new DialogInterface.OnClickListener()
-            {
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_confirmar), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     //Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_confirmar,Toast.LENGTH_SHORT).show();
-                    if (opFP == ETipoPago.EFECTIVO){
+                    if (opFP == ETipoPago.EFECTIVO) {
                         dtPedido.setPago(false);
-                        confirmarPContado();
-                    } else if (opFP == ETipoPago.PAYPAL){
+                        confirmarPagoPedido();
+                    } else if (opFP == ETipoPago.PAYPAL) {
                         confirmarPPayPal();
                     }
                 }
@@ -179,21 +177,21 @@ public class VerPedidoActivity extends AppCompatActivity {
             dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_cancel), new
                     DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_cancel,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_cancel, Toast.LENGTH_SHORT).show();
                         }
                     });
             dialog.show();
         });
     }
 
-    private void addRestaurante(DtRestaurante res){
+    private void addRestaurante(DtRestaurante res) {
         Bitmap bmp = BitmapFactory.decodeByteArray(res.getImagen(), 0, res.getImagen().length);
         rest_img.setImageBitmap(bmp);
         rest_name.setText(res.getNombre());
         rest_cal.setText(res.getCalificacion().getGeneral().toString());
 
         Drawable progressDrawable = rest_star.getProgressDrawable();
-        
+
         switch (res.getCalificacion().getGeneral()) {
             case 0:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.white_trans));
@@ -222,13 +220,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
     }
 
-    private void addProductos(List<Object> productos){
-        if(productos.size()!=0){
+    private void addProductos(List<Object> productos) {
+        if (productos.size() != 0) {
             listView = findViewById(R.id.productosListView);
             listAdapter = new ProductoPedidoAdapter(this, productos);
             listView.setAdapter(listAdapter);
 
-            String titulo = getString(R.string.title_Pedido) +" - " +
+            String titulo = getString(R.string.title_Pedido) + " - " +
                     getString(R.string.carr_titulo) + " " +
                     getString(R.string.carr_symbol) + " " +
                     dtPedido.getTotal();
@@ -239,12 +237,12 @@ public class VerPedidoActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                    String mensaje = getString(R.string.carr_quitar_item) +"\n";
+                    String mensaje = getString(R.string.carr_quitar_item) + "\n";
 
-                    if (productos.get(position) instanceof DtMenu){
+                    if (productos.get(position) instanceof DtMenu) {
                         DtMenu dtp = (DtMenu) productos.get(position);
                         mensaje += dtp.getNombre();
-                    } else if (productos.get(position) instanceof DtPromocion){
+                    } else if (productos.get(position) instanceof DtPromocion) {
                         DtPromocion dtp = (DtPromocion) productos.get(position);
                         mensaje += dtp.getNombre();
                     }
@@ -257,12 +255,13 @@ public class VerPedidoActivity extends AppCompatActivity {
                         addProductos(dtPedido.getMenus());
 
                     });
-                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> {});
+                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> {
+                    });
                     dialog.show();
                 }
             });
 
-        }else {
+        } else {
             onBackPressed();
         }
     }
@@ -310,7 +309,7 @@ public class VerPedidoActivity extends AppCompatActivity {
                             ContextCompat.checkSelfPermission(VerPedidoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
+                    } else {
                         AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
                         dialog.setTitle(R.string.access_title_err);
                         dialog.setMessage(response.getMensaje());
@@ -399,13 +398,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
         JsonReader reader = new JsonReader(new StringReader(sb.toString()));
         try {
-            if(mType.equalsIgnoreCase("GETR")){
+            if (mType.equalsIgnoreCase("GETR")) {
                 ret = readRESTMessage(reader);
-            } else if (mType.equalsIgnoreCase("POSTP")){
+            } else if (mType.equalsIgnoreCase("POSTP")) {
                 ret = readPOSTMessage(reader);
             }
 
-            return  ret;
+            return ret;
         } finally {
             reader.close();
         }
@@ -564,7 +563,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
         reader.endObject();
 
-        if(simagen!=null){
+        if (simagen != null) {
             //imagen = simagen.getBytes();
             imagen = Base64.decode(simagen, Base64.DEFAULT);
         }
@@ -572,7 +571,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         return imagen;
     }
 
-    private void confirmarPContado() {
+    private void confirmarPagoPedido() {
 
         String stringUrl = ConnConstants.API_ADDPEDIDO_URL;
         Log.i(TAG, stringUrl);
@@ -625,7 +624,8 @@ public class VerPedidoActivity extends AppCompatActivity {
 
                     dialog.setMessage(response.getMensaje());
 
-                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {});
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                    });
                     dialog.show();
                 }
             } else {
@@ -708,22 +708,23 @@ public class VerPedidoActivity extends AppCompatActivity {
             jsonObject.put("iddir", dtPedido.getIddir());
             jsonObject.put("pago", dtPedido.getPago());
             jsonObject.put("tipo", opFP);
-            jsonObject.put("id_paypal", paypal_answer);
+            jsonObject.put("id_paypal", dtPedido.getId_paypal());
             jsonObject.put("total", dtPedido.getTotal());
             jsonObject.put("idrest", dtPedido.getIdrest());
             jsonObject.put("fecha", null);
+            jsonObject.put("cotizacion", dtPedido.getCotizacion().getBuy());
 
-            for (int p =0; p < dtPedido.getMenus().size(); p++){
+            for (int p = 0; p < dtPedido.getMenus().size(); p++) {
                 JSONObject prodObject = new JSONObject();
                 Long id = null;
                 String tipo = null;
 
-                if (dtPedido.getMenus().get(p) instanceof DtMenu){
+                if (dtPedido.getMenus().get(p) instanceof DtMenu) {
                     id = ((DtMenu) dtPedido.getMenus().get(p)).getId();
                     tipo = "MENU";
-                } else if (dtPedido.getMenus().get(p) instanceof DtPromocion){
-                   id = ((DtPromocion) dtPedido.getMenus().get(p)).getId();
-                   tipo = "PROM";
+                } else if (dtPedido.getMenus().get(p) instanceof DtPromocion) {
+                    id = ((DtPromocion) dtPedido.getMenus().get(p)).getId();
+                    tipo = "PROM";
                 }
 
                 prodObject.put("id", id);
@@ -746,26 +747,8 @@ public class VerPedidoActivity extends AppCompatActivity {
     }
 
     private void confirmarPPayPal() {
-        double monto = dtPedido.getTotal()/dtPedido.getCotizacion().getBuy();
-        BigDecimal pmonto = new BigDecimal(Double.toString(monto));
-        pmonto = pmonto.setScale(2, RoundingMode.HALF_UP);
-
         Intent ipaypal = new Intent(VerPedidoActivity.this, PayPalActivity.class);
-        startActivity(ipaypal);
-/*
-        PayPalPayment payPalPayment = new PayPalPayment(pmonto, "USD",
-                dtUsuario.getNombre() +" "+ dtUsuario.getCorreo(), PayPalPayment.PAYMENT_INTENT_SALE);
-
-        Log.i(TAG, payPalPayment.toString());
-        Log.i(TAG, config.toString());
-
-        Intent ipaypal = new Intent(VerPedidoActivity.this, PaymentActivity.class);
-
-        ipaypal.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-        ipaypal.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
         startActivityForResult(ipaypal, PAYPAL_REQUEST_CODE);
-
- */
     }
 
     @Override
@@ -779,16 +762,16 @@ public class VerPedidoActivity extends AppCompatActivity {
 
         if (requestCode == PAYPAL_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                //PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                String confirmation = data.getStringExtra("EXTRA_RESULT_CONFIRMATION");
                 if (confirmation != null) {
-                    try {
-                        String paymentDet = confirmation.toJSONObject().toString(4);
-                        dtPedido.setId_paypal(paymentDet);
-                        dtPedido.setPago(true);
-                        dtPedido.setTipo(ETipoPago.PAYPAL);
-                    } catch (JSONException e){
-                        Log.e(TAG, e.getMessage());
-                    }
+                    dtPedido.setId_paypal(confirmation);
+                    dtPedido.setPago(true);
+                    dtPedido.setTipo(ETipoPago.PAYPAL);
+
+                    pedido_confirm.setVisibility(View.INVISIBLE);
+
+                    confirmarPagoPedido();
 
                 }
             } else if (resultCode == RESULT_CANCELED) {
@@ -802,7 +785,7 @@ public class VerPedidoActivity extends AppCompatActivity {
                 });
                 dialog.show();
             }
-        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
             AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
             dialog.setTitle(R.string.alert_t_error);
             dialog.setIcon(android.R.drawable.ic_dialog_alert);

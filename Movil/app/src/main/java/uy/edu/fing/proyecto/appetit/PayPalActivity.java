@@ -3,6 +3,7 @@ package uy.edu.fing.proyecto.appetit;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,10 +57,11 @@ public class PayPalActivity extends AppCompatActivity {
     private NetworkInfo networkInfo;
     private boolean isConnected;
     private String tokenPayPal;
+    private String payer_id;
+    Map<String, String> links = null;
 
-
-    //PayPalButton payPalButton;
     WebView navegador;
+    ProgressBar progressBar;
 
 
     @Override
@@ -69,139 +72,25 @@ public class PayPalActivity extends AppCompatActivity {
         buscarTokenPayPal();
 
         navegador = findViewById(R.id.webView);
-
-
-
-
-
-/*
-        payPalButton = findViewById(R.id.payPalButton);
-
-        CheckoutConfig config = new CheckoutConfig(
-                this.getApplication(),
-                ConnConstants.PAYPAL_CLIENT_ID,
-                Environment.SANDBOX,
-                String.format("%s://paypalpay", BuildConfig.APPLICATION_ID),
-                CurrencyCode.USD,
-                UserAction.CONTINUE,
-                new SettingsConfig( true, false)
-        );
-        PayPalCheckout.setConfig(config);
-
-
-
-
-        PayPalCheckout.start(
-                createOrderActions -> {
-                    ArrayList purchaseUnits = new ArrayList<>();
-                    purchaseUnits.add(new PurchaseUnit.Builder()
-                            .amount(new Amount.Builder()
-                                    .currencyCode(CurrencyCode.USD)
-                                    .value("10.00")
-                                    .build()
-                            ).build());
-                }
-        );
-*/
-        /*
-        PayPalCheckout.start(
-                createOrderActions -> {
-                    ArrayList purchaseUnits = new ArrayList<>();
-                    purchaseUnits.add(
-                            new PurchaseUnit.Builder()
-                                    .amount(
-                                            new Amount.Builder()
-                                                    .currencyCode(CurrencyCode.USD)
-                                                    .value("10.00")
-                                                    .build()
-                                    )
-                                    .build()
-                    );
-                    Order order = new Order(
-                            OrderIntent.CAPTURE,
-                            new AppContext.Builder()
-                                    .userAction(UserAction.PAY_NOW)
-                                    .build(),
-                            purchaseUnits
-                    );
-                    createOrderActions.create(order, orderId -> {
-
-                    });
-                },
-                approval -> {
-                    approval.getOrderActions().capture(result -> {
-                        // Order successfully captured
-                    });
-                },
-                null,
-                () -> {
-                    // Optional callback for when a buyer cancels the paysheet
-                },
-                errorInfo -> {
-                    // Optional error callback
-                }
-        );
-
-
-        payPalButton.setup(
-                new CreateOrder() {
-                    @Override
-                    public void create(@NotNull CreateOrderActions createOrderActions) {
-                        ArrayList purchaseUnits = new ArrayList<>();
-                        purchaseUnits.add(
-                                new PurchaseUnit.Builder()
-                                        .amount(
-                                                new Amount.Builder()
-                                                        .currencyCode(CurrencyCode.USD)
-                                                        .value("10.00")
-                                                        .build()
-                                        )
-                                        .build()
-                        );
-                        Order order = new Order(
-                                OrderIntent.CAPTURE,
-                                new AppContext.Builder()
-                                        .userAction(UserAction.PAY_NOW)
-                                        .build(),
-                                purchaseUnits
-                        );
-                        //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
-                        //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
-                        //createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
-                    }
-                },
-                new OnApprove() {
-                    @Override
-                    public void onApprove(@NotNull Approval approval) {
-                        approval.getOrderActions().capture(new OnCaptureComplete() {
-                            @Override
-                            public void onCaptureComplete(@NonNull CaptureOrderResult captureOrderResult) {
-                                Log.i("CaptureOrder", String.format("CaptureOrderResult: %s", captureOrderResult));
-                            }
-                        });
-                        //approval.getOrderActions().capture(result -> Log.i("CaptureOrder", String.format("CaptureOrderResult: %s", result)));
-                    }
-                }
-        );
-
-
-         */
+        progressBar = findViewById(R.id.progressBarWebView);
     }
 
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.i(TAG, url);
-            Log.i(TAG, "startsWith: " + url.startsWith("http://127.0.0.1:3000/"));
+            //Log.i(TAG, url);
+            //Log.i(TAG, "startsWith: " + url.startsWith("http://127.0.0.1:3000/"));
             if (!url.startsWith("http://127.0.0.1:3000/")) {
-                Log.i(TAG, "startsWith false");
+                //Log.i(TAG, "startsWith false");
                 return false;
             } else if( Uri.parse(url).getQuery().contains("paymentId")
                     && Uri.parse(url).getQuery().contains("token")
                     && (Uri.parse(url).getQuery().contains("PayerID"))){
                 String access = Uri.parse(url).getQuery();
-                Log.i("payer_id", access);
-                //new LoginUserTask().execute(ConnConstant.API_USRLOGIN_URL + access);
+                payer_id = obtenerParameters(access).get("PayerID");
+                confirmPaymentPayPal();
+                navegador.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 return true;
             }
             return false;
@@ -217,9 +106,23 @@ public class PayPalActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            //progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
             navegador.setVisibility(View.VISIBLE);
         }
+    }
+
+    private Map<String, String> obtenerParameters(String access) {
+        Map<String, String> retorno = new HashMap<String, String>();
+        String[] pairs = access.split("&");
+        for (String pair : pairs) {
+            //Log.i(TAG, pair);
+            String[] apair = pair.split("=");
+            retorno.put(apair[0], apair[1]);
+
+
+        }
+        return retorno;
+
     }
 
     private void buscarTokenPayPal() {
@@ -227,7 +130,7 @@ public class PayPalActivity extends AppCompatActivity {
         networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.PAYPAL_URLTOKEN_ID;
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new PayPalActivity.GetTokenPAYPALTask().execute(stringUrl);
@@ -238,10 +141,22 @@ public class PayPalActivity extends AppCompatActivity {
         networkInfo = connMgr.getActiveNetworkInfo();
 
         String stringUrl = ConnConstants.PAYPAL_URLPAYMENT_ID;
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new PayPalActivity.GetPaymentPAYPALTask().execute(stringUrl);
+        }
+    }
+
+    private void confirmPaymentPayPal() {
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+
+        String stringUrl = links.get("POST");
+        //Log.i(TAG, stringUrl);
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new PayPalActivity.ConfirmPaymentPAYPALTask().execute(stringUrl);
         }
     }
 
@@ -266,22 +181,13 @@ public class PayPalActivity extends AppCompatActivity {
                 if (response.getOk()) {
                     String token = (String) response.getCuerpo();
                     tokenPayPal = token;
-                    Log.i(TAG, token);
+                    //Log.i(TAG, token);
                     buscarPaymentPayPal();
                 } else {
-                    if (ContextCompat.checkSelfPermission(PayPalActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(PayPalActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
-                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
-                        AlertDialog dialog = new AlertDialog.Builder(PayPalActivity.this).create();
-                        dialog.setTitle(R.string.access_title_err);
-                        dialog.setMessage(response.getMensaje());
-                        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_positive), (dialog1, which) -> onBackPressed());
-                        dialog.show();
-
-                    }
-
+                    Intent auth_result = new Intent();
+                    auth_result.putExtra("EXTRA_RESULT_CONFIRMATION", (String) response.getMensaje());
+                    PayPalActivity.this.setResult(RESULT_CANCELED, auth_result);
+                    finish();
                 }
             } else {
                 AlertDialog dialog = new AlertDialog.Builder(PayPalActivity.this).create();
@@ -303,6 +209,55 @@ public class PayPalActivity extends AppCompatActivity {
         }
     }
 
+    private class ConfirmPaymentPAYPALTask extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return ConfirmPaymentInfoGralUrl(urls[0]);
+            } catch (IOException e) {
+                return getString(R.string.err_recuperarpag);
+            }
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(Object result) {
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+                Intent auth_result = new Intent();
+
+                if (response.getOk()) {
+                    String answer = (String) response.getCuerpo();
+
+                    auth_result.putExtra("EXTRA_RESULT_CONFIRMATION", answer);
+                    PayPalActivity.this.setResult(RESULT_OK, auth_result);
+                } else {
+                    auth_result.putExtra("EXTRA_RESULT_CONFIRMATION", (String) response.getMensaje());
+                    PayPalActivity.this.setResult(RESULT_CANCELED, auth_result);
+                }
+                finish();
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(PayPalActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+
+                if (result instanceof String) {
+                    dialog.setMessage((String) result);
+                } else {
+                    dialog.setMessage(getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
+                }
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
+
+
     private DtResponse TokenPayPalInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
@@ -312,8 +267,7 @@ public class PayPalActivity extends AppCompatActivity {
             byte[] encodedAuth = Base64.encode(auth.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
             String authorization = "Basic " + new String(encodedAuth);
 
-            Log.i(TAG, authorization);
-
+            //Log.i(TAG, authorization);
             URL url = new URL(myurl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
@@ -329,7 +283,7 @@ public class PayPalActivity extends AppCompatActivity {
             conn.setDoInput(true);
 
             String data = "grant_type=client_credentials";
-            Log.i(TAG, data);
+            //Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -339,7 +293,7 @@ public class PayPalActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoGralJsonStream(is);
@@ -384,7 +338,7 @@ public class PayPalActivity extends AppCompatActivity {
     public DtResponse readPOSTPaymentMessage(JsonReader reader) throws IOException {
         Boolean ok = false;
         String mensaje = null;
-        Map<String, String> links = null;
+
 
         try {
             reader.beginObject();
@@ -427,22 +381,13 @@ public class PayPalActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 if (response.getOk()) {
                     Map<String, String> links = (Map<String, String>) response.getCuerpo();
-                    Log.i(TAG, links.get("REDIRECT"));
+                    //Log.i(TAG, links.get("REDIRECT"));
                     addRedirectWeb(links.get("REDIRECT"));
                 } else {
-                    if (ContextCompat.checkSelfPermission(PayPalActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(PayPalActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
-                        requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
-                        AlertDialog dialog = new AlertDialog.Builder(PayPalActivity.this).create();
-                        dialog.setTitle(R.string.access_title_err);
-                        dialog.setMessage(response.getMensaje());
-                        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_positive), (dialog1, which) -> onBackPressed());
-                        dialog.show();
-
-                    }
-
+                    Intent auth_result = new Intent();
+                    auth_result.putExtra("EXTRA_RESULT_CONFIRMATION", (String) response.getMensaje());
+                    PayPalActivity.this.setResult(RESULT_CANCELED, auth_result);
+                    finish();
                 }
             } else {
                 AlertDialog dialog = new AlertDialog.Builder(PayPalActivity.this).create();
@@ -470,8 +415,7 @@ public class PayPalActivity extends AppCompatActivity {
         try {
 
             String authorization ="Bearer  " + tokenPayPal;
-
-            Log.i(TAG, authorization);
+            //Log.i(TAG, authorization);
 
             URL url = new URL(myurl);
             conn = (HttpURLConnection) url.openConnection();
@@ -487,7 +431,7 @@ public class PayPalActivity extends AppCompatActivity {
             conn.setDoInput(true);
 
             String data = PaymentToJSON();
-            Log.i(TAG, data);
+            //Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -497,7 +441,7 @@ public class PayPalActivity extends AppCompatActivity {
             conn.connect();
             int response = conn.getResponseCode();
 
-            Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
             if (response == 200) {
                 is = conn.getInputStream();
                 return readInfoPaymentJsonStream(is);
@@ -594,7 +538,6 @@ public class PayPalActivity extends AppCompatActivity {
 
             oTransactions.put("description", dtPedido.getRes_nombre());
             oTransactions.put("custom", getString(R.string.app_name));
-            oTransactions.put("invoice_number", "0");
 
             payment_options.put("allowed_payment_method", "INSTANT_FUNDING_SOURCE");
             oTransactions.put("payment_options", payment_options);
@@ -606,6 +549,24 @@ public class PayPalActivity extends AppCompatActivity {
             redirect_urls.put("return_url", "http://127.0.0.1:3000/success");
             redirect_urls.put("cancel_url", "http://127.0.0.1:3000/cancel");
             jsonObject.put("redirect_urls", redirect_urls);
+
+            res = jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+            res = "";
+        }
+
+        return res;
+    }
+
+    private String ConfirmPaymentToJSON() {
+        String res = "";
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put("payer_id", payer_id);
 
             res = jsonObject.toString();
         } catch (JSONException e) {
@@ -662,7 +623,117 @@ public class PayPalActivity extends AppCompatActivity {
         wstts.setUserAgentString(ConnConstants.USER_AGENT);
 
         navegador.setWebViewClient(new MyWebViewClient());
+    }
 
+    private DtResponse ConfirmPaymentInfoGralUrl(String myurl) throws IOException {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+
+            String authorization ="Bearer  " + tokenPayPal;
+            //Log.i(TAG, authorization);
+
+            URL url = new URL(myurl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            conn.setRequestProperty("Authorization", authorization);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "*/*");
+
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            String data = ConfirmPaymentToJSON();
+            //Log.i(TAG, data);
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            OutputStream stream = conn.getOutputStream();
+            stream.write(out);
+
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
+                is = conn.getInputStream();
+                return readInfoConfirPaymentJsonStream(is);
+            } else if (response == 201) {
+                is = conn.getInputStream();
+                return readInfoConfirPaymentJsonStream(is);
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readInfoConfirPaymentJsonStream(is);
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readInfoConfirPaymentJsonStream(is);
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
+            }
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+                conn.disconnect();
+            }
+        }
+    }
+
+    public DtResponse readInfoConfirPaymentJsonStream(InputStream in) throws IOException {
+        //creating an InputStreamReader object
+        InputStreamReader isReader = new InputStreamReader(in);
+        //Creating a BufferedReader object
+        BufferedReader breader = new BufferedReader(isReader);
+        StringBuffer sb = new StringBuffer();
+        String str;
+        while ((str = breader.readLine()) != null) {
+            sb.append(str);
+        }
+        //Log.i(TAG, sb.toString());
+        JsonReader reader = new JsonReader(new StringReader(sb.toString()));
+        try {
+            return readConfirmPaymentMessage(reader);
+        } finally {
+            reader.close();
+        }
+    }
+
+    public DtResponse readConfirmPaymentMessage(JsonReader reader) throws IOException {
+        Boolean ok;
+        String mensaje;
+        String state = null;
+        String answer = null;
+
+        try {
+            reader.beginObject();
+            ok = true;
+            mensaje = "Payment confirm ok";
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                if (name.equals("id")) {
+                    answer = reader.nextString();
+                } else if (name.equals("message") && reader.peek() != JsonToken.NULL) {
+                    mensaje = reader.nextString();
+                } else if (name.equals("state") && reader.peek() != JsonToken.NULL) {
+                    state = reader.nextString();
+                } else {
+                    reader.skipValue();
+                }
+            }
+        } catch (Exception e) {
+            ok = false;
+            mensaje = "Payment confirm error";
+        }
+        reader.endObject();
+        if(state != null && answer != null)
+            answer = answer + ":_:" + state;
+
+        return new DtResponse(ok, mensaje, answer);
 
     }
 

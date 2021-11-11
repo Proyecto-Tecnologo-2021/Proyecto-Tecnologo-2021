@@ -13,7 +13,6 @@ public class ConnConstants {
     final public static String PAYPAL_URLTOKEN_ID = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
     final public static String PAYPAL_URLPAYMENT_ID = "https://api-m.sandbox.paypal.com/v1/payments/payment";
 
-
     //COTIZACION
     final public static String GET_COTIZACION = "https://cotizaciones-brou.herokuapp.com/api/currency/{date}";
 
