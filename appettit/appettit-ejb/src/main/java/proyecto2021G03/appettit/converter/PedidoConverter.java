@@ -48,6 +48,7 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .id_restaurante(pedido.getId_restaurante())
             	.id_cliente(pedido.getId_cliente())
             	.id_entrega(pedido.getId_entrega())
+            	.cotizacion(pedido.getCotizacion())
                 .build();
     }
 
@@ -73,6 +74,7 @@ public class PedidoConverter extends AbstractConverter<Pedido, PedidoDTO>{
                 .id_restaurante(pedidoDTO.getId_restaurante())
             	.id_cliente(pedidoDTO.getId_cliente())
             	.id_entrega(pedidoDTO.getId_entrega())
+            	.cotizacion(pedidoDTO.getCotizacion())
             	.build();
     }
 }

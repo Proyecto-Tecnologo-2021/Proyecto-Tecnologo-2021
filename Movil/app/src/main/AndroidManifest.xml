@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uy.edu.fing.proyecto.appetit">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,6 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
+        <activity
+            android:name=".PayPalActivity"
+            android:exported="false"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter android:label="uy.edu.fing.proyecto.appetit://paypalpay">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "example://gizmos” -->
+                <data android:scheme="uy.edu.fing.proyecto.appetit"
+                    android:host="paypalpay" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".VerPedidoActivity"
             android:exported="false" />

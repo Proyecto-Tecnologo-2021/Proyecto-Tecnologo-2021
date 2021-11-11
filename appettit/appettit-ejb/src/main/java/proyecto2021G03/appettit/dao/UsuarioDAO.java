@@ -8,15 +8,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.sql.Select;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
-import proyecto2021G03.appettit.entity.Administrador;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Direccion;
-import proyecto2021G03.appettit.entity.Restaurante;
-import proyecto2021G03.appettit.entity.Usuario;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
+import proyecto2021G03.appettit.entity.*;
 
 @Singleton
 public class UsuarioDAO implements IUsuarioDAO {
@@ -27,45 +26,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 	
 	private EntityManager em;
 
-	/* GENERAL 
-	@Override
-	public Usuario crear(Usuario usuario) {
-		em.persist(usuario);
-
-		return usuario;
-	}
-
-	@Override
-	public Usuario editar(Usuario usuario) {
-		em.merge(usuario);
-		return usuario;
-	}
-
-	@Override
-	public void eliminar(Usuario usuario) {
-		em.remove(usuario);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Usuario> listar() {
-		Query consulta = em.createQuery("SELECT _usu FROM Usuario as _usu");
-		return consulta.getResultList();
-	}
-
-	@Override
-	public Usuario buscarPorId(Long id) {
-		return em.find(Usuario.class, id);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Usuario> buscarPorNombre(String nombre) {
-		Query consulta = em.createQuery("SELECT _usu FROM Usuario as _usu where nombre = :nombre")
-				.setParameter("nombre", nombre);
-		return consulta.getResultList();
-	}
-*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> buscarPorCorreo(String correo) {
@@ -118,7 +78,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public List<Administrador> buscarPorNombreAdministrador(String nombre) {
-		List<Administrador> usuarios = em.createQuery("from Adminsitrador _a where _a.nombre = :nombre", Administrador.class)
+		List<Administrador> usuarios = em.createQuery("from Administrador _a where _a.nombre = :nombre", Administrador.class)
 		.setParameter("nombre", nombre)
 		.getResultList();
 		return usuarios;
@@ -257,6 +217,14 @@ public class UsuarioDAO implements IUsuarioDAO {
 				  	
 	}
 
+	@Override
+	public RestauranteRDTO buscarPorId(Long id) {
+		return null;
+	}
+
+
+
+
 	/* CLIENTE */
 
 	@Override
@@ -316,16 +284,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	@Override
 	public Cliente buscarPorIdCliente(Long id) {
-
-		/*
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and id = :id");
-		consulta.setParameter("type", "cliente");
-		consulta.setParameter("id", id);
-
-		List<Cliente> usuarios = consulta.getResultList();
-		return usuarios;
-		*/
-		
 		return em.find(Cliente.class, id);
 	}
 
@@ -391,6 +349,19 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return em.find(Direccion.class, id);
 	}
 
-	
+	@Override
+	public PedidoRDTO buscarultimo(Long id) {
+		Query ultimo = 	em.createQuery("SELECT u from Usuario u order by u.id desc ");
+				List<Usuario> listita= ultimo.setMaxResults(1).getResultList();
+				for(Usuario usr:listita){
+					System.out.println(usr.getId());
+					System.out.println("imprimo char pija");
+
+				}
+		return null;
+
+
+	}
+
 
 }

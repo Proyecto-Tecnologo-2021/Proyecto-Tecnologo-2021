@@ -82,6 +82,8 @@ public class Pedido implements Serializable {
 	@ManyToMany
 	@Builder.Default
 	private List<ExtraMenu> extraMenus = new ArrayList<ExtraMenu>();
+	
+	private Double cotizacion;
 
 /*
 	public Pedido( TipoPago tipo, Boolean pago, LocalDateTime fecha, Double total, Restaurante restaurante, Cliente cliente, List<Menu> menus, List<Promocion> promociones, Direccion entrega, EstadoPedido estado) {

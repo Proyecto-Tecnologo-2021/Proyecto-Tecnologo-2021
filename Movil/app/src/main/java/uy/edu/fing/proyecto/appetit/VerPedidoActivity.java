@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -28,12 +27,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,12 +46,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.adapter.ProductoPedidoAdapter;
@@ -69,7 +70,6 @@ public class VerPedidoActivity extends AppCompatActivity {
     private static final String TAG = "VerPedidoActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     private static final int PAYPAL_REQUEST_CODE = 20213;
-    final static Integer RC_SIGN_IN = 20213;
     final CharSequence[] itemsFP = {"Contado", "PayPal"};
     private ETipoPago opFP = ETipoPago.EFECTIVO;
     private String paypal_answer = null;
@@ -91,8 +91,13 @@ public class VerPedidoActivity extends AppCompatActivity {
     TextView rest_cal;
     RatingBar rest_star;
     Button pedido_confirm;
-
- 
+/*
+    private static PayPalConfiguration config = new PayPalConfiguration()
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            .clientId(ConnConstants.PAYPAL_CLIENT_ID)
+            .acceptCreditCards(false)
+            .merchantName("Appetit");
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +105,13 @@ public class VerPedidoActivity extends AppCompatActivity {
         setTitle(title);
         
         setContentView(R.layout.activity_ver_pedido);
+/*
+        Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
+        ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        startService(ipaypals);
 
+
+ */
         if(dtPedido.getIdrest() == null){
             Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
             startActivity(imenu);
@@ -128,8 +139,6 @@ public class VerPedidoActivity extends AppCompatActivity {
                     startActivity(imenu);
                     return true;
                 case R.id.menu_pedido:
-                    //Intent ipedido = new Intent(VerPedidoActivity.this, VerPedidoActivity.class);
-                    //startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
                     return true;
@@ -160,7 +169,7 @@ public class VerPedidoActivity extends AppCompatActivity {
                         dtPedido.setPago(false);
                         confirmarPContado();
                     } else if (opFP == ETipoPago.PAYPAL){
-                        Toast.makeText(VerPedidoActivity.this, "PayPal",Toast.LENGTH_SHORT).show();
+                        confirmarPPayPal();
                     }
                 }
             });
@@ -689,29 +698,6 @@ public class VerPedidoActivity extends AppCompatActivity {
     private String AddPedidoToJSON() {
         String res = "";
 
-        /*
-        {
-    "idcli":10,
-    "iddir":2,
-    "menus":[{
-              "id": 2,
-              "id_restaurante": 9,
-              "tipo": "MENU"
-             },
-             {
-              "id": 2,
-              "id_restaurante": 9,
-              "tipo": "PROM"
-             }],
-    "pago":true,
-    "tipo":"EFECTIVO",
-    "id_paypal": null,
-    "total":"516",
-    "idrest":9,
-    "fecha":null
-}
-         */
-
         JSONObject jsonObject = new JSONObject();
         JSONArray menusArray = new JSONArray();
         try {
@@ -756,5 +742,80 @@ public class VerPedidoActivity extends AppCompatActivity {
         return res;
     }
 
+    private void confirmarPPayPal() {
+        double monto = dtPedido.getTotal()/dtPedido.getCotizacion().getBuy();
+        BigDecimal pmonto = new BigDecimal(Double.toString(monto));
+        pmonto = pmonto.setScale(2, RoundingMode.HALF_UP);
 
+        Intent ipaypal = new Intent(VerPedidoActivity.this, PayPalActivity.class);
+        startActivity(ipaypal);
+/*
+
+        PayPalPayment payPalPayment = new PayPalPayment(pmonto, "USD",
+                dtUsuario.getNombre() +" "+ dtUsuario.getCorreo(), PayPalPayment.PAYMENT_INTENT_SALE);
+
+        Log.i(TAG, payPalPayment.toString());
+        Log.i(TAG, config.toString());
+
+        Intent ipaypal = new Intent(VerPedidoActivity.this, PaymentActivity.class);
+
+        ipaypal.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        ipaypal.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
+        startActivityForResult(ipaypal, PAYPAL_REQUEST_CODE);
+
+ */
+    }
+
+    @Override
+    protected void onDestroy() {
+ //       stopService(new Intent(VerPedidoActivity.this, PayPalService.class));
+        super.onDestroy();
+    }
+
+/*
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirmation != null) {
+                    try {
+                        String paymentDet = confirmation.toJSONObject().toString(4);
+                        dtPedido.setId_paypal(paymentDet);
+                        dtPedido.setPago(true);
+                        dtPedido.setTipo(ETipoPago.PAYPAL);
+                    } catch (JSONException e){
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
+                dialog.setTitle(R.string.alert_t_error);
+                dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+                dialog.setMessage(getString(R.string.carr_cancelpaypal));
+
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                });
+                dialog.show();
+            }
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
+            AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
+            dialog.setTitle(R.string.alert_t_error);
+            dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+            dialog.setMessage(getString(R.string.carr_errpaypal));
+
+            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+            });
+            dialog.show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+
+ */
 }

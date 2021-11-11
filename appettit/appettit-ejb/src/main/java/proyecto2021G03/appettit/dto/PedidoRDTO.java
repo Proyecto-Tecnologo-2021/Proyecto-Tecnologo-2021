@@ -23,6 +23,7 @@ public class PedidoRDTO {
     private List<MenuRDTO> menus;
     private List<ExtraMenuRDTO> extras;
     private String id_paypal;
+    private Double cotizacion;
     
 
 

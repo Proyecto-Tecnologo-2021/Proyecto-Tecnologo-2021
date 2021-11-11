@@ -16,4 +16,6 @@ public interface IPedidoService {
     public PedidoRDTO crearFront(PedidoRDTO pedidoRDTO)throws AppettitException;
     public List<PedidoRDTO> listarPorClienteREST(Long id) throws AppettitException;
     public List<PedidoDTO> listarPorRestaurante(Long id) throws AppettitException;
+    public PedidoRDTO ultimo (Long id)throws AppettitException;
+
 }

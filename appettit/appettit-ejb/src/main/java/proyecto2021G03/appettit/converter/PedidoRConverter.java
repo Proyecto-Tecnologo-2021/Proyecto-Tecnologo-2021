@@ -52,20 +52,6 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
     @Override
     public PedidoRDTO fromEntity(Pedido pedido) {
         if(pedido== null) return null;
-/*
-                  Pedido test = pedido ;
-
-               PedidoRDTO pedidofinal = PedidoRDTO.builder()
-                .idcli(pedido.getId())
-                .iddir(pedido.getCliente().getId())
-                .menus(menuRConverter.fromEntityList(pedido.getMenus()))
-                .pago(pedido.getPago())
-                .tipo(pedido.getTipo())
-                .total(pedido.getTotal())
-                .idrest(pedido.getRestaurante().getId())
-                .fecha(LocalDateTime.now())
-                .build();
-*/
         PedidoRDTO pedidofinal = PedidoRDTO.builder()
         		.id(pedido.getId())
                 .idcli(pedido.getId_cliente())
@@ -79,6 +65,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .estado(pedido.getEstado())
                 .extras(extraConverter.fromEntityToRDTO(pedido.getExtraMenus()))
                 .id_paypal(pedido.getId_paypal())
+                .cotizacion(pedido.getCotizacion())
                 .build();
         
                return pedidofinal;
@@ -89,19 +76,6 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
     @Override
     public Pedido fromDTO(PedidoRDTO pedidoRDTO) {
         if(pedidoRDTO== null) return null;
-/*        
-        return Pedido.builder()
-                .tipo(pedidoRDTO.getTipo())
-                .pago(pedidoRDTO.getPago())
-                .fecha(LocalDateTime.now())
-                .total(pedidoRDTO.getTotal())
-                .restaurante(isuarioDAO.buscarRestaurantePorId(pedidoRDTO.getIdrest()))
-                .cliente(isuarioDAO.buscarPorIdCliente(pedidoRDTO.getIdcli()))
-                .menus(menuRConverter.fromDTO(pedidoRDTO.filtroMenu()))
-                .promociones(promocionRConverter.fromDTO(pedidoRDTO.filtroPromo()))
-                .estado(EstadoPedido.CONFIRMADO)
-                .build();
-*/
         return Pedido.builder()
         		.id(null)
         		.estado(pedidoRDTO.getEstado())
@@ -120,6 +94,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .id_entrega(pedidoRDTO.getIddir())
                 .reclamo(null)
                 .id_paypal(pedidoRDTO.getId_paypal())
+                .cotizacion(pedidoRDTO.getCotizacion())
         		.build();
         
     }
