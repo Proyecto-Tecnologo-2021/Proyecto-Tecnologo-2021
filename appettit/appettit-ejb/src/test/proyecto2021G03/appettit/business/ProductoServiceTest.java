@@ -13,6 +13,7 @@ import proyecto2021G03.appettit.dao.ICategoriaDAO;
 import proyecto2021G03.appettit.dao.IProductoDAO;
 import proyecto2021G03.appettit.dto.ProductoCrearDTO;
 import proyecto2021G03.appettit.dto.ProductoDTO;
+import proyecto2021G03.appettit.dto.ProductoRDTO;
 import proyecto2021G03.appettit.entity.Categoria;
 import proyecto2021G03.appettit.entity.Producto;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -217,6 +218,27 @@ public class ProductoServiceTest extends TestCase {
         try {
             ProductoDTO obtenido = productoServiceI.editar(productoDTO);
             assertEquals(obtenido, productoDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testListarRProducto(){
+        ProductoRDTO productoDTO = new ProductoRDTO(1L, 2L, "nombre", 3L, null);
+        List<ProductoRDTO> productosDTO = new ArrayList<ProductoRDTO>();
+        productosDTO.add(productoDTO);
+
+        Producto producto = new Producto(1L, 2L, "nombre", 3L, null, null);
+        List<Producto> productos = new ArrayList<Producto>();
+        productos.add(producto);
+
+        Mockito.when(productoServiceI.pDAO.listar()).thenReturn(productos);
+        Mockito.when(productoServiceI.pConverter.fromEntityToRDTO(productos)).thenReturn(productosDTO);
+
+        try {
+            List<ProductoRDTO> obtenidos = productoServiceI.listarRProducto();
+            assertEquals(obtenidos, productosDTO);
         } catch (AppettitException e) {
             e.printStackTrace();
         }

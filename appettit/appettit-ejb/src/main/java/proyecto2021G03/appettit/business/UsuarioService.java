@@ -396,7 +396,6 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteDTO editarDireccion(Long id, DireccionCrearDTO direccionDTO) throws AppettitException {
-
 		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(direccionDTO.getId_cliente());
 		try {
 			if (clientes.size() == 0) {
@@ -529,7 +528,6 @@ public class UsuarioService implements IUsuarioService {
 	public List<ClienteDTO> listarClientes() throws AppettitException {
 		List<ClienteDTO> clientes = new ArrayList<ClienteDTO>();
 		try {
-
 			Iterator<ClienteDTO> it = usrConverter.fromCliente(usrDAO.listarClientes()).iterator();
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();

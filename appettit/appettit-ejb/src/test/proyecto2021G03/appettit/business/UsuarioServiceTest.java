@@ -9,13 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
-import proyecto2021G03.appettit.entity.Administrador;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Direccion;
-import proyecto2021G03.appettit.entity.Restaurante;
+import proyecto2021G03.appettit.entity.*;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.time.LocalTime;
@@ -36,6 +34,9 @@ public class UsuarioServiceTest extends TestCase {
     private UsuarioConverter mockusuarioConverter;
 
     @Mock
+    private LocalidadConverter mockLocalidadConverter;
+
+    @Mock
     private IGeoService mockiGeoSrvc;
 
     @Before
@@ -44,6 +45,7 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.usrDAO = this.mockiUsuarioDAO;
         usuarioServiceI.usrConverter = this.mockusuarioConverter;
         usuarioServiceI.geoSrv = this.mockiGeoSrvc;
+        usuarioServiceI.locConverter = this.mockLocalidadConverter;
     }
 
     @Test
@@ -222,10 +224,8 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.editarClienteRE(1L, clienteModificarDTO);
     }
 
-    /*public void testEditarDireccion() {
-    }
 
-    public void testEliminarDireccion() {
+    /*public void testEliminarDireccion() {
     }
 
     public void testAgregarDireccion() {
@@ -282,7 +282,7 @@ public class UsuarioServiceTest extends TestCase {
     public void testBuscarPorCorreoRestaurante() {
     }*/
 
-    @Test
+    /*@Test
     public void testEditarClienteRE(){
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         List<Direccion> direcciones = new ArrayList<Direccion>();
@@ -312,6 +312,38 @@ public class UsuarioServiceTest extends TestCase {
         }
     }
 
+    @Test
+    public void testEditarDireccion()  {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionCrearDTO direccionDTO = new DireccionCrearDTO(1L, "alias", "calle", "123", "2", "refs", "-4.4555651,-43.8849088");
+        DireccionDTO direccionDTO2 = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO2);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+        LocalidadDTO barrioDTO = new LocalidadDTO(3L, 2L, 1L, "nombre", "-34.8844477,-56.1922389");
+        Localidad barrio = new Localidad(2L, 3L, 4L, "nombre", null, "-34.8844477,-56.1922389");
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+        Mockito.when(usuarioServiceI.locConverter.fromDTO(barrioDTO)).thenReturn(barrio);
+        Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.geoSrv.localidadPorPunto(direccionDTO.getGeometry())).thenReturn(barrioDTO);
+            ClienteDTO obtenido = usuarioServiceI.editarDireccion(1L, direccionDTO);
+            assertEquals(obtenido, clienteDTO);
+        } catch (AppettitException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+     */
 
     /*@Test
     public void testCrearCliente() {
@@ -332,7 +364,7 @@ public class UsuarioServiceTest extends TestCase {
             e.printStackTrace();
         }
 
-    }*/
+    }
 
     @Test
     public void testEditarCliente() {
@@ -359,6 +391,6 @@ public class UsuarioServiceTest extends TestCase {
         } catch (AppettitException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
