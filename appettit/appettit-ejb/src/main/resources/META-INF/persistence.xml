@@ -46,13 +46,7 @@
 				
 				<property name="hibernate.show_sql" value="false" />
  				<property name="javax.persistence.schema-generation.database.action" value="none"/>
-<<<<<<< HEAD
-=======
-
  				<!-- <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
-
->>>>>>> f875452d35ad25f42ba1a7b733f7595613b3b10a
- 				<!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
 				<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
 				
       </properties>

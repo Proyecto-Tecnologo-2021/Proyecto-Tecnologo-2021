@@ -349,8 +349,9 @@ public class UsuarioServiceTest extends TestCase {
 
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
         Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
         Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
-        //Mockito.when(usuarioServiceI.crearJsonWebToken(cliente)).thenReturn(token);
+        Mockito.when(usuarioServiceI.crearJsonWebToken(cliente)).thenReturn(token);
 
         try {
             String obtenido = usuarioServiceI.editarCliente(1L, clienteIn);

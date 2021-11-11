@@ -34,6 +34,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 
 import org.json.JSONArray;
@@ -91,13 +96,13 @@ public class VerPedidoActivity extends AppCompatActivity {
     TextView rest_cal;
     RatingBar rest_star;
     Button pedido_confirm;
-/*
+
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(ConnConstants.PAYPAL_CLIENT_ID)
             .acceptCreditCards(false)
             .merchantName("Appetit");
-*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,13 +110,10 @@ public class VerPedidoActivity extends AppCompatActivity {
         setTitle(title);
         
         setContentView(R.layout.activity_ver_pedido);
-/*
         Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
         ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(ipaypals);
 
-
- */
         if(dtPedido.getIdrest() == null){
             Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
             startActivity(imenu);
@@ -301,6 +303,7 @@ public class VerPedidoActivity extends AppCompatActivity {
                 //Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
                     DtRestaurante restaurante = (DtRestaurante) response.getCuerpo();
+                    dtPedido.setRes_nombre(restaurante.getNombre());
                     addRestaurante(restaurante);
                 } else {
                     if (ContextCompat.checkSelfPermission(VerPedidoActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
@@ -750,7 +753,6 @@ public class VerPedidoActivity extends AppCompatActivity {
         Intent ipaypal = new Intent(VerPedidoActivity.this, PayPalActivity.class);
         startActivity(ipaypal);
 /*
-
         PayPalPayment payPalPayment = new PayPalPayment(pmonto, "USD",
                 dtUsuario.getNombre() +" "+ dtUsuario.getCorreo(), PayPalPayment.PAYMENT_INTENT_SALE);
 
@@ -768,11 +770,10 @@ public class VerPedidoActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
- //       stopService(new Intent(VerPedidoActivity.this, PayPalService.class));
+        stopService(new Intent(VerPedidoActivity.this, PayPalService.class));
         super.onDestroy();
     }
 
-/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
@@ -815,7 +816,4 @@ public class VerPedidoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
-
-
- */
 }
