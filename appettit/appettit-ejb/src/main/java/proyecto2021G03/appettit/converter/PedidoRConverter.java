@@ -1,22 +1,12 @@
 package proyecto2021G03.appettit.converter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.DireccionDTO;
-import proyecto2021G03.appettit.dto.EstadoPedido;
-import proyecto2021G03.appettit.dto.ExtraMenuDTO;
-import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
-import proyecto2021G03.appettit.dto.PromocionDTO;
-import proyecto2021G03.appettit.dto.ReclamoDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.TipoPago;
-import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Pedido;
 
 @Singleton
@@ -48,6 +38,9 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
 
     @EJB
     ExtraMenuConverter extraConverter;
+    
+    @EJB
+    DireccionConverter direccionConverter;
     
     @Override
     public PedidoRDTO fromEntity(Pedido pedido) {

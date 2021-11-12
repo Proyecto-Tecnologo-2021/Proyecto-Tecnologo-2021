@@ -33,6 +33,8 @@ public class PedidoService implements IPedidoService {
     @EJB
     ExtraMenuConverter extraMenuConverter;
 
+    @EJB
+    ICalificacionRRService calificacionSrv;
 
 
     @Override
@@ -143,7 +145,7 @@ public class PedidoService implements IPedidoService {
 	@Override
 	public List<PedidoRDTO> listarPorClienteREST(Long id) throws AppettitException {
 		try {
-            return pedidoRConverter.fromEntity(iPedidoDao.listarPorCliente(id));
+			return  pedidoRConverter.fromEntity(iPedidoDao.listarPorCliente(id));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }

@@ -24,7 +24,6 @@ public class PedidoRDTO {
     private List<ExtraMenuRDTO> extras;
     private String id_paypal;
     private Double cotizacion;
-    
 
 
     public List<MenuRDTO> filtroMenu(){
@@ -34,30 +33,11 @@ public class PedidoRDTO {
         	if(menu.getTipo().equalsIgnoreCase("MENU")) {
         		listafinal.add(menu);
         	}
-            /*
-        	if (menu.getDescuento() == 0D) {
-                listafinal.add(menu);
-            }
-            */
         }
         return listafinal;
     }
 
 
-
-    /*
-    public List<MenuRDTO> filtroPromo(){
-                //FILTRA SOLO LAS PROMOCIONES
-        List<MenuRDTO> listafinal= new ArrayList<>();
-        for(MenuRDTO menu: this.menus) {
-            if (menu.getDescuento() != 0D) {
-                listafinal.add(menu);
-            }
-        }
-        return listafinal;
-    }
-    */
-    
     public List<PromocionRDTO> filtroPromo(){
     	List<PromocionRDTO> listafinal = new ArrayList<PromocionRDTO>();
     	for(MenuRDTO menu: this.menus) {

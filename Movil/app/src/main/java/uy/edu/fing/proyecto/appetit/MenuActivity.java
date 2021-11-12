@@ -13,10 +13,14 @@ import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -100,13 +104,16 @@ public class MenuActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
+        bottomNavigationView.setSelectedItemId(R.id.menu_menus);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
 
                 case R.id.menu_menus:
                     return true;
+                case R.id.menu_rest:
+                    return true;
                 case R.id.menu_pedido:
-                    Intent ipedido = new Intent(MenuActivity.this, VerPedidoActivity.class);
+                    Intent ipedido = new Intent(MenuActivity.this, VerPedidosActivity.class);
                     startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
@@ -114,6 +121,31 @@ public class MenuActivity extends AppCompatActivity {
             }
             return false;
         });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(dtPedido.getIdrest()!=null){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.pedido_menu, menu);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.pmenu_ver:
+                Intent ipedido = new Intent(MenuActivity.this, VerPedidoActivity.class);
+                startActivity(ipedido);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
 

@@ -5,9 +5,11 @@ import javax.ejb.Singleton;
 
 import com.vividsolutions.jts.io.ParseException;
 
+import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IGeoService;
 import proyecto2021G03.appettit.dto.DireccionCrearDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
+import proyecto2021G03.appettit.dto.DireccionRDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.entity.Direccion;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -16,10 +18,13 @@ import proyecto2021G03.appettit.exception.AppettitException;
 public class DireccionConverter extends AbstractConverter<Direccion, DireccionDTO> {
 
 	@EJB
-	private LocalidadConverter localidadConverter;
+	public LocalidadConverter localidadConverter;
 	
 	@EJB
-	private IGeoService gService;
+	public IGeoService gService;
+	
+	@EJB
+	public IDepartamentoService deptoSrv;
 	
 	@Override
 	public DireccionDTO fromEntity(Direccion e) {
@@ -64,6 +69,21 @@ public class DireccionConverter extends AbstractConverter<Direccion, DireccionDT
 				.barrio(localidadConverter.fromDTO(barrio))
 				.geometry(d.getGeometry())
 				.build();
+	}
+	
+	public DireccionRDTO fromEntityToRDTO(Direccion e) {
+		if(e == null) return null;
+		
+		return DireccionRDTO.builder()
+				.id(e.getId())
+				.alias(e.getAlias())
+				.calle(e.getCalle())
+				.numero(e.getNumero())
+				.apartamento(e.getApartamento())
+				.referencias(e.getReferencias())
+				.barrio(e.getBarrio().getNombre())
+				.geometry(e.getGeometry())
+				.build();		
 	}
 	
 }

@@ -132,6 +132,7 @@ public class VerPedidoActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        bottomNavigationView.setSelectedItemId(-1);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
 
@@ -139,7 +140,12 @@ public class VerPedidoActivity extends AppCompatActivity {
                     Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
                     startActivity(imenu);
                     return true;
+                case R.id.menu_rest:
+                    return true;
                 case R.id.menu_pedido:
+                    Intent ipedidos = new Intent(VerPedidoActivity.this, VerPedidosActivity.class);
+                    startActivity(ipedidos);
+
                     return true;
                 case R.id.menu_perfil:
                     return true;
@@ -177,7 +183,7 @@ public class VerPedidoActivity extends AppCompatActivity {
             dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_cancel), new
                     DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_cancel, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(VerPedidoActivity.this, R.string.alert_btn_cancel, Toast.LENGTH_SHORT).show();
                         }
                     });
             dialog.show();
@@ -262,7 +268,13 @@ public class VerPedidoActivity extends AppCompatActivity {
             });
 
         } else {
-            onBackPressed();
+            //Se vacía el pedido
+            dtPedido.setMenus(new ArrayList<>());
+            dtPedido.setIdrest(null);
+            Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
+            startActivity(imenu);
+
+            //onBackPressed();
         }
     }
 
