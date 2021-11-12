@@ -76,13 +76,12 @@ public class PedidoDAO implements IPedidoDao {
 	}
 
 	@Override
-			public Pedido ultimo(Long id) {
-			Query ultimo = 	em.createQuery("SELECT u from Pedido u order by u.id desc ");
+			public Pedido ultimo(Long idCliente) {
+        Query ultimo =  em.createQuery("SELECT p from Pedido p where p.id_cliente = :idC order by p.id desc").setParameter("idC", idCliente);;
 			List<Pedido> listita= ultimo.setMaxResults(1).getResultList();
 			Pedido last	= null;
 			for(Pedido usr:listita){
 				//System.out.println(usr.getId());
-				System.out.println("imprimo char pija");
 				last = usr;
 			}
 			return last;

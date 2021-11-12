@@ -65,7 +65,7 @@ public class PedidoREST {
 		} catch (AppettitException e) {
 			e.printStackTrace();
 		}
-		respuesta = new RespuestaREST<PedidoRDTO>(true, "Categorias listadas con éxito.", pedido);
+		respuesta = new RespuestaREST<PedidoRDTO>(true, "Ultimo pedido traido con éxito.", pedido);
 		return Response.ok(respuesta).build();
 	}
 
