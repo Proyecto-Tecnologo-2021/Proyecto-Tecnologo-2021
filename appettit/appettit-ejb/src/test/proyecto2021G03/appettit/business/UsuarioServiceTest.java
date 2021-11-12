@@ -282,7 +282,7 @@ public class UsuarioServiceTest extends TestCase {
     public void testBuscarPorCorreoRestaurante() {
     }*/
 
-    /*@Test
+    @Test
     public void testEditarClienteRE(){
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         List<Direccion> direcciones = new ArrayList<Direccion>();
@@ -297,7 +297,7 @@ public class UsuarioServiceTest extends TestCase {
         String tokenjwt = "token";
 
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
-        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+        //Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
         Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
         Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
         Mockito.when(usuarioServiceI.usrConverter.ClienteMDTOfromCliente(cliente)).thenReturn(clienteMDTO);
@@ -343,7 +343,7 @@ public class UsuarioServiceTest extends TestCase {
         }
     }
 
-     */
+
 
     /*@Test
     public void testCrearCliente() {
@@ -364,7 +364,7 @@ public class UsuarioServiceTest extends TestCase {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     @Test
     public void testEditarCliente() {
@@ -372,6 +372,11 @@ public class UsuarioServiceTest extends TestCase {
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         List<Direccion> direcciones = new ArrayList<Direccion>();
         Cliente cliente = new Cliente(false, direcciones);
+        cliente.setId(1L);
+        cliente.setUsername("username");
+        cliente.setNombre("nombre");
+        cliente.setCorreo("mail@mail.com");
+        cliente.setTelefono("1235");
         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
         List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
         direccionesDto.add(direccionDTO);
@@ -380,9 +385,9 @@ public class UsuarioServiceTest extends TestCase {
         String token = "token";
 
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
-        Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
+        /*Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
         Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
-        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);*/
         Mockito.when(usuarioServiceI.crearJsonWebToken(cliente)).thenReturn(token);
 
         try {
@@ -391,6 +396,6 @@ public class UsuarioServiceTest extends TestCase {
         } catch (AppettitException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
 }
