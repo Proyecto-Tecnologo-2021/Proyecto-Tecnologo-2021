@@ -6,12 +6,9 @@ import javax.ejb.Local;
 
 import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
 import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.dto.RestauranteRDTO;
-import proyecto2021G03.appettit.entity.Administrador;
-import proyecto2021G03.appettit.entity.Cliente;
-import proyecto2021G03.appettit.entity.Direccion;
-import proyecto2021G03.appettit.entity.Restaurante;
-import proyecto2021G03.appettit.entity.Usuario;
+import proyecto2021G03.appettit.entity.*;
 
 @Local
 public interface IUsuarioDAO {
@@ -56,5 +53,6 @@ public interface IUsuarioDAO {
 	public List<Cliente> buscarPorIdClienteInteger(Long id);
 	public CalificacionGralClienteDTO calificacionGralCliente(Long id);
 	public Direccion buscarDireccionPorId(Long id);
+	public PedidoRDTO buscarultimo(Long id);
 
 }

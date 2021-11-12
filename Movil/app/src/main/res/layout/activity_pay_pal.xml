@@ -7,6 +7,25 @@
     android:orientation="vertical"
     tools:context=".PayPalActivity">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
 
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </WebView>
+        <ProgressBar
+            android:id="@+id/progressBarWebView"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            />
+    </FrameLayout>
 
 </LinearLayout>

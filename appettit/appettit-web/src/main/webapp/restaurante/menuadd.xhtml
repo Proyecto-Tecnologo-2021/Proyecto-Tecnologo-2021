@@ -18,30 +18,31 @@
 <h:body>
 
 
-	<header class="fixed-top header">
-	<div class="navigation w-100">
-		<div class="container">
-			<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
-				class="navbar-brand" href="/appettit-web/"><img
-				class="appettit-logo"
-				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
+	<header class="fixed-top header"> <ui:include
+			src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+		<div class="navigation w-100">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+					class="navbar-brand" href="/appettit-web/"><img
+					class="appettit-logo"
+					src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
 
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse text-white"
-				id="navbarSupportedContent">
-				<h5>Crear Menu</h5>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse text-white"
+					id="navbarSupportedContent">
+					<h5>Crear Menu</h5>
+				</div>
+				</nav>
 			</div>
-			</nav>
 		</div>
-	</div>
 	</header>
 
-	<div class="main-panel" style="padding-top: 64px !important;">
+	<div class="main-panel">
 		<div class="container">
 			<div class="content-wrapper">
 				<h:form class="addusuario-form" autocomplete="off">
@@ -60,13 +61,13 @@
 													<p:imageCropper value="#{beanAddMenu.croppedImage}"
 														id="imageCropper" cache="false"
 														image="#{beanAddMenu.image}"
-														/>	
+														/>
 													<p:outputPanel id="cropped">
 								                        <p:graphicImage cache="false"
 								                                        rendered="#{not empty beanAddMenu.croppedImage}"
 								                                        value="#{beanAddMenu.cropped}"/>
 								                    </p:outputPanel>
-																					
+
 												</h:panelGrid>
 											</h:panelGrid>
 										</p:outputPanel>
@@ -111,15 +112,41 @@
 											<p:outputLabel for="addProducts" value="Productos" />
 										</div>
 										<div class="col-8 mb-3 mr-0 pr-0">
-											<p:selectCheckboxMenu id="addProducts" value="#{beanAddMenu.selectedProducts}"
-																  label="Productos" style="width: 15rem"
+											<p:selectCheckboxMenu id="addProducts"
+																  value="#{beanAddMenu.selectedProducts}"
+																  label="Productos"
+																  style="width: 20rem"
 																  multiple="true"
 																  filter="true"
 																  filterMatchMode="startsWith"
-																  panelStyle="width: 15rem"
-																  scrollHeight="250">
-
+																  panelStyle="width: 20rem"
+																  scrollHeight="300">
+												<p:ajax event="itemUnselect" listener="#{beanAddMenu.onItemUnselect}"/>
 												<f:selectItems value="#{beanAddMenu.products}"/>
+											</p:selectCheckboxMenu>
+										</div>
+									</div>
+
+
+
+
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addExtras" value="Extras" />
+										</div>
+										<div class="col-8 mb-3 mr-0 pr-0">
+											<p:selectCheckboxMenu id="addExtras"
+																  value="#{beanAddMenu.selectedExtras}"
+																  label="Extras"
+																  style="width: 20rem"
+																  multiple="true"
+																  filter="true"
+																  filterMatchMode="startsWith"
+																  panelStyle="width: 20rem"
+																  scrollHeight="300">
+												<p:ajax event="itemUnselect" listener="#{beanAddMenu.onItemUnselect}"/>
+												<f:selectItems value="#{beanAddMenu.extras}"/>
 											</p:selectCheckboxMenu>
 										</div>
 									</div>

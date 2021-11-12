@@ -4,6 +4,7 @@ import com.vividsolutions.jts.io.ParseException;
 import lombok.*;
 import org.jboss.logging.Logger;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.CroppedImage;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -12,6 +13,7 @@ import proyecto2021G03.appettit.business.*;
 import proyecto2021G03.appettit.converter.GeoConverter;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,11 +24,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Named("beanAddMenu")
 @SessionScoped
@@ -42,19 +44,24 @@ public class MenuAddBean implements Serializable {
 
     static Logger logger = Logger.getLogger(MenuAddBean.class);
 
-//    private List<ProductoDTO> productos;
-//    private List<ExtraMenuDTO> extras;
-
     private Long id;
     private String nombre;
     private String descripcion;
     private ImagenDTO imagen;
     private UploadedFile imgfile;
     private CroppedImage croppedImage;
+    FacesContext facesContext;
+    HttpSession session;
+    UsuarioDTO usuarioDTO;
+    RestauranteDTO restaurante;
+    List<ProductoDTO> productosRestaurante;
+    List<ExtraMenuDTO> extrasRestaurante;
 
     // Variables de SelectCheckboxMenu
     private List<SelectItem> products;
     private String[] selectedProducts;
+    private List<SelectItem> extras;
+    private String[] selectedExtras;
 
     private String correo;
 
@@ -63,6 +70,12 @@ public class MenuAddBean implements Serializable {
 
     @EJB
     IMenuService menuSrv;
+
+    @EJB
+    IProductoService prodSrv;
+
+    @EJB
+    IExtraMenuService extraSrv;
 
     @EJB
     IImagenService imgSrv;
@@ -74,38 +87,27 @@ public class MenuAddBean implements Serializable {
     GeoConverter geoConverter;
 
     @PostConstruct
-    public void init() {
+    public void init() throws AppettitException {
         clearParam();
 
-        ////////////////////////////////////////////////////////
-//        cities = new ArrayList<>();
-//        cities.add("Miami");
-//        cities.add("London");
-//        cities.add("Paris");
-//        cities.add("Istanbul");
-//        cities.add("Berlin");
-//        cities.add("Barcelona");
-//        cities.add("Rome");
-//        cities.add("Brasilia");
-//        cities.add("Amsterdam");
+        facesContext = FacesContext.getCurrentInstance();
+        session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-        products = new ArrayList<>();
-        SelectItemGroup pastaProducts = new SelectItemGroup("Pastas");
-        pastaProducts.setSelectItems(new SelectItem[]{
-                new SelectItem("pasta1", "Ravioles"),
-                new SelectItem("pasta2", "Tallarines"),
-                new SelectItem("pasta3", "Ñoquis")
-        });
+        usuarioDTO = getUserSession();
 
-        SelectItemGroup fastFoodProducts = new SelectItemGroup("Comida Rapida");
-        fastFoodProducts.setSelectItems(new SelectItem[]{
-                new SelectItem("ff1", "Hamburguesa Completa"),
-                new SelectItem("ff2", "Papas Fritas"),
-                new SelectItem("ff3", "Chorizo al Pan")
-        });
+        if (usuarioDTO == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+        }
+        else {
 
-        products.add(pastaProducts);
-        products.add(fastFoodProducts);
+            restaurante = (RestauranteDTO) usuarioDTO;
+            productosRestaurante = prodSrv.listarPorRestaurante(usuarioDTO.getId());
+            extrasRestaurante = extraSrv.listarPorRestaurante(usuarioDTO.getId());
+
+            loadProductosDelMenu();
+            loadExtrasDelMenu();
+        }
 
     }
 
@@ -113,6 +115,9 @@ public class MenuAddBean implements Serializable {
         String id_imagen = null;
         Boolean loadImg = false;
         imagen = null;
+
+        logger.info("PRODS: " + selectedProducts.length);
+        logger.info("EXTRAS: " + selectedExtras.length);
 
         try {
             crop();
@@ -123,7 +128,7 @@ public class MenuAddBean implements Serializable {
                     String identificador = "menu." + this.getNombre().trim();
 
                     imagen = imgSrv.buscarPorIdentificador(identificador);
-
+ 
                     if(imagen == null) {
                         imagen = new ImagenDTO();
                         imagen.setIdentificador(identificador);
@@ -260,6 +265,18 @@ public class MenuAddBean implements Serializable {
                 .build();
     }
 
+    public UsuarioDTO getUserSession() {
+        UsuarioDTO usuarioDTO = null;
+        try {
+            usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+        } catch (Exception e) {
+            logger.error("Intento de acceso");
+        }
+
+        return usuarioDTO;
+
+    }
+
     ///////////////////////////////////////////////
     public List<SelectItem> getProducts() {
         return products;
@@ -276,4 +293,84 @@ public class MenuAddBean implements Serializable {
     public void setSelectedProducts(String[] selectedProducts) {
         this.selectedProducts = selectedProducts;
     }
+
+    public void onItemUnselect(UnselectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        FacesMessage msg = new FacesMessage();
+        msg.setSummary("Item unselected: " + event.getObject().toString());
+        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+
+        context.addMessage(null, msg);
+    }
+
+    /////////////////////////////////////////////////
+
+    private void loadProductosDelMenu() throws AppettitException {
+
+        products = new ArrayList<>();
+
+        if (!productosRestaurante.isEmpty()) {
+
+            Map<String, List<ProductoDTO>> productsByCategory = new HashMap<String, List<ProductoDTO>>();
+
+            for (ProductoDTO prod : productosRestaurante) {
+
+                List<ProductoDTO> existingProductList = new ArrayList<>();
+
+                if (productsByCategory.keySet().contains(prod.getCategoria().getNombre())) {
+                    existingProductList =  productsByCategory.get(prod.getCategoria().getNombre());
+                }
+
+                existingProductList.add(prod);
+                productsByCategory.put(prod.getCategoria().getNombre(), existingProductList);
+            }
+
+
+            for (String catName : productsByCategory.keySet()) {
+
+                SelectItemGroup itemGroup = new SelectItemGroup(catName);
+                SelectItem[] items = new SelectItem[productsByCategory.get(catName).size()];
+
+                Integer count = 0;
+
+                for (ProductoDTO prod : productsByCategory.get(catName)) {
+
+                    SelectItem item = new SelectItem(prod.getId(), prod.getNombre());
+                    items[count] = item;
+
+                    count ++;
+                }
+
+                itemGroup.setSelectItems(items);
+                products.add(itemGroup);
+            }
+
+        }
+    }
+
+    private void loadExtrasDelMenu() {
+
+        extras = new ArrayList<>();
+
+        if (!extrasRestaurante.isEmpty()) {
+
+            SelectItemGroup itemGroup = new SelectItemGroup("Extras");
+            SelectItem[] items = new SelectItem[extrasRestaurante.size()];
+
+            Integer count = 0;
+
+            for (ExtraMenuDTO extra : extrasRestaurante) {
+
+                SelectItem item = new SelectItem(extra.getId(), extra.getProducto().getNombre());
+                items[count] = item;
+
+                count ++;
+            }
+
+            itemGroup.setSelectItems(items);
+            extras.add(itemGroup);
+        }
+    }
+
 }

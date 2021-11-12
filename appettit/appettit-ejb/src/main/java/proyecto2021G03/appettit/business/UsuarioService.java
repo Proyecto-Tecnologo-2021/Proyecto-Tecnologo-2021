@@ -67,37 +67,7 @@ public class UsuarioService implements IUsuarioService {
 	@EJB
 	IGeoService geoSrv;
 	
-	
-	/*
-	 * @Override public void eliminar(Long id) throws AppettitException { // se
-	 * valida que el usuario exista Usuario usuario = usrDAO.buscarPorId(id); if
-	 * (usuario == null) throw new
-	 * AppettitException("El usuario indicado no existe.",
-	 * AppettitException.NO_EXISTE_REGISTRO); try { usrDAO.eliminar(usuario); }
-	 * catch (Exception e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * 
-	 * @Override public List<UsuarioDTO> listar() throws AppettitException { try {
-	 * return usrConverter.fromEntity(usrDAO.listar()); } catch (Exception e) {
-	 * throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * @Override public UsuarioDTO buscarPorId(Long id) throws AppettitException {
-	 * Usuario usuario = usrDAO.buscarPorId(id); if (usuario == null) throw new
-	 * AppettitException("El usuario indicado no existe.",
-	 * AppettitException.NO_EXISTE_REGISTRO); try { ClienteDTO dd = (ClienteDTO)
-	 * usrConverter.fromEntity(usuario); return usrConverter.fromEntity(usuario); }
-	 * catch (Exception e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 * 
-	 * 
-	 * @Override public List<UsuarioDTO> buscarPorNombre(String nombre) throws
-	 * AppettitException { try { return
-	 * usrConverter.fromEntity(usrDAO.buscarPorNombre(nombre)); } catch (Exception
-	 * e) { throw new AppettitException(e.getLocalizedMessage(),
-	 * AppettitException.ERROR_GENERAL); } }
-	 */
+
 	@Override
 	public List<AdministradorDTO> listarAdminsitradores() throws AppettitException {
 		try {
@@ -321,11 +291,8 @@ public class UsuarioService implements IUsuarioService {
 		if (restaurante == null)
 			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-
 			restaurante = usrConverter.fromRestauranteDTO(restauranteDTO);
-
 			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -365,7 +332,7 @@ public class UsuarioService implements IUsuarioService {
 				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(usrDAO.crearCliente(usuario));
 
 				ClienteDTO ret = usrConverter.fromCliente(usrDAO.crearCliente(usuario));
-				clienteMDTO.setCalificacion(calificacionGralCliente(ret.getId()));
+				clienteMDTO.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
 
 				String token = crearJsonWebToken(usuario);
 				clienteMDTO.setJwt(token);
@@ -382,18 +349,18 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public String editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
+		
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 
 			cliente.setNombre(clienteData.getNombre());
 			cliente.setTelefono(clienteData.getTelefono());
 			cliente.setUsername(clienteData.getUsername());
 
-			@SuppressWarnings("unused")
-			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
+			//ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
 
-			String token = crearJsonWebToken(cliente);
+			String token = this.crearJsonWebToken(cliente);
 
 			return token;
 
@@ -406,7 +373,7 @@ public class UsuarioService implements IUsuarioService {
 	public ClienteMDTO editarClienteRE(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 
 			cliente.setNombre(clienteData.getNombre());
@@ -414,7 +381,7 @@ public class UsuarioService implements IUsuarioService {
 			cliente.setUsername(clienteData.getUsername());
 
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-			ret.setCalificacion(calificacionGralCliente(ret.getId()));
+			ret.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
 
 			ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
 			String token = crearJsonWebToken(cliente);
@@ -429,7 +396,6 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteDTO editarDireccion(Long id, DireccionCrearDTO direccionDTO) throws AppettitException {
-
 		List<Cliente> clientes = usrDAO.buscarPorIdClienteInteger(direccionDTO.getId_cliente());
 		try {
 			if (clientes.size() == 0) {
@@ -470,7 +436,7 @@ public class UsuarioService implements IUsuarioService {
 						direccion.setReferencias(direccionDTO.getReferencias());
 
 						ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-						ret.setCalificacion(calificacionGralCliente(ret.getId()));
+						ret.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
 
 						return ret;
 					}
@@ -508,7 +474,7 @@ public class UsuarioService implements IUsuarioService {
 					direcciones.remove(direccion);
 
 					ClienteDTO ret = usrConverter.fromCliente(usrDAO.eliminarDireccion(cliente, direccion));
-					ret.setCalificacion(calificacionGralCliente(ret.getId()));
+					ret.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
 					return ret;
 				}
 			}
@@ -549,7 +515,7 @@ public class UsuarioService implements IUsuarioService {
 					direcciones.add(nueva);
 
 					ClienteDTO ret = usrConverter.fromCliente(usrDAO.agregarDireccion(usuario));
-					ret.setCalificacion(calificacionGralCliente(ret.getId()));
+					ret.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
 					return ret;
 				}
 			}
@@ -562,11 +528,10 @@ public class UsuarioService implements IUsuarioService {
 	public List<ClienteDTO> listarClientes() throws AppettitException {
 		List<ClienteDTO> clientes = new ArrayList<ClienteDTO>();
 		try {
-
 			Iterator<ClienteDTO> it = usrConverter.fromCliente(usrDAO.listarClientes()).iterator();
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();
-				res.setCalificacion(calificacionGralCliente(res.getId()));
+				res.setCalificacion(usrDAO.calificacionGralCliente(res.getId()));
 
 				clientes.add(res);
 			}
@@ -586,7 +551,7 @@ public class UsuarioService implements IUsuarioService {
 			Iterator<ClienteDTO> it = usrConverter.fromCliente(usrDAO.buscarPorNombreCliente(nombre)).iterator();
 			while (it.hasNext()) {
 				ClienteDTO res = it.next();
-				res.setCalificacion(calificacionGralCliente(res.getId()));
+				res.setCalificacion(usrDAO.calificacionGralCliente(res.getId()));
 
 				clientes.add(res);
 			}
@@ -604,7 +569,7 @@ public class UsuarioService implements IUsuarioService {
 		cliente = usrConverter.fromCliente(usrDAO.buscarPorIdCliente(id));
 
 		if (cliente != null) {
-			cliente.setCalificacion(calificacionGralCliente(id));
+			cliente.setCalificacion(usrDAO.calificacionGralCliente(id));
 		}
 
 		return cliente;
@@ -612,7 +577,7 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public CalificacionGralClienteDTO calificacionGralCliente(Long id) throws AppettitException {
-		Cliente usuario = (Cliente) usrDAO.buscarPorIdCliente(id);
+		Cliente usuario = usrDAO.buscarPorIdCliente(id);
 		if (usuario == null)
 			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
@@ -678,7 +643,7 @@ public class UsuarioService implements IUsuarioService {
 				if (resultado.verified) {
 
 					ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
-					CalificacionGralClienteDTO califDTO = calificacionGralCliente(clienteDTO.getId());
+					CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
 
 					ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
 					String token = crearJsonWebToken(usuario);
@@ -712,7 +677,7 @@ public class UsuarioService implements IUsuarioService {
 				usrDAO.editarCliente((Cliente) usuario);
 
 				ClienteDTO clienteDTO = usrConverter.fromCliente((Cliente) usuario);
-				CalificacionGralClienteDTO califDTO = calificacionGralCliente(clienteDTO.getId());
+				CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
 
 				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente((Cliente) usuario);
 				clienteMDTO.setCalificacion(califDTO);
@@ -886,7 +851,7 @@ public class UsuarioService implements IUsuarioService {
 	public void bloquearCliente(Long id) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
 			
 			cliente.setBloqueado(true);

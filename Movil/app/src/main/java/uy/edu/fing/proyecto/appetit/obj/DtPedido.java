@@ -26,6 +26,7 @@ public class DtPedido {
     private String geometry;
     private DtCotizacion cotizacion;
     private String id_paypal;
+    private String res_nombre;
 
     private List<Object> menus = new ArrayList<Object>();
 

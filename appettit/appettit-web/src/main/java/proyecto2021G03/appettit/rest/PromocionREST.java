@@ -83,7 +83,7 @@ public class PromocionREST {
 	}
 
     @GET
-    @Path("/promoRDTO}")
+    @Path("/promoRDTO")
     public Response listarPromoR() {
         RespuestaREST<List<PromocionRDTO>> respuesta = null;
         try {

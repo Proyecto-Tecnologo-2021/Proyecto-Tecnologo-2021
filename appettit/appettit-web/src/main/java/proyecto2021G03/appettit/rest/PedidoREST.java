@@ -53,6 +53,23 @@ public class PedidoREST {
 	 * 
 	 * 
 	 */
+
+
+	@GET
+	@Path("/ultimo/{peid}")
+	public Response ultimopedido(@PathParam("peid") Long peid) {
+		RespuestaREST<PedidoRDTO> respuesta = null;
+		PedidoRDTO pedido = null;
+		try {
+			pedido = iPedidoService.ultimo(peid);
+		} catch (AppettitException e) {
+			e.printStackTrace();
+		}
+		respuesta = new RespuestaREST<PedidoRDTO>(true, "Ultimo pedido traido con éxito.", pedido);
+		return Response.ok(respuesta).build();
+	}
+
+
 	@POST
 	@Path("/pedido2")
 	public Response crear(PedidoRDTO request) {

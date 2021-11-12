@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uy.edu.fing.proyecto.appetit">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -17,7 +19,18 @@
         android:theme="@style/Theme.Appetit">
         <activity
             android:name=".PayPalActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.NoActionBar"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter android:label="uy.edu.fing.proyecto.appetit://paypalpay">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "example://gizmos” -->
+                <data android:scheme="uy.edu.fing.proyecto.appetit"
+                    android:host="paypalpay" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".VerPedidoActivity"
             android:exported="false" />
@@ -58,6 +71,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/appetitlogo" />
+        <service
+            android:name="com.paypal.android.sdk.payments.PayPalService"
+            android:exported="false" />
     </application>
 
 </manifest>
