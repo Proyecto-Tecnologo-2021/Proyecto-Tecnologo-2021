@@ -3,6 +3,8 @@ package proyecto2021G03.appettit.bean.restaurante;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -113,8 +115,19 @@ public class PedidosBean implements Serializable {
 
 	}
 
+	public String getHoraPedido (Long id) throws AppettitException {
+		
+		return pedSrv.listarPorId(id).getFecha()
+			       .format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
+	}
+	
+	
 	public String getNombreCliente (Long id) throws AppettitException {
 		return usrSrv.buscarPorIdCliente(id).getNombre();
+	}
+	
+	public String getTelCliente (Long id) throws AppettitException {
+		return usrSrv.buscarPorIdCliente(id).getTelefono();
 	}
 	
 	public  DireccionDTO getDireccion (Long id) throws AppettitException {
