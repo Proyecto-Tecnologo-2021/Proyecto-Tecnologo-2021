@@ -131,7 +131,10 @@
 
 							<p:column headerText="N&uacute;mero" sortBy="#{pedido.id}"
 								filterBy="#{pedido.id}">
-								<h:outputText value="#{pedido.id}" />
+								<div style="text-align:center;">
+									<h:outputText 
+									value="#{pedido.id}" />
+								</div>
 							</p:column>
 
 							<p:column headerText="Hora" sortBy="#{beanPedidos.getHoraPedido(pedido.id)}"
@@ -246,7 +249,7 @@
 							<p:column style="text-align: center" exportable="false">
 								<p:commandButton update=":form:pedidoDetail"
 									oncomplete="PF('pedidoDialog').show()" icon="pi pi-search"
-									title="Ver" value="Ver detalles">
+									title="Ver" value="Ver pedido">
 									<f:setPropertyActionListener value="#{pedido}"
 										target="#{beanPedidos.selPedido}" />
 								</p:commandButton>
@@ -259,20 +262,61 @@
 							</p:column>
 						</p:dataTable>
 						
-						<p:dialog header="Informaci&oacute;n del pedido"
+						<p:dialog header="Informaci&oacute;n del pedido" width="800"
 							widgetVar="pedidoDialog" modal="true" showEffect="fade"
 							hideEffect="fade" resizable="false">
 							<p:outputPanel id="pedidoDetail" style="text-align:center;">
 								
-								  <p:column>
-								  <h4>Hola che</h4>
-									
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<p:dataTable var="lineaMenu"
+												id="tableMenus"
+												value="#{beanPedidos.getMenus()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.cantidad}" />
+													</p:column>
+													<p:column headerText="Men&uacute;" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br />
+												<p:dataTable var="lineaPromo"
+												id="tablePromos"
+												value="#{beanPedidos.getPromos()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.cantidad}" />
+													</p:column>
+													<p:column headerText="Promoci&oacute;n" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br/><br/>
+												<h:outputText style="vertical-align: middle; margin-left: .5rem; font-size: xx-large; font-weight: bolder;"
+														value="Precio total: $#{beanPedidos.selPedido.total}" />
+											</div>
+										</div>
+									</div>
 								</p:column>
-
+								
 							</p:outputPanel>
 						</p:dialog>
 						
-						<p:dialog header="Detalles:"
+						<p:dialog header="Informaci&oacute;n de la direcci&oacute;n"
 							widgetVar="direccionDialog" modal="true" showEffect="fade"
 							hideEffect="fade" resizable="false">
 							<p:outputPanel id="direccionDetail" style="text-align:center;">
