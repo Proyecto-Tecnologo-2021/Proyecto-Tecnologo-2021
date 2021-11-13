@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 import com.vividsolutions.jts.io.ParseException;
 
+import proyecto2021G03.appettit.business.ITokenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
@@ -28,8 +29,6 @@ public class UsuarioREST {
 	@EJB
 	IUsuarioDAO iUsuarioDAO;
 
-
-	
 
 	
 	@POST
@@ -205,7 +204,6 @@ public class UsuarioREST {
 	public Response getDireccionId(DirreccionAliasDTO request) {
 		RespuestaREST<Long> respuesta = null;
 		try {
-
 			Long dirId = uService.obtenerIdDireccion(request.getUserId(), request.getAlias());
 
 			respuesta = new RespuestaREST<Long>(true, "Id de la dirección obtenida con éxito.", dirId);
@@ -248,6 +246,24 @@ public class UsuarioREST {
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+		}
+	}
+
+	@POST
+	@Path("/requestMailLink/")
+	public Response requestMailLink(MailDTO correo) {
+		RespuestaREST respuesta = null;
+		try {
+			uService.solicitarCorreoVerificador(correo);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Correo enviado correctamente.");
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
 		}
 	}
 	

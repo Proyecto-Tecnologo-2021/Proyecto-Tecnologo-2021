@@ -19,21 +19,7 @@ import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.AdministradorDTO;
-import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
-import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
-import proyecto2021G03.appettit.dto.ClienteCrearDTO;
-import proyecto2021G03.appettit.dto.ClienteDTO;
-import proyecto2021G03.appettit.dto.ClienteMDTO;
-import proyecto2021G03.appettit.dto.ClienteModificarDTO;
-import proyecto2021G03.appettit.dto.DireccionCrearDTO;
-import proyecto2021G03.appettit.dto.DireccionDTO;
-import proyecto2021G03.appettit.dto.EliminarDeClienteDTO;
-import proyecto2021G03.appettit.dto.ImagenDTO;
-import proyecto2021G03.appettit.dto.LocalidadDTO;
-import proyecto2021G03.appettit.dto.LoginDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
-import proyecto2021G03.appettit.dto.RestauranteRDTO;
+import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Administrador;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Direccion;
@@ -66,6 +52,12 @@ public class UsuarioService implements IUsuarioService {
 
 	@EJB
 	IGeoService geoSrv;
+
+	@EJB
+	ITokenService iTokenService;
+
+	@EJB
+	IMailService iMailService;
 	
 
 	@Override
@@ -876,6 +868,29 @@ public class UsuarioService implements IUsuarioService {
 			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public void solicitarCorreoVerificador(MailDTO correo) throws AppettitException {
+		List<Usuario> usuarios = usrDAO.buscarPorCorreo(correo.getCorreo());
+		Usuario user = null;
+		if(usuarios.size() == 0) {
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		}else {
+			for(Usuario usr : usuarios){
+				user = usr;
+			}
+			try {
+				//GENERADOR DE JWT
+				String token = crearJsonWebToken(user);
+				//GENERADOR DE LINK
+				String link = "https://link.com/" + token;
+				//AGREGO EL RECEPTOR Y EL LINK (Q SE AGREGA EN EL BODY DEL MAIL)
+				iMailService.sendMail(correo.getCorreo(), link);
+			} catch (Exception e) {
+				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+			}
 		}
 	}
 	
