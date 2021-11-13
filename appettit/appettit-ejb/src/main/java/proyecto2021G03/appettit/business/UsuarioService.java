@@ -885,7 +885,7 @@ public class UsuarioService implements IUsuarioService {
 				//GENERADOR DE JWT
 				String token = crearJsonWebToken(user);
 				//GENERADOR DE LINK
-				String link = "https://link.com/" + token;
+				String link = "http://localhost:8080/appettit-web/rest/usuarios/verifyMailLink/" + token;
 				//AGREGO EL RECEPTOR Y EL LINK (Q SE AGREGA EN EL BODY DEL MAIL)
 				iMailService.sendMail(correo.getCorreo(), link);
 			} catch (Exception e) {

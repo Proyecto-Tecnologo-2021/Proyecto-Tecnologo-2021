@@ -16,6 +16,9 @@ import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.util.List;
 
+import java.net.URI;
+import java.net.URL;
+
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
 
 @RequestScoped
@@ -28,6 +31,8 @@ public class UsuarioREST {
 	IUsuarioService uService;
 	@EJB
 	IUsuarioDAO iUsuarioDAO;
+	@EJB
+	ITokenService iTokenService;
 
 
 	
@@ -264,6 +269,22 @@ public class UsuarioREST {
 			} else {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
 			}
+		}
+	}
+
+	@GET
+	@Path("/verifyMailLink/{token}")
+	public Response verifyMailLink(@PathParam("token")String token) throws Exception {
+		RespuestaREST respuesta = null;
+		if(iTokenService.tokenVerificator(token)) {
+			String id = iTokenService.tokenGetClaim(token,"idUsuario");
+			String email = iTokenService.tokenGetClaim(token, "correo");
+			//MANDAR AL LINK DE LA PAGINA DE RESETEO DE PASS CON LA DATA DEL USER
+			String url ="http://localhost:8080/appettit-web/rest/usuarios/getAddresses/" + id;
+			return Response.temporaryRedirect(URI.create(url)).build();
+		} else {
+			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");
+			return Response.ok(respuesta).build();
 		}
 	}
 	
