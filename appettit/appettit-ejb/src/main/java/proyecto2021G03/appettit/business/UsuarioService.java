@@ -156,13 +156,8 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 
+
 	@Override
-	public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
-		return null;
-	}
-
-
-	/*@Override
     public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
         List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
         try {
@@ -200,7 +195,7 @@ public class UsuarioService implements IUsuarioService {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
     }
-*/
+
 	@Override
 	public List<RestauranteDTO> buscarPorNombreRestaurante(String nombre) throws AppettitException {
 		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
