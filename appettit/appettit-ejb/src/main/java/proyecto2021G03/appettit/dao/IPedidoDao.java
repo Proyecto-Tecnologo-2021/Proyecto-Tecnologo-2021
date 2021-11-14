@@ -13,5 +13,6 @@ public interface IPedidoDao {
 	public List<Pedido> listarPorCliente(Long id_cliente);
 	public List<Pedido> listarPorRestaurante(Long id_restaurante);
     public Pedido ultimo(Long id_cliente);
+    public List<Pedido> listarPorTel(Long tel);
 
 }

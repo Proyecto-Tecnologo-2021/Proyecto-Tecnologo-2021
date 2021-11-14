@@ -33,7 +33,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 				.setParameter("correo", correo);
 		return consulta.getResultList();
 	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> buscarPorTelefono(String telefono) {
