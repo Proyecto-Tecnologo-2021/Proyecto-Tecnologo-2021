@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         card_view:cardElevation="2dp"
         card_view:cardCornerRadius="5dp"
-        android:layout_margin="5dp">
+        android:layout_margin="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -64,12 +64,11 @@
                 android:id="@+id/pedido_estado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="5dp"
-                android:layout_gravity="bottom"
-                android:paddingEnd="10dp"
-                android:textSize="15sp"
                 android:layout_alignParentRight="true"
-                />
+                android:layout_gravity="bottom"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/pedido_ttiulo"
@@ -81,7 +80,7 @@
                 android:gravity="start|center"
                 android:text="@string/pedidos_total"
                 android:textSize="15sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/pedido_total"
@@ -101,14 +100,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/pedido_estado"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginBottom="0dp"
                 android:layout_gravity="bottom"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toStartOf="@+id/pedido_fp"
                 android:paddingEnd="10dp"
-                android:textSize="15sp"
-                android:layout_alignParentRight="true"
                 android:text="@string/pedidos_fp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/pedido_fp"

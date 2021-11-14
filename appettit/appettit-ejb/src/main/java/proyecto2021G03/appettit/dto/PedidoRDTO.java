@@ -24,6 +24,7 @@ public class PedidoRDTO {
     private List<ExtraMenuRDTO> extras;
     private String id_paypal;
     private Double cotizacion;
+    private CalificacionRPedidoDTO calificacion;
 
 
     public List<MenuRDTO> filtroMenu(){

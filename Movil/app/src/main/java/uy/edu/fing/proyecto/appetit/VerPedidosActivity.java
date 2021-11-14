@@ -1,12 +1,5 @@
 package uy.edu.fing.proyecto.appetit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,14 +11,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,17 +39,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import uy.edu.fing.proyecto.appetit.adapter.DireccionAdapter;
 import uy.edu.fing.proyecto.appetit.adapter.PedidoAdapter;
-import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtCotizacion;
-import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
-import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
-import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPedido;
-import uy.edu.fing.proyecto.appetit.obj.DtProducto;
-import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 import uy.edu.fing.proyecto.appetit.obj.DtVPedido;
@@ -81,8 +71,8 @@ public class VerPedidosActivity extends AppCompatActivity {
         String title = getString(R.string.title_Pedidos);
         setTitle(title);
 
+        buscarPedidos();
         setContentView(R.layout.activity_ver_pedidos);
-
 
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
@@ -323,16 +313,14 @@ public class VerPedidosActivity extends AppCompatActivity {
         Long iddir = null;
         Long idrest = null;
         Boolean pago = true;
-        String stipo = null;
+        String stipo;
         ETipoPago tipo = null;
         Double total = null;
         Date fecha = null;
         String geometry = null;
         DtCotizacion cotizacion = null;
         String id_paypal = null;
-        String res_nombre = null;
         String estado = null;
-        List<Object> menus = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -349,6 +337,11 @@ public class VerPedidosActivity extends AppCompatActivity {
                 pago = reader.nextBoolean();
             } else if (name.equals("tipo") && reader.peek() != JsonToken.NULL) {
                 stipo = reader.nextString();
+                if(stipo.equalsIgnoreCase("EFECTIVO")){
+                    tipo = ETipoPago.EFECTIVO;
+                } else if(stipo.equalsIgnoreCase("PAYPAL")){
+                    tipo = ETipoPago.PAYPAL;
+                }
             } else if (name.equals("total") && reader.peek() != JsonToken.NULL) {
                 total = reader.nextDouble();
             } else if (name.equals("fecha") && reader.peek() != JsonToken.NULL) {
@@ -368,8 +361,7 @@ public class VerPedidosActivity extends AppCompatActivity {
             }
         }
         reader.endObject();
-
-        return null;
+        return new DtVPedido(id, idcli, iddir, idrest, pago, tipo, total, fecha, geometry, cotizacion, id_paypal, estado, null, null);
     }
 
     public Date readFecha(JsonReader reader) throws IOException, ParseException {

@@ -144,7 +144,7 @@ public class VerMenuActivity extends AppCompatActivity {
                     startActivity(imenu);
                     return true;
                 case R.id.menu_pedido:
-                    Intent ipedido = new Intent(VerMenuActivity.this, VerPedidoActivity.class);
+                    Intent ipedido = new Intent(VerMenuActivity.this, VerPedidosActivity.class);
                     startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:

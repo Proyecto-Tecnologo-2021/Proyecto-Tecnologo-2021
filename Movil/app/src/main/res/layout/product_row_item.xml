@@ -39,16 +39,16 @@
                 android:isIndicator="false"
                 android:numStars="1"
                 android:stepSize="0.2" />
+
             <TextView
                 android:id="@+id/menu_restaurante_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="5dp"
-                android:layout_gravity="bottom"
-                android:paddingEnd="10dp"
-                android:textSize="15sp"
                 android:layout_alignParentRight="true"
-                />
+                android:layout_gravity="bottom"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
             <FrameLayout
                 android:id="@+id/menu_fl_img"
                 android:layout_width="match_parent"

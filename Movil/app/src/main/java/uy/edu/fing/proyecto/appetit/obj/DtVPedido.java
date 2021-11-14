@@ -29,5 +29,6 @@ public class DtVPedido {
     private String id_paypal;
     private String estado;
     private List<Object> menus = new ArrayList<Object>();
+    private DtRCalificacion calificacion;
 
 }

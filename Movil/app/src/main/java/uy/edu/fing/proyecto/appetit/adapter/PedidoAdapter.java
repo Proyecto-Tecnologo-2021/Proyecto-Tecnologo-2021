@@ -2,17 +2,11 @@ package uy.edu.fing.proyecto.appetit.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
@@ -21,11 +15,7 @@ import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.R;
 import uy.edu.fing.proyecto.appetit.VerMenuActivity;
-import uy.edu.fing.proyecto.appetit.VerPedidoActivity;
-import uy.edu.fing.proyecto.appetit.VerPedidoEchoActivity;
-import uy.edu.fing.proyecto.appetit.obj.DtMenu;
-import uy.edu.fing.proyecto.appetit.obj.DtPedido;
-import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
+import uy.edu.fing.proyecto.appetit.VerPedidoHechoActivity;
 import uy.edu.fing.proyecto.appetit.obj.DtVPedido;
 
 public class PedidoAdapter  extends RecyclerView.Adapter<PedidoAdapter.ViewHolder>{
@@ -103,10 +93,11 @@ public class PedidoAdapter  extends RecyclerView.Adapter<PedidoAdapter.ViewHolde
         DtVPedido dtp = pedidos.get(position);
         viewHolder.getPedido_id().setText(dtp.getId().toString());
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
         viewHolder.getPedido_fecha().setText(dateFormat.format(dtp.getFecha()));
         viewHolder.getPedido_fp().setText(dtp.getTipo().toString());
         viewHolder.getPedido_total().setText(context.getString(R.string.carr_symbol) + " " + dtp.getTotal());
+        viewHolder.getPedido_estado().setText(dtp.getEstado());
 
         if (dtp.getEstado().equalsIgnoreCase("CONFIRMADO")){
             viewHolder.getPedido_estado().setBackgroundColor(context.getColor(R.color.star_3));
@@ -140,9 +131,11 @@ public class PedidoAdapter  extends RecyclerView.Adapter<PedidoAdapter.ViewHolde
 
         viewHolder.itemView.setOnClickListener(v -> {
             //Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show()
-            Intent ivpedido = new Intent(context, VerPedidoEchoActivity.class);
+            Intent ivpedido = new Intent(context, VerPedidoHechoActivity.class);
 
             ivpedido.putExtra("id", dtp.getId());
+            ivpedido.putExtra("id_restaurante", dtp.getIdrest());
+
             context.startActivity(ivpedido);
         });
 

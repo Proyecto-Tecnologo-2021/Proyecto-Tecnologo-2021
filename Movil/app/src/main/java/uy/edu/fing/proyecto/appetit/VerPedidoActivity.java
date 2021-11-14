@@ -539,6 +539,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         Integer comida = null;
         Integer servicio = null;
         Integer general = null;
+        String comentario = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -557,7 +558,7 @@ public class VerPedidoActivity extends AppCompatActivity {
         }
         reader.endObject();
 
-        return new DtRCalificacion(rapidez, comida, servicio, general);
+        return new DtRCalificacion(rapidez, comida, servicio, general, comentario);
     }
 
     public byte[] readImagenObj(JsonReader reader) throws IOException {

@@ -94,6 +94,10 @@
     <string name="pedidos_fecha">Fecha:</string>
     <string name="pedidos_total">Total:</string>
     <string name="pedidos_fp">Forma de pago:</string>
+    <string name="pedidos_calificar">Calificar</string>
+    <string name="pedidos_detalle">Detalle</string>
+    <string name="pedidos_califica_true">Calificado</string>
+    <string name="pedidos_califica_false">Sin calificar</string>
 
 
     <!--MENUS PROMOCIONES-->
