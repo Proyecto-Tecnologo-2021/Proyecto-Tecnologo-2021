@@ -9,7 +9,7 @@
 
 <h:head>
 	<meta charset="ISO-8859-1"></meta>
-	<title>Appetit-Restautrantes</title>
+	<title>Appetit-Restaurantes</title>
 
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
@@ -36,37 +36,37 @@
 				class="appettit-logo"
 				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
 
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> Men&uacute; </a>
-						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item"
-								href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
-								class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Men&uacute;s</a>
-							<a class="dropdown-item" href="#">Promociones</a>
-						</div></li>
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> Clientes </a>
-						<div class="dropdown-menu" aria-labelledby="navbarMenu">
-							<a class="dropdown-item" href="">Pedidos</a> <a
-								class="dropdown-item" href="#">Reclamos</a> <a
-								class="dropdown-item" href="#">Calificar</a>
-						</div></li>
-					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
-				</ul>
-			</div>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+							role="button" data-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false"> Men&uacute; </a>
+							<div class="dropdown-menu" aria-labelledby="navbarMenu">
+								<a class="dropdown-item"
+									href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
+									class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Men&uacute;s</a>
+								<a class="dropdown-item" href="#">Promociones</a>
+							</div></li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+							role="button" data-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false"> Clientes </a>
+							<div class="dropdown-menu" aria-labelledby="navbarMenu">
+								<a class="dropdown-item" href="">Pedidos</a> <a
+									class="dropdown-item" href="#">Reclamos</a> <a
+									class="dropdown-item" href="#">Calificar</a>
+							</div></li>
+						<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
+					</ul>
+				</div>
 			</nav>
 		</div>
 	</div>
@@ -77,9 +77,9 @@
 			<div class="wrapper pt-3">
 				<div class="card">
 					<h:form id="form">
-						<p:dataTable var="menu" editable="false" id="tableRestaurantes"
+						<p:dataTable var="menu" editable="false" id="tableMenus"
 							value="#{beanMenuRestaurante.menus}" widgetVar="menusTable"
-							emptyMessage="No existen Restaurantes"
+							emptyMessage="No existen Menus"
 							globalFilterOnly="#{beanMenuRestaurante.globalFilterOnly}"
 							filteredValue="#{beanMenuRestaurante.filterMenus}" rows="10"
 							paginator="true" rowKey="#{menu.id}" selectionMode="single"

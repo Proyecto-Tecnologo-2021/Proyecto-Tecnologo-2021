@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.bean.restaurante;
 
 import com.vividsolutions.jts.io.ParseException;
 import lombok.*;
+import org.apache.commons.math3.stat.descriptive.summary.Product;
 import org.jboss.logging.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.UnselectEvent;
@@ -17,7 +18,6 @@ import proyecto2021G03.appettit.util.Constantes;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -44,26 +44,35 @@ public class MenuAddBean implements Serializable {
 
     static Logger logger = Logger.getLogger(MenuAddBean.class);
 
+    // Variables Menu
     private Long id;
+    private Long id_restaurante;
     private String nombre;
+    private RestauranteDTO restaurante;
     private String descripcion;
+    private Double precioSimple;
+    private Double precioTotal;
+    private List<ProductoDTO> productos;
+    private List<ExtraMenuDTO> extras;
+    private String id_imagen;
     private ImagenDTO imagen;
+
+    // Variables auxiliares y contexto
     private UploadedFile imgfile;
     private CroppedImage croppedImage;
     FacesContext facesContext;
     HttpSession session;
     UsuarioDTO usuarioDTO;
-    RestauranteDTO restaurante;
-    List<ProductoDTO> productosRestaurante;
-    List<ExtraMenuDTO> extrasRestaurante;
+    private List<ProductoDTO> productosRestaurante;
+    private List<ExtraMenuDTO> extrasRestaurante;
+    private Map<Long, ProductoDTO> productosById;
+    private Map<Long, ExtraMenuDTO> extrasById;
 
     // Variables de SelectCheckboxMenu
-    private List<SelectItem> products;
-    private String[] selectedProducts;
-    private List<SelectItem> extras;
-    private String[] selectedExtras;
-
-    private String correo;
+    List<SelectItem> productsItems;
+    String[] productsSelectedItems;
+    List<SelectItem> extrasItems;
+    String[] extrasSelectedItems;
 
     @EJB
     IUsuarioService usrSrv;
@@ -100,10 +109,27 @@ public class MenuAddBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
         }
         else {
-
+            id_restaurante = usuarioDTO.getId();
             restaurante = (RestauranteDTO) usuarioDTO;
-            productosRestaurante = prodSrv.listarPorRestaurante(usuarioDTO.getId());
-            extrasRestaurante = extraSrv.listarPorRestaurante(usuarioDTO.getId());
+            productosById = new HashMap<Long, ProductoDTO>();
+            extrasById =  new HashMap<Long, ExtraMenuDTO>();
+
+            productosRestaurante = prodSrv.listarPorRestaurante(id_restaurante);
+            extrasRestaurante = extraSrv.listarPorRestaurante(id_restaurante);
+
+            if (!productosRestaurante.isEmpty()) {
+                for (ProductoDTO prod : productosRestaurante) {
+
+                    productosById.put(prod.getId(), prod);
+                }
+            }
+
+            if (!extrasRestaurante.isEmpty()) {
+                for (ExtraMenuDTO ext : extrasRestaurante) {
+
+                    extrasById.put(ext.getId(), ext);
+                }
+            }
 
             loadProductosDelMenu();
             loadExtrasDelMenu();
@@ -116,44 +142,66 @@ public class MenuAddBean implements Serializable {
         Boolean loadImg = false;
         imagen = null;
 
-        logger.info("PRODS: " + selectedProducts.length);
-        logger.info("EXTRAS: " + selectedExtras.length);
+        productos = new ArrayList<ProductoDTO>();
+        extras = new ArrayList<ExtraMenuDTO>();
 
         try {
-            crop();
-
-            try {
-                byte[] bimg = getImageAsByteArray();
-                if (bimg != null) {
-                    String identificador = "menu." + this.getNombre().trim();
-
-                    imagen = imgSrv.buscarPorIdentificador(identificador);
- 
-                    if(imagen == null) {
-                        imagen = new ImagenDTO();
-                        imagen.setIdentificador(identificador);
-                        imagen.setImagen(bimg);
-
-                        imgSrv.crear(imagen);
-                        imagen = imgSrv.buscarPorIdentificador(identificador);
-                    }
-
-                    id_imagen = imagen.getId();
-                    loadImg = true;
-                }
-
-            } catch (IOException e) {
-                logger.info(e.getMessage().trim());
-                loadImg = false;
-            }
+//            crop();
+//
+//            try {
+//                byte[] bimg = getImageAsByteArray();
+//                if (bimg != null) {
+//                    String identificador = "menu." + this.getNombre().trim();
+//
+//                    imagen = imgSrv.buscarPorIdentificador(identificador);
+//
+//                    if(imagen == null) {
+//                        imagen = new ImagenDTO();
+//                        imagen.setIdentificador(identificador);
+//                        imagen.setImagen(bimg);
+//
+//                        imgSrv.crear(imagen);
+//                        imagen = imgSrv.buscarPorIdentificador(identificador);
+//
+//                        logger.info("IMAGEN NEW: " + imagen.getId());
+//                    }
+//
+//                    id_imagen = imagen.getId();
+//                    loadImg = true;
+//                }
+//
+//            } catch (IOException e) {
+//                logger.info("@@@@@@@@@@@@ " + e.getMessage().trim());
+//                loadImg = false;
+//            }
 
 
             try {
                 //***** PREGUNTAR DATOS DE CONST
-                MenuDTO restDTO = new MenuDTO(); // new MenuDTO(null, nombre, descripcion);
 
+                if (productsSelectedItems.length > 0) {
 
-                restDTO = menuSrv.crear(restDTO);
+                    for (String id : productsSelectedItems) {
+                        ProductoDTO prodSelected = productosById.get(Long.valueOf(id));
+
+                        productos.add(prodSelected);
+                    }
+                }
+
+                if (extrasSelectedItems.length > 0) {
+                    for (String id : extrasSelectedItems) {
+                        ExtraMenuDTO extraSelected = extrasById.get(Long.valueOf(id));
+
+                        extras.add(extraSelected);
+                    }
+                }
+
+                logger.info("SELECTEDDD: " + productos);
+
+                MenuDTO restDTO = new MenuDTO(id, id_restaurante, nombre, restaurante, descripcion, precioSimple,
+                                              precioTotal, productos, extras, id_imagen, imagen);
+
+                menuSrv.crear(restDTO);
 
                 if(loadImg) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -162,8 +210,8 @@ public class MenuAddBean implements Serializable {
                 }else {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Menu " + restDTO.getNombre() + " creado con éxito.", null));
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-                                "No fue posible cargar la imagen."));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error", "No fue posible cargar la imagen."));
                 }
 
             } catch (ParseException e) {
@@ -177,10 +225,7 @@ public class MenuAddBean implements Serializable {
             logger.info(e.getMessage().trim());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-            //} catch (IOException e) {
-            //	logger.info(e.getMessage().trim());
-            //	FacesContext.getCurrentInstance().addMessage(null,
-            //			new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+
         } finally {
             clearParam();
         }
@@ -190,6 +235,7 @@ public class MenuAddBean implements Serializable {
         this.id = null;
         this.nombre = null;
         this.descripcion = null;
+        this.precioTotal = null;
         this.imagen = null;
         this.imgfile = null;
         this.croppedImage = null;
@@ -278,20 +324,20 @@ public class MenuAddBean implements Serializable {
     }
 
     ///////////////////////////////////////////////
-    public List<SelectItem> getProducts() {
-        return products;
+    public List<SelectItem> getProductsItems() {
+        return productsItems;
     }
 
-    public void setProducts(List<SelectItem> products) {
-        this.products = products;
+    public void setProductsItems(List<SelectItem> products) {
+        this.productsItems = products;
     }
 
-    public String[] getSelectedProducts() {
-        return selectedProducts;
+    public String[] getProductsSelectedItems() {
+        return productsSelectedItems;
     }
 
-    public void setSelectedProducts(String[] selectedProducts) {
-        this.selectedProducts = selectedProducts;
+    public void setProductsSelectedItems(String[] selectedProducts) {
+        this.productsSelectedItems = selectedProducts;
     }
 
     public void onItemUnselect(UnselectEvent event) {
@@ -308,7 +354,7 @@ public class MenuAddBean implements Serializable {
 
     private void loadProductosDelMenu() throws AppettitException {
 
-        products = new ArrayList<>();
+        productsItems = new ArrayList<>();
 
         if (!productosRestaurante.isEmpty()) {
 
@@ -343,7 +389,7 @@ public class MenuAddBean implements Serializable {
                 }
 
                 itemGroup.setSelectItems(items);
-                products.add(itemGroup);
+                productsItems.add(itemGroup);
             }
 
         }
@@ -351,7 +397,7 @@ public class MenuAddBean implements Serializable {
 
     private void loadExtrasDelMenu() {
 
-        extras = new ArrayList<>();
+        extrasItems = new ArrayList<>();
 
         if (!extrasRestaurante.isEmpty()) {
 
@@ -369,7 +415,7 @@ public class MenuAddBean implements Serializable {
             }
 
             itemGroup.setSelectItems(items);
-            extras.add(itemGroup);
+            extrasItems.add(itemGroup);
         }
     }
 
