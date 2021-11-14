@@ -49,4 +49,3 @@ MAVEN_PATH/repository/com/vividsolutions/jts/1.13/jts-1.13.jar
 
 Directorio destino:
 WILDFLY_PATH/modules/system/layers/base/org/hibernate/main/
-
