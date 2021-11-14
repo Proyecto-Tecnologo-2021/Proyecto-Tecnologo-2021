@@ -280,11 +280,29 @@ public class UsuarioREST {
 			String id = iTokenService.tokenGetClaim(token,"idUsuario");
 			String email = iTokenService.tokenGetClaim(token, "correo");
 			//MANDAR AL LINK DE LA PAGINA DE RESETEO DE PASS CON LA DATA DEL USER
-			String url ="http://localhost:8080/appettit-web/rest/usuarios/getAddresses/" + id;
+			String url ="http://localhost:3000/recover-pass"; // + id
 			return Response.temporaryRedirect(URI.create(url)).build();
 		} else {
 			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");
 			return Response.ok(respuesta).build();
+		}
+	}
+
+	@POST
+	@Path("/changePassword/")
+	public Response requestMailLink(PassDTO password) {
+		RespuestaREST respuesta = null;
+		try {
+			uService.cambioContraseña(password.getPassword());
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Contraseña cambiada correctamente.");
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
 		}
 	}
 	

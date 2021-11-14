@@ -893,5 +893,21 @@ public class UsuarioService implements IUsuarioService {
 			}
 		}
 	}
+
+	@Override
+	public void cambioContraseña(String password) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(12L);
+		if(cliente == null){
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		}else {
+			try {
+			cliente.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+			usrDAO.editarCliente(cliente);
+
+			} catch (Exception e) {
+				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+			}
+		}
+	}
 	
 }

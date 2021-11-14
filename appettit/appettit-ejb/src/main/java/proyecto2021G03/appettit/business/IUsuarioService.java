@@ -56,6 +56,7 @@ public interface IUsuarioService {
 	public List<DireccionDTO> obtenerDireccionesCliente(Long idUser) throws AppettitException;
 	public DireccionDTO buscarDireccionPorId(Long id) throws AppettitException;
 	void solicitarCorreoVerificador(MailDTO correo) throws AppettitException;
+	void cambioContraseña(String password) throws AppettitException;
 	
 
 }
