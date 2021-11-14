@@ -1,12 +1,5 @@
 package uy.edu.fing.proyecto.appetit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,27 +16,41 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,34 +58,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import uy.edu.fing.proyecto.appetit.adapter.PedidoAdapter;
-import uy.edu.fing.proyecto.appetit.adapter.ProductoPedidoAdapter;
 import uy.edu.fing.proyecto.appetit.adapter.ProductoVPedidoAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
-import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtCotizacion;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
-import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtRCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
-import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 import uy.edu.fing.proyecto.appetit.obj.DtVPedido;
 import uy.edu.fing.proyecto.appetit.obj.ETipoPago;
 
 public class VerPedidoHechoActivity extends AppCompatActivity {
     private static final String TAG = "VerPedidoHechoActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
-    final static Integer RC_SIGN_IN = 20213;
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
-    private boolean isConnected;
     Long id_restaurante;
     Long id_pedido;
+    DtVPedido dtVPedido = null;
+    DtRCalificacion dtRCalificacion = null;
 
 
     ProgressBar progressBar;
@@ -89,6 +91,7 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
     RatingBar rest_star;
     ListView listView;
     ListAdapter listAdapter;
+    RelativeLayout infogral;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,16 +102,20 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_ver_pedido_hecho);
 
+        infogral = findViewById(R.id.pedido_status);
+        progressBar = findViewById(R.id.vpBarPedidos);
+        infogral.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
         buscarPedidos();
         buscarRestaurnate();
 
-        progressBar = findViewById(R.id.vpBarPedidos);
+
         rest_img = findViewById(R.id.vrestaurante_img);
         rest_name = findViewById(R.id.vrestaurante_name);
         rest_star = findViewById(R.id.vrestaurante_star);
         rest_cal = findViewById(R.id.vrestaurante_rating);
 
-        progressBar.setVisibility(View.VISIBLE);
 
 
         bottomNavigationView = findViewById(R.id.bottomNavViewMenu);
@@ -147,15 +154,46 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.pmenu_ver:
-                Intent ipedido = new Intent(VerPedidoHechoActivity.this, VerPedidoHechoActivity.class);
-                startActivity(ipedido);
+            case R.id.pedido_calificar:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(VerPedidoHechoActivity.this);
+                LayoutInflater inflater = this.getLayoutInflater();
+                View convertView = inflater.inflate(R.layout.pedido_calificacion_alert, null);
+                builder.setView(convertView);
+
+                RatingBar rapidez = convertView.findViewById(R.id.calificar_rapidez_star);
+                RatingBar comida = convertView.findViewById(R.id.calificar_comida_star);
+                RatingBar servicio = convertView.findViewById(R.id.calificar_servicio_star);
+                EditText observa =  convertView.findViewById(R.id.calificar_servicio_obs);
+                String b_texto = getString(R.string.alert_btn_calificar);
+
+                if(dtVPedido.getCalificacion() != null){
+                    rapidez.setRating(dtVPedido.getCalificacion().getRapidez());
+                    comida.setRating(dtVPedido.getCalificacion().getComida());
+                    servicio.setRating(dtVPedido.getCalificacion().getServicio());
+                    observa.setText(dtVPedido.getCalificacion().getComentario());
+                    b_texto = getString(R.string.alert_btn_calificar_upd);
+                }
+
+                AlertDialog dialog = builder.create();
+
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, b_texto, (dialog1, which) -> {
+                    //Toast.makeText(VerPedidoHechoActivity.this, R.string.alert_btn_calificar,Toast.LENGTH_SHORT).show();
+                    dtRCalificacion = new DtRCalificacion((int) rapidez.getRating(), (int) comida.getRating(), (int) servicio.getRating(), null, observa.getText().toString());
+                    calificarPedido();
+                });
+
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_cancel), (dialog12, which) -> {
+                    dialog12.cancel();
+                });
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
     }
+
 
     private void buscarPedidos() {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -166,7 +204,6 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new VerPedidoHechoActivity.DownloadPedidoTask().execute(stringUrl);
-        } else {
         }
     }
 
@@ -190,8 +227,8 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 //Log.i(TAG, "onPostExecute:" + response.getMensaje());
                 if (response.getOk()) {
-                    DtVPedido pedido = (DtVPedido) response.getCuerpo();
-                    addPedido(pedido);
+                    dtVPedido = (DtVPedido) response.getCuerpo();
+                    addPedido(dtVPedido);
                 } else {
                     if (ContextCompat.checkSelfPermission(VerPedidoHechoActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
                             ContextCompat.checkSelfPermission(VerPedidoHechoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -291,6 +328,29 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         }
         reader.endObject();
         return new DtResponse(ok, mensaje, pedido);
+
+    }
+
+    public DtResponse readPUTCMessage(JsonReader reader) throws IOException, ParseException {
+        Boolean ok = false;
+        String mensaje = null;
+        DtRCalificacion calificacion = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("ok")) {
+                ok = reader.nextBoolean();
+            } else if (name.equals("mensaje")) {
+                mensaje = reader.nextString();
+            } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
+                calificacion = readCalificacionObj(reader);
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtResponse(ok, mensaje, calificacion);
 
     }
 
@@ -488,26 +548,32 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         switch (res.getCalificacion().getGeneral()) {
             case 0:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.white_trans));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.white_trans)));
                 rest_cal.setTextColor(getColor(R.color.white_trans));
                 break;
             case 1:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_1)));
                 rest_cal.setTextColor(getColor(R.color.star_1));
                 break;
             case 2:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.star_2));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_2)));
                 rest_cal.setTextColor(getColor(R.color.star_2));
                 break;
             case 3:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_3)));
                 rest_cal.setTextColor(getColor(R.color.star_3));
                 break;
             case 4:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.star_4));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_4)));
                 rest_cal.setTextColor(getColor(R.color.star_4));
                 break;
             case 5:
                 DrawableCompat.setTint(progressDrawable, getColor(R.color.star_5));
+                rest_star.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_5)));
                 rest_cal.setTextColor(getColor(R.color.star_5));
                 break;
         }
@@ -557,10 +623,9 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
             DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
             progressBarEstado.setProgress(100);
         } else if (pedido.getEstado().equalsIgnoreCase("SOLICITADO")){
-            //DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3));
             progressBarEstado.setProgress(25);
-            progressDrawable.setColorFilter(getColor(R.color.star_3), android.graphics.PorterDuff.Mode.SRC_IN);
-            progressBarEstado.setProgressDrawable(progressDrawable);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_3)));
 
         } else{
             DrawableCompat.setTint(progressDrawable, getColor(R.color.white_trans));
@@ -583,12 +648,12 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
             });
 
+            infogral.setVisibility(View.VISIBLE);
         } else {
-            Intent imenu = new Intent(VerPedidoHechoActivity.this, VerPedidosActivity.class);
-            startActivity(imenu);
-
-            //onBackPressed();
+            onBackPressed();
         }
+
+
     }
 
     private void buscarRestaurnate() {
@@ -726,6 +791,8 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                 ret = readRESTMessage(reader);
             } else if (mType.equalsIgnoreCase("GETP")) {
                 return readGETPMessage(reader);
+            } else if (mType.equalsIgnoreCase("PUTC")) {
+                return readPUTCMessage(reader);
             }
 
             return ret;
@@ -852,6 +919,149 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         reader.endObject();
 
         return new DtRCalificacion(rapidez, comida, servicio, general, comentario);
+    }
+
+    private void calificarPedido() {
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        String stringUrl;
+
+        if(dtVPedido.getCalificacion() == null){
+            stringUrl = ConnConstants.API_PUTCALIFICARPEDIDO_URL;
+        } else{
+            stringUrl = ConnConstants.API_PUTCALIFICARPEDIDOUPD_URL;
+        }
+
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new VerPedidoHechoActivity.PutCalificacionPedidoTask().execute(stringUrl);
+        }
+
+    }
+
+    private class PutCalificacionPedidoTask extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return CalificacionInfoGralUrl(urls[0]);
+            } catch (IOException | ParseException e) {
+                //return getString(R.string.err_recuperarpag);
+                return e.getMessage();
+            }
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(Object result) {
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+                //Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
+
+                if (response.getOk()) {
+                    dtVPedido.setCalificacion(dtRCalificacion);
+                }
+                
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+                dialog.setMessage(response.getMensaje());
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {dialog.cancel();});
+                dialog.show();
+
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+
+                if (result instanceof String) {
+                    dialog.setMessage((String) result);
+                } else {
+                    dialog.setMessage(getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
+                }
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
+    private DtResponse CalificacionInfoGralUrl(String myurl) throws IOException, ParseException {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+
+            //String authorization ="Bearer  " + usuario.getToken();
+
+            URL url = new URL(myurl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            //conn.setRequestProperty("Authorization", authorization);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("PUT");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+
+            String data = CalificacionToJSON();
+            Log.i(TAG, data);
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            OutputStream stream = conn.getOutputStream();
+            stream.write(out);
+
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
+                is = conn.getInputStream();
+                return readInfoGralJsonStream(is, "PUTC");
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "PUTC");
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "PUTC");
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
+            }
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+                conn.disconnect();
+            }
+        }
+    }
+    private String CalificacionToJSON(){
+        String res = "";
+
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("rapidez", dtRCalificacion.getRapidez().toString());
+            jsonObject.put("comida", dtRCalificacion.getComida().toString());
+            jsonObject.put("servicio", dtRCalificacion.getServicio().toString());
+            jsonObject.put("comentario", dtRCalificacion.getComentario());
+            jsonObject.put("id_pedido", dtVPedido.getId().toString());
+            jsonObject.put("id_cliente", dtVPedido.getIdcli().toString());
+
+            res = jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+            res = "";
+        }
+
+        return res;
     }
 
 

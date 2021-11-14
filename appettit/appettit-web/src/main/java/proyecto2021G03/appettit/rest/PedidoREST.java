@@ -114,7 +114,7 @@ public class PedidoREST {
 		RespuestaREST<CalificacionRPedidoDTO> respuesta = null;
 		try {
 			CalificacionRPedidoDTO pedido = iCalificacionRRService.crear(request);
-			respuesta = new RespuestaREST<CalificacionRPedidoDTO>(true, "Categoria editada con éxito.", pedido);
+			respuesta = new RespuestaREST<CalificacionRPedidoDTO>(true, "Calificación creada con éxito.", pedido);
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<CalificacionRPedidoDTO>(false, e.getLocalizedMessage());
@@ -127,6 +127,27 @@ public class PedidoREST {
 		}
 	}
 
+	@PUT
+	@Path("/calificarUPD/")
+	// @RecursoProtegidoJWT
+	public Response actualizarCalificar(CalificacionRPedidoDTO request) {
+		RespuestaREST<CalificacionRPedidoDTO> respuesta = null;
+		try {
+			CalificacionRPedidoDTO pedido = iCalificacionRRService.editar(request.getId_pedido(), request);
+			respuesta = new RespuestaREST<CalificacionRPedidoDTO>(true, "Calificación editada con éxito.", pedido);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<CalificacionRPedidoDTO>(false, e.getLocalizedMessage());
+			if (e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO
+					|| e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+
+	
 	@GET
 	@Path("/listar/{id_pedido}")
 	public Response listarPedido(@PathParam("id_pedido") Long id_pedido) {

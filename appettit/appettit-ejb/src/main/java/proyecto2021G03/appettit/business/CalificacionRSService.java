@@ -21,7 +21,11 @@ public class CalificacionRSService implements ICalificacionRRService {
 
     @Override
     public CalificacionRPedidoDTO crear(CalificacionRPedidoDTO calificacionRPedidoDTO) throws AppettitException {
-        ClasificacionPedido clasificacionPedido = calificacionRRestConverter.fromDTO(calificacionRPedidoDTO);
+        ClasificacionPedido clasificacionPedido = iCalificacionRDao.listarPorId(calificacionRPedidoDTO.getId_pedido(), calificacionRPedidoDTO.getId_cliente());
+        if (clasificacionPedido != null)
+            throw new AppettitException("Ya existe una calificación para el pedido.", AppettitException.NO_EXISTE_REGISTRO);
+
+        clasificacionPedido = calificacionRRestConverter.fromDTO(calificacionRPedidoDTO);
         try {
 
             return calificacionRRestConverter.fromEntity(iCalificacionRDao.crear(clasificacionPedido));
@@ -50,6 +54,8 @@ public class CalificacionRSService implements ICalificacionRRService {
 
         try {
 
+        	clasificacionPedido = calificacionRRestConverter.fromDTO(calificacionPedidoDTO);
+        	
             return calificacionRRestConverter.fromEntity(iCalificacionRDao.editar(clasificacionPedido));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);

@@ -52,12 +52,12 @@ public class CalificacionRDAO implements ICalificacionRDao {
     @Override
     public ClasificacionPedido editar(ClasificacionPedido clasificacionPedido) {
 
-        em.persist(clasificacionPedido);
+        em.merge(clasificacionPedido);
         return clasificacionPedido;
     }
 
     @Override
     public void eliminar(ClasificacionPedido clasificacionPedido) {
-em.remove(clasificacionPedido);
+    	em.remove(clasificacionPedido);
     }
 }

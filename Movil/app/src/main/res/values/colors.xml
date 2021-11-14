@@ -19,10 +19,15 @@
 
 
     <color name="star_1">#FFFF2400</color>
+    <color name="star_1_s">#77FF2400</color>
     <color name="star_2">#FFFF6700</color>
+    <color name="star_2_s">#77FF6700</color>
     <color name="star_3">#FFFFDD00</color>
+    <color name="star_3_s">#77FFDD00</color>
     <color name="star_4">#FF5AFF15</color>
+    <color name="star_4_s">#775AFF15</color>
     <color name="star_5">#FF0BAB64</color>
+    <color name="star_5_s">#770BAB64</color>
 
 
 </resources>

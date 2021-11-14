@@ -92,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
     private class GetLoginUsuarioTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {

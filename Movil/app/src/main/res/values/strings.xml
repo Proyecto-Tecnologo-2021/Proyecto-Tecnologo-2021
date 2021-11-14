@@ -12,6 +12,8 @@
     <string name="alert_btn_neutral">OK</string>
     <string name="alert_btn_cancel">Cancelar</string>
     <string name="alert_btn_confirmar">Confirmar</string>
+    <string name="alert_btn_calificar">Calificar</string>
+    <string name="alert_btn_calificar_upd">Actualizar</string>
 
     <!--CONNECTION MESSAGES-->
     <string name="err_conntitle">Error de conectiviad</string>
@@ -94,10 +96,14 @@
     <string name="pedidos_fecha">Fecha:</string>
     <string name="pedidos_total">Total:</string>
     <string name="pedidos_fp">Forma de pago:</string>
-    <string name="pedidos_calificar">Calificar</string>
+    <string name="pedidos_calificar">Calificación</string>
     <string name="pedidos_detalle">Detalle</string>
     <string name="pedidos_califica_true">Calificado</string>
     <string name="pedidos_califica_false">Sin calificar</string>
+    <string name="pedidos_rapidez">Rapidez</string>
+    <string name="pedidos_comida">Comida</string>
+    <string name="pedidos_servicio">Servicio</string>
+    <string name="pedidos_observa">Observaciones</string>
 
 
     <!--MENUS PROMOCIONES-->

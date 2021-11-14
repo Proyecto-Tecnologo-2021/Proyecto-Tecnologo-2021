@@ -2,6 +2,7 @@ package uy.edu.fing.proyecto.appetit.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -172,26 +173,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             case 0:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.white_trans));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.white_trans));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.white_trans)));
                 break;
             case 1:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_1));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_1));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_1)));
                 break;
             case 2:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_2));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_2));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_2)));
                 break;
             case 3:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_3));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_3));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_3)));
                 break;
             case 4:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_4));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_4));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_4)));
                 break;
             case 5:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_5));
                 viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_5));
+                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_5)));
                 break;
         }
 
