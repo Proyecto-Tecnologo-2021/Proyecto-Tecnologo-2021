@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.dao;
 
-import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.entity.Pedido;
 import java.util.List;
 
@@ -13,6 +12,6 @@ public interface IPedidoDao {
 	public List<Pedido> listarPorCliente(Long id_cliente);
 	public List<Pedido> listarPorRestaurante(Long id_restaurante);
     public Pedido ultimo(Long id_cliente);
-    public List<Pedido> listarPorTel(Long tel);
+    //public List<Pedido> listarPorTel(Long tel);
 
 }

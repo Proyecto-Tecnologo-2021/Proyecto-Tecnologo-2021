@@ -1,26 +1,17 @@
 package proyecto2021G03.appettit.dao;
 
 import java.util.List;
-
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import proyecto2021G03.appettit.converter.PedidoRConverter;
-import proyecto2021G03.appettit.dto.PedidoRDTO;
 import proyecto2021G03.appettit.entity.Pedido;
-import proyecto2021G03.appettit.entity.Usuario;
 
 @Singleton
 public class PedidoDAO implements IPedidoDao {
     @PersistenceContext(name = "Proyecto2021G03")
     private EntityManager em;
 
-
-   
-    
     @SuppressWarnings("unchecked")
 	@Override
     public List<Pedido> listar() {
@@ -78,6 +69,7 @@ public class PedidoDAO implements IPedidoDao {
 	@Override
 			public Pedido ultimo(Long idCliente) {
         Query ultimo =  em.createQuery("SELECT p from Pedido p where p.id_cliente = :idC order by p.id desc").setParameter("idC", idCliente);;
+			@SuppressWarnings("unchecked")
 			List<Pedido> listita= ultimo.setMaxResults(1).getResultList();
 			Pedido last	= null;
 			for(Pedido usr:listita){
@@ -88,4 +80,5 @@ public class PedidoDAO implements IPedidoDao {
 
 
 		}
+
 }
