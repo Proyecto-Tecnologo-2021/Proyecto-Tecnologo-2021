@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="0dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardElevation="2dp"
+        card_view:cardCornerRadius="5dp"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/pedido_tid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pedidos_id"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pedido_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/pedido_tid"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/pedido_tfecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/pedido_id"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:layout_marginStart="30dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:text="@string/pedidos_fecha"/>
+
+            <TextView
+                android:id="@+id/pedido_fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/pedido_tfecha"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/pedido_estado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/pedido_ttiulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pedido_id"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="0dp"
+                android:gravity="start|center"
+                android:text="@string/pedidos_total"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pedido_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pedido_id"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/pedido_ttiulo"
+                android:textColor="@color/main_color"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pedido_tfp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pedido_estado"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toStartOf="@+id/pedido_fp"
+                android:paddingEnd="10dp"
+                android:text="@string/pedidos_fp"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/pedido_fp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pedido_estado"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginBottom="0dp"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:textSize="15sp"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

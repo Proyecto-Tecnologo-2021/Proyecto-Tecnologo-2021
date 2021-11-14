@@ -16,6 +16,7 @@ import lombok.Setter;
 @Setter
 public class DtPedido {
     private static DtPedido uInstance= null;
+    private Long id;
     private Long idcli;
     private Long iddir;
     private Long idrest;
@@ -27,6 +28,7 @@ public class DtPedido {
     private DtCotizacion cotizacion;
     private String id_paypal;
     private String res_nombre;
+    private String estado;
 
     private List<Object> menus = new ArrayList<Object>();
 

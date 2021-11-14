@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 import com.vividsolutions.jts.io.ParseException;
 
+import proyecto2021G03.appettit.business.ITokenService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
@@ -14,6 +15,9 @@ import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 import java.util.List;
+
+import java.net.URI;
+import java.net.URL;
 
 //import proyecto2021G03.appettit.security.RecursoProtegidoJWT;
 
@@ -27,9 +31,9 @@ public class UsuarioREST {
 	IUsuarioService uService;
 	@EJB
 	IUsuarioDAO iUsuarioDAO;
+	@EJB
+	ITokenService iTokenService;
 
-
-	
 
 	
 	@POST
@@ -205,7 +209,6 @@ public class UsuarioREST {
 	public Response getDireccionId(DirreccionAliasDTO request) {
 		RespuestaREST<Long> respuesta = null;
 		try {
-
 			Long dirId = uService.obtenerIdDireccion(request.getUserId(), request.getAlias());
 
 			respuesta = new RespuestaREST<Long>(true, "Id de la dirección obtenida con éxito.", dirId);
@@ -248,6 +251,58 @@ public class UsuarioREST {
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+		}
+	}
+
+	@POST
+	@Path("/requestMailLink/")
+	public Response requestMailLink(MailDTO correo) {
+		RespuestaREST respuesta = null;
+		try {
+			uService.solicitarCorreoVerificador(correo);
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Correo enviado correctamente.");
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+
+	@GET
+	@Path("/verifyMailLink/{token}")
+	public Response verifyMailLink(@PathParam("token")String token) throws Exception {
+		RespuestaREST respuesta = null;
+		if(iTokenService.tokenVerificator(token)) {
+			String id = iTokenService.tokenGetClaim(token,"idUsuario");
+			String email = iTokenService.tokenGetClaim(token, "correo");
+			//MANDAR AL LINK DE LA PAGINA DE RESETEO DE PASS CON LA DATA DEL USER
+			String url ="http://localhost:3000/recover-pass"; // + id
+			return Response.temporaryRedirect(URI.create(url)).build();
+		} else {
+			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");
+			return Response.ok(respuesta).build();
+		}
+	}
+
+	@POST
+	@Path("/changePassword/")
+	public Response requestMailLink(PassDTO password) {
+		RespuestaREST respuesta = null;
+		try {
+			uService.cambioContraseña(password.getPassword());
+			respuesta = new RespuestaREST<ClienteMDTO>(true, "Contraseña cambiada correctamente.");
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
 		}
 	}
 	

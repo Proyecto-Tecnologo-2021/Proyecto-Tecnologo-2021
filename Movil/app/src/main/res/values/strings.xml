@@ -35,7 +35,7 @@
     <string name="title_addDatos">Mis Datos</string>
     <string name="title_PedidosGral">Menús</string>
     <string name="title_Pedido">Mi pedido</string>
-
+    <string name="title_Pedidos">Mis pedidos</string>
 
     <!--LOGIN-->
     <string name="login_mail">Correo</string>
@@ -46,6 +46,7 @@
     <string name="menu_offer">Menús</string>
     <string name="menu_order">Pedidos</string>
     <string name="menu_profile">Mi perfil</string>
+    <string name="menu_restaurante">Restaurantes</string>
 
     <!--VIEW MAP-->
     <string name="map_text_calle">Calle</string>
@@ -85,6 +86,19 @@
     <string name="carr_titulo">Total:</string>
     <string name="carr_cancelpaypal">El pago fue cancelado</string>
     <string name="carr_errpaypal">Transacción inválida</string>
+    <string name="menu_gral">Mi pedido</string>
+    <string name="menu_ver">Ver mi pedido</string>
+
+    <!-- PEDIDOS-->
+    <string name="pedidos_id">Pedido:</string>
+    <string name="pedidos_fecha">Fecha:</string>
+    <string name="pedidos_total">Total:</string>
+    <string name="pedidos_fp">Forma de pago:</string>
+    <string name="pedidos_calificar">Calificar</string>
+    <string name="pedidos_detalle">Detalle</string>
+    <string name="pedidos_califica_true">Calificado</string>
+    <string name="pedidos_califica_false">Sin calificar</string>
+
 
     <!--MENUS PROMOCIONES-->
     <string name="mp_direccion">Dirección de entrega</string>

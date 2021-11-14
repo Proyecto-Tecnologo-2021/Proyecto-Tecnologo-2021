@@ -18,17 +18,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
         <activity
+            android:name=".VerPedidoHechoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerPedidosActivity"
+            android:exported="false" />
+        <activity
             android:name=".PayPalActivity"
             android:exported="false"
             android:theme="@style/Theme.NoActionBar"
             tools:ignore="AppLinkUrlError">
             <intent-filter android:label="uy.edu.fing.proyecto.appetit://paypalpay">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "example://gizmos” -->
-                <data android:scheme="uy.edu.fing.proyecto.appetit"
-                    android:host="paypalpay" />
+                <data
+                    android:host="paypalpay"
+                    android:scheme="uy.edu.fing.proyecto.appetit" />
             </intent-filter>
         </activity>
         <activity
@@ -71,6 +79,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/appetitlogo" />
+
         <service
             android:name="com.paypal.android.sdk.payments.PayPalService"
             android:exported="false" />

@@ -16,5 +16,6 @@ public class DtRCalificacion {
     private Integer comida;
     private Integer servicio;
     private Integer general;
+    private String comentario;
 
 }

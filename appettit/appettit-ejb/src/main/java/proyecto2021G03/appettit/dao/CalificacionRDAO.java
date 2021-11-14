@@ -33,7 +33,8 @@ public class CalificacionRDAO implements ICalificacionRDao {
                             + "from ClasificacionPedido c "
                             + "where id_pedido = :id_pedido "
                             + "and id_cliente = :id_cliente", ClasificacionPedido.class)
-                    .setParameter("id", id_pedido)
+                    .setParameter("id_pedido", id_pedido)
+                    .setParameter("id_cliente", id_cliente)
                     .getSingleResult();
 
         } catch (Exception e) {

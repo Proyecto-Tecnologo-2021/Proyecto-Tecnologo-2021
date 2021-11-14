@@ -127,4 +127,21 @@ public class PedidoREST {
 		}
 	}
 
+	@GET
+	@Path("/listar/{id_pedido}")
+	public Response listarPedido(@PathParam("id_pedido") Long id_pedido) {
+		RespuestaREST<PedidoRDTO> respuesta = null;
+		try {
+			PedidoRDTO pedidoDTO =  iPedidoService.listarPorIdREST(id_pedido);
+			respuesta = new RespuestaREST<PedidoRDTO>(true, "Pedido listado con éxito.", pedidoDTO);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<PedidoRDTO>(false, e.getLocalizedMessage());
+			if (e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
 }

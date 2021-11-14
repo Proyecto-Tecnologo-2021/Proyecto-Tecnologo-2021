@@ -3,6 +3,9 @@ package proyecto2021G03.appettit.bean.restaurante;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -32,7 +35,12 @@ import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
+import proyecto2021G03.appettit.dto.MenuDTO;
+import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
+import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.PromocionDTO;
+import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -113,31 +121,62 @@ public class PedidosBean implements Serializable {
 
 	}
 
+	public String getHoraPedido (Long id) throws AppettitException {
+		
+		return pedSrv.listarPorId(id).getFecha()
+			       .format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
+	}
+	
+	
 	public String getNombreCliente (Long id) throws AppettitException {
 		return usrSrv.buscarPorIdCliente(id).getNombre();
+	}
+	
+	public String getTelCliente (Long id) throws AppettitException {
+		return usrSrv.buscarPorIdCliente(id).getTelefono();
 	}
 	
 	public  DireccionDTO getDireccion (Long id) throws AppettitException {
 		return usrSrv.buscarDireccionPorId(id);
 	}
 	
-	/*
-	public List<MenuDTO> getMenuRestaurante() {
-		List<MenuDTO> menus = new ArrayList<MenuDTO>();
-
-		try {
-			menus = menuSRV.listarPorRestaurante(getSelRestaurante().getId());
-
-			if (menus.size() < 3)
-				menuDeshabilitado = true;
-
-		} catch (AppettitException e) {
-			logger.error(e.getMessage().trim());
+	public List<ItemDTO> getMenus () throws AppettitException {
+		
+		ItemDTO aux = null;
+		List<ItemDTO> ret = new ArrayList<ItemDTO>();
+		List<MenuDTO> menus = pedSrv.listarPorId(selPedido.getId()).getMenus();
+		for (MenuDTO menu: menus) {
+			if (existeEnItemDTO(ret, menu.getId())) {
+				aux = obtenerItemDTO(ret, menu.getId());
+				aux.setCantidad(aux.getCantidad() + 1);
+				aux.setPrecio(aux.getPrecio() + menu.getPrecioSimple());
+			} else {
+				aux = new ItemDTO(1, menu.getId(), menu.getNombre(), menu.getPrecioSimple());
+				ret.add(aux);
+			}
 		}
-
-		return menus;
+		
+		return ret;
 	}
-	*/
+	
+	public List<ItemDTO> getPromos () throws AppettitException {
+		
+		ItemDTO aux = null;
+		List<ItemDTO> ret = new ArrayList<ItemDTO>();
+		List<PromocionDTO> promos = pedSrv.listarPorId(selPedido.getId()).getPromociones();
+		for (PromocionDTO promo: promos) {
+			if (existeEnItemDTO(ret, promo.getId())) {
+				aux = obtenerItemDTO(ret, promo.getId());
+				aux.setCantidad(aux.getCantidad() + 1);
+				aux.setPrecio(aux.getPrecio() + promo.getPrecio());
+			} else {
+				aux = new ItemDTO(1, promo.getId(), promo.getNombre(), promo.getPrecio());
+				ret.add(aux);
+			}
+		}
+		
+		return ret;
+	}
 	
 	public void onRowSelect(RowEditEvent<PedidoDTO> event) {
 		disabledBloquedado = false;
@@ -200,6 +239,29 @@ public class PedidosBean implements Serializable {
 
 		return usuarioDTO;
 
+	}
+	
+	public boolean existeEnItemDTO (List<ItemDTO> items, Long id) {
+		
+		if (items == null) {
+			return false;
+		} else {
+			for(ItemDTO item: items) {
+				if (item.getId().compareTo(id) == 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	public ItemDTO obtenerItemDTO (List<ItemDTO> items, Long id) {
+		for(ItemDTO item: items) {
+			if (item.getId().compareTo(id) == 0) {
+				return item;
+			}
+		}
+		return null;
 	}
 	
 }
