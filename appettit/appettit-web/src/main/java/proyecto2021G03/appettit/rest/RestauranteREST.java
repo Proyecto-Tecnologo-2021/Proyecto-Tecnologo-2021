@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @RequestScoped
@@ -33,6 +34,26 @@ public class RestauranteREST {
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST<RestauranteDTO>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}	
+		
+	}
+	
+	@GET
+	@Path("/listarDatosBasicos/{id}")
+	//@RecursoProtegidoJWT
+	public Response buscarRestaurantePorIdBasico(@PathParam("id") Long id) {
+		RespuestaREST<RestauranteRDTO> respuesta = null;
+		try {
+			RestauranteRDTO restaurante = uService.buscarRestaurantePorIdBasico(id);
+			respuesta = new RespuestaREST<RestauranteRDTO>(true, "Datos basicos del restaurante.", restaurante);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<RestauranteRDTO>(false, e.getLocalizedMessage());
 			if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
 			} else {

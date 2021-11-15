@@ -22,4 +22,5 @@ public class RestauranteRDTO {
     private ImagenDTO imagen;
     private String id_imagen;
     private String direccion;
+    private CalificacionGralRestauranteDTO calificacion;
 }
