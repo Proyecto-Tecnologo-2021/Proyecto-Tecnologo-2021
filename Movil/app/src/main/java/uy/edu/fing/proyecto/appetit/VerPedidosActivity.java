@@ -92,6 +92,8 @@ public class VerPedidosActivity extends AppCompatActivity {
                 case R.id.menu_pedido:
                     return true;
                 case R.id.menu_perfil:
+                    Intent iusr = new Intent(VerPedidosActivity.this, PerfilActivity.class);
+                    startActivity(iusr);
                     return true;
             }
             return false;

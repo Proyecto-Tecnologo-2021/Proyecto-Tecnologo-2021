@@ -135,6 +135,8 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                     startActivity(ipedidos);
                     return true;
                 case R.id.menu_perfil:
+                    Intent iusr = new Intent(VerPedidoHechoActivity.this, PerfilActivity.class);
+                    startActivity(iusr);
                     return true;
             }
             return false;

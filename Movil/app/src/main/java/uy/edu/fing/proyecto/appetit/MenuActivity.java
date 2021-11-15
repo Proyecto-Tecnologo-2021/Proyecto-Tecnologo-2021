@@ -117,6 +117,8 @@ public class MenuActivity extends AppCompatActivity {
                     startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
+                    Intent iusr = new Intent(MenuActivity.this, PerfilActivity.class);
+                    startActivity(iusr);
                     return true;
             }
             return false;

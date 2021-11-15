@@ -96,12 +96,13 @@ public class VerPedidoActivity extends AppCompatActivity {
     RatingBar rest_star;
     Button pedido_confirm;
 
+    /*
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(ConnConstants.PAYPAL_CLIENT_ID)
             .acceptCreditCards(false)
             .merchantName("Appetit");
-
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,10 +110,11 @@ public class VerPedidoActivity extends AppCompatActivity {
         setTitle(title);
 
         setContentView(R.layout.activity_ver_pedido);
+        /*
         Intent ipaypals = new Intent(VerPedidoActivity.this, PayPalService.class);
         ipaypals.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(ipaypals);
-
+*/
         if (dtPedido.getIdrest() == null) {
             Intent imenu = new Intent(VerPedidoActivity.this, MenuActivity.class);
             startActivity(imenu);
@@ -148,6 +150,9 @@ public class VerPedidoActivity extends AppCompatActivity {
 
                     return true;
                 case R.id.menu_perfil:
+                    Intent iusr = new Intent(VerPedidoActivity.this, PerfilActivity.class);
+                    startActivity(iusr);
+
                     return true;
             }
             return false;

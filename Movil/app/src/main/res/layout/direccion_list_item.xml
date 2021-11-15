@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardElevation="2dp"
+        card_view:cardCornerRadius="5dp"
+        android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:id="@+id/info_direccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+
+           <TextView
+                android:id="@+id/dir_alias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/dir_tcalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_alias"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp"
+                android:text="@string/map_text_calle"/>
+            <TextView
+                android:id="@+id/dir_calle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_alias"
+                android:layout_toEndOf="@+id/dir_tcalle"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/dir_tnro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tcalle"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp"
+                android:text="@string/map_text_nro"/>
+            <TextView
+                android:id="@+id/dir_nro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tcalle"
+                android:layout_toEndOf="@+id/dir_tnro"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/dir_tapto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tcalle"
+                android:layout_toEndOf="@+id/dir_nro"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="35dp"
+                android:textSize="15sp"
+                android:text="@string/map_text_apto"/>
+
+            <TextView
+                android:id="@+id/dir_apto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tcalle"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@+id/dir_tapto"
+                android:paddingStart="5dp"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/dir_tref"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tnro"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp"
+                android:text="@string/map_text_ref"/>
+
+            <TextView
+                android:id="@+id/dir_ref"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dir_tref"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="5dp"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

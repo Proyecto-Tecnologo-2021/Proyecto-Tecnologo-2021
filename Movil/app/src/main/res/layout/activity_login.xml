@@ -54,14 +54,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:background="@drawable/appettit_login"
+                android:backgroundTint="@color/main_color"
                 android:text="@string/login_input" />
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progressBarLogin"
             style="?android:attr/progressBarStyleLarge"
-            android:indeterminateTint="@color/second_color"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:indeterminate="false"

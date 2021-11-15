@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/perfil_crear_dir"
+        android:title="@string/datos_adireccion" />
+    <!-- menu group -->
+    <group android:id="@+id/perfil_g">
+        <item android:id="@+id/perfil_modificar"
+            android:title="@string/datos_modificar" />
+        <item android:id="@+id/perfil_cerrar"
+            android:title="@string/login_close" />
+    </group>
+
+</menu>

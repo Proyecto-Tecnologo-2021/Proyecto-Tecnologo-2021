@@ -21,21 +21,22 @@
                 android:id="@+id/dir_spinner"
                 android:layout_alignParentEnd="true"
                 android:spinnerMode="dialog"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 android:prompt="@string/mp_direccion"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_above="@+id/bottomNavigationView"
                 android:layout_below="@+id/dir_spinner"
+                android:layout_alignParentTop="@id/bottomNavigationView"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp"
-                android:layout_above="@+id/bottomNavigationView"
-                android:layout_alignParentTop="@id/bottomNavigationView"
-                />
+                tools:layout_editor_absoluteY="0dp" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
@@ -47,7 +48,7 @@
                 android:background="@color/menu_bar_bg"
                 app:itemIconTint="@color/menu_bar_text"
                 app:itemTextColor="@color/menu_bar_text"
-                app:menu="@menu/bottom_navigation_menu"></com.google.android.material.bottomnavigation.BottomNavigationView>
+                app:menu="@menu/bottom_navigation_menu"/>
         </RelativeLayout>
 
         <ProgressBar

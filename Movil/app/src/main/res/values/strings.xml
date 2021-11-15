@@ -38,11 +38,13 @@
     <string name="title_PedidosGral">Menús</string>
     <string name="title_Pedido">Mi pedido</string>
     <string name="title_Pedidos">Mis pedidos</string>
+    <string name="title_Perfil">Mi perfil</string>
 
     <!--LOGIN-->
     <string name="login_mail">Correo</string>
     <string name="login_pass">Contraseña</string>
     <string name="login_input">Ingresar</string>
+    <string name="login_close">Cerrar sesión</string>
 
     <!--MENU-->
     <string name="menu_offer">Menús</string>
@@ -65,6 +67,7 @@
     <string name="map_err_talias">Error</string>
     <string name="map_err_alias">Se debe colocar un alias</string>
 
+
     <!-- Mis Datos -->
     <string name="datos_name">Nombre</string>
     <string name="datos_email">Correo</string>
@@ -76,6 +79,11 @@
     <string name="datos_err_phone">Debe ingresar un teléfono</string>
     <string name="datos_err_pass">Debe ingresar un contraseña</string>
     <string name="datos_err_pass2">Las contraseñas no coinciden</string>
+    <string name="datos_tdireccion">Mis direcciones</string>
+    <string name="datos_vdireccion">¿Ver dirección?</string>
+    <string name="datos_adireccion">Crear dirección</string>
+    <string name="datos_modificar">Actualizar datos</string>
+
 
     <!-- Carrito -->
     <string name="carr_symbol">$U</string>
