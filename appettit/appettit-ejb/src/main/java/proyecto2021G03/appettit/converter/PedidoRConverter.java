@@ -105,12 +105,16 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
     private List<MenuRDTO> getMenuPromo(Pedido pedido){
 		
     	List<MenuRDTO> menus= menuRConverter.fromEntityList(pedido.getMenus());
+    	
+    	if(menus == null)
+    		menus = new ArrayList<MenuRDTO>();
+    		
     	for(Promocion prom: pedido.getPromociones()) {
       		
     		menus.add(new MenuRDTO(
     				prom.getId(), 
     				prom.getId_restaurante(),
-    				prom.getRestaurante().getNombre(),
+    				isuarioDAO.buscarRestaurantePorId(prom.getId_restaurante()).getNombre(),
     				prom.getDescuento(), 
     				prom.getNombre(), 
     				prom.getDescripcion(),

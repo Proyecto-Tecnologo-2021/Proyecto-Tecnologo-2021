@@ -677,7 +677,7 @@ public class VerPedidoActivity extends AppCompatActivity {
 
 
             String data = AddPedidoToJSON();
-            //Log.i(TAG, data);
+            Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();

@@ -963,7 +963,7 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                 if (response.getOk()) {
                     dtVPedido.setCalificacion(dtRCalificacion);
                 }
-                
+
                 AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();
                 dialog.setTitle(R.string.info_title);
                 dialog.setMessage(response.getMensaje());

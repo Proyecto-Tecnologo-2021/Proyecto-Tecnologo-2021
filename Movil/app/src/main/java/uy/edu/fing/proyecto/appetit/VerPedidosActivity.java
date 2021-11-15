@@ -149,7 +149,6 @@ public class VerPedidosActivity extends AppCompatActivity {
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new VerPedidosActivity.DownloadPedidosTask().execute(stringUrl);
-        } else {
         }
     }
 
