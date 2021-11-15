@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class PassDTO {
     String password;
+    Long clientId;
 
 }

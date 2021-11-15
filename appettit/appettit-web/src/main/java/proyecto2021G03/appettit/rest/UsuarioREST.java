@@ -278,9 +278,8 @@ public class UsuarioREST {
 		RespuestaREST respuesta = null;
 		if(iTokenService.tokenVerificator(token)) {
 			String id = iTokenService.tokenGetClaim(token,"idUsuario");
-			String email = iTokenService.tokenGetClaim(token, "correo");
 			//MANDAR AL LINK DE LA PAGINA DE RESETEO DE PASS CON LA DATA DEL USER
-			String url ="http://localhost:3000/recover-pass"; // + id
+			String url ="http://localhost:3000/change-pass/" + id ;
 			return Response.temporaryRedirect(URI.create(url)).build();
 		} else {
 			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");
@@ -290,10 +289,10 @@ public class UsuarioREST {
 
 	@POST
 	@Path("/changePassword/")
-	public Response requestMailLink(PassDTO password) {
+	public Response changePassword(PassDTO password) {
 		RespuestaREST respuesta = null;
 		try {
-			uService.cambioContraseña(password.getPassword());
+			uService.cambioContraseña(password.getPassword(), password.getClientId());
 			respuesta = new RespuestaREST<ClienteMDTO>(true, "Contraseña cambiada correctamente.");
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
