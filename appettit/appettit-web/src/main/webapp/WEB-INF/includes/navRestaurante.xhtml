@@ -1,0 +1,48 @@
+	<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:p="http://primefaces.org/ui">
+		
+		<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+		
+		<nav class="navbar navbar-expand-lg navbar-light bg-light"> <a
+				class="navbar-brand" href="/appettit-web/restaurante/home.xhtml"><img
+				class="appettit-logo"
+				src="/appettit-web/resources/images/logobg.svg" alt="Appettit"></img></a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Menus</a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item"
+								href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
+								class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Menus</a> <a
+								class="dropdown-item" href="/appettit-web/restaurante/promociones.xhtml">Promociones</a>
+						</div></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarMenu"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Clientes </a>
+						<div class="dropdown-menu" aria-labelledby="navbarMenu">
+							<a class="dropdown-item" href="/appettit-web/restaurante/pedidos.xhtml">Pedidos</a> <a
+								class="dropdown-item" href="/appettit-web/restaurante/reclamos.xhtml">Reclamos</a> <a
+								class="dropdown-item" href="#">Calificar</a>
+						</div></li>
+					<li class="nav-item"><a class="nav-link" href="#">Informes</a></li>
+				</ul>
+			</div>
+			</nav>
+			
+		</ui:composition>			
