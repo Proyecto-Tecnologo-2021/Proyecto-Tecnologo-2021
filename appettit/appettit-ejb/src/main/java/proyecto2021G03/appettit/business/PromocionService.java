@@ -177,14 +177,7 @@ public class PromocionService implements IPromocionService {
 
     @Override
     public List<PromocionDTO> listarPorRestaurante(Long id) throws AppettitException {
-       /*
-    	try {
-            return pConverter.fromEntity(pDAO.listarPorRestaurante(id));
-        } catch (Exception e) {
-            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }
-        */
-    	
+
     	List<PromocionDTO> promociones = new ArrayList<PromocionDTO>();
 		try {
 			Iterator<PromocionDTO> it = pConverter.fromEntity(pDAO.listarPorRestaurante(id))
@@ -204,11 +197,9 @@ public class PromocionService implements IPromocionService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				promociones.add(men);
-
 			}
 
 			return promociones;
@@ -220,9 +211,8 @@ public class PromocionService implements IPromocionService {
 
     @Override
     public PromocionDTO crear(PromocionDTO pcDTO) throws AppettitException {
-
-        try {
-            Promocion promo = pConverter.fromDTO(pcDTO);
+		try {
+			Promocion promo = pConverter.fromDTO(pcDTO);
             return pConverter.fromEntity(pDAO.crear(promo));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -247,14 +237,9 @@ public class PromocionService implements IPromocionService {
     			} catch (Exception e) {
     				logger.error(e.getMessage());
     			}
-
     		}
     		men.setImagen(img);
-    		
     		return men;
-            
-            
-            
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
@@ -262,7 +247,6 @@ public class PromocionService implements IPromocionService {
 
 
     public boolean existeNombreProductoExcluirId(Long id, String nombre) {
-
         List<PromocionDTO> promoData = pConverter.fromEntity(pDAO.listar());
         for (PromocionDTO p : promoData) {
             if (!p.getId().equals(id)) {
@@ -284,11 +268,8 @@ public class PromocionService implements IPromocionService {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-				
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -297,13 +278,10 @@ public class PromocionService implements IPromocionService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				promociones.add(men);
-
 			}
-
 			return promociones;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -320,8 +298,6 @@ public class PromocionService implements IPromocionService {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-				
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
 
@@ -333,13 +309,10 @@ public class PromocionService implements IPromocionService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				promociones.add(men);
-
 			}
-
 			return promociones;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -351,8 +324,6 @@ public class PromocionService implements IPromocionService {
 		PromocionRDTO men = pConverter.fromEntityToRDTO(pDAO.listarPorId(id, id_restaurante));
 		ImagenDTO img = new ImagenDTO();
 		men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-		
-
 		if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 			FileManagement fm = new FileManagement();
 
@@ -364,10 +335,8 @@ public class PromocionService implements IPromocionService {
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
-
 		}
 		men.setImagen(img);
-		
 		return men;
 	}
 
@@ -381,7 +350,6 @@ public class PromocionService implements IPromocionService {
 				PromocionRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-				
 
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
@@ -394,13 +362,10 @@ public class PromocionService implements IPromocionService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				promociones.add(men);
-
 			}
-
 			return promociones;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
