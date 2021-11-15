@@ -946,5 +946,17 @@ public class UsuarioService implements IUsuarioService {
 			}
 		}
 	}
+
+	@Override
+	public ClienteDTO buscarPorCorreoCliente(String correo) throws AppettitException {
+		ClienteDTO cliente = null;
+		try {
+			ClienteDTO clienteDTO = usrConverter.fromCliente(usrDAO.buscarPorCorreoCliente(correo));
+			return clienteDTO;
+
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 	
 }

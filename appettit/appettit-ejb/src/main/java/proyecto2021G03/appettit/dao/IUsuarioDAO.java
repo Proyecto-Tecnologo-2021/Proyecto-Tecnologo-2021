@@ -54,5 +54,6 @@ public interface IUsuarioDAO {
 	public CalificacionGralClienteDTO calificacionGralCliente(Long id);
 	public Direccion buscarDireccionPorId(Long id);
 	public PedidoRDTO buscarultimo(Long id);
+	Cliente buscarPorCorreoCliente(String correo);
 
 }

@@ -362,5 +362,18 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 	}
 
+	@Override
+	public Cliente buscarPorCorreoCliente(String correo) {
+		Cliente cliente = null;
+
+		cliente = em.createQuery("SELECT _c "
+						+ "from Cliente as _c "
+						+ "where _c.correo = :correo", Cliente.class)
+				.setParameter("correo", correo)
+				.getSingleResult();
+
+		return cliente;
+	}
+
 
 }
