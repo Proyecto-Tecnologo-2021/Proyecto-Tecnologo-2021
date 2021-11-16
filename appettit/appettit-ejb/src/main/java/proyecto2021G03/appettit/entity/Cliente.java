@@ -28,7 +28,7 @@ public class Cliente extends Usuario {
 	@Builder
 	public Cliente(Long id, String nombre, String username, String password, String telefono, String correo,
 			String tokenFireBase, Boolean bloqueado, List<Direccion> direcciones) {
-		super(id, nombre, username, password, telefono, correo, tokenFireBase);
+		super(id, nombre, username, password, telefono, correo, tokenFireBase, null);
 		
 		this.bloqueado = bloqueado;
 		this.direcciones = direcciones;		

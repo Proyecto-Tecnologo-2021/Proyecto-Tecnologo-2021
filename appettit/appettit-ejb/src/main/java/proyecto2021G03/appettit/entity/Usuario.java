@@ -39,4 +39,7 @@ public abstract class Usuario  implements Serializable  {
 
 	@Column(name="tokenfirebase", columnDefinition="TEXT")
 	private String tokenFireBase;
+	
+	@Column(name="notificationFirebase", columnDefinition="TEXT")
+	private String notificationFirebase;
 }

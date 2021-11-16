@@ -80,7 +80,7 @@ public class ProductoPedidoAdapter  extends BaseAdapter {
         }
 
         menu_name.setText(nombre);
-        menu_cantidad.setText("1");
+        menu_cantidad.setText("");
         menu_precio.setText(precio);
 
         return convertView;

@@ -1,6 +1,7 @@
 package proyecto2021G03.appettit.business;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,11 +15,13 @@ import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.converter.PedidoRConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IPedidoDao;
+import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
@@ -32,6 +35,7 @@ public class PedidoService implements IPedidoService {
 	IPedidoDao iPedidoDao;
 	@EJB
 	PedidoConverter pedidoConverter;
+	
 	@EJB
 	UsuarioConverter usuarioConverter;
 
@@ -46,6 +50,12 @@ public class PedidoService implements IPedidoService {
 
 	@EJB
 	IImagenService imgSrv;
+	
+	@EJB
+	INotificacionService notificacionSrv;
+	
+	@EJB
+	IUsuarioDAO usrDAO;
 
 	@Override
 	public List<PedidoDTO> listar() throws AppettitException {
@@ -70,7 +80,22 @@ public class PedidoService implements IPedidoService {
 		Pedido PedidoService = iPedidoDao.listarPorId(pedidoDTO.getId());
 		try {
 
-			return pedidoConverter.fromEntity(iPedidoDao.crear(PedidoService));
+			PedidoDTO pdto = pedidoConverter.fromEntity(iPedidoDao.crear(PedidoService)); 
+			
+			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
+			if(pdto.getCliente().getNotificationFirebase() != null) {
+				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
+				
+				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
+				+ " Total: " + pdto.getTotal()
+				+ "Forma de Pago: " + pdto.getTipo().toString()
+				+ " Estado: " + pdto.getEstado().toString();
+				notificacionSrv.enviarNotificacionFirebase(pdto.getCliente().getNotificationFirebase(),
+						"Pedido registrado con éxito.", msg );
+			}
+			
+			return pdto;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -146,7 +171,23 @@ public class PedidoService implements IPedidoService {
 		Pedido pedido = pedidoRConverter.fromDTO(pedidoRDTO);
 		try {
 
-			return pedidoRConverter.fromEntity(iPedidoDao.crear(pedido));
+			PedidoRDTO pdto = pedidoRConverter.fromEntity(iPedidoDao.crear(pedido));
+			Cliente cliente = usrDAO.buscarPorIdCliente(pedidoRDTO.getIdcli());
+			
+			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
+			if(cliente.getNotificationFirebase() != null) {
+				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
+				
+				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
+				+ " Total: " + pdto.getTotal()
+				+ "Forma de Pago: " + pdto.getTipo().toString()
+				+ " Estado: " + pdto.getEstado().toString();
+				notificacionSrv.enviarNotificacionFirebase(cliente.getNotificationFirebase(),
+						"Pedido registrado con éxito.", msg );
+			}
+			
+			return pdto;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

@@ -309,6 +309,7 @@ public class UsuarioService implements IUsuarioService {
 				clienteData.getTokenFireBase(), false, direcciones, null);
 
 		Cliente usuario = usrConverter.fromClienteDTO(cliente);
+		usuario.setNotificationFirebase(clienteData.getNotificationFirebase());
 
 		try {
 			if (usrDAO.existeCorreoTelefono(usuario.getCorreo(), usuario.getTelefono())) {
@@ -633,6 +634,9 @@ public class UsuarioService implements IUsuarioService {
 			BCrypt.Result resultado = null;
 			resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
 			if (resultado.verified) {
+				usuario.setNotificationFirebase(loginDTO.getNotificationFirebase());
+				usrDAO.editarCliente((Cliente) usuario);
+				
 				ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
 				CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
 
@@ -665,6 +669,7 @@ public class UsuarioService implements IUsuarioService {
 			if (usuario instanceof Cliente) {
 
 				usuario.setTokenFireBase(loginDTO.getPassword());
+				usuario.setNotificationFirebase(loginDTO.getNotificationFirebase());
 				usrDAO.editarCliente((Cliente) usuario);
 
 				ClienteDTO clienteDTO = usrConverter.fromCliente((Cliente) usuario);

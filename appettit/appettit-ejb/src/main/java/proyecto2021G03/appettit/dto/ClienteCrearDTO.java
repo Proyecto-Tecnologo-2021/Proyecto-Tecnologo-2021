@@ -15,5 +15,6 @@ public class ClienteCrearDTO {
     private String correo;
     private String tokenFireBase;
     private DireccionCrearDTO direccion;
+    private String notificationFirebase;
     
 }

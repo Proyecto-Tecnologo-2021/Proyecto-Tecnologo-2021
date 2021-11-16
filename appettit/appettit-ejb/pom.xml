@@ -167,6 +167,11 @@
 		    <version>0.9.1</version>
 		</dependency>
 
+		<dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
 <!-- https://mvnrepository.com/artifact/com.lowagie/itext -->

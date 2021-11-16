@@ -32,11 +32,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private NetworkInfo networkInfo;
     private boolean isConnected;
     private FirebaseAuth mAuth;
+    String firebaseToken;
 
     SignInButton signInButton;
     Button loginButton;
@@ -142,6 +146,16 @@ public class MainActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "No se pudo obtener el token de registro de FCM", task.getException());
+                        return;
+                    }
+                    firebaseToken = task.getResult();
+                    Log.i(TAG, firebaseToken);
+                    dtUsuario.setNotFirebase(firebaseToken);
+                });
     }
 
 
@@ -244,6 +258,11 @@ public class MainActivity extends AppCompatActivity {
             dtUsuario.setCorreo(null);
             dtUsuario.setTokenFirebase(null);
             dtUsuario.setToken(null);
+            dtUsuario.setUsername(null);
+            dtUsuario.setTelefono(null);
+            dtUsuario.setPassword(null);
+            dtUsuario.setNombre(null);
+            dtUsuario.setDirecciones(new ArrayList<DtDireccion>());
             signInButton.setEnabled(true);
             loginButton.setEnabled(true);
 
@@ -328,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                             ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
-                    }else{
+                    } else {
                         Intent adduseractivity = new Intent(MainActivity.this, AltaDireccionActivity.class);
                         startActivity(adduseractivity);
                     }
@@ -374,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             String data = LoginToJSON();
-            //Log.i(TAG, data);
+            Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -569,6 +588,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             jsonObject.put("usuario", dtUsuario.getCorreo());
             jsonObject.put("password", dtUsuario.getTokenFirebase());
+            jsonObject.put("notificationFirebase", dtUsuario.getNotFirebase());
 
             res = jsonObject.toString();
         } catch (JSONException e) {
@@ -648,7 +668,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private DtResponse CotizaInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
@@ -716,7 +735,7 @@ public class MainActivity extends AppCompatActivity {
         Boolean ok = false;
         String mensaje = null;
         String base = null;
-        DtCotizacion dtCotizacion= null;
+        DtCotizacion dtCotizacion = null;
 
         try {
             reader.beginObject();
@@ -728,13 +747,13 @@ public class MainActivity extends AppCompatActivity {
                 if (name.equals("base")) {
                     base = reader.nextString();
                 } else if (name.equals("rates")) {
-                    dtCotizacion =  readCotizacionObj(reader);
+                    dtCotizacion = readCotizacionObj(reader);
                 } else {
                     reader.skipValue();
                 }
             }
             dtCotizacion.setBase(base);
-        } catch (Exception e){
+        } catch (Exception e) {
             ok = false;
             mensaje = "GET cotizacion false";
             dtCotizacion = null;

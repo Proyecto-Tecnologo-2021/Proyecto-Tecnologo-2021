@@ -1,10 +1,13 @@
 package uy.edu.fing.proyecto.appetit.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -75,5 +78,14 @@ public class DireccionAdapter extends ArrayAdapter<DtDireccion> {
         return label;
     }
 
-
+    @Override
+    public int getPosition(@Nullable DtDireccion item) {
+        int cont = -1;
+        for ( DtDireccion dtd : direcciones){
+            cont ++;
+            if (dtd.getId() == item.getId())
+                break;
+        }
+        return cont;
+    }
 }

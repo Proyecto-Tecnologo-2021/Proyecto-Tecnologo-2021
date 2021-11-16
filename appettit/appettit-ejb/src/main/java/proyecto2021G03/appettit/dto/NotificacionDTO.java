@@ -8,13 +8,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class LoginDTO {
-	
-	private String usuario;
-	private String password;
-	private String notificationFirebase;
-	
+public class NotificacionDTO {
+
+	private String title;
+	private String body;
+
+
 }

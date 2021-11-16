@@ -49,7 +49,8 @@ dependencies {
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-messaging:'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
 
 
     // Also declare the dependency for the Google Play services library and specify its version
@@ -75,9 +76,6 @@ dependencies {
 
     //PayPal
     implementation('com.paypal.sdk:paypal-android-sdk:2.16.0')
-    // PayPal Checkout SDK Libraries
-    //implementation 'com.paypal.checkout:android-sdk:0.2.0'
-    //implementation('com.paypal.checkout:android-sdk:0.2.0')
 
 
 }

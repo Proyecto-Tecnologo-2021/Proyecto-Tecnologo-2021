@@ -25,7 +25,8 @@ public class PedidoDAO implements IPedidoDao {
     @Override
     public Pedido crear(Pedido pedido) {
         em.persist(pedido);
-        return pedido;    }
+        return pedido;
+    }
 
     @Override
     public Pedido editar(Pedido pedido) {

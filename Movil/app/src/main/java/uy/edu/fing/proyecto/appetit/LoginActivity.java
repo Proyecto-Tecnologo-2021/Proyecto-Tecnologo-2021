@@ -344,6 +344,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             jsonObject.put("usuario", mail.getText());
             jsonObject.put("password", password.getText());
+            jsonObject.put("notificationFirebase", dtUsuario.getNotFirebase());
 
             res = jsonObject.toString();
         } catch (JSONException e) {

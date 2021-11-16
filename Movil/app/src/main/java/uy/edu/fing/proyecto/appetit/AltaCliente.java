@@ -462,6 +462,7 @@ public class AltaCliente extends AppCompatActivity {
             jsonObject.put("telefono", dtUsuario.getTelefono());
             jsonObject.put("correo", dtUsuario.getCorreo());
             jsonObject.put("tokenFireBase", dtUsuario.getTokenFirebase());
+            jsonObject.put("notificationFirebase", dtUsuario.getNotFirebase());
 
             DtDireccion dir = dtUsuario.getDirecciones().get(0);
 

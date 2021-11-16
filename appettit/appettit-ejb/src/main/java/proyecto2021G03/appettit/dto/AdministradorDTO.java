@@ -10,7 +10,7 @@ import proyecto2021G03.appettit.entity.Usuario;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AdministradorDTO extends Usuario { //porque extiende de Usuario y no de UsuarioDTO????????
+public class AdministradorDTO extends UsuarioDTO { //porque extiende de Usuario y no de UsuarioDTO????????
 
 	private static final long serialVersionUID = 1L;
 

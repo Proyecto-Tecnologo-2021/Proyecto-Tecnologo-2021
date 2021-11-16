@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -83,17 +84,19 @@ public class MenuActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pBarMenus);
         progressBar.setVisibility(View.VISIBLE);
 
-        DireccionAdapter adapter = new DireccionAdapter(MenuActivity.this, R.layout.dir_spinner, dtUsuario.getDirecciones());
+        DireccionAdapter adapter = new DireccionAdapter(this, R.layout.dir_spinner, dtUsuario.getDirecciones());
         sp.setAdapter(adapter);
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 DtDireccion dir = adapter.getItem(position);
                 dtPedido.setIddir(dir.getId());
                 dtPedido.setGeometry(dir.getGeometry());
+                Log.i(TAG, dir.getAlias());
+                progressBar.setVisibility(View.VISIBLE);
                 buscarMenus();
-                //Toast.makeText(MenuActivity.this, dir.getGeometry(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -101,7 +104,12 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         });
-
+        if(dtPedido.getIddir() != null){
+            DtDireccion pos = new DtDireccion();
+            pos.setId(dtPedido.getIddir());
+            sp.setSelection(adapter.getPosition(pos));
+            //mySpinner.setSelection(arrayAdapter.getPosition("Category 2")
+        }
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         bottomNavigationView.setSelectedItemId(R.id.menu_menus);
@@ -152,19 +160,19 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void addMenus(List<Object> menus){
+        recyclerView = findViewById(R.id.recyclerView);
+        // Nuestro RecyclerView usará un linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
 
         if(menus.size()!=0){
-            recyclerView = findViewById(R.id.recyclerView);
-
-
-            // Nuestro RecyclerView usará un linear layout manager
-            LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.this);
-            recyclerView.setLayoutManager(layoutManager);
-
             adapter = new ProductAdapter(MenuActivity.this, menus);
             // Set CustomAdapter as the adapter for RecyclerView.
-            recyclerView.setAdapter(adapter);
+        } else {
+            adapter = null;
         }
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void buscarMenus() {
@@ -187,7 +195,6 @@ public class MenuActivity extends AppCompatActivity {
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new MenuActivity.DownloadMenusTask().execute(stringUrl);
-        } else {
         }
     }
 

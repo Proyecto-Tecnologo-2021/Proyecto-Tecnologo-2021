@@ -39,7 +39,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "example://gizmos” -->
                 <data
                     android:host="paypalpay"
                     android:scheme="uy.edu.fing.proyecto.appetit" />
