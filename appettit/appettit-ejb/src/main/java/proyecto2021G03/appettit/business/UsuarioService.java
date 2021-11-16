@@ -285,6 +285,32 @@ public class UsuarioService implements IUsuarioService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+	
+	@Override
+	public RestauranteDTO abrirRestaurante(Long id) throws AppettitException {
+		Restaurante restaurante = usrDAO.buscarRestaurantePorId(id);
+		if (restaurante == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			restaurante.setAbierto(true);
+			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+	
+	@Override
+	public RestauranteDTO cerrarRestaurante(Long id) throws AppettitException {
+		Restaurante restaurante = usrDAO.buscarRestaurantePorId(id);
+		if (restaurante == null)
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		try {
+			restaurante.setAbierto(false);
+			return usrConverter.fromRestaurante(usrDAO.editarRestaurante(restaurante));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 
 	@Override
 	public ClienteMDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {

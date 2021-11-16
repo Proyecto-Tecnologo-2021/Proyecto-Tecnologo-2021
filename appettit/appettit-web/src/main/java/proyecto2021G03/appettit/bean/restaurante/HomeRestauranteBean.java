@@ -8,10 +8,11 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 
@@ -19,15 +20,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserBean;
 import proyecto2021G03.appettit.business.IDepartamentoService;
+import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Named("HomeRestaurante")
-@SessionScoped
+//@SessionScoped
+@RequestScoped
 @Getter
 @Setter
 @AllArgsConstructor
@@ -43,19 +46,24 @@ public class HomeRestauranteBean implements Serializable{
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
 	Long id_restaurante;
-
+	FacesContext facesContext;
+	HttpSession session;
+	
 	@EJB
 	IDepartamentoService departamentoService;
+	
+	@EJB
+	IUsuarioService usrService;
 	
 	@PostConstruct
 	public void init() {
 		try {
 			departamentos = departamentoService.listar();
-			abierto = false;
 			
-			UserBean userBean = new UserBean();
-			
-			UsuarioDTO usuarioDTO = userBean.getUserSession();
+			facesContext = FacesContext.getCurrentInstance();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
+
+			UsuarioDTO usuarioDTO = getUserSession();
 			
 			if(usuarioDTO==null) {
 				FacesContext.getCurrentInstance().addMessage(null,
@@ -64,6 +72,9 @@ public class HomeRestauranteBean implements Serializable{
 				Date fechaBase = new Date();
 				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				fechaHora = dateFormat.format(fechaBase);
+				
+				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
+				abierto = restauranteDTO.getAbierto();
 			}
 			
 
@@ -75,4 +86,27 @@ public class HomeRestauranteBean implements Serializable{
 
 	}
 
+	public void abrirRestaurante () throws AppettitException {
+		logger.info("abrio");
+		restauranteDTO = usrService.abrirRestaurante(restauranteDTO.getId());
+		abierto = restauranteDTO.getAbierto();
+	}
+	
+	public void cerrarRestaurante () throws AppettitException {
+		logger.info("cerro");
+		restauranteDTO = usrService.cerrarRestaurante(restauranteDTO.getId());
+		abierto = restauranteDTO.getAbierto(); 
+	}
+	
+	public UsuarioDTO getUserSession() {
+		UsuarioDTO usuarioDTO = null;
+		try {
+			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+		} catch (Exception e) {
+			logger.error("Intento de acceso");
+		}
+
+		return usuarioDTO;
+
+	}
 }
