@@ -73,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
         networkInfo = connMgr.getActiveNetworkInfo();
         isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
 
-
         confirmButton.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             loginUsuario();
@@ -122,8 +121,33 @@ public class LoginActivity extends AppCompatActivity {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
                     }else{
-                        Intent adduseractivity = new Intent(LoginActivity.this, AltaDireccionActivity.class);
-                        startActivity(adduseractivity);
+                        AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this).create();
+                        dialog.setTitle(R.string.info_title);
+
+                        if (response.getMensaje().equalsIgnoreCase("Usuario inexistente.")){
+                            String mensaje = response.getMensaje() + "\n" +
+                            getString(R.string.nuevo_usuario_q);
+
+                            dialog.setMessage(mensaje);
+                            dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> {
+                                Intent adduseractivity = new Intent(LoginActivity.this, AltaDireccionActivity.class);
+                                startActivity(adduseractivity);
+                            });
+                            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.alert_btn_negative), (dialog12, which) -> finish());
+
+
+                        } else if (response.getMensaje().equalsIgnoreCase("Password incorrecto.")) {
+                            dialog.setMessage(response.getMensaje());
+                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {});
+
+                        } else {
+                            dialog.setMessage(response.getMensaje());
+                            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {});
+                        }
+                        dialog.show();
+
+
+
                     }
 
                 }
@@ -137,11 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.setMessage(getString(R.string.err_recuperarpag));
                     //Log.i(TAG, getString(R.string.err_recuperarpag));
                 }
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onBackPressed();
-                    }
-                });
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> onBackPressed());
                 dialog.show();
             }
         }
@@ -165,10 +185,8 @@ public class LoginActivity extends AppCompatActivity {
             conn.setDoOutput(true);
             conn.setDoInput(true);
 
-
-
             String data = LoginToJSON();
-            Log.i(TAG, data);
+            Log.i(TAG, "data: " + data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -322,8 +340,8 @@ public class LoginActivity extends AppCompatActivity {
 
         JSONObject jsonObject= new JSONObject();
         try {
-            jsonObject.put("usuario", dtUsuario.getCorreo());
-            jsonObject.put("password", dtUsuario.getPassword());
+            jsonObject.put("usuario", mail.getText());
+            jsonObject.put("password", password.getText());
 
             res = jsonObject.toString();
         } catch (JSONException e) {

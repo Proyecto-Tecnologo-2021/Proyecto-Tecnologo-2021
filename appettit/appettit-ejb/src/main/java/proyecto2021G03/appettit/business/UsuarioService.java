@@ -607,14 +607,55 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteMDTO loginMobile(LoginDTO loginDTO) throws AppettitException {
+		
 		/* Se valida que exista el correo electrónico o el teléfono */
 		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
 		List<Usuario> usuarios_telefono = usrDAO.buscarPorTelefono(loginDTO.getUsuario());
+		Boolean existe = false;
+		Usuario usuario;
+		
+		if(usuarios_correo.size() == 0) {
+			if(usuarios_telefono.size() == 0) {
+				throw new AppettitException("Usuario inexistente.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				usuario = usuarios_telefono.get(0);
+				if (usuario instanceof Cliente)
+					existe = true;
+			}
+		} else {
+			usuario = usuarios_correo.get(0);
+			if (usuario instanceof Cliente)
+				existe = true;
+		}
+		
+		if (existe) {
+			Cliente cliente = (Cliente) usuario;
+			BCrypt.Result resultado = null;
+			resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
+			if (resultado.verified) {
+				ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
+				CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
 
+				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
+				String token = crearJsonWebToken(usuario);
+				clienteMDTO.setCalificacion(califDTO);
+				clienteMDTO.setJwt(token);
+
+				return clienteMDTO;
+			} else {
+				throw new AppettitException("Password incorrecto.",
+						AppettitException.DATOS_INCORRECTOS);
+			}
+			
+		} else {
+			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
+		}
+
+		/*
 		if ((usuarios_correo.size() == 0) && (usuarios_telefono.size() == 0)) {
 			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 		} else {
-			/* Se verifica que la contraseña sea válida */
+			// Se verifica que la contraseña sea válida 
 
 			Usuario usuario;
 
@@ -647,6 +688,7 @@ public class UsuarioService implements IUsuarioService {
 				throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 			}
 		}
+		*/
 	}
 
 	@Override

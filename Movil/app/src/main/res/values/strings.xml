@@ -31,6 +31,7 @@
     <string name="text_load_btn">Reintentar</string>
     <string name="text_load_btn_main">Ir a Activiad Principal</string>
     <string name="firebase_error">No es posible autenticar con Google</string>
+    <string name="nuevo_usuario_q">¿Desa registrarse?</string>
 
     <!-- VIEWS-->
     <string name="title_addDireccion">Mi Dirección</string>
