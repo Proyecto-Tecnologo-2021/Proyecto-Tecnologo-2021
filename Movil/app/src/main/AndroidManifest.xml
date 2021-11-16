@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
         <activity
+            android:name=".AddDireccionActivity"
+            android:exported="false" />
+        <activity
             android:name=".PerfilActivity"
             android:exported="false" />
         <activity

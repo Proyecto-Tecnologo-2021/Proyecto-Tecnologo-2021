@@ -650,45 +650,6 @@ public class UsuarioService implements IUsuarioService {
 		} else {
 			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 		}
-
-		/*
-		if ((usuarios_correo.size() == 0) && (usuarios_telefono.size() == 0)) {
-			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
-		} else {
-			// Se verifica que la contraseña sea válida 
-
-			Usuario usuario;
-
-			if (usuarios_correo.size() != 0) {
-				usuario = usuarios_correo.get(0);
-			} else {
-				usuario = usuarios_telefono.get(0);
-			}
-
-			if (usuario instanceof Cliente) {
-				Cliente cliente = (Cliente) usuario;
-				BCrypt.Result resultado = null;
-				resultado = BCrypt.verifyer().verify(loginDTO.getPassword().toCharArray(), usuario.getPassword());
-				if (resultado.verified) {
-
-					ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
-					CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
-
-					ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
-					String token = crearJsonWebToken(usuario);
-					clienteMDTO.setCalificacion(califDTO);
-					clienteMDTO.setJwt(token);
-
-					return clienteMDTO;
-				} else {
-					throw new AppettitException("Usuario y/o password incorrecto.",
-							AppettitException.DATOS_INCORRECTOS);
-				}
-			} else {
-				throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
-			}
-		}
-		*/
 	}
 
 	@Override

@@ -21,9 +21,7 @@ public class DireccionCrearDTO implements Comparable<Object>{
 	private String numero;
 	private String apartamento;
 	private String referencias;
-	//private LocalidadDTO barrio;
 	private String geometry;
-	//private int quantity;
 
 
 	@Override

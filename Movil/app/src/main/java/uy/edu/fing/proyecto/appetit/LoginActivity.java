@@ -45,7 +45,6 @@ import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
 public class LoginActivity extends AppCompatActivity {
-
     private static final String TAG = "LoginActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     private ConnectivityManager connMgr;

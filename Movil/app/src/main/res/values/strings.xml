@@ -82,7 +82,7 @@
     <string name="datos_err_pass2">Las contraseñas no coinciden</string>
     <string name="datos_tdireccion">Mis direcciones</string>
     <string name="datos_vdireccion">¿Ver dirección?</string>
-    <string name="datos_adireccion">Crear dirección</string>
+    <string name="datos_adireccion">Nueva dirección</string>
     <string name="datos_modificar">Actualizar datos</string>
 
 

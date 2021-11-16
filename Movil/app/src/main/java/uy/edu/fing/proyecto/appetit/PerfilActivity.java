@@ -76,7 +76,7 @@ public class PerfilActivity extends AppCompatActivity {
         textNombre.setText(dtUsuario.getNombre());
         textCorreo.setText(dtUsuario.getCorreo());
         textTelefono.setText(dtUsuario.getTelefono());
-
+        textCorreo.setEnabled(false);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -151,10 +151,21 @@ public class PerfilActivity extends AppCompatActivity {
                 //FirebaseUser currentUser = mAuth.getCurrentUser();
                 signOut();
                 return true;
+            case R.id.perfil_modificar:
+                modificarDatos();
+                return true;
+            case R.id.perfil_crear_dir:
+                Intent inewdir = new Intent(PerfilActivity.this, AddDireccionActivity.class);
+                startActivity(inewdir);
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    private void modificarDatos() {
     }
 
     private void signOut() {
