@@ -131,8 +131,8 @@ public class MenuAddBean implements Serializable {
                 }
             }
 
-            loadProductosDelMenu();
-            loadExtrasDelMenu();
+            loadProductosDelRestaurante();
+            loadExtrasDelRestaurante();
         }
 
     }
@@ -146,38 +146,37 @@ public class MenuAddBean implements Serializable {
         extras = new ArrayList<ExtraMenuDTO>();
 
         try {
-//            crop();
-//
-//            try {
-//                byte[] bimg = getImageAsByteArray();
-//                if (bimg != null) {
-//                    String identificador = "menu." + this.getNombre().trim();
-//
-//                    imagen = imgSrv.buscarPorIdentificador(identificador);
-//
-//                    if(imagen == null) {
-//                        imagen = new ImagenDTO();
-//                        imagen.setIdentificador(identificador);
-//                        imagen.setImagen(bimg);
-//
-//                        imgSrv.crear(imagen);
-//                        imagen = imgSrv.buscarPorIdentificador(identificador);
-//
-//                        logger.info("IMAGEN NEW: " + imagen.getId());
-//                    }
-//
-//                    id_imagen = imagen.getId();
-//                    loadImg = true;
-//                }
-//
-//            } catch (IOException e) {
-//                logger.info("@@@@@@@@@@@@ " + e.getMessage().trim());
-//                loadImg = false;
-//            }
+            crop();
+
+            try {
+                byte[] bimg = getImageAsByteArray();
+                if (bimg != null) {
+
+                    String identificador = "menu." + restaurante.getCorreo().trim() + System.currentTimeMillis();
+
+                    imagen = imgSrv.buscarPorIdentificador(identificador);
+
+                    if(imagen == null) {
+
+                        imagen = new ImagenDTO();
+                        imagen.setIdentificador(identificador);
+                        imagen.setImagen(bimg);
+
+                        imgSrv.crear(imagen);
+                        imagen = imgSrv.buscarPorIdentificador(identificador);
+                    }
+
+                    id_imagen = imagen.getId();
+                    loadImg = true;
+                }
+
+            } catch (IOException e) {
+                logger.info(e.getMessage().trim());
+                loadImg = false;
+            }
 
 
             try {
-                //***** PREGUNTAR DATOS DE CONST
 
                 if (productsSelectedItems.length > 0) {
 
@@ -195,8 +194,6 @@ public class MenuAddBean implements Serializable {
                         extras.add(extraSelected);
                     }
                 }
-
-                logger.info("SELECTEDDD: " + productos);
 
                 MenuDTO restDTO = new MenuDTO(id, id_restaurante, nombre, restaurante, descripcion, precioSimple,
                                               precioTotal, productos, extras, id_imagen, imagen);
@@ -232,6 +229,7 @@ public class MenuAddBean implements Serializable {
     }
 
     private void clearParam() {
+
         this.id = null;
         this.nombre = null;
         this.descripcion = null;
@@ -239,7 +237,8 @@ public class MenuAddBean implements Serializable {
         this.imagen = null;
         this.imgfile = null;
         this.croppedImage = null;
-
+        setProductsSelectedItems(new String[]{});
+        setExtrasSelectedItems(new String[]{});
     }
 
 
@@ -352,7 +351,7 @@ public class MenuAddBean implements Serializable {
 
     /////////////////////////////////////////////////
 
-    private void loadProductosDelMenu() throws AppettitException {
+    private void loadProductosDelRestaurante() throws AppettitException {
 
         productsItems = new ArrayList<>();
 
@@ -395,7 +394,7 @@ public class MenuAddBean implements Serializable {
         }
     }
 
-    private void loadExtrasDelMenu() {
+    private void loadExtrasDelRestaurante() {
 
         extrasItems = new ArrayList<>();
 
