@@ -30,8 +30,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.business.ICalificacionRRService;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.CalificacionRPedidoDTO;
 import proyecto2021G03.appettit.dto.DireccionDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.MenuDTO;
@@ -72,6 +74,9 @@ public class PedidosBean implements Serializable {
 
 	@EJB
 	IPedidoService pedSrv;
+	
+	@EJB
+	ICalificacionRRService califSrv;
 
 	@PostConstruct
 	public void init() {
@@ -172,6 +177,15 @@ public class PedidosBean implements Serializable {
 		}
 		
 		return ret;
+	}
+	
+	public CalificacionRPedidoDTO getCalificacion() throws AppettitException {
+		
+		CalificacionRPedidoDTO cali = califSrv.listarPorId(selPedido.getId(), selPedido.getId_cliente());
+		if (cali == null) {
+			cali = new CalificacionRPedidoDTO(0, 0, 0, "Pedido no calificado", selPedido.getId(), selPedido.getId_cliente());
+		}
+		return cali;
 	}
 	
 	public void onRowSelect(RowEditEvent<PedidoDTO> event) {

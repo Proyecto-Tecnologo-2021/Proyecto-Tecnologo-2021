@@ -202,18 +202,19 @@
 								</f:facet>
 							</p:column>
 							
-							<!--  
-							<p:column headerText="Calificaci&oacute;n"
-								sortBy="#{restaurante.calificacion.general}">
-								<p:rating readonly="true"
-									value="#{restaurante.calificacion.general}" />
-							</p:column>
-							-->
-							
 							<p:column style="text-align: center" exportable="false">
 								<p:commandButton update=":form:pedidoDetail"
-									oncomplete="PF('pedidoDialog').show()" icon="pi pi-search"
-									title="Ver" value="Ver pedido">
+									oncomplete="PF('pedidoDialog').show()"
+									title="Ver pedido" value="Ver pedido">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
+							</p:column>
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:califDetail"
+									oncomplete="PF('califDialog').show()" icon="pi pi-star-o"
+									title="Ver calificacion">
 									<f:setPropertyActionListener value="#{pedido}"
 										target="#{beanPedidos.selPedido}" />
 								</p:commandButton>
@@ -293,10 +294,40 @@
 												<h:outputText
 													value="#{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).calle} #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).numero}&lt;br /&gt;Apartamento: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).apartamento}&lt;br /&gt;Barrio/Localidad: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).barrio.nombre}&lt;br /&gt;Referencias: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).referencias}"                  
 													styleClass="product-price" escape="false"/>
-												<div class="product-grid-item-bottom">
-													<!--  <div class="product-name">Cantidad de men&uacute;s</div>-->
-											
-												</div>
+												<div class="product-grid-item-bottom"></div>
+											</div>
+											<div class="product-grid-item-bottom">
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						
+						<p:dialog header="Calificaci&oacute;n del pedido"
+							widgetVar="califDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="califDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<h:outputText value="Rapidez" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.rapidez}" />
+												<br /> 		
+												<h:outputText value="Comida" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.comida}" />
+												<br />
+												<h:outputText value="Servicio" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.servicio}" />
+												<br /><br />		
+												<h:outputText value="Comentario del cliente:" styleClass="product-price" escape="false"/>
+												<br /><br />
+												<h:outputText value="#{beanPedidos.calificacion.comentario}" styleClass="product-price" escape="false"/>						
+												<div class="product-grid-item-bottom"></div>
 											</div>
 											<div class="product-grid-item-bottom">
 											</div>
