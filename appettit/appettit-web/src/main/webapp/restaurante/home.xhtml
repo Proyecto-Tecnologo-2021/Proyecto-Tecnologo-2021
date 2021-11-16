@@ -45,17 +45,17 @@
 							<div class="card-header">
 								<div class="row">
 									<div class="col-md-6">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-											<c:choose>
-												<c:when test="#{HomeRestaurante.abierto}">
-													<button class="btn btn-success" type="button">Cerrar
-														Restaurante</button>
-												</c:when>
-												<c:otherwise>
-													<button class="btn btn-warning" type="button">Abrir
-														Restaurante</button>
-												</c:otherwise>
-											</c:choose>
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">										
+											<h:form>
+												<c:choose>
+													<c:when test="#{HomeRestaurante.abierto}">
+														<h:commandButton class="btn btn-warning" value = "Cerrar restaurante"  action = "#{HomeRestaurante.cerrarRestaurante()}" />
+													</c:when>
+													<c:otherwise>
+														<h:commandButton class="btn btn-success" value = "Abrir restaurante"  action = "#{HomeRestaurante.abrirRestaurante()}"/>
+													</c:otherwise>
+												</c:choose>
+											</h:form>
 										</div>
 									</div>
 									<div class="col-md-6">
