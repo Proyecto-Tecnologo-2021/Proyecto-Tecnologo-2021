@@ -61,6 +61,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.constant.MapConstants;
@@ -265,17 +267,17 @@ public class AddDireccionActivity extends AppCompatActivity implements LocationL
                 textCalle.setText(response.getThoroughfare());
                 bDireccion.putString("calle", response.getThoroughfare());
 
-                textNro.setText(nros[0]);
-                bDireccion.putString("numero", nros[0]);
-                /*
-                if (android.text.TextUtils.isDigitsOnly(nros[0])) {
+                Pattern pattern = Pattern.compile("^\\d.*");
+                Matcher matcher = pattern.matcher(nros[0]);
+
+                if (matcher.find()) {
                     textNro.setText(nros[0]);
                     bDireccion.putString("numero", nros[0]);
                 } else {
                     textNro.setText("");
                     bDireccion.putString("numero", "");
                 }
-                 */
+
                 CRSFactory crsFactory = new CRSFactory();
                 CoordinateReferenceSystem proj4326 = crsFactory.createFromName("EPSG:4326");
                 CoordinateReferenceSystem proj32721 = crsFactory.createFromName("EPSG:32721");
@@ -502,6 +504,8 @@ public class AddDireccionActivity extends AppCompatActivity implements LocationL
                 dtUsuario.setToken(reader.nextString());
             } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setNombre(reader.nextString());
+            } else if (name.equals("id") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setId(reader.nextLong());
             } else if (name.equals("direcciones") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setDirecciones(readDireccionesArray(reader));
             } else if (name.equals("tokenFireBase") && reader.peek() != JsonToken.NULL) {
@@ -559,4 +563,8 @@ public class AddDireccionActivity extends AppCompatActivity implements LocationL
         return new DtDireccion(id, alias, calle, numero, apartamento, referencias, geometry);
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

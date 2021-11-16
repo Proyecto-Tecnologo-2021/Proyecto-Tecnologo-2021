@@ -38,6 +38,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
@@ -123,6 +125,9 @@ public class AltaCliente extends AppCompatActivity {
         }
 
         confirm.setOnClickListener(v -> {
+            Pattern corr = Pattern.compile("^[\\w-]+(\\.[\\w-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+            Matcher matcher = corr.matcher(textCorreo.getText().toString());
+
             if (textNombre.getText().toString().equalsIgnoreCase("")){
                 AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
                 dialog.setTitle(R.string.alert_t_error);
@@ -131,7 +136,7 @@ public class AltaCliente extends AppCompatActivity {
                 dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
                 });
                 dialog.show();
-            } else if(textCorreo.getText().toString().equalsIgnoreCase("")) {
+            } else if(textCorreo.getText().toString().equalsIgnoreCase("") || !matcher.find()) {
                 AlertDialog dialog = new AlertDialog.Builder(AltaCliente.this).create();
                 dialog.setTitle(R.string.alert_t_error);
                 dialog.setIcon(android.R.drawable.ic_dialog_alert);

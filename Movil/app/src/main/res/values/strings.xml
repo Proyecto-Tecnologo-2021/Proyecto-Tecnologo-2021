@@ -84,6 +84,9 @@
     <string name="datos_vdireccion">¿Ver dirección?</string>
     <string name="datos_adireccion">Nueva dirección</string>
     <string name="datos_modificar">Actualizar datos</string>
+    <string name="datos_qmodificar">¿Actualizar datos?</string>
+    <string name="datos_ddireccion">¿Eliminar dirección?</string>
+    <string name="datos_err_ddireccion">No es posible eliminar la dirección.\nDebe tener por lo menos una dirección</string>
 
 
     <!-- Carrito -->

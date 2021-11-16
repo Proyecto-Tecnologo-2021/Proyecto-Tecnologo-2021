@@ -23,6 +23,8 @@ public class DtUsuario {
     private String tokenFirebase;
     private DtCalificacion calificacion;
     private Boolean bloqueado;
+    private Boolean esFirebase;
+    private String notFirebase;
 
     private List<DtDireccion> direcciones = new ArrayList<DtDireccion>();
 

@@ -259,6 +259,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         reader.endObject();
         if (body){
+            dtUsuario.setEsFirebase(false);
             return new DtResponse(ok, mensaje, dtUsuario);
         }else {
             return new DtResponse(ok, mensaje, null);
@@ -277,6 +278,8 @@ public class LoginActivity extends AppCompatActivity {
                 dtUsuario.setTelefono(reader.nextString());
             } else if (name.equals("jwt") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setToken(reader.nextString());
+            } else if (name.equals("id") && reader.peek() != JsonToken.NULL) {
+                dtUsuario.setId(reader.nextLong());
             } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
                 dtUsuario.setNombre(reader.nextString());
             } else if (name.equals("direcciones") && reader.peek() != JsonToken.NULL) {

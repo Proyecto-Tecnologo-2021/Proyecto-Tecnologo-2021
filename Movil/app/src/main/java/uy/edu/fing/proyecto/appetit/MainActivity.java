@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                             dtUsuario.setCorreo(account.getEmail());
                             dtUsuario.setUsername(account.getEmail());
                             dtUsuario.setTelefono(account.getPhoneNumber());
+                            dtUsuario.setEsFirebase(true);
                             progressBar.setVisibility(View.VISIBLE);
                             loginUsuario();
                         } else {
@@ -781,5 +782,8 @@ public class MainActivity extends AppCompatActivity {
         return new DtCotizacion(null, sell, buy);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }
