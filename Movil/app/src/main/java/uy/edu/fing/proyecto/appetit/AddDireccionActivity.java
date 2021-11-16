@@ -349,7 +349,12 @@ public class AddDireccionActivity extends AppCompatActivity implements LocationL
                 AlertDialog dialog = new AlertDialog.Builder(AddDireccionActivity.this).create();
                 dialog.setTitle(R.string.info_title);
                 dialog.setMessage(response.getMensaje());
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {dialog.cancel();});
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {
+                    if(response.getOk())
+                        onBackPressed();
+    
+                    dialog.cancel();
+                });
 
                 dialog.show();
             } else {
@@ -565,6 +570,6 @@ public class AddDireccionActivity extends AppCompatActivity implements LocationL
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        super.onBackPressed();
     }
 }

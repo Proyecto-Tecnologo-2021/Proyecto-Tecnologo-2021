@@ -210,7 +210,7 @@ public class PerfilActivity extends AppCompatActivity {
 
                 return true;
             case R.id.perfil_crear_dir:
-                Intent inewdir = new Intent(PerfilActivity.this, PerfilActivity.class);
+                Intent inewdir = new Intent(PerfilActivity.this, AddDireccionActivity.class);
                 startActivity(inewdir);
 
                 return true;
