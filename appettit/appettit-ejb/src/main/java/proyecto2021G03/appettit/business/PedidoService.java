@@ -13,6 +13,7 @@ import org.jboss.logging.Logger;
 import proyecto2021G03.appettit.converter.ExtraMenuConverter;
 import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.converter.PedidoRConverter;
+import proyecto2021G03.appettit.converter.ReclamoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IPedidoDao;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
@@ -21,8 +22,10 @@ import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Pedido;
+import proyecto2021G03.appettit.entity.Reclamo;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
 
@@ -33,8 +36,12 @@ public class PedidoService implements IPedidoService {
 
 	@EJB
 	IPedidoDao iPedidoDao;
+	
 	@EJB
 	PedidoConverter pedidoConverter;
+	
+	@EJB
+	ReclamoConverter reclamoConverter;
 	
 	@EJB
 	UsuarioConverter usuarioConverter;
@@ -254,4 +261,24 @@ public class PedidoService implements IPedidoService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+
+	@Override
+	public ReclamoDTO obtenerReclamo(Long id) throws AppettitException {
+		Pedido pedido = iPedidoDao.listarPorId(id);
+		if (pedido == null) {
+			throw new AppettitException("El pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		} else {
+			Reclamo reclamo = pedido.getReclamo();
+			if (reclamo == null) {
+				throw new AppettitException("El pedido indicado no tiene un reclamo.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				try {
+					return reclamoConverter.fromEntity(reclamo);
+				} catch (Exception e) {
+					throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+				}
+			}
+		}
+	}
+	
 }

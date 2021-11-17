@@ -73,7 +73,26 @@ public class PedidoREST {
 		return Response.ok(respuesta).build();
 	}
 
-
+	@GET
+	@Path("/reclamo/{id}")
+	// @RecursoProtegidoJWT
+	public Response obtenerReclamo(@PathParam("id") Long id) {
+		RespuestaREST<ReclamoDTO> respuesta = null;
+		try {
+			ReclamoDTO reclamo = iPedidoService.obtenerReclamo(id);
+			respuesta = new RespuestaREST<ReclamoDTO>(true, "Reclamo obtenido con éxito.", reclamo);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ReclamoDTO>(false, e.getLocalizedMessage());
+			if (e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO
+					|| e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
 	@POST
 	@Path("/pedido2")
 	public Response crear(PedidoRDTO request) {
