@@ -144,8 +144,33 @@ public class PedidoService implements IPedidoService {
 			throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 
 		try {
+			
+			String estado = "";
+			
+			if(!pedido.getEstado().toString().equalsIgnoreCase(pedidoDTO.getEstado().toString())) {
+				estado = "\nEstado: " + pedidoDTO.getEstado().toString(); 
+			}
+			
+			if(!pedido.getPago()==pedidoDTO.getPago()) {
+				estado = estado +  "\nPago registrado"; 
+			}
+			
 			pedido.setEstado(pedidoDTO.getEstado());
 			pedido.setPago(pedidoDTO.getPago());
+			
+			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
+			if(pedido.getCliente().getNotificationFirebase() != null) {
+				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
+				
+				String msg = "Pedido: " + pedido.getId()
+				+ "\nFecha: " + pedido.getFecha().format(dateFormat)
+				+ "\nTotal: " + pedido.getTotal()
+				+ "\nForma de Pago: " + pedido.getTipo().toString()
+				+ estado;
+				notificacionSrv.enviarNotificacionFirebase(pedido.getCliente().getNotificationFirebase(),
+						"Actualización de pedido.", msg );
+			}
 
 			return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
 		} catch (Exception e) {
@@ -187,9 +212,9 @@ public class PedidoService implements IPedidoService {
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
 				
 				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
-				+ " Total: " + pdto.getTotal()
-				+ "Forma de Pago: " + pdto.getTipo().toString()
-				+ " Estado: " + pdto.getEstado().toString();
+				+ "\nTotal: " + pdto.getTotal()
+				+ "\nForma de Pago: " + pdto.getTipo().toString()
+				+ "\nEstado: " + pdto.getEstado().toString();
 				notificacionSrv.enviarNotificacionFirebase(cliente.getNotificationFirebase(),
 						"Pedido registrado con éxito.", msg );
 			}

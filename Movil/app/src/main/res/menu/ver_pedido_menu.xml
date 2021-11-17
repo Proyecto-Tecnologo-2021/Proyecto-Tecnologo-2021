@@ -4,4 +4,8 @@
         android:icon="@drawable/ic_mipedido"
         android:title="@string/pedidos_calificar"
         />
+    <item android:id="@+id/pedido_reclamo"
+        android:icon="@drawable/ic_mipedido"
+        android:title="@string/pedidos_reclamo"
+        />
 </menu>

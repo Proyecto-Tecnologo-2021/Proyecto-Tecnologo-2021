@@ -92,6 +92,7 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
     ListView listView;
     ListAdapter listAdapter;
     RelativeLayout infogral;
+    TextView pedido_calificar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -587,12 +588,20 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         ProgressBar progressBarEstado = findViewById(R.id.progressBarEstado);
         TextView pedido_fecha = findViewById(R.id.pedido_fecha);
         TextView pedido_fp = findViewById(R.id.pedido_fp);
-        TextView pedido_calificar = findViewById(R.id.pedido_calificar);
-        
+        pedido_calificar = findViewById(R.id.pedido_calificar);
+        TextView pedido_cot = findViewById(R.id.pedido_cot);
+
         pedido_estado.setText(pedido.getEstado());
         pedido_fp.setText(pedido.getTipo().toString());
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
         pedido_fecha.setText(dateFormat.format(pedido.getFecha()));
+
+
+        if(pedido.getTipo().toString().equalsIgnoreCase("PAYPAL")){
+            pedido_cot.setText(getString(R.string.carr_symbol) + " " + pedido.getCotizacion().getBuy());
+        } else {
+            pedido_cot.setText(getString(R.string.carr_symbol) + " 1");
+        }
 
         if(pedido.getCalificacion() != null){
             pedido_calificar.setText(R.string.pedidos_califica_true);
@@ -607,23 +616,25 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         Drawable progressDrawable = progressBarEstado.getProgressDrawable();
 
         if (pedido.getEstado().equalsIgnoreCase("CONFIRMADO")){
-            progressDrawable.setColorFilter(getColor(R.color.star_3), android.graphics.PorterDuff.Mode.SRC_IN);
-            progressBar.setProgressDrawable(progressDrawable);
-
-            //DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3));
             progressBarEstado.setProgress(50);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_3)));
         } else if (pedido.getEstado().equalsIgnoreCase("RECHAZADO")){
-            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
             progressBarEstado.setProgress(100);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_1)));
         } else if (pedido.getEstado().equalsIgnoreCase("ENVIADO")){
-            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_2));
             progressBarEstado.setProgress(75);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_2_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_2)));
         } else if (pedido.getEstado().equalsIgnoreCase("ENTREGADO")){
-            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_5));
             progressBarEstado.setProgress(100);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_5_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_5)));
         } else if (pedido.getEstado().equalsIgnoreCase("CANCELADO")){
-            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
             progressBarEstado.setProgress(100);
+            DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1_s));
+            progressBarEstado.setProgressTintList(ColorStateList.valueOf(getColor(R.color.star_1)));
         } else if (pedido.getEstado().equalsIgnoreCase("SOLICITADO")){
             progressBarEstado.setProgress(25);
             DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3_s));
@@ -964,6 +975,9 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
 
                 if (response.getOk()) {
                     dtVPedido.setCalificacion(dtRCalificacion);
+                    pedido_calificar.setText(R.string.pedidos_califica_true);
+                    pedido_calificar.setBackgroundColor(getColor(R.color.star_5));
+                    pedido_calificar.setTextColor(getColor(R.color.white));
                 }
 
                 AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();

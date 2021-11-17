@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     firebaseToken = task.getResult();
-                    Log.i(TAG, firebaseToken);
+                    //Log.i(TAG, firebaseToken);
                     dtUsuario.setNotFirebase(firebaseToken);
                 });
     }
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i(TAG, String.valueOf(requestCode));
+        //Log.i(TAG, String.valueOf(requestCode));
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             String data = LoginToJSON();
-            Log.i(TAG, data);
+            //Log.i(TAG, data);
 
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
             OutputStream stream = conn.getOutputStream();
@@ -478,9 +478,9 @@ public class MainActivity extends AppCompatActivity {
     public void readJWTUsuario(String token) {
         JWT jwt = new JWT(token);
         String subject = jwt.getSubject();
-        Log.i(TAG, subject);
+        //Log.i(TAG, subject);
         Claim claim = jwt.getClaim("correo");
-        Log.i(TAG, claim.asString());
+        //Log.i(TAG, claim.asString());
 
     }
 
@@ -609,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
 
         String stringUrl = ConnConstants.GET_COTIZACION;
         stringUrl = stringUrl.replace("{date}", fecha);
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
             new MainActivity.GetCotizaTask().execute(stringUrl);

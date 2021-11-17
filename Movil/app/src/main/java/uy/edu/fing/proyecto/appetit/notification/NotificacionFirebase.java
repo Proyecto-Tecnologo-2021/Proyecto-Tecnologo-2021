@@ -66,6 +66,9 @@ public class NotificacionFirebase extends FirebaseMessagingService {
      */
     private void sendNotification(String messageBody, String messageTitle) {
 
+        Log.i(TAG, messageBody);
+        Log.i(TAG, messageTitle);
+
         //Creación de un explicit intent para iniciar la actividad en nuestra app
         Intent intent = new Intent(NotificacionFirebase.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -77,15 +80,15 @@ public class NotificacionFirebase extends FirebaseMessagingService {
         //Armado del a notificacion
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(NotificacionFirebase.this, CHANNEL_ID)
-                        //Notification.Builder mBuilder =
-                        //        new Notification.Builder(MainActivity.this)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(messageTitle)
-                        .setContentText(messageBody)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_mipedido))
+                        .setSmallIcon(R.drawable.appetitlogo)
+                        .setContentTitle(messageBody)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageTitle))
                         .setSound(defaultSoundUri)
                         .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentIntent(pendingIntent);
+//.setContentText(messageTitle)
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
