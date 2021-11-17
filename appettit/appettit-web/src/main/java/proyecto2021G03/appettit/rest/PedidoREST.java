@@ -16,9 +16,12 @@ import javax.ws.rs.core.Response;
 import proyecto2021G03.appettit.business.ICalificacionRRService;
 import proyecto2021G03.appettit.business.ICalificacionRService;
 import proyecto2021G03.appettit.business.IPedidoService;
+import proyecto2021G03.appettit.business.IReclamoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.CalificacionRPedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.ReclamoCDTO;
+import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @RequestScoped
@@ -35,7 +38,8 @@ public class PedidoREST {
 	ICalificacionRService iCalificacionRService;
 	@EJB
 	ICalificacionRRService iCalificacionRRService;
-
+	@EJB
+	IReclamoService iReclamoService;
 	/*
 	 * @POST
 	 * 
@@ -127,6 +131,26 @@ public class PedidoREST {
 		}
 	}
 
+	@PUT
+	@Path("/reclamar/")
+	// @RecursoProtegidoJWT
+	public Response reclamar(ReclamoCDTO request) {
+		RespuestaREST<ReclamoDTO> respuesta = null;
+		try {
+			ReclamoDTO reclamo = iReclamoService.crear(request);
+			respuesta = new RespuestaREST<ReclamoDTO>(true, "Reclamo creado con éxito.", reclamo);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<ReclamoDTO>(false, e.getLocalizedMessage());
+			if (e.getCodigo() == AppettitException.NO_EXISTE_REGISTRO
+					|| e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+	
 	@PUT
 	@Path("/calificarUPD/")
 	// @RecursoProtegidoJWT

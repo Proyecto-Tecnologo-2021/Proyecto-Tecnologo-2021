@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.converter;
 
 import javax.ejb.Singleton;
 
+import proyecto2021G03.appettit.dto.ReclamoCDTO;
 import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.entity.Reclamo;
 
@@ -30,4 +31,11 @@ public class ReclamoConverter extends AbstractConverter<Reclamo, ReclamoDTO> {
 				.build();
 	}
 
+	public Reclamo fromCDTO(ReclamoCDTO d) {
+		if(d == null) return null;
+		return Reclamo.builder()
+				.motivo(d.getMotivo())
+				.detalles(d.getDetalles())
+				.build();
+	}
 }
