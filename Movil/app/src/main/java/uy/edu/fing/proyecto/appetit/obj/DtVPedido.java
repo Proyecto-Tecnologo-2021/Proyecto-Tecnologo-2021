@@ -28,6 +28,8 @@ public class DtVPedido {
     private DtCotizacion cotizacion;
     private String id_paypal;
     private String estado;
+    
+    @Builder.Default
     private List<Object> menus = new ArrayList<Object>();
     private DtRCalificacion calificacion;
 

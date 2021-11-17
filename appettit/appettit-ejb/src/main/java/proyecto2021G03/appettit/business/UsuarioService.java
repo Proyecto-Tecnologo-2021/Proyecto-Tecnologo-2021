@@ -18,6 +18,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
+import proyecto2021G03.appettit.dao.IGeoDAO;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -58,6 +59,9 @@ public class UsuarioService implements IUsuarioService {
 
 	@EJB
 	IMailService iMailService;
+	
+	@EJB
+	IGeoDAO geoDAO;
 	
 
 	@Override
@@ -983,7 +987,7 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteDTO buscarPorCorreoCliente(String correo) throws AppettitException {
-		ClienteDTO cliente = null;
+		//ClienteDTO cliente = null;
 		try {
 			ClienteDTO clienteDTO = usrConverter.fromCliente(usrDAO.buscarPorCorreoCliente(correo));
 			return clienteDTO;
@@ -991,6 +995,47 @@ public class UsuarioService implements IUsuarioService {
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
+	}
+
+	@Override
+	public List<RestauranteRDTO> listarRestaurantesPorPunto(String punto) throws AppettitException {
+		List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
+        try {
+
+            Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(geoDAO.repartoRestaurantesPorPunto(punto)).iterator();
+            while (it.hasNext()) {
+                RestauranteRDTO res = it.next();
+                ImagenDTO img = new ImagenDTO();
+
+                if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
+                    FileManagement fm = new FileManagement();
+
+                    img.setIdentificador("Sin Imagen");
+                    img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+                } else {
+                    try {
+                        img = imgSrv.buscarPorId(res.getId_imagen());
+                    } catch (Exception e) {
+                        FileManagement fm = new FileManagement();
+
+                        img.setIdentificador("Sin Imagen");
+                        img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+                        logger.error(e.getMessage());
+                    }
+
+                }
+
+                res.setImagen(img);
+                res.setCalificacion(calificacionRestaurante(res.getId()));
+                restaurantes.add(res);
+            }
+
+            return restaurantes;
+
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+
 	}
 	
 }

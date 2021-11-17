@@ -23,4 +23,5 @@ public class RestauranteRDTO {
     private String id_imagen;
     private String direccion;
     private CalificacionGralRestauranteDTO calificacion;
+    private String telefono;
 }

@@ -72,11 +72,12 @@ public class GeoDAO implements IGeoDAO {
 	public List<Restaurante> repartoRestaurantesPorPunto(String point) {
 		List<Restaurante> restaurantes = new ArrayList<Restaurante>();
 		
-		
 		try {
 			Query consulta = em.createNativeQuery("select u.id "
 					+ "from usuario u "
-					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true");
+					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true "
+					+ "and bloqueado = false "
+					+ "and abierto = true");
 			consulta.setParameter("point", point);
 			
 			List<Object[]> datas = (List<Object[]>) consulta.getResultList();
@@ -107,7 +108,9 @@ public class GeoDAO implements IGeoDAO {
 			Query consulta = em.createNativeQuery("select m.id, m.id_restaurante "
 					+ "from menus m "
 					+ "join usuario u ON u.id = m.id_restaurante "
-					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true");
+					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true "
+					+ "and u.bloqueado = false "
+					+ "and u.abierto = true");
 			consulta.setParameter("point", point);
 			
 			List<Object[]> datas = (List<Object[]>) consulta.getResultList();
@@ -138,7 +141,9 @@ public class GeoDAO implements IGeoDAO {
 			Query consulta = em.createNativeQuery("select p.id, p.id_restaurante "
 					+ "from promociones p "
 					+ "join usuario u ON u.id = p.id_restaurante "
-					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true");
+					+ "where st_contains(ST_GeometryFromText(u.geom), ST_GeometryFromText(:point)) = true "
+					+ "and u.bloqueado = false "
+					+ "and u.abierto = true");
 			consulta.setParameter("point", point);
 			
 			List<Object[]> datas = (List<Object[]>) consulta.getResultList();
@@ -156,16 +161,5 @@ public class GeoDAO implements IGeoDAO {
 		}
 		
 		return promociones;
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
-
 }

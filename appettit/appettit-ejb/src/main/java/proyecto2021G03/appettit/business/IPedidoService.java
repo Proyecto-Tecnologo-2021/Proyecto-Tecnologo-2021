@@ -4,6 +4,7 @@ import java.util.List;
 
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.PedidoRMDTO;
 import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
@@ -19,6 +20,7 @@ public interface IPedidoService {
     public List<PedidoDTO> listarPorRestaurante(Long id) throws AppettitException;
     public PedidoRDTO ultimo (Long id)throws AppettitException;
     public PedidoRDTO listarPorIdREST(Long id) throws AppettitException;
-    public ReclamoDTO obtenerReclamo(Long id) throws AppettitException;;
+    public ReclamoDTO obtenerReclamo(Long id) throws AppettitException;
+    public List<PedidoRMDTO> listarPorClienteMREST(Long id) throws AppettitException;
 
 }

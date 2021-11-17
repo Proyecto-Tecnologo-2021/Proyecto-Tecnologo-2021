@@ -250,7 +250,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 		Cliente cliente_sin_direccion = em.merge(cliente);
 		
 		em.remove(direccion);
-		//Query consulta = em.createQuery("DELETE FROM direcciones where id = :id_direccion");
 		
 		return cliente_sin_direccion;
 	}
@@ -267,13 +266,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 	@Override
 	public List<Cliente> buscarPorNombreCliente(String nombre) {
 
-		/*
-		Query consulta = em.createQuery("from Usuario _usr where dtype = :type and nombre = :nombre");
-		consulta.setParameter("type", "cliente");
-		consulta.setParameter("nombre", nombre);
-
-		List<Cliente> usuarios = consulta.getResultList();
-		*/
 		List<Cliente> usuarios = em.createQuery("select _c from Cliente where _c.nombre=:nombre", Cliente.class)
 				.setParameter("nombre", nombre)
 				.getResultList();
@@ -374,6 +366,5 @@ public class UsuarioDAO implements IUsuarioDAO {
 
 		return cliente;
 	}
-
-
+	
 }

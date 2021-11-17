@@ -22,6 +22,7 @@ import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.PedidoRMDTO;
 import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.entity.Cliente;
 import proyecto2021G03.appettit.entity.Pedido;
@@ -303,6 +304,15 @@ public class PedidoService implements IPedidoService {
 					throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 				}
 			}
+		}
+	}
+
+	@Override
+	public List<PedidoRMDTO> listarPorClienteMREST(Long id) throws AppettitException {
+		try {
+			return pedidoRConverter.fromEntityToRMDTO(iPedidoDao.listarPorCliente(id));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
 	

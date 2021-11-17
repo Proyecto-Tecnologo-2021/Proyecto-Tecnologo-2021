@@ -3,18 +3,15 @@ package proyecto2021G03.appettit.converter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
-import lombok.Builder;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.ExtraMenuRDTO;
-import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuRDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
-import proyecto2021G03.appettit.dto.ProductoRDTO;
-import proyecto2021G03.appettit.dto.PromocionRDTO;
+import proyecto2021G03.appettit.dto.PedidoRMDTO;
 import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.entity.Promocion;
 
@@ -130,8 +127,33 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
         	
         }
         return menus;
-    	
     }
+    
+    public PedidoRMDTO fromEntityToRMDTO(Pedido pedido) {
+        if(pedido== null) return null;
+        
+        PedidoRMDTO pedidofinal = PedidoRMDTO.builder()
+        		.id(pedido.getId())
+                .idcli(pedido.getId_cliente())
+                .pago(pedido.getPago())
+                .tipo(pedido.getTipo())
+                .total(pedido.getTotal())
+                .idrest(pedido.getRestaurante().getId())
+                .fecha(LocalDateTime.now())
+                .estado(pedido.getEstado())
+                .cotizacion(pedido.getCotizacion())
+                .build();
+        
+               return pedidofinal;
+    }
+
+    public List<PedidoRMDTO> fromEntityToRMDTO(List<Pedido> datos){
+		if(datos == null) return null;
+		return datos.stream()
+				.map(d -> fromEntityToRMDTO(d))
+				.collect(Collectors.toList());
+	}
+	
 }
 
 

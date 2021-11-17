@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.rest;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
@@ -62,5 +64,20 @@ public class RestauranteREST {
 		}	
 		
 	}
+	
+	@GET
+    @Path("/getZona/{punto}")
+    public Response listarZonaReparto(@PathParam("punto") String punto) {
+    	RespuestaREST<List<RestauranteRDTO>> respuesta = null;
+        try {
+            List<RestauranteRDTO> restaurantesDTOS = uService.listarRestaurantesPorPunto(punto);
+            respuesta = new RespuestaREST<List<RestauranteRDTO>>(true, "Restaurantes listados con éxito.", restaurantesDTOS);
+            return Response.ok(respuesta).build();
+        } catch (AppettitException e) {
+            respuesta = new RespuestaREST<>(false, e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+        }
+    }
+	
 
 }

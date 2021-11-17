@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import proyecto2021G03.appettit.business.IMenuRService;
 import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.dto.MenuRDTO;
-import proyecto2021G03.appettit.dto.PromocionRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 
 @RequestScoped

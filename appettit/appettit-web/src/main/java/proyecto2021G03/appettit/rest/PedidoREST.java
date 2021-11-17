@@ -20,6 +20,7 @@ import proyecto2021G03.appettit.business.IReclamoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.CalificacionRPedidoDTO;
 import proyecto2021G03.appettit.dto.PedidoRDTO;
+import proyecto2021G03.appettit.dto.PedidoRMDTO;
 import proyecto2021G03.appettit.dto.ReclamoCDTO;
 import proyecto2021G03.appettit.dto.ReclamoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -40,24 +41,6 @@ public class PedidoREST {
 	ICalificacionRRService iCalificacionRRService;
 	@EJB
 	IReclamoService iReclamoService;
-	/*
-	 * @POST
-	 * 
-	 * @Path("/pedido1") //@RecursoProtegidoJWT public Response crear(PedidoDTO
-	 * request) { RespuestaREST<PedidoDTO> respuesta = null; try { PedidoDTO pedido
-	 * = iPedidoService.crear(request); respuesta = new
-	 * RespuestaREST<PedidoDTO>(true, "Pedido creado con éxito.", pedido); return
-	 * Response.ok(respuesta).build(); } catch (AppettitException e) { respuesta =
-	 * new RespuestaREST<PedidoDTO>(false, e.getLocalizedMessage());
-	 * if(e.getCodigo() == AppettitException.EXISTE_REGISTRO) { return
-	 * Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build(); }
-	 * else { return
-	 * Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).
-	 * build(); } } }
-	 * 
-	 * 
-	 */
-
 
 	@GET
 	@Path("/ultimo/{peid}")
@@ -208,4 +191,24 @@ public class PedidoREST {
 			}
 		}
 	}
+	
+	@GET
+	@Path("/listarpedidos2/{id_cliente}")
+	public Response listarPedidos2(@PathParam("id_cliente") Long id_cliente) {
+		RespuestaREST<List<PedidoRMDTO>> respuesta = null;
+		try {
+			List<PedidoRMDTO> pedidos = iPedidoService.listarPorClienteMREST(id_cliente);
+			
+			respuesta = new RespuestaREST<List<PedidoRMDTO>>(true, "Pedidos listados con éxito.", pedidos);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<List<PedidoRMDTO>>(false, e.getLocalizedMessage());
+			if (e.getCodigo() == AppettitException.EXISTE_REGISTRO) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+
 }

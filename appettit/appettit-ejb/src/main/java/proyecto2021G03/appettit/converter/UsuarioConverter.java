@@ -114,6 +114,7 @@ public class UsuarioConverter extends AbstractConverter<Usuario, UsuarioDTO> {
 				.abierto(e.getAbierto())
 				.direccion(e.getDireccion().getCalle() + " " + e.getDireccion().getNumero() + " - " + e.getDireccion().getBarrio().getNombre())
 				.id_imagen(e.getId_imagen())
+				.telefono(e.getTelefono())
 				.build();
 	}
 	

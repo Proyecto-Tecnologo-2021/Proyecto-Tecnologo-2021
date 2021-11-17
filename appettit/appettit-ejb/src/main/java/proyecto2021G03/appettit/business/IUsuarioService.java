@@ -39,7 +39,7 @@ public interface IUsuarioService {
 	public RestauranteDTO abrirRestaurante(Long id) throws AppettitException;
 	public RestauranteDTO cerrarRestaurante(Long id) throws AppettitException;
 	//public RestauranteRDTO buscarPorId(Long id) throws AppettitException;
-
+	public List<RestauranteRDTO> listarRestaurantesPorPunto(String punto) throws AppettitException;
 	
 
 	/*CLIENTE*/
@@ -61,6 +61,7 @@ public interface IUsuarioService {
 	void solicitarCorreoVerificador(MailDTO correo) throws AppettitException;
 	void cambioContraseña(String password, Long clientId) throws AppettitException;
 	ClienteDTO buscarPorCorreoCliente(String correo) throws AppettitException;
+	
 	
 
 }
