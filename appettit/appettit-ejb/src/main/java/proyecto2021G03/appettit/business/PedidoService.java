@@ -247,7 +247,32 @@ public class PedidoService implements IPedidoService {
 	@Override
 	public PedidoRDTO ultimo(Long id) throws AppettitException {
 		try {
-			return pedidoRConverter.fromEntity(iPedidoDao.ultimo(id));
+			PedidoRDTO pedido = pedidoRConverter.fromEntity(iPedidoDao.ultimo(id));
+			pedido.setCalificacion(calificacionSrv.listarPorId(pedido.getId(), pedido.getIdcli()));
+			
+			List<MenuRDTO> menus = pedido.getMenus();
+			Iterator<MenuRDTO> it = menus.iterator();
+			while (it.hasNext()) {
+				MenuRDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+			}
+
+			return pedido;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

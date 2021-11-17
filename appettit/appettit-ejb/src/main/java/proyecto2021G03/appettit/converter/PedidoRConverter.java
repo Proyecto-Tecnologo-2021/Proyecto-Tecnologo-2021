@@ -61,7 +61,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .tipo(pedido.getTipo())
                 .total(pedido.getTotal())
                 .idrest(pedido.getRestaurante().getId())
-                .fecha(LocalDateTime.now())
+                .fecha(pedido.getFecha())
                 .estado(pedido.getEstado())
                 .extras(extraConverter.fromEntityToRDTO(pedido.getExtraMenus()))
                 .id_paypal(pedido.getId_paypal())
