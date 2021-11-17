@@ -19,4 +19,7 @@ public class DtRestaurante {
     private DtDireccion direccion;
     private byte[] imagen;
     private DtRCalificacion calificacion;
+    Boolean abierto;
+    String horarioApertura;
+    String horarioCierre;
 }

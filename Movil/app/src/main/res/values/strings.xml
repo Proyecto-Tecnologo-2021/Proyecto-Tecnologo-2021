@@ -40,6 +40,7 @@
     <string name="title_Pedido">Mi pedido</string>
     <string name="title_Pedidos">Mis pedidos</string>
     <string name="title_Perfil">Mi perfil</string>
+    <string name="title_Restaurante">Restaurantes</string>
 
     <!--LOGIN-->
     <string name="login_mail">Correo</string>
@@ -122,5 +123,14 @@
 
     <!--MENUS PROMOCIONES-->
     <string name="mp_direccion">Dirección de entrega</string>
+
+    <!--RESTAURANTES-->
+    <string name="res_thorario">Horario:</string>
+    <string name="res_ttel">Teléfono:</string>
+    <string name="res_tdir">Dirección:</string>
+    <string name="res_tcalgral">General</string>
+    <string name="res_abierto">Abierto</string>
+    <string name="res_cerrado">Cerrado</string>
+
 
 </resources>

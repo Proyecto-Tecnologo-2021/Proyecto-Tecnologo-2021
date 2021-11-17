@@ -44,7 +44,8 @@ public class PedidoDAO implements IPedidoDao {
 
 		pedido = em.createQuery("SELECT _p "
 						+ "from Pedido as _p "
-						+ "where _p.id_cliente = :id", Pedido.class)
+						+ "where _p.id_cliente = :id "
+						+ "order by _p.id desc", Pedido.class)
 				.setParameter("id", id_cliente)
 				.getResultList();
 

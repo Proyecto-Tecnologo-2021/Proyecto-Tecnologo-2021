@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import uy.edu.fing.proyecto.appetit.MenuActivity;
 import uy.edu.fing.proyecto.appetit.R;
 import uy.edu.fing.proyecto.appetit.VerMenuActivity;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 
-public class RestauranteAdapter  extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
+public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter.ViewHolder>{
     private static final String TAG = "RestauranteAdapter";
     private Context context;
     private List<DtRestaurante> restaurantes;
@@ -34,52 +35,46 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<ProductAdapter.Vie
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView menu_img;
-        private final TextView menu_name;
-        private final TextView menu_detalle;
-        private final TextView menu_precio;
-        private final TextView menu_restaurante;
-        private final TextView menu_restaurante_cal;
-        private final RatingBar menu_star;
+        private final ImageView rest_img;
+        private final TextView rest_abierto;
+        private final TextView rest_horario;
+        private final TextView rest_restaurante;
+        private final TextView rest_restaurante_cal;
+        private final RatingBar rest_star;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-            menu_img = view.findViewById(R.id.menu_img);
-            menu_name = view.findViewById(R.id.menu_name);
-            menu_detalle = view.findViewById(R.id.menu_detalle);
-            menu_precio = view.findViewById(R.id.menu_precio);
-            menu_restaurante = view.findViewById(R.id.menu_restaurante);
-            menu_restaurante_cal = view.findViewById(R.id.menu_restaurante_rating);
-            menu_star = view.findViewById(R.id.menu_star);
+            rest_img = view.findViewById(R.id.rest_img);
+            rest_abierto = view.findViewById(R.id.rest_abierto);
+            rest_horario = view.findViewById(R.id.rest_horario);
+            rest_restaurante = view.findViewById(R.id.menu_restaurante);
+            rest_restaurante_cal = view.findViewById(R.id.menu_restaurante_rating);
+            rest_star = view.findViewById(R.id.menu_star);
         }
 
-        public ImageView getMenu_img() {
-            return menu_img;
+        public ImageView getRest_img() {
+            return rest_img;
         }
 
-        public TextView getMenu_name() {
-            return menu_name;
+        public TextView getRest_abierto() {
+            return rest_abierto;
         }
 
-        public TextView getMenu_detalle() {
-            return menu_detalle;
+        public TextView getRest_horario() {
+            return rest_horario;
         }
 
-        public TextView getMenu_precio() {
-            return menu_precio;
+        public TextView getRest_restaurante() {
+            return rest_restaurante;
         }
 
-        public TextView getMenu_restaurante() {
-            return menu_restaurante;
+        public TextView getRest_restaurante_cal() {
+            return rest_restaurante_cal;
         }
 
-        public TextView getMenu_restaurante_cal() {
-            return menu_restaurante_cal;
-        }
-
-        public RatingBar getMenu_star() {
-            return menu_star;
+        public RatingBar getRest_star() {
+            return rest_star;
         }
     }
 
@@ -89,7 +84,7 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<ProductAdapter.Vie
      * @param dataSet List<DtProducto> containing the data to populate views to be used
      * by RecyclerView.
      */
-    //public ProductAdapter(Context context, List<DtMenu> dataSet) {
+    //public RestauranteAdapter(Context context, List<DtMenu> dataSet) {
     public RestauranteAdapter(Context context, List<DtRestaurante> dataSet) {
         this.context = context;
         this.restaurantes = dataSet;
@@ -97,87 +92,71 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<ProductAdapter.Vie
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ProductAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RestauranteAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.product_row_item, viewGroup, false);
+                .inflate(R.layout.restaurante_row_item, viewGroup, false);
 
-        return new ProductAdapter.ViewHolder(view);
+        return new RestauranteAdapter.ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ProductAdapter.ViewHolder viewHolder, final int position) {
-        Bitmap bmp = null;
-        String nombre = null;
-        String precio = null;
-        String detalle = null;
-        String restaurante = null;
-        Integer calificacion = null;
-        Long id = null;
-        Long id_restaurante = null;
-        String tipo = null;
+    public void onBindViewHolder(RestauranteAdapter.ViewHolder viewHolder, final int position) {
+        DtRestaurante dtr = restaurantes.get(position);
+        Bitmap bmp = BitmapFactory.decodeByteArray(dtr.getImagen(), 0, dtr.getImagen().length);;
 
-        ImageView image = viewHolder.getMenu_img();
+        String abierto = dtr.getAbierto()?context.getString(R.string.res_abierto): context.getString(R.string.res_cerrado) ;
+        String horario = dtr.getHorarioApertura() + " - "+ dtr.getHorarioCierre();
+
+        ImageView image = viewHolder.getRest_img();
         image.setImageBitmap(bmp);
-
-        viewHolder.getMenu_name().setBackgroundColor(context.getColor(R.color.menu_bg_card_name));
-        viewHolder.getMenu_name().setText(nombre);
-
-        viewHolder.getMenu_detalle().setText(detalle);
-        viewHolder.getMenu_precio().setText(precio);
-        viewHolder.getMenu_restaurante().setText(restaurante);
-        viewHolder.getMenu_restaurante_cal().setText(calificacion.toString());
-
-        viewHolder.getMenu_star().setRating(5);
-
-        Drawable progressDrawable = viewHolder.getMenu_star().getProgressDrawable();
+        viewHolder.getRest_restaurante().setText(dtr.getNombre());
+        viewHolder.getRest_restaurante_cal().setText(dtr.getCalificacion().getGeneral().toString());
+        viewHolder.getRest_star().setRating(5);
 
 
-        switch (calificacion) {
+        viewHolder.getRest_horario().setText(horario);
+        viewHolder.getRest_abierto().setText(abierto);
+
+        Drawable progressDrawable = viewHolder.getRest_star().getProgressDrawable();
+
+
+        switch (dtr.getCalificacion().getGeneral()) {
             case 0:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.white_trans));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.white_trans));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.white_trans)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.white_trans));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.white_trans)));
                 break;
             case 1:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_1));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_1));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_1)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.star_1));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_1)));
                 break;
             case 2:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_2));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_2));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_2)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.star_2));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_2)));
                 break;
             case 3:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_3));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_3));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_3)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.star_3));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_3)));
                 break;
             case 4:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_4));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_4));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_4)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.star_4));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_4)));
                 break;
             case 5:
                 DrawableCompat.setTint(progressDrawable, context.getColor(R.color.star_5));
-                viewHolder.getMenu_restaurante_cal().setTextColor(context.getColor(R.color.star_5));
-                viewHolder.getMenu_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_5)));
+                viewHolder.getRest_restaurante_cal().setTextColor(context.getColor(R.color.star_5));
+                viewHolder.getRest_star().setProgressTintList(ColorStateList.valueOf(context.getColor(R.color.star_5)));
                 break;
         }
 
-        Long finalId = id;
-        Long finalId_restaurante = id_restaurante;
-        String finalTipo = tipo;
-
         viewHolder.itemView.setOnClickListener(v -> {
-            //Toast.makeText(context, "Menu: " + dtp.getNombre(), Toast.LENGTH_LONG).show()
-            Intent ivmenu = new Intent(context, VerMenuActivity.class);
-
-            ivmenu.putExtra("id", finalId);
-            ivmenu.putExtra("id_restaurante", finalId_restaurante);
-            ivmenu.putExtra("tipo", finalTipo);
+            Intent ivmenu = new Intent(context, MenuActivity.class);
             context.startActivity(ivmenu);
         });
 

@@ -1,8 +1,10 @@
 package proyecto2021G03.appettit.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -80,15 +82,25 @@ public class GeoDAO implements IGeoDAO {
 					+ "and abierto = true");
 			consulta.setParameter("point", point);
 			
-			List<Object[]> datas = (List<Object[]>) consulta.getResultList();
+			List<?> datos = consulta.getResultList();
 			
-			Iterator<Object[]> it = datas.iterator();
+			restaurantes = datos
+	         .stream()
+	         .map(item -> item instanceof BigInteger ? usrDAO.buscarRestaurantePorId(((BigInteger) item ).longValue()): null)
+	         .collect(Collectors.toList());
+			
+			/*
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			
 			while (it.hasNext()) {
 				Object[] data = it.next();
 				Restaurante restaurante = usrDAO.buscarRestaurantePorId(Long.valueOf(data[0].toString()));
 				restaurantes.add(restaurante);
 			}	
 				
+			*/
 			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());

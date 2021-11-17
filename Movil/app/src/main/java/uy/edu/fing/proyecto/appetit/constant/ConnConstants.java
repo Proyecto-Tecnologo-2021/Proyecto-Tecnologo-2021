@@ -40,6 +40,7 @@ public class ConnConstants {
 
     //RESTAURANTE
     final public static String API_GETRESTAURANTE_URL = "http://192.168.56.1:8080/appettit-web/rest/restaurante/listar/{id}";
+    final public static String API_GETRESTAURANTES_URL = "http://192.168.56.1:8080/appettit-web/rest/restaurante/getZona/{point}";
 
     //PEDIDOS
     final public static String API_GETPEDIDOSPORCLIENTEID_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/listarpedidos2/{id}";

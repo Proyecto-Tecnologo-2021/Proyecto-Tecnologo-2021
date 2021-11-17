@@ -867,7 +867,7 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
             }
         }
         reader.endObject();
-        return new DtRestaurante(id, nombre, null, telefono, null, direccion, imagen, calificacion);
+        return new DtRestaurante(id, nombre, null, telefono, null, direccion, imagen, calificacion, null, null, null);
     }
 
     public DtDireccion readDireccion(JsonReader reader) throws IOException {

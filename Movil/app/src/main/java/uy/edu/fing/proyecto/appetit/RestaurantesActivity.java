@@ -1,5 +1,12 @@
 package uy.edu.fing.proyecto.appetit;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,17 +25,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -39,11 +37,14 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.adapter.DireccionAdapter;
 import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
+import uy.edu.fing.proyecto.appetit.adapter.RestauranteAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
@@ -51,11 +52,13 @@ import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
+import uy.edu.fing.proyecto.appetit.obj.DtRCalificacion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
+import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
-public class MenuActivity extends AppCompatActivity {
-    private static final String TAG = "MenuActivity";
+public class RestaurantesActivity extends AppCompatActivity {
+    private static final String TAG = "RestaurantesActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
     DtPedido dtPedido = DtPedido.getInstance();
@@ -65,7 +68,7 @@ public class MenuActivity extends AppCompatActivity {
     private boolean isConnected;
     private RecyclerView recyclerView;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected ProductAdapter adapter;
+    protected RestauranteAdapter adapter;
 
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
@@ -75,10 +78,10 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String title = getString(R.string.title_PedidosGral);
+        String title = getString(R.string.title_Restaurante);
         setTitle(title);
 
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_restaurantes);
 
         sp = findViewById(R.id.dir_spinner);
         progressBar = findViewById(R.id.pBarMenus);
@@ -94,9 +97,9 @@ public class MenuActivity extends AppCompatActivity {
                 DtDireccion dir = adapter.getItem(position);
                 dtPedido.setIddir(dir.getId());
                 dtPedido.setGeometry(dir.getGeometry());
-                Log.i(TAG, dir.getAlias());
+                //Log.i(TAG, dir.getAlias());
                 progressBar.setVisibility(View.VISIBLE);
-                buscarMenus();
+                buscarRestaurnates();
             }
 
             @Override
@@ -117,17 +120,17 @@ public class MenuActivity extends AppCompatActivity {
             switch (item.getItemId()){
 
                 case R.id.menu_menus:
+                    Intent imenu = new Intent(RestaurantesActivity.this, MenuActivity.class);
+                    startActivity(imenu);
                     return true;
                 case R.id.menu_rest:
-                    Intent irest = new Intent(MenuActivity.this, RestaurantesActivity.class);
-                    startActivity(irest);
                     return true;
                 case R.id.menu_pedido:
-                    Intent ipedido = new Intent(MenuActivity.this, VerPedidosActivity.class);
+                    Intent ipedido = new Intent(RestaurantesActivity.this, VerPedidosActivity.class);
                     startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
-                    Intent iusr = new Intent(MenuActivity.this, PerfilActivity.class);
+                    Intent iusr = new Intent(RestaurantesActivity.this, PerfilActivity.class);
                     startActivity(iusr);
                     return true;
             }
@@ -152,7 +155,7 @@ public class MenuActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.pmenu_ver:
-                Intent ipedido = new Intent(MenuActivity.this, VerPedidoActivity.class);
+                Intent ipedido = new Intent(RestaurantesActivity.this, VerPedidoActivity.class);
                 startActivity(ipedido);
                 return true;
             default:
@@ -161,14 +164,14 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    private void addMenus(List<Object> menus){
+    private void addRestaurantes(List<DtRestaurante> restaurantes){
         recyclerView = findViewById(R.id.recyclerView);
         // Nuestro RecyclerView usará un linear layout manager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(RestaurantesActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        if(menus.size()!=0){
-            adapter = new ProductAdapter(MenuActivity.this, menus);
+        if(restaurantes.size()!=0){
+            adapter = new RestauranteAdapter(RestaurantesActivity.this, restaurantes);
             // Set CustomAdapter as the adapter for RecyclerView.
         } else {
             adapter = null;
@@ -177,35 +180,25 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    private void buscarMenus() {
+    private void buscarRestaurnates() {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connMgr.getActiveNetworkInfo();
 
-        String stringUrl = "";
-
-        if(dtPedido.getIdrest() == null){
-            stringUrl = ConnConstants.API_GETMENUSPROMOPOINT_URL;
-            stringUrl = stringUrl.replace("{point}", dtPedido.getGeometry());
-
-        } else {
-            stringUrl = ConnConstants.API_GETMENUSPROMORESTAURANTE_URL;
-            stringUrl = stringUrl.replace("{id_restaurante}", dtPedido.getIdrest().toString());
-
-        }
-
-        //Log.i(TAG, stringUrl);
+        String stringUrl = ConnConstants.API_GETRESTAURANTES_URL;
+        stringUrl = stringUrl.replace("{point}", dtPedido.getGeometry());
+        Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            new MenuActivity.DownloadMenusTask().execute(stringUrl);
+            new RestaurantesActivity.DownloadRestaurantesTask().execute(stringUrl);
         }
     }
 
-    private class DownloadMenusTask extends AsyncTask<String, Void, Object> {
+    private class DownloadRestaurantesTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return MenusInfoGralUrl(urls[0]);
+                return RestauranteInfoGralUrl(urls[0]);
             } catch (IOException e) {
                 return getString(R.string.err_recuperarpag);
             }
@@ -220,11 +213,11 @@ public class MenuActivity extends AppCompatActivity {
                 DtResponse response = (DtResponse) result;
                 Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
                 if (response.getOk()) {
-                    List<Object> menus = (List<Object>) response.getCuerpo();
-                    addMenus(menus);
+                    List<DtRestaurante> restaurantes = (List<DtRestaurante>) response.getCuerpo();
+                    addRestaurantes(restaurantes);
                 } else {
-                    if (ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(RestaurantesActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(RestaurantesActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
                     }else{
@@ -232,7 +225,7 @@ public class MenuActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(RestaurantesActivity.this).create();
                 dialog.setTitle(R.string.info_title);
 
                 if (result instanceof String) {
@@ -251,7 +244,7 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private DtResponse MenusInfoGralUrl(String myurl) throws IOException {
+    private DtResponse RestauranteInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
@@ -319,7 +312,7 @@ public class MenuActivity extends AppCompatActivity {
         Boolean ok = false;
         String mensaje = null;
         DtResponse res = null;
-        List<Object> menus = null;
+        List<DtRestaurante> restaurantes = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -329,176 +322,120 @@ public class MenuActivity extends AppCompatActivity {
             } else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
-                    menus = readOBJArray(reader);
+                restaurantes = readOBJArray(reader);
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtResponse(ok, mensaje, menus);
+        return new DtResponse(ok, mensaje, restaurantes);
 
     }
 
-    public List<Object> readOBJArray(JsonReader reader) throws IOException {
-        List<Object> menus = new ArrayList<>();
+    public List<DtRestaurante> readOBJArray(JsonReader reader) throws IOException {
+        List<DtRestaurante> restaurantes = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
-            menus.add(readMenu(reader));
+            restaurantes.add(readRestaurante(reader));
         }
         reader.endArray();
-        return menus;
+        return restaurantes;
     }
 
-
-    public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
-        List<DtMenu> menus = new ArrayList<DtMenu>();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            menus.add((DtMenu) readMenu(reader));
-        }
-        reader.endArray();
-        return menus;
-    }
-
-    public Object readMenu(JsonReader reader) throws IOException {
+    public DtRestaurante readRestaurante(JsonReader reader) throws IOException {
         Long id = null;
-        Long id_restaurante = null;
-        String nom_restaurante = null;
-        Double descuento = null;
         String nombre = null;
-        String descripcion = null;
-        Double precioSimple = null;
-        Double precioTotal = null;
-        Double precio = null;
-        List<DtExtraMenu> extras = null;
-        List<DtMenu> menus = null;
-        List<DtProducto> productos = null;
+        String telefono = null;
         byte[] imagen = null;
-        String tipo = null;
-        Integer cal_restaurante = null;
+        DtRCalificacion calificacion = null;
+        DtDireccion direccion = null;
+        String horarioApertura = null;
+        String horarioCierre = null;
+        Boolean abierto = false;
+
 
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
             if (name.equals("id") && reader.peek() != JsonToken.NULL) {
                 id = reader.nextLong();
-            } else if (name.equals("id_restaurante") && reader.peek() != JsonToken.NULL) {
-                id_restaurante = reader.nextLong();
-            } else if (name.equals("nom_restaurante") && reader.peek() != JsonToken.NULL) {
-                nom_restaurante = reader.nextString();
-            } else if (name.equals("descuento") && reader.peek() != JsonToken.NULL) {
-                descuento = reader.nextDouble();
             } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
                 nombre = reader.nextString();
-            } else if (name.equals("descripcion") && reader.peek() != JsonToken.NULL) {
-                descripcion = reader.nextString();
-            } else if (name.equals("precioSimple") && reader.peek() != JsonToken.NULL) {
-                precioSimple = reader.nextDouble();
-            } else if (name.equals("precioTotal") && reader.peek() != JsonToken.NULL) {
-                precioTotal = reader.nextDouble();
-            } else if (name.equals("precio") && reader.peek() != JsonToken.NULL) {
-                precio = reader.nextDouble();
-            } else if (name.equals("extras") && reader.peek() != JsonToken.NULL) {
-                extras = readExtrasMenusArray(reader);
-            } else if (name.equals("productos") && reader.peek() != JsonToken.NULL) {
-                productos = readProductosArray(reader);
-            } else if (name.equals("menus") && reader.peek() != JsonToken.NULL) {
-                menus = readMenusArray(reader);
+            } else if (name.equals("telefono") && reader.peek() != JsonToken.NULL) {
+                telefono = reader.nextString();
             } else if (name.equals("imagen") && reader.peek() != JsonToken.NULL) {
-                imagen = readImagenObj(reader);;
-            }else if (name.equals("tipo") && reader.peek() != JsonToken.NULL) {
-                tipo = reader.nextString();
-            }else if (name.equals("cal_restaurante") && reader.peek() != JsonToken.NULL) {
-                cal_restaurante = reader.nextInt();
+                imagen = readImagenObj(reader);
+            } else if (name.equals("calificacion") && reader.peek() != JsonToken.NULL) {
+                calificacion = readCalificacionObj(reader);
+            } else if (name.equals("direccion") && reader.peek() != JsonToken.NULL) {
+                direccion = new DtDireccion();
+                direccion.setAlias(reader.nextString());
+            } else if (name.equals("abierto") && reader.peek() != JsonToken.NULL) {
+                abierto = reader.nextBoolean();
+            } else if (name.equals("horarioApertura") && reader.peek() != JsonToken.NULL) {
+                horarioApertura = readerHorario(reader);
+            } else if (name.equals("horarioCierre") && reader.peek() != JsonToken.NULL) {
+                horarioCierre = readerHorario(reader);
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-
-        if(tipo.equalsIgnoreCase("MENU")){
-            return new DtMenu(id, id_restaurante, nom_restaurante,
-                    descuento, nombre, descripcion, precioSimple,
-                    precioTotal, extras, productos, imagen, cal_restaurante);
-        } else if (tipo.equalsIgnoreCase("PROM")){
-            return new DtPromocion(id, nombre, id_restaurante, nom_restaurante,
-                    descripcion, descuento, precio, menus, imagen, cal_restaurante);
-        } else {
-            return null;
-        }
+        return new DtRestaurante(id, nombre, null, telefono, null, direccion, imagen, calificacion, abierto, horarioApertura, horarioCierre);
     }
 
-    public List<DtExtraMenu> readExtrasMenusArray(JsonReader reader) throws IOException {
-        List<DtExtraMenu> menus = new ArrayList<DtExtraMenu>();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            menus.add(readExtraMenu(reader));
-        }
-        reader.endArray();
-        return menus;
-    }
-
-    public DtExtraMenu readExtraMenu(JsonReader reader) throws IOException {
-        Long id = null;
-        Long id_producto = null;
-        Long id_restaurante = null;
-        String producto = null;
-        Double precio = null;
+    public String readerHorario(JsonReader reader) throws IOException {
+        String horario = null;
+        Integer hour = null;
+        Integer min = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("id") && reader.peek() != JsonToken.NULL) {
-                id = reader.nextLong();
-            } else if (name.equals("id_producto") && reader.peek() != JsonToken.NULL) {
-                id_producto = reader.nextLong();
-            } else if (name.equals("id_restaurante") && reader.peek() != JsonToken.NULL) {
-                id_restaurante = reader.nextLong();
-            } else if (name.equals("precio") && reader.peek() != JsonToken.NULL) {
-                precio = reader.nextDouble();
-            } else if (name.equals("producto") && reader.peek() != JsonToken.NULL) {
-                producto = reader.nextString();
+            if (name.equals("hour") && reader.peek() != JsonToken.NULL) {
+                hour = reader.nextInt();
+            } else if (name.equals("minute") && reader.peek() != JsonToken.NULL) {
+                min = reader.nextInt();
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtExtraMenu(id, id_producto, id_restaurante, producto, precio);
-    }
 
-    public List<DtProducto> readProductosArray(JsonReader reader) throws IOException {
-        List<DtProducto> menus = new ArrayList<DtProducto>();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            menus.add(readProducto(reader));
+        if(hour != null){
+            horario= (hour<10?"0":"") + hour +":" +
+                    (min<10?"0":"") + min;
+
         }
-        reader.endArray();
-        return menus;
+
+        return horario;
     }
 
-    public DtProducto readProducto(JsonReader reader) throws IOException {
-        Long id = null;
-        Long id_restaurante = null;
-        String nombre = null;
-        Long id_categoria = null;
+    public DtRCalificacion readCalificacionObj(JsonReader reader) throws IOException {
+        Integer rapidez = null;
+        Integer comida = null;
+        Integer servicio = null;
+        Integer general = null;
+        String comentario = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("id") && reader.peek() != JsonToken.NULL) {
-                id = reader.nextLong();
-            } else if (name.equals("id_restaurante") && reader.peek() != JsonToken.NULL) {
-                id_restaurante = reader.nextLong();
-            } else if (name.equals("id_categoria") && reader.peek() != JsonToken.NULL) {
-                id_categoria = reader.nextLong();
-            } else if (name.equals("nombre") && reader.peek() != JsonToken.NULL) {
-                nombre = reader.nextString();
+            if (name.equals("rapidez") && reader.peek() != JsonToken.NULL) {
+                rapidez = reader.nextInt();
+            } else if (name.equals("comida") && reader.peek() != JsonToken.NULL) {
+                comida = reader.nextInt();
+            } else if (name.equals("servicio") && reader.peek() != JsonToken.NULL) {
+                servicio = reader.nextInt();
+            } else if (name.equals("general") && reader.peek() != JsonToken.NULL) {
+                general = reader.nextInt();
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtProducto(id, id_restaurante, nombre, id_categoria, null, null);
+
+        return new DtRCalificacion(rapidez, comida, servicio, general, comentario);
     }
 
     public byte[] readImagenObj(JsonReader reader) throws IOException {
@@ -516,7 +453,7 @@ public class MenuActivity extends AppCompatActivity {
         }
         reader.endObject();
 
-        if(simagen!=null){
+        if (simagen != null) {
             //imagen = simagen.getBytes();
             imagen = Base64.decode(simagen, Base64.DEFAULT);
         }
@@ -531,10 +468,10 @@ public class MenuActivity extends AppCompatActivity {
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent adduseractivity = new Intent(MenuActivity.this, AltaDireccionActivity.class);
+                Intent adduseractivity = new Intent(RestaurantesActivity.this, AltaDireccionActivity.class);
                 startActivity(adduseractivity);
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(RestaurantesActivity.this).create();
                 dialog.setTitle(R.string.access_title_err);
                 dialog.setMessage(getString(R.string.access_msg_err));
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> requestPermissions(permissions, PERMISOS_REQUERIDOS));
@@ -554,6 +491,5 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //buscarMenus();
     }
 }

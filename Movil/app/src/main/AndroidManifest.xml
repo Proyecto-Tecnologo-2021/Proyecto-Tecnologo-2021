@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appetit">
         <activity
+            android:name=".RestaurantesActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddDireccionActivity"
             android:exported="false" />
         <activity
@@ -39,6 +42,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="paypalpay"
                     android:scheme="uy.edu.fing.proyecto.appetit" />
