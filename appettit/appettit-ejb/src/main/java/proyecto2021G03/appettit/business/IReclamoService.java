@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface IReclamoService {
     public List<ReclamoDTO> listar() throws AppettitException;
+    public List<ReclamoDTO> listarPorRestaurante(Long id) throws AppettitException;
     public ReclamoDTO listarPorId(Long id) throws AppettitException;
     public ReclamoDTO crear(ReclamoCDTO reclamoCDTO)throws AppettitException;
     public ReclamoDTO editar(Long id, ReclamoDTO reclamoDTO)throws AppettitException;

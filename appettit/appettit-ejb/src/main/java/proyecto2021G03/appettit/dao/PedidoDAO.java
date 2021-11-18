@@ -23,6 +23,23 @@ public class PedidoDAO implements IPedidoDao {
         return em.find(Pedido.class, id);    }
 
     @Override
+	public Pedido listarPorReclamo(Long id) {
+    	List<Pedido> pedidos = null;
+
+		pedidos = em.createQuery("SELECT _p "
+						+ "from Pedido as _p "
+						+ "where _p.reclamo.id = :id", Pedido.class)
+				.setParameter("id", id)
+				.getResultList();
+		if (pedidos == null) {
+			return null;
+		} else {
+			return pedidos.get(0);
+		}
+	}
+
+    
+    @Override
     public Pedido crear(Pedido pedido) {
         em.persist(pedido);
         return pedido;

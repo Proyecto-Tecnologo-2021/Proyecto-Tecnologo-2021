@@ -7,6 +7,7 @@ import java.util.List;
 public interface IReclamoDao {
 
     public List<Reclamo> listar();
+    public List<Reclamo> listarPorRestaurante(Long id);
     public Reclamo listarPorId(Long id);
     public Reclamo crear(Reclamo reclamo);
     public Reclamo editar(Reclamo reclamo);

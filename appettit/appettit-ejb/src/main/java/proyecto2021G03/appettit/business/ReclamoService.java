@@ -36,6 +36,15 @@ public class ReclamoService implements IReclamoService{
     }
 
     @Override
+	public List<ReclamoDTO> listarPorRestaurante(Long id) throws AppettitException {
+    	try {
+            return reclamoConverter.fromEntity(iReclamoDao.listarPorRestaurante(id));
+        } catch (Exception e) {
+            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        }
+	}
+    
+    @Override
     public ReclamoDTO listarPorId(Long id) throws AppettitException {
         try {
             return reclamoConverter.fromEntity(iReclamoDao.listarPorId(id));
@@ -82,19 +91,21 @@ public class ReclamoService implements IReclamoService{
             return reclamoConverter.fromEntity(iReclamoDao.editar(reclamo));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }    }
-
+        }    
+    }
+    
     @Override
     public void eliminar(Long id) throws AppettitException {
         Reclamo reclamo= iReclamoDao.listarPorId(id);
         if( reclamo== null) {
-        throw new AppettitException("El reclamo indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-    } else {
-        try {
-            iReclamoDao.eliminar(reclamo);
-        } catch (Exception e) {
-            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        	throw new AppettitException("El reclamo indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+        } else {
+        	try {
+        		iReclamoDao.eliminar(reclamo);
+        	} catch (Exception e) {
+        		throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+        	}
         }
     }
-}
+
 }

@@ -16,6 +16,7 @@ import proyecto2021G03.appettit.converter.PedidoRConverter;
 import proyecto2021G03.appettit.converter.ReclamoConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IPedidoDao;
+import proyecto2021G03.appettit.dao.IReclamoDao;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.ImagenDTO;
@@ -37,6 +38,9 @@ public class PedidoService implements IPedidoService {
 
 	@EJB
 	IPedidoDao iPedidoDao;
+	
+	@EJB
+	IReclamoDao iReclamoDao;
 	
 	@EJB
 	PedidoConverter pedidoConverter;
@@ -373,6 +377,25 @@ public class PedidoService implements IPedidoService {
 			return pedidoRConverter.fromEntityToRMDTO(iPedidoDao.listarPorCliente(id));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public PedidoDTO listarPorReclamo(Long id) throws AppettitException {
+		Reclamo reclamo = iReclamoDao.listarPorId(id);
+		if (reclamo == null) {
+			throw new AppettitException("El reclamo indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		} else {
+			Pedido pedido = iPedidoDao.listarPorReclamo(id);
+			if (pedido == null) {
+				throw new AppettitException("El pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			} else {
+				try {
+					return pedidoConverter.fromEntity(pedido);
+				} catch (Exception e) {
+					throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+				}
+			}
 		}
 	}
 	
