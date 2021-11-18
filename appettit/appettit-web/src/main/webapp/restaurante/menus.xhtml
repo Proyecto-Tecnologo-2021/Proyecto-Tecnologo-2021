@@ -30,7 +30,7 @@
 		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
 	<div class="navigation w-100">
 		<div class="container">
-			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml" />
 		</div>
 	</div>
 	</header>
@@ -38,131 +38,133 @@
 	<div class="main-panel">
 		<div class="container">
 			<div class="wrapper pt-3">
-				<div class="row mb-3 pt-3">
-			 		<div class="card">
-						<h:form id="form">
-							<p:dataTable var="menu" editable="false" id="tableMenus"
-								value="#{beanMenuRestaurante.menus}" widgetVar="menusTable"
-								emptyMessage="No existen Menus"
-								globalFilterOnly="#{beanMenuRestaurante.globalFilterOnly}"
-								filteredValue="#{beanMenuRestaurante.filterMenus}" rows="10"
-								paginator="true" rowKey="#{menu.id}" selectionMode="single"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-								rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+				<div class="card">
+					<h:form id="form">
+						<p:toolbar>
+							<p:toolbarGroup align="right">
+								<p:commandButton value="Exportar" icon="pi pi-upload"
+									styleClass="ui-button-help" ajax="false">
+									<p:dataExporter type="pdf" target="menusTable"
+										fileName="Pedidos" options="#{beanMenuRestaurante.pdfOpt}"
+										preProcessor="#{beanMenuRestaurante.preProcessPDF}" />
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+						
 
-								<f:facet name="header">
-									<div class="row">
-										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
-											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-												<h5>Lista de Men&uacute;s del Restaurante</h5>
-											</div>
+						<p:dataTable var="menu" editable="false"
+							value="#{beanMenuRestaurante.menus}" widgetVar="menusTable"
+							emptyMessage="No existen Menus"
+							globalFilterOnly="#{beanMenuRestaurante.globalFilterOnly}"
+							filteredValue="#{beanMenuRestaurante.filterMenus}" rows="10"
+							paginator="true" rowKey="#{menu.id}" selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de Men&uacute;s del Restaurante</h5>
 										</div>
-										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
-											<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-												<p:inputText id="globalFilter"
-													onkeyup="PF('menusTable').filter()" style="width:10rem"
-													placeholder="Palabra clave" />
-												<p:commandButton value="Buscar" update="@form"
-													action="#{beanMenuRestaurante.toggleGlobalFilter()}"
-													class="btn btn-primary" />
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('menusTable').filter()" style="width:10rem"
+												placeholder="Palabra clave" />
+											<p:commandButton value="Buscar" update="@form"
+												action="#{beanMenuRestaurante.toggleGlobalFilter()}"
+												class="btn btn-primary" />
+												
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="Id" sortBy="#{menu.id}">
+								<h:outputText value="#{menu.id}" />
+							</p:column>
+
+							<p:column headerText="Imagen">
+								<p:graphicImage value="#{menu.imagen.imagen}"
+									styleClass="p-shadow-2" stream="false" />
+							</p:column>
+
+							<p:column headerText="Nombre" sortBy="#{menu.nombre}"
+								filterBy="#{menu.nombre}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{menu.nombre}" />
+							</p:column>
+
+							<p:column headerText="Precio" sortBy="#{menu.precioTotal}"
+								filterBy="#{menu.precioTotal}">
+								<h:outputText value="#{menu.precioTotal}">
+									<f:convertNumber type="currency" currencySymbol="$U" />
+								</h:outputText>
+							</p:column>
+
+
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:menuDetail"
+									oncomplete="PF('menuDialog').show()" title="Ver men&uacute;"
+									value="Ver men&uacute;">
+									<f:setPropertyActionListener value="#{menu}"
+										target="#{beanMenuRestaurante.selMenu}" />
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:dialog header="Informaci&oacute;n del men&uacute;" width="800"
+							widgetVar="menuDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="menuDetail" style="text-align:center;">
+
+								<p:column rendered="#{not empty beanMenuRestaurante.selMenu}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<p:dataTable var="producto" id="tableProductos"
+													value="#{beanMenuRestaurante.selMenu.productos}">
+													<p:column headerText="Producto">
+														<h:outputText value="#{producto.nombre}" />
+													</p:column>
+
+													<p:column headerText="Categor&iacute;a">
+														<h:outputText value="#{producto.categoria.nombre}" />
+													</p:column>
+												</p:dataTable>
+												<br />
+												<p:dataTable var="extra" value="#{beanMenuRestaurante.selMenu.extras}"
+													id="menusExtraTable" widgetVar="menusExtraTable">
+
+													<p:column headerText="Producto">
+														<h:outputText value="#{extra.producto.nombre}" />
+													</p:column>
+
+													<p:column headerText="Precio">
+														<h:outputText value="#{extra.precio}">
+															<f:convertNumber type="currency" currencySymbol="$U" />
+														</h:outputText>
+													</p:column>
+												</p:dataTable>
+												<br />
 											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-xl-12 col-lg-12 col-md-12 pb-0 pt-0">
-											<h6>Expandir para ver detalle</h6>
-										</div>
-									</div>
-								</f:facet>
-								<p:column style="width:2rem">
-									<p:rowToggler />
 								</p:column>
 
-								<p:column headerText="Id" sortBy="#{menu.id}">
-									<h:outputText value="#{menu.id}" />
-								</p:column>
-								<!--
-								<p:column headerText="Imagen">
-									<p:graphicImage value="#{menu.imagen.imagen}"
-										styleClass="p-shadow-2" stream="false"/>
-								</p:column>
- 	-->
-								<p:column headerText="Nombre" sortBy="#{menu.nombre}"
-									filterBy="#{menu.nombre}">
-									<h:outputText style="vertical-align: middle; margin-left: .5rem"
-										value="#{menu.nombre}" />
-								</p:column>
+							</p:outputPanel>
+						</p:dialog>
 
-								<p:column headerText="Precio" sortBy="#{menu.precioTotal}"
-									filterBy="#{menu.precioTotal}">
-									<h:outputText value="#{menu.precioTotal}">
-										<f:convertNumber type="currency" currencySymbol="$U" />
-									</h:outputText>
-								</p:column>
-
-								<p:rowExpansion>
-									<div class="row mb-1">
-										<div
-											class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
-											<div class="card">
-												<div class="card-header">
-													<h6>Productos</h6>
-												</div>
-												<div class="card-body">
-													<p:dataTable var="producto" value="#{menu.productos}">
-
-														<p:column headerText="Producto">
-															<h:outputText value="#{producto.nombre}" />
-														</p:column>
-
-														<p:column headerText="Categor&iacute;a">
-															<h:outputText value="#{producto.categoria.nombre}" />
-														</p:column>
-													</p:dataTable>
-												</div>
-											</div>
-										</div>
-										<div
-											class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
-											<div class="card">
-												<div class="card-header">
-													<h6>Extras</h6>
-												</div>
-												<div class="card-body">
-													<p:dataTable var="extra" value="#{menu.extras}">
-
-														<p:column headerText="Producto">
-															<h:outputText value="#{extra.producto.nombre}" />
-														</p:column>
-
-														<p:column headerText="Precio">
-															<h:outputText value="#{extra.precio}">
-																<f:convertNumber type="currency" currencySymbol="$U" />
-															</h:outputText>
-														</p:column>
-													</p:dataTable>
-												</div>
-											</div>
-										</div>
-									</div>
-								</p:rowExpansion>
-							</p:dataTable>
-							<div class="col-12">
-								<p:growl id="messages" showDetail="true" />
-							</div>
-						</h:form>
-					</div>
-				</div>
-
-				<div class="col-12 d-flex flex-row-reverse">
-					<div class="p-2">
-						<div class="btn-group" data-toggle="buttons">
-							<a class="btn btn-secondary" href="/appettit-web/restaurante/menuadd.xhtml"
-							   role="button" title="Agregar Menu"><i
-									class="fas fa-plus"></i> </a>
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
 						</div>
-					</div>
+					</h:form>
 				</div>
 			</div>
 		</div>

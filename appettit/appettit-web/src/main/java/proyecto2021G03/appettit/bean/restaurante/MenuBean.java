@@ -1,5 +1,7 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,11 +9,19 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
+import org.primefaces.component.export.PDFOptions;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,7 +54,7 @@ public class MenuBean implements Serializable {
 	private List<ProductoDTO> productos;
 	private List<MenuDTO> filterMenus;
 
-
+	
 	private Long id;
     private Long id_restaurante;
     private String nombre;
@@ -58,6 +68,9 @@ public class MenuBean implements Serializable {
 	FacesContext facesContext;
 	HttpSession session;
 	private Boolean disabledBloquedado = true;
+	private MenuDTO selMenu;
+	private PDFOptions pdfOpt;
+	
     
 	@EJB
 	IUsuarioService usrSrv;
@@ -118,4 +131,29 @@ public class MenuBean implements Serializable {
 		return usuarioDTO;
 
 	}
+	
+	public void customizationOptions() {
+		pdfOpt = new PDFOptions();
+		pdfOpt.setFacetBgColor("#f2a22c");
+		pdfOpt.setFacetFontColor("#ffffff");
+		pdfOpt.setFacetFontStyle("BOLD");
+		pdfOpt.setCellFontSize("8");
+		pdfOpt.setFontName("Verdana");
+	}
+
+	public void preProcessPDF(Object document) throws IOException, BadElementException, DocumentException {
+		Document pdf = (Document) document;
+		pdf.open();
+		pdf.setMargins(1, 1, 1, 1);
+		pdf.setPageSize(PageSize.A4);
+
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
+		String separator = File.separator;
+		String logo = externalContext.getRealPath("") + separator + "resources" + separator + "images" + separator
+				+ "logo.png";
+
+		pdf.add(Image.getInstance(logo));
+	}
+
 }

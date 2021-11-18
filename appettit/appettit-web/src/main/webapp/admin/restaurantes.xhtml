@@ -97,7 +97,11 @@
 							<p:column headerText="Id" sortBy="#{restaurante.id}">
 								<h:outputText value="#{restaurante.id}" />
 							</p:column>
-
+							
+							<p:column headerText="Abierto" sortBy="#{restaurante.abierto}">
+								<h:outputText value="#{restaurante.abierto?'Si':'No'}" />
+							</p:column>
+							
 							<p:column headerText="Nombre" sortBy="#{restaurante.nombre}"
 								filterBy="#{restaurante.nombre}">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
@@ -226,7 +230,8 @@
 											<div class="product-grid-item-content">
 
 												<p:graphicImage
-													value="#{beanAdminRestaurante.selRestaurante.imagen.imagen}" />
+													value="#{beanAdminRestaurante.selRestaurante.imagen.imagen}" 
+													styleClass="p-shadow-2" stream="false" />
 
 
 												<div class="product-grid-item-bottom">

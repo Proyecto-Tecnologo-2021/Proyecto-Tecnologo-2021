@@ -12,9 +12,7 @@ import javax.inject.Named;
 
 import org.jboss.logging.Logger;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;

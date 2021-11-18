@@ -42,7 +42,7 @@
 					<h:form>
 						<p:dataTable var="admin" value="#{beanAdmin.administradores}"
 							widgetVar="adminsTable" emptyMessage="No existen Administradores"
-							globalFilterOnly="#{dtFilterView.globalFilterOnly}"
+							globalFilterOnly="#{beanAdmin.globalFilterOnly}"
 							filteredValue="#{beanAdmin.filterAdministradores}" rows="10"
 							paginator="true" rowKey="#{admin.id}" selectionMode="single"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
