@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+  <meta charset="ISO-8859-1"></meta>
+  <title>Appetit-Promociones</title>
+
+
+  <ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+  <style>
+    .selected {
+      background-color: #008037 !important;
+    }
+  </style>
+
+
+</h:head>
+
+<h:body>
+
+
+  <header class="fixed-top header"> <ui:include
+          src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+    <div class="navigation w-100">
+      <div class="container">
+        <ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-panel">
+    <div class="container">
+      <div class="wrapper pt-3">
+        <div class="row mb-3 pt-3">
+          <div class="card">
+            <h:form id="form">
+              <p:dataTable var="promo" editable="false" id="tablePromo"
+                           value="#{beanPromocion.promos}" widgetVar="promosTable"
+                           emptyMessage="No existen Promociones"
+                           globalFilterOnly="#{beanPromocion.globalFilterOnly}"
+                           filteredValue="#{beanPromocion.filterPromos}" rows="10"
+                           paginator="true" rowKey="#{promo.id}" selectionMode="single"
+                           paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                           currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                           rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+                <f:facet name="header">
+                  <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <h5>Lista de promociones del Restaurante</h5>
+                      </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <p:inputText id="globalFilter"
+                                     onkeyup="PF('promosTable').filter()" style="width:10rem"
+                                     placeholder="Palabra clave" />
+                        <p:commandButton value="Buscar" update="@form"
+                                         action="#{beanPromocion.toggleGlobalFilter()}"
+                                         class="btn btn-primary" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 pb-0 pt-0">
+                      <h6>Expandir para ver detalle</h6>
+                    </div>
+                  </div>
+                </f:facet>
+                <p:column style="width:2rem">
+                  <p:rowToggler />
+                </p:column>
+
+                <p:column headerText="Id" sortBy="#{promo.id}">
+                  <h:outputText value="#{promo.id}" />
+                </p:column>
+
+                <p:column headerText="Imagen">
+                    <p:graphicImage value="#{promo.imagen.imagen}"
+                        styleClass="p-shadow-2" stream="false"/>
+                </p:column>
+
+                <p:column headerText="Nombre" sortBy="#{promo.nombre}"
+                          filterBy="#{promo.nombre}">
+                  <h:outputText style="vertical-align: middle; margin-left: .5rem"
+                                value="#{promo.nombre}" />
+                </p:column>
+
+                <p:column headerText="Descuento" sortBy="#{promo.descuento}"
+                          filterBy="#{promo.descuento}">
+                  <h:outputText value="#{promo.descuento}">
+                    <f:convertNumber pattern="#####,00%" />
+                  </h:outputText>
+                </p:column>
+
+                <p:column headerText="Precio" sortBy="#{promo.precio}"
+                          filterBy="#{promo.precio}">
+                  <h:outputText value="#{promo.precio}">
+                    <f:convertNumber type="currency" currencySymbol="$U" />
+                  </h:outputText>
+                </p:column>
+
+                <p:rowExpansion>
+                  <div class="row mb-1">
+                    <div
+                            class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
+                      <div class="card">
+                        <div class="card-header">
+                          <h6>Menus</h6>
+                        </div>
+                        <div class="card-body">
+                          <p:dataTable var="menu" value="#{promo.menus}">
+
+                            <p:column headerText="Menu">
+                              <h:outputText value="#{menu.nombre}" />
+                            </p:column>
+
+                            <p:column headerText="Precio">
+                              <h:outputText value="#{menu.precioTotal}" />
+                            </p:column>
+                          </p:dataTable>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </p:rowExpansion>
+              </p:dataTable>
+              <div class="col-12">
+                <p:growl id="messages" showDetail="true" />
+              </div>
+            </h:form>
+          </div>
+        </div>
+
+        <div class="col-12 d-flex flex-row-reverse">
+          <div class="p-2">
+            <div class="btn-group" data-toggle="buttons">
+              <a class="btn btn-secondary" href="/appettit-web/restaurante/promoadd.xhtml"
+                 role="button" title="Agregar Menu"><i
+                      class="fas fa-plus"></i> </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+  <script type="text/javascript">
+    var $ds = jQuery.noConflict();
+
+
+
+  </script>
+</h:body>
+</html>
