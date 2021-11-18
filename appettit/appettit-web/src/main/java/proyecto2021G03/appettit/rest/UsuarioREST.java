@@ -13,6 +13,7 @@ import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Pedido;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 import java.util.List;
 
@@ -279,7 +280,7 @@ public class UsuarioREST {
 		if(iTokenService.tokenVerificator(token)) {
 			String id = iTokenService.tokenGetClaim(token,"idUsuario");
 			//MANDAR AL LINK DE LA PAGINA DE RESETEO DE PASS CON LA DATA DEL USER
-			String url ="http://localhost:3000/change-pass/" + id ;
+			String url = Constantes.FRONT_PASS_CHANGE_LINK + id ;
 			return Response.temporaryRedirect(URI.create(url)).build();
 		} else {
 			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");

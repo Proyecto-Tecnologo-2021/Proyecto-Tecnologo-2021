@@ -1,8 +1,10 @@
 package proyecto2021G03.appettit.business;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import proyecto2021G03.appettit.exception.AppettitException;
 
+import proyecto2021G03.appettit.util.Constantes;
 import javax.ejb.EJB;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -21,23 +23,24 @@ public class MailService implements IMailService {
 
 		//DATA DEL EMISOR
 		String from = "Appetit";
-		final String username = "info.appetit.g3@gmail.com";
-		final String password = "appetit123";
+//		final String username = "info.appetit.g3@gmail.com";
+//		final String password = "appetit123";
 
 
 		//DATA DEL SMTP GMAIL
-		String host = "smtp.gmail.com";
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", host);
-		props.put("mail.smtp.port", "587");
+		Properties props = Constantes.MAIL_PROPS();
+//		String host = "smtp.gmail.com";
+//		Properties props = new Properties();
+//		props.put("mail.smtp.auth", "true");
+//		props.put("mail.smtp.starttls.enable", "true");
+//		props.put("mail.smtp.host", host);
+//		props.put("mail.smtp.port", "587");
 
 		//CREAMOS OBJETO SESSION CON EL USER Y PASS
 		Session session = Session.getInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
+						return new PasswordAuthentication(Constantes.USER_NAME, Constantes.USER_PASS);
 					}
 				});
 		try {
