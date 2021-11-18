@@ -52,7 +52,7 @@
 						</p:toolbar>
 						
 
-						<p:dataTable var="menu" editable="false"
+						<p:dataTable var="menu" editable="false" id="menusTable"
 							value="#{beanMenuRestaurante.menus}" widgetVar="menusTable"
 							emptyMessage="No existen Menus"
 							globalFilterOnly="#{beanMenuRestaurante.globalFilterOnly}"
@@ -78,6 +78,7 @@
 											<p:commandButton value="Buscar" update="@form"
 												action="#{beanMenuRestaurante.toggleGlobalFilter()}"
 												class="btn btn-primary" />
+												
 												
 										</div>
 									</div>

@@ -108,6 +108,7 @@ public class MenuBean implements Serializable {
 		}
 	}
 	
+	
 	public void toggleGlobalFilter() {
 		setGlobalFilterOnly(!isGlobalFilterOnly());
 	}
