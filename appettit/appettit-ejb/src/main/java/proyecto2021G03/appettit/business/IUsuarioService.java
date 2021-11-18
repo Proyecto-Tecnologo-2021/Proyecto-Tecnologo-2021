@@ -60,6 +60,7 @@ public interface IUsuarioService {
 	public DireccionDTO buscarDireccionPorId(Long id) throws AppettitException;
 	void solicitarCorreoVerificador(MailDTO correo) throws AppettitException;
 	void cambioContraseña(String password, Long clientId) throws AppettitException;
+	void setFirebaseTokenWeb(String webToken, Long clientId) throws AppettitException;
 	ClienteDTO buscarPorCorreoCliente(String correo) throws AppettitException;
 	
 	

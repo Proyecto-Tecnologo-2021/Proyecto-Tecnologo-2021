@@ -261,7 +261,7 @@ public class UsuarioREST {
 		RespuestaREST respuesta = null;
 		try {
 			uService.solicitarCorreoVerificador(correo);
-			respuesta = new RespuestaREST<ClienteMDTO>(true, "Correo enviado correctamente.");
+			respuesta = new RespuestaREST(true, "Correo enviado correctamente.");
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
@@ -283,7 +283,7 @@ public class UsuarioREST {
 			String url = Constantes.FRONT_PASS_CHANGE_LINK + id ;
 			return Response.temporaryRedirect(URI.create(url)).build();
 		} else {
-			respuesta = new RespuestaREST<ClienteMDTO>(false, "Token no valido.");
+			respuesta = new RespuestaREST(false, "Token no valido.");
 			return Response.ok(respuesta).build();
 		}
 	}
@@ -294,7 +294,25 @@ public class UsuarioREST {
 		RespuestaREST respuesta = null;
 		try {
 			uService.cambioContraseña(password.getPassword(), password.getClientId());
-			respuesta = new RespuestaREST<ClienteMDTO>(true, "Contraseña cambiada correctamente.");
+			respuesta = new RespuestaREST(true, "Contraseña cambiada correctamente.");
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
+
+	@POST
+	@Path("/setFirebaseTokenWeb/")
+	public Response setFirebaseTokenWeb(TokenDTO tokenWeb) {
+		RespuestaREST respuesta = null;
+		try {
+			uService.setFirebaseTokenWeb(tokenWeb.getTokenWeb(), tokenWeb.getClientId());
+			respuesta = new RespuestaREST(true, "Firebase web token agregado correctamente.");
 			return Response.ok(respuesta).build();
 		} catch (AppettitException e) {
 			respuesta = new RespuestaREST(false, e.getLocalizedMessage());

@@ -970,7 +970,6 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public void cambioContraseña(String password, Long clientId) throws AppettitException {
-		//HARDCODEO EL ID PARA TESTEAR NO LE DEN BOLA
 		Cliente cliente = usrDAO.buscarPorIdCliente(clientId);
 		if(cliente == null){
 			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
@@ -978,6 +977,22 @@ public class UsuarioService implements IUsuarioService {
 			try {
 			cliente.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
 			usrDAO.editarCliente(cliente);
+
+			} catch (Exception e) {
+				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+			}
+		}
+	}
+
+	@Override
+	public void setFirebaseTokenWeb(String webToken, Long clientId) throws AppettitException {
+		Cliente cliente = usrDAO.buscarPorIdCliente(clientId);
+		if(cliente == null){
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+		}else {
+			try {
+				cliente.setNotificationFirebaseWeb(webToken);
+				usrDAO.editarCliente(cliente);
 
 			} catch (Exception e) {
 				throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
