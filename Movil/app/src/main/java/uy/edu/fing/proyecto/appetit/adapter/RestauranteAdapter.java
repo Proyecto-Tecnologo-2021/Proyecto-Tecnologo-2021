@@ -1,6 +1,7 @@
 package uy.edu.fing.proyecto.appetit.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -13,15 +14,20 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.MenuRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import uy.edu.fing.proyecto.appetit.MenuActivity;
+import uy.edu.fing.proyecto.appetit.MenuRestauranteActivity;
+import uy.edu.fing.proyecto.appetit.PerfilActivity;
 import uy.edu.fing.proyecto.appetit.R;
 import uy.edu.fing.proyecto.appetit.VerMenuActivity;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
+import uy.edu.fing.proyecto.appetit.obj.DtPedido;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 
@@ -29,6 +35,7 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
     private static final String TAG = "RestauranteAdapter";
     private Context context;
     private List<DtRestaurante> restaurantes;
+    DtPedido dtPedido = DtPedido.getInstance();
 
     /**
      * Provide a reference to the type of views that you are using
@@ -41,6 +48,12 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
         private final TextView rest_restaurante;
         private final TextView rest_restaurante_cal;
         private final RatingBar rest_star;
+        private final RatingBar rest_rapidez;
+        private final RatingBar rest_comida;
+        private final RatingBar rest_servicio;
+        private final TextView rest_dir;
+
+
 
         public ViewHolder(View view) {
             super(view);
@@ -51,6 +64,11 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
             rest_restaurante = view.findViewById(R.id.menu_restaurante);
             rest_restaurante_cal = view.findViewById(R.id.menu_restaurante_rating);
             rest_star = view.findViewById(R.id.menu_star);
+            rest_rapidez = view.findViewById(R.id.rest_rapidez);
+            rest_comida = view.findViewById(R.id.rest_comida);
+            rest_servicio = view.findViewById(R.id.rest_servicio);
+            rest_dir = view.findViewById(R.id.rest_dir);
+
         }
 
         public ImageView getRest_img() {
@@ -75,6 +93,22 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
 
         public RatingBar getRest_star() {
             return rest_star;
+        }
+
+        public RatingBar getRest_rapidez() {
+            return rest_rapidez;
+        }
+
+        public RatingBar getRest_comida() {
+            return rest_comida;
+        }
+
+        public RatingBar getRest_servicio() {
+            return rest_servicio;
+        }
+
+        public TextView getRest_dir() {
+            return rest_dir;
         }
     }
 
@@ -114,6 +148,10 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
         viewHolder.getRest_restaurante().setText(dtr.getNombre());
         viewHolder.getRest_restaurante_cal().setText(dtr.getCalificacion().getGeneral().toString());
         viewHolder.getRest_star().setRating(5);
+        viewHolder.getRest_rapidez().setRating(dtr.getCalificacion().getRapidez());
+        viewHolder.getRest_comida().setRating(dtr.getCalificacion().getComida());
+        viewHolder.getRest_servicio().setRating(dtr.getCalificacion().getServicio());
+        viewHolder.getRest_dir().setText(dtr.getDireccion().getAlias());
 
 
         viewHolder.getRest_horario().setText(horario);
@@ -156,8 +194,22 @@ public class RestauranteAdapter  extends RecyclerView.Adapter<RestauranteAdapter
         }
 
         viewHolder.itemView.setOnClickListener(v -> {
-            Intent ivmenu = new Intent(context, MenuActivity.class);
-            context.startActivity(ivmenu);
+            AlertDialog dialog = new AlertDialog.Builder(context).create();
+            dialog.setTitle(context.getString(R.string.info_title));
+            dialog.setMessage(context.getString(R.string.res_verproductos));
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.alert_btn_positive), (dialog1, which) -> {
+
+                Intent ivmenu = new Intent(context, MenuRestauranteActivity.class);
+                ivmenu.putExtra("id_restaurante", dtr.getId());
+                ivmenu.putExtra("nombre", dtr.getNombre());
+                context.startActivity(ivmenu);
+            });
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getString(R.string.alert_btn_negative), (dialog12, which) -> {
+                dialog.cancel();
+            });
+            dialog.show();
+
+
         });
 
     }

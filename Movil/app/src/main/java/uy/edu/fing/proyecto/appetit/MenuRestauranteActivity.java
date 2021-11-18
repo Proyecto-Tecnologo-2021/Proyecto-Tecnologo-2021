@@ -1,13 +1,17 @@
 package uy.edu.fing.proyecto.appetit;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -16,25 +20,15 @@ import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
+import android.widget.Spinner;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,7 +40,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import uy.edu.fing.proyecto.appetit.adapter.DireccionAdapter;
+import uy.edu.fing.proyecto.appetit.adapter.ProductAdapter;
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
+import uy.edu.fing.proyecto.appetit.obj.DtDireccion;
 import uy.edu.fing.proyecto.appetit.obj.DtExtraMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtPedido;
@@ -55,239 +52,158 @@ import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtUsuario;
 
-public class VerMenuActivity extends AppCompatActivity {
-    private static final String TAG = "VerMenuActivity";
+public class MenuRestauranteActivity extends AppCompatActivity {
+    private static final String TAG = "MenuRestauranteActivity";
     private static final int PERMISOS_REQUERIDOS = 1;
     final static Integer RC_SIGN_IN = 20213;
+    DtPedido dtPedido = DtPedido.getInstance();
+    DtUsuario dtUsuario = DtUsuario.getInstance();
     private ConnectivityManager connMgr;
     private NetworkInfo networkInfo;
     private boolean isConnected;
+    private RecyclerView recyclerView;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    protected ProductAdapter adapter;
     Long id_restaurante;
-    Long id_menu;
-    String tipo;
+    String nombre;
 
-    ImageView menu_img;
-    TextView menu_name;
-    TextView menu_detalle;
-    TextView menu_precio;
-    TextView menu_restaurante;
-    TextView menu_cantidad;
+
     ProgressBar progressBar;
     BottomNavigationView bottomNavigationView;
-    Button add_pedido;
-    ImageButton add_cantidad;
-    ImageButton menos_cantidad;
-    TextView menu_restaurante_cal;
-    RatingBar menu_star;
-    LinearLayout add_button;
-
-    DtPedido dtPedido = DtPedido.getInstance();
-    DtUsuario dtUsuario = DtUsuario.getInstance();
-    Object producto = null;
-    Integer cantidad = 1;
-    Double total = 0.0;
+    Spinner sp;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getIntent().getExtras();
-        id_menu = bundle.getLong("id");
         id_restaurante = bundle.getLong("id_restaurante");
-        tipo = bundle.getString("tipo");
+        nombre = bundle.getString("nombre");
 
 
-        setContentView(R.layout.activity_ver_menu);
+        //String title = getString(R.string.title_PedidosGral);
+        //setTitle(title);
+        setTitle(nombre);
 
-        menu_img = findViewById(R.id.vmenu_img);
-        menu_name = findViewById(R.id.vmenu_name);
-        menu_detalle = findViewById(R.id.vmenu_detalle);
-        menu_precio = findViewById(R.id.vmenu_precio);
-        menu_restaurante = findViewById(R.id.vmenu_restaurante);
-        add_pedido = findViewById(R.id.vmenu_add_pedido);
-        add_cantidad = findViewById(R.id.addCantidad);
-        menos_cantidad = findViewById(R.id.minusCantidad);
-        menu_cantidad = findViewById(R.id.vmenu_cantidad);
-        menu_restaurante_cal = findViewById(R.id.vmenu_restaurante_rating);
-        menu_star = findViewById(R.id.vmenu_star);
-        add_button = findViewById(R.id.linearAddCantidad);
+        setContentView(R.layout.activity_menu);
+
+        sp = findViewById(R.id.dir_spinner);
         progressBar = findViewById(R.id.pBarMenus);
-
-        add_button.setVisibility(View.INVISIBLE);
-        add_pedido.setVisibility(View.INVISIBLE);
-
         progressBar.setVisibility(View.VISIBLE);
 
-        buscarMenu();
+        DireccionAdapter adapter = new DireccionAdapter(this, R.layout.dir_spinner, dtUsuario.getDirecciones());
+        sp.setAdapter(adapter);
+        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        bottomNavigationView = findViewById(R.id.bottomNavViewMenu);
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        add_cantidad.setOnClickListener(v -> {
-            cantidad ++;
-            menu_cantidad.setText(cantidad.toString());
-
-            String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
-            String b_text = getString(R.string.carr_add_prod) + " " + precio;
-            add_pedido.setText(b_text);
-        });
-
-        menos_cantidad.setOnClickListener(v -> {
-            if(cantidad > 1){
-                cantidad --;
+                DtDireccion dir = adapter.getItem(position);
+                dtPedido.setIddir(dir.getId());
+                dtPedido.setGeometry(dir.getGeometry());
+                Log.i(TAG, dir.getAlias());
+                progressBar.setVisibility(View.VISIBLE);
+                buscarMenus();
             }
-            menu_cantidad.setText(cantidad.toString());
-            String precio = getString(R.string.carr_symbol) + " " + total * cantidad;
-            String b_text = getString(R.string.carr_add_prod) + " " + precio;
-            add_pedido.setText(b_text);
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
+        if(dtPedido.getIddir() != null){
+            DtDireccion pos = new DtDireccion();
+            pos.setId(dtPedido.getIddir());
+            sp.setSelection(adapter.getPosition(pos));
+            //mySpinner.setSelection(arrayAdapter.getPosition("Category 2")
+        }
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-
+        bottomNavigationView.setSelectedItemId(R.id.menu_menus);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
 
                 case R.id.menu_menus:
-                    Intent imenu = new Intent(VerMenuActivity.this, MenuActivity.class);
-                    startActivity(imenu);
                     return true;
                 case R.id.menu_rest:
-                    Intent irest = new Intent(VerMenuActivity.this, RestaurantesActivity.class);
+                    Intent irest = new Intent(MenuRestauranteActivity.this, RestaurantesActivity.class);
                     startActivity(irest);
                     return true;
                 case R.id.menu_pedido:
-                    Intent ipedido = new Intent(VerMenuActivity.this, VerPedidosActivity.class);
+                    Intent ipedido = new Intent(MenuRestauranteActivity.this, VerPedidosActivity.class);
                     startActivity(ipedido);
                     return true;
                 case R.id.menu_perfil:
-                    Intent iusr = new Intent(VerMenuActivity.this, PerfilActivity.class);
+                    Intent iusr = new Intent(MenuRestauranteActivity.this, PerfilActivity.class);
                     startActivity(iusr);
-
                     return true;
             }
             return false;
         });
 
-        add_pedido.setOnClickListener(v -> {
-            dtPedido.setIdrest(id_restaurante);
-            dtPedido.setIdcli(dtUsuario.getId());
-
-            for (int cant = 0 ; cant < cantidad; cant++){
-                dtPedido.addMenu(producto);
-            }
-
-            Intent menuactivity = new Intent(VerMenuActivity.this, MenuActivity.class);
-            startActivity(menuactivity);
-        });
-
     }
-    private void addMenu(Object obj){
-        Bitmap bmp = null;
-        String nombre = null;
-        String precio = null;
-        String detalle = null;
-        String restaurante = null;
-        Integer calificacion = null;
 
-        if (obj instanceof DtMenu){
-            DtMenu dtp = (DtMenu) obj;
-            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
-            nombre = dtp.getNombre();
-            precio = getString(R.string.carr_symbol) + " " + dtp.getPrecioTotal();
-            detalle = dtp.getDescripcion();
-            restaurante = dtp.getNom_restaurante();
-            calificacion = dtp.getCalificacion();
-            total = dtp.getPrecioTotal();
-
-        } else if (obj instanceof DtPromocion){
-            DtPromocion dtp = (DtPromocion) obj;
-            bmp = BitmapFactory.decodeByteArray(dtp.getImagen(), 0, dtp.getImagen().length);
-            nombre = dtp.getDescuento() + getString(R.string.carr_dto) +
-                    " " + dtp.getNombre();
-            precio = getString(R.string.carr_symbol) + " " + dtp.getPrecio();
-            detalle = dtp.getDescripcion();
-            restaurante = dtp.getNom_restaurante();
-            calificacion = dtp.getCalificacion();
-            total = dtp.getPrecio();
-        }
-        menu_img.setImageBitmap(bmp);
-        menu_name.setText(nombre);
-        menu_detalle.setText(detalle);
-        menu_precio.setText(precio);
-        menu_restaurante.setText(restaurante);
-        menu_cantidad.setText(cantidad.toString());
-        String b_text = getString(R.string.carr_add_prod) + " " +  precio;
-        add_pedido.setText(b_text);
-
-        menu_restaurante_cal.setText(calificacion.toString());
-        menu_star.setRating(5);
-
-        Drawable progressDrawable = menu_star.getProgressDrawable();
-
-
-        switch (calificacion) {
-            case 0:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.white_trans));
-                menu_restaurante_cal.setTextColor(getColor(R.color.white_trans));
-                break;
-            case 1:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_1));
-                menu_restaurante_cal.setTextColor(getColor(R.color.star_1));
-                break;
-            case 2:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_2));
-                menu_restaurante_cal.setTextColor(getColor(R.color.star_2));
-                break;
-            case 3:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_3));
-                menu_restaurante_cal.setTextColor(getColor(R.color.star_3));
-                break;
-            case 4:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_4));
-                menu_restaurante_cal.setTextColor(getColor(R.color.star_4));
-                break;
-            case 5:
-                DrawableCompat.setTint(progressDrawable, getColor(R.color.star_5));
-                menu_restaurante_cal.setTextColor(getColor(R.color.star_5));
-                break;
-        }
-
-        if(dtPedido.getIdrest()==null){
-            add_button.setVisibility(View.VISIBLE);
-            add_pedido.setVisibility(View.VISIBLE);
-        } else if (dtPedido.getIdrest() == id_restaurante){
-            add_button.setVisibility(View.VISIBLE);
-            add_pedido.setVisibility(View.VISIBLE);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(dtPedido.getIdrest()!=null){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.pedido_menu, menu);
+            return true;
+        } else {
+            return false;
         }
     }
 
-    private void buscarMenu() {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.pmenu_ver:
+                Intent ipedido = new Intent(MenuRestauranteActivity.this, VerPedidoActivity.class);
+                startActivity(ipedido);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void addMenus(List<Object> menus){
+        recyclerView = findViewById(R.id.recyclerView);
+        // Nuestro RecyclerView usará un linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MenuRestauranteActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        if(menus.size()!=0){
+            adapter = new ProductAdapter(MenuRestauranteActivity.this, menus);
+            // Set CustomAdapter as the adapter for RecyclerView.
+        } else {
+            adapter = null;
+        }
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    private void buscarMenus() {
         connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connMgr.getActiveNetworkInfo();
 
-        String stringUrl = null;
+            String stringUrl = ConnConstants.API_GETMENUSPROMORESTAURANTE_URL;
+            stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
 
-        if(tipo.equalsIgnoreCase("M")){
-            stringUrl = ConnConstants.API_GETMENU_URL;
-        } else if (tipo.equalsIgnoreCase("P")){
-            stringUrl = ConnConstants.API_GETPROMO_URL;
-        }
-
-        stringUrl = stringUrl.replace("{id}", id_menu.toString());
-        stringUrl = stringUrl.replace("{id_restaurante}", id_restaurante.toString());
-
-        Log.i(TAG, stringUrl);
+        //Log.i(TAG, stringUrl);
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            new VerMenuActivity.DownloadMenuTask().execute(stringUrl);
-        } else {
+            new MenuRestauranteActivity.DownloadMenusTask().execute(stringUrl);
         }
     }
 
-    private class DownloadMenuTask extends AsyncTask<String, Void, Object> {
+    private class DownloadMenusTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return MenuInfoGralUrl(urls[0]);
+                return MenusInfoGralUrl(urls[0]);
             } catch (IOException e) {
                 return getString(R.string.err_recuperarpag);
             }
@@ -300,28 +216,21 @@ public class VerMenuActivity extends AppCompatActivity {
 
             if (result instanceof DtResponse) {
                 DtResponse response = (DtResponse) result;
-                //Log.i(TAG, "onPostExecute:" + response.getMensaje());
+                Log.i(TAG, "ServerLoginFirebase:" + response.getOk());
                 if (response.getOk()) {
-                    Object menu = (Object) response.getCuerpo();
-                    producto = menu;
-                    addMenu(menu);
+                    List<Object> menus = (List<Object>) response.getCuerpo();
+                    addMenus(menus);
                 } else {
-                    if (ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                            ContextCompat.checkSelfPermission(VerMenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(MenuRestauranteActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(MenuRestauranteActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         String[] permisos = {Manifest.permission.ACCESS_FINE_LOCATION};
                         requestPermissions(permisos, PERMISOS_REQUERIDOS);
                     }else{
-                        AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
-                        dialog.setTitle(R.string.access_title_err);
-                        dialog.setMessage(response.getMensaje());
-                        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_positive), (dialog1, which) -> onBackPressed());
-                        dialog.show();
-
+                        onBackPressed();
                     }
-
                 }
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(MenuRestauranteActivity.this).create();
                 dialog.setTitle(R.string.info_title);
 
                 if (result instanceof String) {
@@ -340,7 +249,7 @@ public class VerMenuActivity extends AppCompatActivity {
         }
     }
 
-    private DtResponse MenuInfoGralUrl(String myurl) throws IOException {
+    private DtResponse MenusInfoGralUrl(String myurl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
@@ -408,7 +317,7 @@ public class VerMenuActivity extends AppCompatActivity {
         Boolean ok = false;
         String mensaje = null;
         DtResponse res = null;
-        Object menu = null;
+        List<Object> menus = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -418,15 +327,26 @@ public class VerMenuActivity extends AppCompatActivity {
             } else if (name.equals("mensaje")) {
                 mensaje = reader.nextString();
             } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
-                menu = readMenu(reader);
+                menus = readOBJArray(reader);
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-        return new DtResponse(ok, mensaje, menu);
+        return new DtResponse(ok, mensaje, menus);
 
     }
+
+    public List<Object> readOBJArray(JsonReader reader) throws IOException {
+        List<Object> menus = new ArrayList<>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            menus.add(readMenu(reader));
+        }
+        reader.endArray();
+        return menus;
+    }
+
 
     public List<DtMenu> readMenusArray(JsonReader reader) throws IOException {
         List<DtMenu> menus = new ArrayList<DtMenu>();
@@ -602,24 +522,6 @@ public class VerMenuActivity extends AppCompatActivity {
         return imagen;
     }
 
-    private String MenuToJSON() {
-        String res = "";
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("id", id_menu);
-            jsonObject.put("id_restaurante", id_restaurante);
-
-            res = jsonObject.toString();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
-            res = "";
-        }
-
-        return res;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -627,10 +529,10 @@ public class VerMenuActivity extends AppCompatActivity {
         if (requestCode == PERMISOS_REQUERIDOS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent adduseractivity = new Intent(VerMenuActivity.this, AltaDireccionActivity.class);
+                Intent adduseractivity = new Intent(MenuRestauranteActivity.this, AltaDireccionActivity.class);
                 startActivity(adduseractivity);
             } else {
-                AlertDialog dialog = new AlertDialog.Builder(VerMenuActivity.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(MenuRestauranteActivity.this).create();
                 dialog.setTitle(R.string.access_title_err);
                 dialog.setMessage(getString(R.string.access_msg_err));
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_positive), (dialog1, which) -> requestPermissions(permissions, PERMISOS_REQUERIDOS));
@@ -647,5 +549,9 @@ public class VerMenuActivity extends AppCompatActivity {
         //super.onBackPressed();
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //buscarMenus();
+    }
 }

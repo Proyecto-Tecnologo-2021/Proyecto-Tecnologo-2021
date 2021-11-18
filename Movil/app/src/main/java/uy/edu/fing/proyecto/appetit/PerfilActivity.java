@@ -107,6 +107,8 @@ public class PerfilActivity extends AppCompatActivity {
                     startActivity(imenu);
                     return true;
                 case R.id.menu_rest:
+                    Intent irest = new Intent(PerfilActivity.this, RestaurantesActivity.class);
+                    startActivity(irest);
                     return true;
                 case R.id.menu_pedido:
                     Intent ipedido = new Intent(PerfilActivity.this, VerPedidosActivity.class);
