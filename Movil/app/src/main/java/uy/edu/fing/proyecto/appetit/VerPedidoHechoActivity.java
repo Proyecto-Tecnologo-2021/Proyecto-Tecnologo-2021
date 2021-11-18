@@ -130,6 +130,8 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                     startActivity(imenu);
                     return true;
                 case R.id.menu_rest:
+                    Intent irest = new Intent(VerPedidoHechoActivity.this, RestaurantesActivity.class);
+                    startActivity(irest);
                     return true;
                 case R.id.menu_pedido:
                     Intent ipedidos = new Intent(VerPedidoHechoActivity.this, VerPedidosActivity.class);
