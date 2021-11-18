@@ -42,4 +42,7 @@ public abstract class Usuario  implements Serializable  {
 	
 	@Column(name="notificationFirebase", columnDefinition="TEXT")
 	private String notificationFirebase;
+
+	@Column(name="notificationFirebaseWeb", columnDefinition="TEXT")
+	private String notificationFirebaseWeb;
 }

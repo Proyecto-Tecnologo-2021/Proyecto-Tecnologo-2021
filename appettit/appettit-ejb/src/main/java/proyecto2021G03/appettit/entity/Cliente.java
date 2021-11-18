@@ -28,10 +28,10 @@ public class Cliente extends Usuario {
 	@Builder
 	public Cliente(Long id, String nombre, String username, String password, String telefono, String correo,
 			String tokenFireBase, Boolean bloqueado, List<Direccion> direcciones) {
-		super(id, nombre, username, password, telefono, correo, tokenFireBase, null);
-		
+		super(id, nombre, username, password, telefono, correo, tokenFireBase, null, null);
+
 		this.bloqueado = bloqueado;
-		this.direcciones = direcciones;		
+		this.direcciones = direcciones;
 	}
 
 	private Boolean bloqueado;
@@ -39,5 +39,6 @@ public class Cliente extends Usuario {
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_direccion", referencedColumnName="id")
 	private List<Direccion> direcciones = new ArrayList<Direccion>();
+
 
 }

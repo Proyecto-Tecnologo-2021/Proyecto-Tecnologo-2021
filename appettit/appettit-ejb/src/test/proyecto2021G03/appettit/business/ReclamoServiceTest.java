@@ -77,22 +77,22 @@ public class ReclamoServiceTest extends TestCase {
         }
     }
 
-    @Test
-    public void testCrearRec() {
-        Reclamo reclamo = new Reclamo(1L, "motivo prueba", "detalles", LocalDateTime.now());
-        ReclamoDTO reclamoDTO = new ReclamoDTO(1L, "motivo prueba", "detalles", LocalDateTime.now());
-
-        Mockito.when(reclamoServiceI.iReclamoDao.listarPorId(1L)).thenReturn(reclamo);
-        Mockito.when(reclamoServiceI.iReclamoDao.crear(reclamo)).thenReturn(reclamo);
-        Mockito.when(reclamoServiceI.reclamoConverter.fromEntity(reclamo)).thenReturn(reclamoDTO);
-
-        try {
-            ReclamoDTO obtenido = reclamoServiceI.crear(reclamoDTO);
-            assertEquals(obtenido, reclamoDTO);
-        } catch (AppettitException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void testCrearRec() {
+//        Reclamo reclamo = new Reclamo(1L, "motivo prueba", "detalles", LocalDateTime.now());
+//        ReclamoDTO reclamoDTO = new ReclamoDTO(1L, "motivo prueba", "detalles", LocalDateTime.now());
+//
+//        Mockito.when(reclamoServiceI.iReclamoDao.listarPorId(1L)).thenReturn(reclamo);
+//        Mockito.when(reclamoServiceI.iReclamoDao.crear(reclamo)).thenReturn(reclamo);
+//        Mockito.when(reclamoServiceI.reclamoConverter.fromEntity(reclamo)).thenReturn(reclamoDTO);
+//
+//        try {
+//            ReclamoDTO obtenido = reclamoServiceI.crear(reclamoDTO);
+//            assertEquals(obtenido, reclamoDTO);
+//        } catch (AppettitException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Test
     public void testEditar() {

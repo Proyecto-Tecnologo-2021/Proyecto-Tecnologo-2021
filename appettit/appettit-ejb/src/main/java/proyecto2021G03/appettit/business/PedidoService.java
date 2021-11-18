@@ -102,6 +102,17 @@ public class PedidoService implements IPedidoService {
 				notificacionSrv.enviarNotificacionFirebase(pdto.getCliente().getNotificationFirebase(),
 						"Pedido registrado con éxito.", msg );
 			}
+			if(pdto.getCliente().getNotificationFirebaseWeb() != null) {
+
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
+						+ " Total: " + pdto.getTotal()
+						+ "Forma de Pago: " + pdto.getTipo().toString()
+						+ " Estado: " + pdto.getEstado().toString();
+				notificacionSrv.enviarNotificacionFirebase(pdto.getCliente().getNotificationFirebaseWeb(),
+						"Pedido registrado con éxito.", msg );
+			}
 			
 			return pdto;
 		} catch (Exception e) {
@@ -172,6 +183,19 @@ public class PedidoService implements IPedidoService {
 				notificacionSrv.enviarNotificacionFirebase(pedido.getCliente().getNotificationFirebase(),
 						"Actualización de pedido.", msg );
 			}
+			if(pedido.getCliente().getNotificationFirebaseWeb() != null) {
+
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+				String msg = "Pedido: " + pedido.getId()
+						+ "\nFecha: " + pedido.getFecha().format(dateFormat)
+						+ "\nTotal: " + pedido.getTotal()
+						+ "\nForma de Pago: " + pedido.getTipo().toString()
+						+ estado;
+				notificacionSrv.enviarNotificacionFirebase(pedido.getCliente().getNotificationFirebaseWeb(),
+						"Actualización de pedido.", msg );
+			}
+
 
 			return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
 		} catch (Exception e) {
@@ -217,6 +241,17 @@ public class PedidoService implements IPedidoService {
 				+ "\nForma de Pago: " + pdto.getTipo().toString()
 				+ "\nEstado: " + pdto.getEstado().toString();
 				notificacionSrv.enviarNotificacionFirebase(cliente.getNotificationFirebase(),
+						"Pedido registrado con éxito.", msg );
+			}
+			if(cliente.getNotificationFirebaseWeb() != null) {
+
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
+						+ "\nTotal: " + pdto.getTotal()
+						+ "\nForma de Pago: " + pdto.getTipo().toString()
+						+ "\nEstado: " + pdto.getEstado().toString();
+				notificacionSrv.enviarNotificacionFirebase(cliente.getNotificationFirebaseWeb(),
 						"Pedido registrado con éxito.", msg );
 			}
 			

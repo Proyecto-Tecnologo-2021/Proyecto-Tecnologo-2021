@@ -33,7 +33,7 @@ public class Restaurante extends Usuario {
 			String tokenFireBase, String rut, EstadoRegistro estado, Boolean bloqueado, 
 			LocalTime horarioApertura, LocalTime horarioCierre, Boolean abierto, Boolean abiertoAutom,
 			String areaentrega, Direccion direccion, String id_imagen) {
-		super(id, nombre, username, password, telefono, correo, tokenFireBase, null);
+		super(id, nombre, username, password, telefono, correo, tokenFireBase, null, null);
 		
 		this.rut = rut;
 		this.estado = estado;
