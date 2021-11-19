@@ -3,6 +3,8 @@ package proyecto2021G03.appettit.bean.restaurante;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +23,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IDepartamentoService;
+import proyecto2021G03.appettit.business.IEstadisticasService;
+import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
+import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -42,6 +47,7 @@ public class HomeRestauranteBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	List<DepartamentoDTO> departamentos;
+	List<PedidoDTO> pedidos;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
@@ -49,11 +55,15 @@ public class HomeRestauranteBean implements Serializable{
 	FacesContext facesContext;
 	HttpSession session;
 	
+	
 	@EJB
 	IDepartamentoService departamentoService;
 	
 	@EJB
 	IUsuarioService usrService;
+	
+	@EJB
+	IEstadisticasService estadisitciasSrv;
 	
 	@PostConstruct
 	public void init() {
@@ -69,12 +79,18 @@ public class HomeRestauranteBean implements Serializable{
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));	
 			}else {
+				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
+				
 				Date fechaBase = new Date();
 				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				fechaHora = dateFormat.format(fechaBase);
 				
-				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
+				LocalDateTime fechaHasta = LocalDateTime.now();
+				LocalDateTime fechaDesde = fechaHasta.minusDays(7);   //Minu
+				
+				pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde, fechaHasta);
 				abierto = restauranteDTO.getAbierto();
+				
 			}
 			
 
@@ -108,5 +124,12 @@ public class HomeRestauranteBean implements Serializable{
 
 		return usuarioDTO;
 
+	}
+	
+	public String getFechaHora(LocalDateTime fecha) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		 
+		return fecha.format(formatter);
+		
 	}
 }

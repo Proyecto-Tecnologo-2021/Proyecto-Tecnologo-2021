@@ -30,7 +30,7 @@
 		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
 	<div class="navigation w-100">
 		<div class="container">
-			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml" />
 		</div>
 	</div>
 	</header>
@@ -45,14 +45,18 @@
 							<div class="card-header">
 								<div class="row">
 									<div class="col-md-6">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-start">										
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
 											<h:form>
 												<c:choose>
 													<c:when test="#{HomeRestaurante.abierto}">
-														<h:commandButton class="btn btn-warning" value = "Cerrar restaurante"  action = "#{HomeRestaurante.cerrarRestaurante()}" />
+														<h:commandButton class="btn btn-warning"
+															value="Cerrar restaurante"
+															action="#{HomeRestaurante.cerrarRestaurante()}" />
 													</c:when>
 													<c:otherwise>
-														<h:commandButton class="btn btn-success" value = "Abrir restaurante"  action = "#{HomeRestaurante.abrirRestaurante()}"/>
+														<h:commandButton class="btn btn-success"
+															value="Abrir restaurante"
+															action="#{HomeRestaurante.abrirRestaurante()}" />
 													</c:otherwise>
 												</c:choose>
 											</h:form>
@@ -75,16 +79,25 @@
 						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Rapidez</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star "></span> <span class="fa fa-star"></span>
-								</h5>
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Rapidez</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez}" />
+											</h5>
+										</div>
+									</div>
+								</div>
 
-								<h5 class="card-title mb-3 font-weight-bold">3.9 en 30
-									calificaciones</h5>
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez} en" />
+									30 calificaciones
+								</h5>
 								<div id="canvas-holderCalA">
 									<canvas id="chart_CalA" />
 								</div>
@@ -95,16 +108,25 @@
 						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Comida</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star "></span> <span class="fa fa-star"></span>
-								</h5>
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Comida</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.comida}" />
+											</h5>
+										</div>
+									</div>
+								</div>
 
-								<h5 class="card-title mb-3 font-weight-bold">3.7 en 30
-									calificaciones</h5>
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.comida} en" />
+									30 calificaciones
+								</h5>
 								<div id="canvas-holderCalB">
 									<canvas id="chart_CalB" />
 								</div>
@@ -115,17 +137,25 @@
 						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">Servicio</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star"></span>
-								</h5>
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Servicio</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.servicio}" />
+											</h5>
+										</div>
+									</div>
+								</div>
 
-								<h5 class="card-title mb-3 font-weight-bold">4.0 en 30
-									calificaciones</h5>
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.servicio} en" />
+									30 calificaciones
+								</h5>
 								<div id="canvas-holderCalC">
 									<canvas id="chart_CalC" />
 								</div>
@@ -136,16 +166,25 @@
 						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
-								<h5 class="card-title mb-3 font-weight-bold">
-									<span class="pr-3">General</span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star text-warning"></span> <span
-										class="fa fa-star"></span> <span class="fa fa-star"></span>
-								</h5>
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">General</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.general}" />
+											</h5>
+										</div>
+									</div>
+								</div>
 
-								<h5 class="card-title mb-3 font-weight-bold">3.8 en 30
-									calificaciones</h5>
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.general} en" />
+									30 calificaciones
+								</h5>
 								<div id="canvas-holderCalD">
 									<canvas id="chart_CalD" />
 								</div>
@@ -465,44 +504,51 @@
 					<div
 						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
 						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Pedidos</h5>
-							</div>
-							<div class="card-body scroll">
-								<table class="table table-hover">
-									<thead class="table-dark">
-										<tr>
-											<th scope="col">Orden</th>
-											<th scope="col">Detalle</th>
-											<th scope="col">Cliente</th>
-											<th scope="col">Barrio</th>
-											<th scope="col">Estado</th>
-											<th scope="col">Hora del pedido</th>
-											<th scope="col">Precio</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>21</td>
-											<td>Papas fritas</td>
-											<td>Juan Perez</td>
-											<td>Cord&oacute;n</td>
-											<td><span class="text-white badge bg-warning">Confirmado</span></td>
-											<td>19:00</td>
-											<td>$ 90</td>
-										</tr>
-										<tr>
-											<td>22</td>
-											<td>Pizza</td>
-											<td>Andrea Lopez</td>
-											<td>Cord&oacute;n</td>
-											<td><span class="text-white badge bg-success">Enviado</span></td>
-											<td>19:00</td>
-											<td>$ 180</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+
+							<p:dataTable var="pedido" value="#{HomeRestaurante.pedidos}">
+							
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Pedidos</h5>
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+							
+								<p:column headerText="Orden">
+									<h:outputText value="#{pedido.id}" />
+								</p:column>
+
+								<p:column headerText="Cliente">
+									<h:outputText value="#{pedido.cliente.nombre}" />
+								</p:column>
+
+								<p:column headerText="Barrio">
+									<h:outputText value="#{pedido.entrega.barrio.nombre}" />
+								</p:column>
+
+								<p:column headerText="Estado">
+									<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
+											value="#{pedido.estado.toString()}" />
+								</p:column>
+								
+								<p:column headerText="Hora del pedido">
+									<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{HomeRestaurante.getFechaHora(pedido.fecha)}" />
+								</p:column>
+								
+								<p:column headerText="Precio">
+								<h:outputText value="#{pedido.total}">
+									<f:convertNumber type="currency" currencySymbol="$U" />
+								</h:outputText>
+							</p:column>
+							
+							</p:dataTable>
 						</div>
 					</div>
 					<div

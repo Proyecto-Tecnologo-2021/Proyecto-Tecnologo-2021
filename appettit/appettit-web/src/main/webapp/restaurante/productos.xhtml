@@ -42,9 +42,9 @@
 					<div class="card">
 						<h:form id="form">
 							<p:dataTable var="producto" editable="true" id="tableProductos"
-								value="#{beanProducto.productos}" widgetVar="prodTable"
+								value="#{beanProducto.productos}" widgetVar="tableProductos"
 								emptyMessage="No existen Productos"
-								globalFilterOnly="#{dtFilterView.globalFilterOnly}"
+								globalFilterOnly="#{beanProducto.globalFilterOnly}"
 								filteredValue="#{beanProducto.filterProductos}" rows="10"
 								paginator="true" rowKey="#{producto.id}" selectionMode="single"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -68,7 +68,7 @@
 										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 												<p:inputText id="globalFilter"
-													onkeyup="PF('prodTable').filter()" style="width:10rem"
+													onkeyup="PF('tableProductos').filter()" style="width:10rem"
 													placeholder="Palabra clave" />
 												<p:commandButton value="Buscar" update="@form"
 													action="#{beanProducto.toggleGlobalFilter()}"
@@ -119,7 +119,7 @@
 										</f:facet>
 									</p:cellEditor>
 									<f:facet name="filter">
-										<p:selectOneMenu onchange="PF('prodTable').filter()"
+										<p:selectOneMenu onchange="PF('tableProductos').filter()"
 											styleClass="custom-filter">
 
 											<f:selectItem itemLabel="All" itemValue="#{null}"
