@@ -14,6 +14,7 @@
     <string name="alert_btn_confirmar">Confirmar</string>
     <string name="alert_btn_calificar">Calificar</string>
     <string name="alert_btn_calificar_upd">Actualizar</string>
+    <string name="alert_btn_reclamar">Reclamar</string>
 
     <!--CONNECTION MESSAGES-->
     <string name="err_conntitle">Error de conectiviad</string>
@@ -111,7 +112,7 @@
     <string name="pedidos_fp">Forma de pago:</string>
     <string name="pedidos_cot">Cotización:</string>
     <string name="pedidos_calificar">Calificación</string>
-    <string name="pedidos_reclamo">Reclamar</string>
+    <string name="pedidos_reclamo">Reclamo</string>
     <string name="pedidos_detalle">Detalle</string>
     <string name="pedidos_califica_true">Calificado</string>
     <string name="pedidos_califica_false">Sin calificar</string>
@@ -119,6 +120,8 @@
     <string name="pedidos_comida">Comida</string>
     <string name="pedidos_servicio">Servicio</string>
     <string name="pedidos_observa">Observaciones</string>
+    <string name="pedidos_reclamo_motivo">Motivo</string>
+    <string name="pedidos_reclamo_detalle">Detalle</string>
 
 
     <!--MENUS PROMOCIONES-->

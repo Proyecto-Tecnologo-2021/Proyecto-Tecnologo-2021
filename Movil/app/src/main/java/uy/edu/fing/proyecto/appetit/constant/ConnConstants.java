@@ -47,5 +47,6 @@ public class ConnConstants {
     final public static String API_ADDPEDIDO_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/pedido2";
     final public static String API_GETPEDIDOID_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/listar/{id}";
     final public static String API_PUTCALIFICARPEDIDO_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/calificar/";
+    final public static String API_PUTRECLAMARPEDIDO_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/reclamar";
     final public static String API_PUTCALIFICARPEDIDOUPD_URL = "http://192.168.56.1:8080/appettit-web/rest/pedido/calificarUPD/";
 }

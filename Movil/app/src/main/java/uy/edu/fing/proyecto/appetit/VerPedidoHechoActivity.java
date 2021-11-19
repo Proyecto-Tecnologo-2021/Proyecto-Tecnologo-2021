@@ -67,6 +67,7 @@ import uy.edu.fing.proyecto.appetit.obj.DtMenu;
 import uy.edu.fing.proyecto.appetit.obj.DtProducto;
 import uy.edu.fing.proyecto.appetit.obj.DtPromocion;
 import uy.edu.fing.proyecto.appetit.obj.DtRCalificacion;
+import uy.edu.fing.proyecto.appetit.obj.DtReclamo;
 import uy.edu.fing.proyecto.appetit.obj.DtResponse;
 import uy.edu.fing.proyecto.appetit.obj.DtRestaurante;
 import uy.edu.fing.proyecto.appetit.obj.DtVPedido;
@@ -81,6 +82,7 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
     Long id_pedido;
     DtVPedido dtVPedido = null;
     DtRCalificacion dtRCalificacion = null;
+    DtReclamo dtReclamo = null;
 
 
     ProgressBar progressBar;
@@ -192,6 +194,28 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                     dialog12.cancel();
                 });
                 dialog.show();
+                return true;
+            case R.id.pedido_reclamo:
+
+                AlertDialog.Builder rbuilder = new AlertDialog.Builder(VerPedidoHechoActivity.this);
+                LayoutInflater rinflater = this.getLayoutInflater();
+                View rconvertView = rinflater.inflate(R.layout.pedido_reclamo_alert, null);
+                rbuilder.setView(rconvertView);
+
+                EditText rmotivo =  rconvertView.findViewById(R.id.pedidos_reclamo_motivo);
+                EditText rdetalle =  rconvertView.findViewById(R.id.pedidos_reclamo_detalle);
+
+                AlertDialog rdialog = rbuilder.create();
+
+                rdialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.alert_btn_reclamar), (dialog1, which) -> {
+                    dtReclamo = new DtReclamo(rmotivo.getText().toString(), rdetalle.getText().toString());
+                    reclamarPedido();
+                });
+
+                rdialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_cancel), (dialog12, which) -> {
+                    dialog12.cancel();
+                });
+                rdialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -808,6 +832,8 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                 return readGETPMessage(reader);
             } else if (mType.equalsIgnoreCase("PUTC")) {
                 return readPUTCMessage(reader);
+            } else if (mType.equalsIgnoreCase("PUTR")) {
+                return readPUTRMessage(reader);
             }
 
             return ret;
@@ -1082,5 +1108,174 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
         return res;
     }
 
+    private void reclamarPedido() {
+        connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        String stringUrl = ConnConstants.API_PUTRECLAMARPEDIDO_URL;
 
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new VerPedidoHechoActivity.PutReclamoPedidoTask().execute(stringUrl);
+        }
+
+    }
+
+    private class PutReclamoPedidoTask extends AsyncTask<String, Void, Object> {
+        @Override
+        protected Object doInBackground(String... urls) {
+            // params comes from the execute() call: params[0] is the url.
+            try {
+                return ReclamoInfoGralUrl(urls[0]);
+            } catch (IOException | ParseException e) {
+                //return getString(R.string.err_recuperarpag);
+                return e.getMessage();
+            }
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(Object result) {
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (result instanceof DtResponse) {
+                DtResponse response = (DtResponse) result;
+
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+                dialog.setMessage(response.getMensaje());
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), (dialog1, which) -> {dialog.cancel();});
+                dialog.show();
+
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(VerPedidoHechoActivity.this).create();
+                dialog.setTitle(R.string.info_title);
+
+                if (result instanceof String) {
+                    dialog.setMessage((String) result);
+                } else {
+                    dialog.setMessage(getString(R.string.err_recuperarpag));
+                    //Log.i(TAG, getString(R.string.err_recuperarpag));
+                }
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.alert_btn_neutral), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
+    private DtResponse ReclamoInfoGralUrl(String myurl) throws IOException, ParseException {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+
+            //String authorization ="Bearer  " + usuario.getToken();
+
+            URL url = new URL(myurl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
+            //conn.setRequestProperty("Authorization", authorization);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("PUT");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+
+            String data = ReclamoToJSON();
+            Log.i(TAG, data);
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            OutputStream stream = conn.getOutputStream();
+            stream.write(out);
+
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+
+            //Log.i(TAG, "conn.getResponseCode: " + response + " - " + conn.getResponseMessage());
+            if (response == 200) {
+                is = conn.getInputStream();
+                return readInfoGralJsonStream(is, "PUTR");
+            } else if (response == 400) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "PUTR");
+            } else if (response == 500) {
+                is = conn.getErrorStream();
+                return readInfoGralJsonStream(is, "PUTR");
+            } else {
+                return new DtResponse(false, response + " - " + conn.getResponseMessage(), null);
+            }
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+                conn.disconnect();
+            }
+        }
+    }
+    private String ReclamoToJSON(){
+        String res = "";
+
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("id_pedido", dtVPedido.getId().toString());
+            jsonObject.put("motivo", dtReclamo.getMotivo());
+            jsonObject.put("detalles", dtReclamo.getDetalle());
+
+            res = jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            //e.printStackTrace();
+            res = "";
+        }
+
+        return res;
+    }
+
+    public DtResponse readPUTRMessage(JsonReader reader) throws IOException, ParseException {
+        Boolean ok = false;
+        String mensaje = null;
+        DtReclamo reclamo = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("ok")) {
+                ok = reader.nextBoolean();
+            } else if (name.equals("mensaje")) {
+                mensaje = reader.nextString();
+            } else if (name.equals("cuerpo") && reader.peek() != JsonToken.NULL) {
+                reclamo = readReclamoObj(reader);
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return new DtResponse(ok, mensaje, reclamo);
+
+    }
+
+    public DtReclamo readReclamoObj(JsonReader reader) throws IOException {
+        String motivo = null;
+        String detalle = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("motivo") && reader.peek() != JsonToken.NULL) {
+                motivo = reader.nextString();
+            } else if (name.equals("detalle") && reader.peek() != JsonToken.NULL) {
+                detalle = reader.nextString();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+
+        return new DtReclamo(motivo, detalle);
+    }
 }

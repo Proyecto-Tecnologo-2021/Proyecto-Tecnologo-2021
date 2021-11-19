@@ -506,18 +506,25 @@
 						<div class="card">
 
 							<p:dataTable var="pedido" value="#{HomeRestaurante.pedidos}">
-							
-							<f:facet name="header">
-								<div class="row">
-									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-											<h5>Pedidos</h5>
+								<f:facet name="header">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+												<h5>Pedidos</h5>
+											</div>
 										</div>
 									</div>
-								</div>
+								</f:facet>
+								<p:columnGroup type="header">
+									<p:column headerText="#Orden" styleClass="bg-dark text-white pl-3 p-1" />
+									<p:column headerText="Cliente" styleClass="bg-dark text-white p-1" />
+									<p:column headerText="Barrio" styleClass="bg-dark text-white p-1" />
+									<p:column headerText="Estado" styleClass="bg-dark text-white p-1 text-center" />
+									<p:column headerText="Hora del pedido"
+										styleClass="bg-dark text-white p-1 text-center" />
+									<p:column headerText="Precio" styleClass="bg-dark text-white pr-3 p-1 text-right" />
+								</p:columnGroup>
 
-							</f:facet>
-							
 								<p:column headerText="Orden">
 									<h:outputText value="#{pedido.id}" />
 								</p:column>
@@ -532,22 +539,23 @@
 
 								<p:column headerText="Estado">
 									<h:outputText
-											style="vertical-align: middle; margin-left: .5rem"
-											styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
-											value="#{pedido.estado.toString()}" />
+										style="vertical-align: middle; margin-left: .5rem"
+										styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
+										value="#{pedido.estado.toString()}" />
 								</p:column>
-								
+
 								<p:column headerText="Hora del pedido">
-									<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{HomeRestaurante.getFechaHora(pedido.fecha)}" />
+									<h:outputText
+										style="vertical-align: middle; margin-left: .5rem"
+										value="#{HomeRestaurante.getFechaHora(pedido.fecha)}" />
 								</p:column>
-								
-								<p:column headerText="Precio">
-								<h:outputText value="#{pedido.total}">
-									<f:convertNumber type="currency" currencySymbol="$U" />
-								</h:outputText>
-							</p:column>
-							
+
+								<p:column headerText="Precio" styleClass="text-right">
+									<h:outputText value="#{pedido.total}">
+										<f:convertNumber type="currency" currencySymbol="$U" />
+									</h:outputText>
+								</p:column>
+
 							</p:dataTable>
 						</div>
 					</div>
