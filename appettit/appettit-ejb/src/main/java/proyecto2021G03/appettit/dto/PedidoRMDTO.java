@@ -20,5 +20,6 @@ public class PedidoRMDTO {
     private Long idcli;
     private Long idrest;
     private Double cotizacion;
+    private DireccionRDTO direccion;
 }
 

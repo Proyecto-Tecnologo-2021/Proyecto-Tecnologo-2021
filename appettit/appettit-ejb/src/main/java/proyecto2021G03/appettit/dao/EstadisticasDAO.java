@@ -17,6 +17,7 @@ import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
+import proyecto2021G03.appettit.entity.ClasificacionPedido;
 import proyecto2021G03.appettit.entity.Pedido;
 
 @Stateless
@@ -87,10 +88,23 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 	}
 
 	@Override
-	public List<CalificacionPedidoDTO> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde,
+	public List<ClasificacionPedido> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde,
 			LocalDateTime fechaHasta, Integer top) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ClasificacionPedido> clasificacion = new ArrayList<ClasificacionPedido>();
+		
+		clasificacion = em.createQuery("select _c "
+				+ "from ClasificacionPedido "
+				+ "inner join _c.pedido _p "
+				+ "where _p.id_restaurante =:id "
+				+ "and fecha>= :fechaDesde "
+				+ "and fecha<= :fechaHasta ", ClasificacionPedido.class)
+				.setParameter("id", id)
+				 .setParameter("fechaDesde", fechaDesde)
+				 .setParameter("fechaHasta", fechaHasta)
+				 .setMaxResults(top)
+				 .getResultList();
+		
+		 return clasificacion;
 	}
 
 }

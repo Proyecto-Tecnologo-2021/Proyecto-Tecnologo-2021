@@ -142,6 +142,7 @@ public class PedidoRConverter extends AbstractConverter<Pedido, PedidoRDTO>{
                 .fecha(LocalDateTime.now())
                 .estado(pedido.getEstado())
                 .cotizacion(pedido.getCotizacion())
+                .direccion(direccionConverter.fromEntityToRDTO(pedido.getEntrega()))
                 .build();
         
                return pedidofinal;

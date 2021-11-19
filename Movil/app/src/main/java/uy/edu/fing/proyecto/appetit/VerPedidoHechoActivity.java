@@ -432,8 +432,6 @@ public class VerPedidoHechoActivity extends AppCompatActivity {
                 id_paypal = reader.nextString();
             } else if (name.equals("estado") && reader.peek() != JsonToken.NULL) {
                 estado = reader.nextString();
-            } else if (name.equals("estado") && reader.peek() != JsonToken.NULL) {
-                estado = reader.nextString();
             } else if (name.equals("menus") && reader.peek() != JsonToken.NULL) {
                 menus = readMenusArray(reader);
             } else if (name.equals("calificacion") && reader.peek() != JsonToken.NULL) {
