@@ -20,5 +20,10 @@ public class CalificacionPedidoDTO {
     private String comentario;
     private PedidoDTO pedido;
     private ClienteDTO cliente;
+    
+    
+    public Integer getGeneral() {
+    	return (this.rapidez + this.comida + this.servicio)/3;
+    }
 
 }

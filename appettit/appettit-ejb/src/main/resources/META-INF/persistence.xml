@@ -41,7 +41,7 @@
 			
 		
 				<property name="hibernate.format_sql" value="false" />
-           		<property name="hibernate.search.autoregister_listeners" value="false"/>
+           		<property name="hibernate.search.autoregister_listeners" value="true"/>
            		<property name="hibernate.use_sql_comments" value="false"/>
 				
 				<property name="hibernate.show_sql" value="false" />

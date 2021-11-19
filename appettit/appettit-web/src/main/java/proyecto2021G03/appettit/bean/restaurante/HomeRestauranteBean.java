@@ -26,6 +26,8 @@ import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
+import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DepartamentoDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
@@ -46,14 +48,17 @@ public class HomeRestauranteBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	List<DepartamentoDTO> departamentos;
 	List<PedidoDTO> pedidos;
+	List<CalificacionPedidoDTO> comentarios;
+	List<DashMenuDTO> tendencias;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
 	Long id_restaurante;
 	FacesContext facesContext;
 	HttpSession session;
+	LocalDateTime fechaHasta = LocalDateTime.now();;
+	LocalDateTime fechaDesde = fechaHasta.minusDays(7);   ;   //Minu
 	
 	
 	@EJB
@@ -68,7 +73,6 @@ public class HomeRestauranteBean implements Serializable{
 	@PostConstruct
 	public void init() {
 		try {
-			departamentos = departamentoService.listar();
 			
 			facesContext = FacesContext.getCurrentInstance();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
@@ -85,10 +89,9 @@ public class HomeRestauranteBean implements Serializable{
 				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				fechaHora = dateFormat.format(fechaBase);
 				
-				LocalDateTime fechaHasta = LocalDateTime.now();
-				LocalDateTime fechaDesde = fechaHasta.minusDays(7);   //Minu
-				
 				pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde, fechaHasta);
+				comentarios = estadisitciasSrv.listarCalificacionesPorRestaurante(restauranteDTO.getId(), fechaDesde, fechaHasta, 3); 
+				tendencias = estadisitciasSrv.listarTendenciasPorRestaurante(restauranteDTO.getId(), fechaDesde, fechaHasta, 4);
 				abierto = restauranteDTO.getAbierto();
 				
 			}
@@ -126,10 +129,20 @@ public class HomeRestauranteBean implements Serializable{
 
 	}
 	
-	public String getFechaHora(LocalDateTime fecha) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	public String getFechaHora(LocalDateTime fecha, String formato) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formato);
 		 
 		return fecha.format(formatter);
 		
 	}
+	
+	public String strFechaDesde() {
+		return getFechaHora(this.fechaDesde, "dd/MM/yyyy");
+	}
+	
+	public String strFechaHasta() {
+		return getFechaHora(this.fechaHasta, "dd/MM/yyyy");
+	}
+	
+
 }

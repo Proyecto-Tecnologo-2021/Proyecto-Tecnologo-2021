@@ -294,3 +294,8 @@ body .ui-rating .ui-rating-star-on a {
 body .ui-rating .ui-rating-star a:hover {
     color: #f2a22c!important;
 }
+
+body .card-comentarios {
+	max-height: 440px;
+    overflow-y: auto;
+}

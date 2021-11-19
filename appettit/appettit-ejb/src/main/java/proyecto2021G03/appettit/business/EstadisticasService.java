@@ -1,11 +1,16 @@
 package proyecto2021G03.appettit.business;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.jboss.logging.Logger;
+
+import proyecto2021G03.appettit.converter.CalificacionRConverter;
 import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.dao.EstadisticasDAO;
 import proyecto2021G03.appettit.dao.IEstadisticasDAO;
@@ -14,17 +19,28 @@ import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
+import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.FileManagement;
 
 @Stateless
 public class EstadisticasService implements IEstadisticasService {
+	
+	static Logger logger = Logger.getLogger(EstadisticasService.class);
 
 	@EJB
 	IEstadisticasDAO estadisticasDAO;
 	
 	@EJB
 	PedidoConverter pedidoConverter;
+	
+	@EJB
+	CalificacionRConverter calConverter;
+	
+	@EJB
+    IImagenService imgSrv;
 	
 
 	@Override
@@ -51,17 +67,52 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top)
 			throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
+		
+		try {
+			
+			Iterator<DashMenuDTO> it = estadisticasDAO.listarTendenciasPorRestaurante(id, fechaDesde, fechaHasta, top)
+					.iterator();
+			while (it.hasNext()) {
+				DashMenuDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());	
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				tendencias.add(men);
+
+			}
+			
+			return tendencias;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public List<CalificacionPedidoDTO> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde,
 			LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			return calConverter.fromEntity(estadisticasDAO.listarCalificacionesPorRestaurante(id, fechaDesde, fechaHasta, top));
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 }
