@@ -392,21 +392,37 @@
 
 							</div>
 							<div class="card-body" id="formaPagosPedidos">
+								
 								<h6 class="card-title mb-3 font-weight-bold">
 									<h:outputText value="#{HomeRestaurante.formapago.variacion}">
 										<f:convertNumber minFractionDigits="0" />
 									</h:outputText>
 									Pedidos
 								</h6>
-								<div>
+								<div class="card-img-bottom">
 									<p:graphicImage value="#{HomeRestaurante.chartFormaPago}"
 										styleClass="card-img-top" stream="false" />
 
 								</div>
-								<c:forEach var="fplegend" items="#{HomeRestaurante.formapago.data}">
-								<h:outputText value="#{fplegend.key}"/>	
-								</c:forEach>
 							</div>
+							<div class="card-footer bg-transparent">
+									<div class="container">
+										<c:forEach var="fplegend"
+											items="#{HomeRestaurante.formapago.data}">
+
+											<div class="row">
+												<div class="col-xl-2 col-lg-2 col-md-2" style="#{HomeRestaurante.styleLabel('fp', fplegend.key)}">
+													<h:outputText value="#{fplegend.value}">
+														<f:convertNumber minFractionDigits="0" />
+													</h:outputText>
+												</div>
+												<div class="col">
+													<h:outputText value="#{fplegend.key}" />
+												</div>
+											</div>
+										</c:forEach>
+									</div>
+								</div>
 						</div>
 					</div>
 					<div

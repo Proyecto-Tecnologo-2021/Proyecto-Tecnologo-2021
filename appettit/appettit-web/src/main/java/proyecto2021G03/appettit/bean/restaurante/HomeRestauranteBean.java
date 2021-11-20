@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +24,7 @@ import org.jboss.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
-import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.RingPlot;
-import org.jfree.chart.title.LegendTitle;
-import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.chart.util.UnitType;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.primefaces.model.DefaultStreamedContent;
@@ -69,7 +64,6 @@ public class HomeRestauranteBean implements Serializable {
 	List<DashMenuDTO> tendencias;
 	List<DashMenuDTO> recientes;
 	DashTotalDTO formapago;
-	Integer formapagoPedidos;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
@@ -77,9 +71,12 @@ public class HomeRestauranteBean implements Serializable {
 	FacesContext facesContext;
 	HttpSession session;
 	LocalDateTime fechaHasta = LocalDateTime.now();;
-	LocalDateTime fechaDesde = fechaHasta.minusDays(7);; // Minu 0, 128, 55
+	LocalDateTime fechaDesde = fechaHasta.minusDays(7);; 
 
-	Paint[] fpColores = new Paint[] { new Color(0, 128, 55), new Color(242, 162, 44), };
+	private Paint[] fpColores = new Paint[] { new Color(0, 128, 55), new Color(242, 162, 44), };
+	private String[] fpHexaColores = new String[] { "#008037", "#F2A22C", };
+	
+	private Map<String, String> fpSytleLabel;
 
 	@EJB
 	IDepartamentoService departamentoService;
@@ -96,8 +93,7 @@ public class HomeRestauranteBean implements Serializable {
 
 			facesContext = FacesContext.getCurrentInstance();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
-			formapagoPedidos = 0;
-
+			
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
@@ -109,6 +105,7 @@ public class HomeRestauranteBean implements Serializable {
 				Date fechaBase = new Date();
 				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				fechaHora = dateFormat.format(fechaBase);
+				fpSytleLabel = new HashMap<String, String>();
 
 				pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
 						fechaHasta);
@@ -174,42 +171,25 @@ public class HomeRestauranteBean implements Serializable {
 	@SuppressWarnings("rawtypes")
 	public StreamedContent getChartFormaPago() {
 		try {
+			
 			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
 				try {
-					// JFreeChart jfreechart = ChartFactory.createPieChart("Cities",
-					// createRingDataset(formapago), true, true, false);
-
 					PieDataset dataset = createRingDataset(formapago.getData());
-
 					JFreeChart chart = ChartFactory.createRingChart("", dataset, false, true, false);
-
 					RingPlot pie = (RingPlot) chart.getPlot();
 
 					pie.setBackgroundPaint(Color.WHITE);
 					pie.setOutlineVisible(false);
+					pie.setLabelGenerator(null);
+					pie.setSectionPaint(dataset.getKey(0), fpColores[0]);
+					pie.setSectionPaint(dataset.getKey(1), fpColores[1]);
+					pie.setSectionDepth(0.33);
+					pie.setSectionOutlinesVisible(false);
 					pie.setShadowPaint(null);
-
-					for (int i = 0; i < dataset.getItemCount(); i++) {
-						pie.setSectionPaint(dataset.getKey(i), fpColores[i]);
-					}
 					
+					fpSytleLabel.put((String) dataset.getKey(0), "color:#fff;background:" + fpHexaColores[0] );
+					fpSytleLabel.put((String) dataset.getKey(1), "color:#fff;background:" + fpHexaColores[1] );
 					
-			        pie.setBackgroundPaint(Color.WHITE);
-			        pie.setOutlineVisible(false);
-			        pie.setShadowPaint(null);
-			        pie.setSimpleLabels(true);
-			        pie.setLabelGenerator(new StandardPieSectionLabelGenerator("{1}"));
-			        pie.setSimpleLabelOffset(new RectangleInsets(
-			            UnitType.RELATIVE, 0.09, 0.09, 0.09, 0.09));
-			        pie.setLabelBackgroundPaint(Color.WHITE);
-			        pie.setLabelOutlinePaint(null);
-			        pie.setLabelShadowPaint(null);
-			        pie.setSectionDepth(0.33);
-			        pie.setSectionOutlinesVisible(false);
-			        pie.setSeparatorsVisible(false);
-			        pie.setIgnoreZeroValues(true);
-					
-
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -224,7 +204,7 @@ public class HomeRestauranteBean implements Serializable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private PieDataset createRingDataset(Map<String, Double> datos) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-
+		
 		for (Map.Entry<String, Double> entry : datos.entrySet()) {
 			//System.out.println("clave=" + entry.getKey() + ", valor=" + entry.getValue());
 			dataset.setValue(entry.getKey(), entry.getValue());
@@ -232,4 +212,14 @@ public class HomeRestauranteBean implements Serializable {
 
 		return dataset;
 	}
+	
+	public String styleLabel(String tipo, String key) {
+		
+		if (tipo.equalsIgnoreCase("fp")) {
+			return fpSytleLabel.get(key);
+		}
+		
+		return null;
+	}
+	
 }
