@@ -625,6 +625,7 @@ public class VerPedidoActivity extends AppCompatActivity {
                     //Se vacía el pedido
                     dtPedido.setMenus(new ArrayList<>());
                     dtPedido.setIdrest(null);
+                    dtPedido.setId_paypal(null);
 
                     AlertDialog dialog = new AlertDialog.Builder(VerPedidoActivity.this).create();
                     dialog.setTitle(R.string.alert_t_info);

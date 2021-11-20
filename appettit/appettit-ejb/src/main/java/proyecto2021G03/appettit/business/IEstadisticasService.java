@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.business;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
@@ -16,4 +17,7 @@ public interface IEstadisticasService {
 	public List<DashTotalDTO> listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta ) throws AppettitException;
 	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top ) throws AppettitException;
 	public List<CalificacionPedidoDTO> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top ) throws AppettitException;
+	public List<DashMenuDTO> listarPediosRecientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top ) throws AppettitException;
+	public DashTotalDTO listarFormaPagoPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException;
+	
 }

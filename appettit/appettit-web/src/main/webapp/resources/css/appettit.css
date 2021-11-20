@@ -299,3 +299,11 @@ body .card-comentarios {
 	max-height: 440px;
     overflow-y: auto;
 }
+
+.img-table-circle {
+    width: 3rem !important;
+    height: 3rem !important;
+    border-radius: 50% !important;
+    border: 1px solid #f2a22c !important;
+    margin: 5px !important;
+}

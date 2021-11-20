@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.dao;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
@@ -15,5 +16,6 @@ public interface IEstadisticasDAO {
 	public List<DashTotalDTO> listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta );
 	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top);
 	public List<ClasificacionPedido> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top );
-
+	public List<DashMenuDTO> listarPediosRecientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top);
+	public DashTotalDTO listarFormaPagoPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }

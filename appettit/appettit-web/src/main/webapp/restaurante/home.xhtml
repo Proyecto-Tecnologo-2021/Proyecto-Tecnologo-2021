@@ -325,6 +325,7 @@
 					<div
 						class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
 						<div class="card">
+
 							<div class="card-header">
 								<div class="row">
 									<div class="col-md-6">
@@ -333,55 +334,36 @@
 
 									<div class="col-md-6 justify-content-md-end">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											<button type="button" class="btn btn-primary">Ver
-												todos</button>
+											<a href="/appettit-web/restaurante/pedidos.xhtml"
+												class="btn btn-primary" role="button" aria-pressed="true">Ver
+												todos</a>
 										</div>
 
 									</div>
 								</div>
 							</div>
 							<div class="card-body">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Detalle</th>
-											<th scope="col">Precio</th>
-											<th scope="col">C&oacute;digo</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/pizza.jpg" alt="">
-													Pizza</img></td>
-											<td>$ 180</td>
-											<td>1234</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/french-fries.jpg"
-												alt=""> Papas fr&iacute;tas</img></td>
-											<td>$ 90</td>
-											<td>1235</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/cereals.jpg" alt="">
-													Desayuno de cereales</img></td>
-											<td>$ 70</td>
-											<td>1236</td>
-										</tr>
-										<tr>
-											<td><img
-												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt=""> Chivito</img></td>
-											<td>$ 180</td>
-											<td>1231</td>
-										</tr>
-									</tbody>
+								<p:dataTable var="reciente" styleClass="table table-hover"
+									value="#{HomeRestaurante.recientes}">
 
-								</table>
+									<p:column headerText="Detalle" width="50%">
+										<p:graphicImage value="#{reciente.imagen.imagen}"
+											styleClass="img-table-circle" stream="false" />
+										<h:outputText value="#{reciente.nombre}" />
+									</p:column>
+									<p:column headerText="Precio" width="20%"
+										styleClass="text-right">
+										<h:outputText value="#{reciente.precio}">
+											<f:convertNumber type="currency" currencySymbol="$U" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="C&oacute;digo" width="20%"
+										styleClass="text-right">
+										<h:outputText value="#{reciente.id}" />
+									</p:column>
 
+
+								</p:dataTable>
 							</div>
 						</div>
 					</div>
@@ -409,82 +391,21 @@
 								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
 
 							</div>
-							<div class="card-body">
-								<h6 class="card-title mb-3 font-weight-bold">153 pedidos</h6>
-								<div id="canvas-holderE">
-									<canvas id="chart_CardE" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+							<div class="card-body" id="formaPagosPedidos">
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.formapago.variacion}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									Pedidos
+								</h6>
+								<div>
+									<p:graphicImage value="#{HomeRestaurante.chartFormaPago}"
+										styleClass="card-img-top" stream="false" />
 
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title mb-3">Tendencias</h5>
-							</div>
-							<div class="card-body">
-								<div class="row mb-3">
-									<c:forEach var="tendencia"
-										items="#{HomeRestaurante.tendencias}">
-										<div
-											class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-											<p:graphicImage value="#{tendencia.imagen.imagen}"
-												styleClass="card-img-top" stream="false" />
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">
-														<h:outputText value="#{tendencia.nombre}" />
-													</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">
-														<h:outputText value="#{tendencia.precio}">
-															<f:convertNumber type="currency" currencySymbol="$U" />
-														</h:outputText>
-													</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">
-														<h:outputText value="#{tendencia.ordenes}" />
-													</h6>
-													<h6 class="card-subtitle mb-2 text-danger">
-														<h:outputText value="#{tendencia.total}">
-															<f:convertNumber type="currency" currencySymbol="$U" />
-														</h:outputText>
-													</h6>
-												</div>
-											</div>
-										</div>
-									</c:forEach>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/pizza.jpg"
-												alt="pizza"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Pizza</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$1800</h6>
-												</div>
-											</div>
-										</div>
-									</div>
 								</div>
+								<c:forEach var="fplegend" items="#{HomeRestaurante.formapago.data}">
+								<h:outputText value="#{fplegend.key}"/>	
+								</c:forEach>
 							</div>
 						</div>
 					</div>
@@ -497,7 +418,7 @@
 									<div class="row">
 										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
-												<h5>Pedidos</h5>
+												<h5>Pedidos en curso</h5>
 											</div>
 										</div>
 									</div>
@@ -549,6 +470,56 @@
 								</p:column>
 
 							</p:dataTable>
+						</div>
+					</div>
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Tendencias</h5>
+							</div>
+							<div class="card-body">
+								<div class="row mb-3">
+									<c:forEach var="tendencia"
+										items="#{HomeRestaurante.tendencias}">
+										<div
+											class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+											<div class="card">
+												<p:graphicImage value="#{tendencia.imagen.imagen}"
+													styleClass="card-img-top" stream="false" />
+												<div class="card-body"></div>
+												<div class="card-footer bg-transparent">
+													<div class="d-flex flex-row">
+														<h5 class="mr-auto card-title mb-3 pt-1">
+															<h:outputText value="#{tendencia.nombre}" />
+														</h5>
+														<h5 class="card-title mb-3 pt-1 text-success">
+															<h:outputText value="#{tendencia.precio}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h5>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+														<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.ordenes}" />
+														</h6>
+														<h6 class="card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.total}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h6>
+													</div>
+												</div>
+											</div>
+										</div>
+									</c:forEach>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div
