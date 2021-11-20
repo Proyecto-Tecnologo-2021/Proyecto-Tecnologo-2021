@@ -52,6 +52,15 @@ public class UsuarioDAO implements IUsuarioDAO {
 		return consulta.getResultList().size() != 0;
 	}
 
+	@Override
+	public Boolean existeCorreo(String correo) {
+		Query consulta = em
+				.createQuery("SELECT _usu FROM Usuario as _usu where correo = :correo");
+		consulta.setParameter("correo", correo);
+
+		return consulta.getResultList().size() != 0;
+	}
+
 	/* ADMINISTRADOR */
 
 	@Override

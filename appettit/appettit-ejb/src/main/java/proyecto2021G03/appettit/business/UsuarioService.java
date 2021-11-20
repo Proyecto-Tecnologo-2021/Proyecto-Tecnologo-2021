@@ -717,6 +717,35 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 
+	@Override
+	public String loginGoogle(String correo, String nombre) throws AppettitException {
+		Boolean exist = existeCorreoUsuario(correo);
+
+		if (!exist) {
+			//SI NO EXISTE LE CREO UN USUARIO
+			ClienteCrearDTO nuevoCliente = new ClienteCrearDTO();
+			nuevoCliente.setCorreo(correo);
+			nuevoCliente.setNombre(nombre);
+			nuevoCliente.setUsername(correo);
+			nuevoCliente.setPassword("");
+			nuevoCliente.setTelefono(correo);
+
+			try {
+				crearCliente(nuevoCliente);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(correo);
+		Usuario usuario = usuarios_correo.get(0);
+		if (usuario instanceof Cliente) {
+			String token = crearJsonWebToken(usuario);
+			return token;
+		} else {
+			throw new AppettitException("Usuario no habilitado.", AppettitException.DATOS_INCORRECTOS);
+		}
+	}
+
 	/* Función auxiliar para generar un JWT */
 	public String crearJsonWebToken(Usuario usuario) {
 		Date ahora = new Date();
@@ -1050,7 +1079,11 @@ public class UsuarioService implements IUsuarioService {
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
+	}
 
+	@Override
+	public Boolean existeCorreoUsuario(String correo){
+		return usrDAO.existeCorreo(correo);
 	}
 	
 }

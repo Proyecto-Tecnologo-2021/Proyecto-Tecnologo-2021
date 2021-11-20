@@ -168,6 +168,24 @@ public class UsuarioREST {
 			}
 		}
 	}
+
+	@POST
+	@Path("/loginGoogle")
+	public Response loginGoogle(LoginGoogleDTO loginGoogle) {
+		RespuestaREST<String> respuesta = null;
+		try {
+			String token = uService.loginGoogle(loginGoogle.getCorreo(), loginGoogle.getNombre());
+			respuesta = new RespuestaREST<String>(true, "Inicio de sesión correcto.", token);
+			return Response.ok(respuesta).build();
+		} catch (AppettitException e) {
+			respuesta = new RespuestaREST<String>(false, e.getLocalizedMessage());
+			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+			} else {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+			}
+		}
+	}
 	
 	@POST
 	@Path("/loginMobile")

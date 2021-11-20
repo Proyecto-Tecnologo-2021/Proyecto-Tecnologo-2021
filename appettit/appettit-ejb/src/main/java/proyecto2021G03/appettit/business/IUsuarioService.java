@@ -19,6 +19,7 @@ public interface IUsuarioService {
 	public String login(LoginDTO loginDTO) throws AppettitException;
 	public ClienteMDTO loginMobile(LoginDTO loginDTO) throws AppettitException;
 	public ClienteMDTO loginFireBase(LoginDTO loginDTO) throws AppettitException;
+	String loginGoogle(String correo, String nombre) throws AppettitException;
 	
 	/*ADMINISTRADOR*/
 	public AdministradorDTO crear(AdministradorDTO administradorDTO) throws AppettitException;
@@ -62,6 +63,7 @@ public interface IUsuarioService {
 	void cambioContraseña(String password, Long clientId) throws AppettitException;
 	void setFirebaseTokenWeb(String webToken, Long clientId) throws AppettitException;
 	ClienteDTO buscarPorCorreoCliente(String correo) throws AppettitException;
+	Boolean existeCorreoUsuario(String correo);
 	
 	
 

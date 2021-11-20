@@ -24,6 +24,7 @@ public interface IUsuarioDAO {
 	public List<Usuario> buscarPorTelefono(String telefono);
 	
 	public Boolean existeCorreoTelefono(String correo, String telefono);
+	Boolean existeCorreo(String correo);
 
 	/*ADMINISTRADOR*/
 	public Administrador buscarAdministradorPorId(Long id);
