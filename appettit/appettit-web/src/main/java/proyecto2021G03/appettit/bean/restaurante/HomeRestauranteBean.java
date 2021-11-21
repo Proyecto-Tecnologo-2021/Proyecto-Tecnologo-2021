@@ -27,6 +27,10 @@ import org.jboss.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.RingPlot;
@@ -80,6 +84,7 @@ public class HomeRestauranteBean implements Serializable {
 	DashTotalDTO clientes;
 	DashTotalDTO ordenes;
 	DashTotalDTO pedidosPromedio;
+	DashTotalDTO rapidez;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
@@ -147,6 +152,8 @@ public class HomeRestauranteBean implements Serializable {
 						fechaHasta, 7);
 				pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorRestaurante(restauranteDTO.getId(), fechaDesde,
 						fechaHasta, 7);
+				rapidez = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, "rapidez"); 
 				abierto = restauranteDTO.getAbierto();
 
 			}
@@ -460,6 +467,53 @@ public class HomeRestauranteBean implements Serializable {
 		}
 	}
 
+	public StreamedContent getChartRapidezTotales() {
+			return getChartCalificacionTotales(rapidez.getData());
+	}
+	
+	
+	
+	private StreamedContent getChartCalificacionTotales(Map<String, Double> datos) {
+		try {
+			
+			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
+				try {
+					CategoryDataset dataset = createCalificacionDataset(sortByKey(datos));
+					
+					final JFreeChart chart = ChartFactory.createBarChart(
+				            "",      // chart title
+				            "",                // domain axis label
+				            "",                   // range axis label
+				            dataset,                   // data
+				            PlotOrientation.HORIZONTAL,  // orientation
+				            false,                      // include legend
+				            true,
+				            false
+				        );
+					
+					final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+					plot.setForegroundAlpha(0.5f);
+			        plot.setBackgroundPaint(Color.WHITE);
+			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44));
+					
+					NumberAxis vn = (NumberAxis) plot.getRangeAxis();   
+					vn.setTickUnit(new NumberTickUnit(10d)); 
+					vn.setRange(0D, 5.0);
+										
+					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private PieDataset createRingDataset(Map<String, Double> datos) {
@@ -478,8 +532,26 @@ public class HomeRestauranteBean implements Serializable {
 	    String series = "ventas";
 	    
         for (Map.Entry<String, Double> entry : datos.entrySet()) {
-			logger.info("entry.getValue(): " + entry.getKey() + ":" + entry.getValue());
 			dataset.addValue(entry.getValue(), series, entry.getKey());
+		}
+
+		
+		return dataset;
+	}
+
+	private DefaultCategoryDataset createCalificacionDataset(Map<String, Double> datos) {
+		
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+	    
+        for (Map.Entry<String, Double> entry : datos.entrySet()) {
+        	if(entry.getKey().equalsIgnoreCase("1")) {
+        		dataset.addValue(entry.getValue(), "S1", entry.getKey());	
+        		dataset.addValue(0, "S1", "2");
+        		dataset.addValue(0, "S1", "3");
+        		dataset.addValue(0, "S1", "4");
+        		dataset.addValue(0, "S1", "5");
+        	}
+			
 		}
 
 		

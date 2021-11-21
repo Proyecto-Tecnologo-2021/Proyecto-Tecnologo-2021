@@ -225,7 +225,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashReclamoDTO> listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
+	public DashTotalDTO listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
 			LocalDateTime fechaHasta, String calificacion) throws AppettitException {
 		try {
 			return estadisticasDAO.listarCalificacionesDetPorRestaurante(id, fechaDesde, fechaHasta, calificacion);

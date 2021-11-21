@@ -709,10 +709,41 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		return new DashTotalDTO(valores, actual, anterior);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<DashReclamoDTO> listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
+	public DashTotalDTO listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
 			LocalDateTime fechaHasta, String calificacion) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "c.cla, "
+						+ "COUNT(cp." + calificacion + ") "
+					+ "from clasificacionespedidos cp "
+					+ "JOIN pedidos p ON p.id = cp.id_pedido "
+					+ "	            and p.id_restaurante=" + id.toString()
+					+ "	            and date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	            and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "RIGHT JOIN generate_series(1, 5, 1) AS c(cla) ON c.cla = cp." + calificacion
+					+ " group by c.cla "
+					+ "order by c.cla "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());
+			
+			valores.put(line[0].toString(), cantidad);
+			actual =  actual + Double.valueOf(line[1].toString());
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
 	}
 }

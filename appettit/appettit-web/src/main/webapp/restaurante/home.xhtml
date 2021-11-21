@@ -119,11 +119,12 @@
 
 								<h5 class="card-title mb-3 font-weight-bold">
 									<h:outputText
-										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez} en" />
-									30 calificaciones
+										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez} en #{HomeRestaurante.rapidez.actual} " />
+									calificaciones
 								</h5>
-								<div id="canvas-holderCalA">
-									<canvas id="chart_CalA" />
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartRapidezTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
