@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,6 +16,7 @@ import proyecto2021G03.appettit.dao.IEstadisticasDAO;
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
+import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
@@ -58,10 +58,13 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashTotalDTO> listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+	public DashTotalDTO listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo)
 			throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarVentasPorRestaurante(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
@@ -160,5 +163,34 @@ public class EstadisticasService implements IEstadisticasService {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
+
+	@Override
+	public DashTotalDTO listarReclamosTPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarReclamosTPorRestaurante(id, fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public DashTotalDTO listarEstadoPedidosPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarEstadoPedidosPorRestaurante(id, fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashReclamoDTO> listarReclamosPorRestaurante(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta) throws AppettitException {
+		try {
+			return estadisticasDAO.listarReclamosPorRestaurante(id, fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}	}
 
 }

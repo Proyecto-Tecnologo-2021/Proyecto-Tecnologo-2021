@@ -19,6 +19,7 @@ import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
+import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
 import proyecto2021G03.appettit.dto.TipoPago;
@@ -79,10 +80,81 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<DashTotalDTO> listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
-		// TODO Auto-generated method stub
-		return null;
+	public DashTotalDTO listarVentasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case SUM(p.total) is null "
+						+ "	when true then 0 "
+						+ "	else SUM(p.total) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)>= to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case SUM(p.total) is null "
+						+ "	when true then 0 "
+						+ "	else SUM(p.total) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)>= to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'd'||date_part('day',aux.d), "
+						+ "	SUM(CASE p.total IS NULL "
+						   + "	when true THEN 0 "
+						   + "	else p.total "
+						   + "	end) "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+							+ "									and p.id_restaurante=" + id.toString()
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+		
+		
+		
+		
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -288,7 +360,124 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		}
 		
 		
-		return new DashTotalDTO(valores, total);
+		return new DashTotalDTO(valores, total, 0D);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarReclamosTPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double total = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "'R' AS tipo, "
+						+ "Count(r.id) cantidad "
+						+ "from pedidos p "
+						+ "join reclamos r on r.id = p.id_reclamo "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' and p.id_restaurante = " + id.toString()
+						+ " UNION "
+						+ "select "
+						+ "'T' AS tipo, "
+						+ "Count(p.id) cantidad "
+						+ "from pedidos p "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' and p.id_restaurante = " + id.toString()
+						+ " ORDER BY tipo");
+		
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad =  line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			valores.put(line[0].toString(), cantidad);
+			if(line[0].toString().equalsIgnoreCase("T"))	
+			total = line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+		}
+		
+		
+		return new DashTotalDTO(valores, total, 0D);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarEstadoPedidosPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double total = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	p.estado, "
+						+ "	Count(p.estado) cantidad "
+						+ "from pedidos p "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' and p.id_restaurante = " + id.toString()
+						+ "GROUP BY p.estado "
+						+ "ORDER BY cantidad "
+						+ "");
+		
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			EstadoPedido ep = EstadoPedido.values()[Integer.valueOf(line[0].toString())]; 
+			Double cantidad =  line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			valores.put(ep.toString(), cantidad);
+			total = total + cantidad;
+		}
+		
+		
+		return new DashTotalDTO(valores, total, 0D);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashReclamoDTO> listarReclamosPorRestaurante(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta) {
+		List<DashReclamoDTO> reclamos = new ArrayList<DashReclamoDTO>();
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "p.id, "
+						+ "r.motivo, "
+						+ "r.detalles, "
+						+ "to_char(r.fecha, 'yyyy-MM-dd HH:mm') AS fecha, "
+						+ "u.nombre "
+						+ "from reclamos r "
+						+ "join pedidos p on p.id_reclamo=r.id "
+						+ "join usuario u on u.id=p.id_cliente "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' and p.id_restaurante = " + id.toString()
+						+ "ORDER BY fecha desc "
+						+ "");
+		
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Long idq =  line[0] instanceof BigInteger ? ((BigInteger) line[0]).longValue(): 0L;
+			
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			LocalDateTime fecha = LocalDateTime.parse(line[3].toString(), formatter);
+
+
+			reclamos.add(new DashReclamoDTO(idq, line[1].toString(), line[2].toString(), fecha, line[4].toString()));
+		}
+		
+		return reclamos;
 	}
 }

@@ -1,6 +1,6 @@
 package proyecto2021G03.appettit.dto;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DashTotalDTO {
+public class DashReclamoDTO {
+	private Long id;
+	private String motivo;
+	private String detalles;
+	private LocalDateTime fecha;
+	private String cliente;
 
-	private Map<String, Double> data;
-	private Double actual;
-	private Double anterior;
 }
