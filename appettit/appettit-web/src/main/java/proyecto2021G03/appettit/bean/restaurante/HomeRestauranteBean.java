@@ -7,8 +7,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +32,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.RingPlot;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DatasetUtils;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.primefaces.model.DefaultStreamedContent;
@@ -75,6 +77,9 @@ public class HomeRestauranteBean implements Serializable {
 	DashTotalDTO reclamos;
 	DashTotalDTO estados;
 	DashTotalDTO ventas;
+	DashTotalDTO clientes;
+	DashTotalDTO ordenes;
+	DashTotalDTO pedidosPromedio;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
@@ -136,6 +141,12 @@ public class HomeRestauranteBean implements Serializable {
 						fechaHasta);
 				ventas = estadisitciasSrv.listarVentasPorRestaurante(restauranteDTO.getId(), fechaDesde,
 						fechaHasta, 7); 
+				clientes = estadisitciasSrv.listarClientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, 7);
+				ordenes = estadisitciasSrv.listarOrdenesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, 7);
+				pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, 7);
 				abierto = restauranteDTO.getAbierto();
 
 			}
@@ -297,13 +308,12 @@ public class HomeRestauranteBean implements Serializable {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public StreamedContent getChartVentasTotales() {
 		try {
 			
 			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
 				try {
-					CategoryDataset dataset = createDataset(ventas.getData());
+					CategoryDataset dataset = createDataset(sortByKey(ventas.getData()));
 					
 					
 					final JFreeChart chart = ChartFactory.createStackedAreaChart(
@@ -322,7 +332,121 @@ public class HomeRestauranteBean implements Serializable {
 			        plot.setBackgroundPaint(Color.WHITE);
 			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44));
 					
+										
+					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public StreamedContent getChartClientesTotales() {
+		try {
+			
+			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
+				try {
+					CategoryDataset dataset = createDataset(sortByKey(clientes.getData()));
+					
+					
+					final JFreeChart chart = ChartFactory.createStackedAreaChart(
+				            "",      // chart title
+				            "",                // domain axis label
+				            "",                   // range axis label
+				            dataset,                   // data
+				            PlotOrientation.VERTICAL,  // orientation
+				            false,                      // include legend
+				            true,
+				            false
+				        );
+					
+					final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+					plot.setForegroundAlpha(0.5f);
+			        plot.setBackgroundPaint(Color.WHITE);
+			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44, 250));
+					
+										
+					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public StreamedContent getChartOrdenesTotales() {
+		try {
+			
+			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
+				try {
+					CategoryDataset dataset = createDataset(sortByKey(ordenes.getData()));
+					
+					
+					final JFreeChart chart = ChartFactory.createStackedAreaChart(
+				            "",      // chart title
+				            "",                // domain axis label
+				            "",                   // range axis label
+				            dataset,                   // data
+				            PlotOrientation.VERTICAL,  // orientation
+				            false,                      // include legend
+				            true,
+				            false
+				        );
+					
+					final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+					plot.setForegroundAlpha(0.5f);
+			        plot.setBackgroundPaint(Color.WHITE);
+			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44));
+					
+										
+					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public StreamedContent getChartOrdenesPromedioTotales() {
+		try {
+			
+			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
+				try {
+					CategoryDataset dataset = createDataset(sortByKey(pedidosPromedio.getData()));
+					
+					
+					final JFreeChart chart = ChartFactory.createStackedAreaChart(
+				            "",      // chart title
+				            "",                // domain axis label
+				            "",                   // range axis label
+				            dataset,                   // data
+				            PlotOrientation.VERTICAL,  // orientation
+				            false,                      // include legend
+				            true,
+				            false
+				        );
+					
+					final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+					plot.setForegroundAlpha(0.5f);
+			        plot.setBackgroundPaint(Color.WHITE);
+			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44));
 					
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
@@ -358,7 +482,6 @@ public class HomeRestauranteBean implements Serializable {
 			dataset.addValue(entry.getValue(), series, entry.getKey());
 		}
 
-		//CategoryDataset dataset = DatasetUtils.createCategoryDataset("", "", data);
 		
 		return dataset;
 	}
@@ -391,4 +514,20 @@ public class HomeRestauranteBean implements Serializable {
 		return null;
 	}
 	
+	// function to sort hashmap by keys
+	// https://www.geeksforgeeks.org/sorting-hashmap-according-key-value-java/
+    public static Map<String, Double> sortByKey(Map<String, Double> hm) {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Double> > list = new LinkedList<Map.Entry<String, Double> >(hm.entrySet());
+ 
+        // Sort the list using lambda expression
+        Collections.sort(list,(i1, i2) -> i1.getKey().compareTo(i2.getKey()));
+ 
+        // put data from sorted list to hashmap
+        HashMap<String, Double> temp = new LinkedHashMap<String, Double>();
+        for (Map.Entry<String, Double> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
 }

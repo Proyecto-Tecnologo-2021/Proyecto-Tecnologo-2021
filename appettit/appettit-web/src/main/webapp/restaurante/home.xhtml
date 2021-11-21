@@ -229,7 +229,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.ventas.actual-HomeRestaurante.ventas.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.ventas.actual-HomeRestaurante.ventas.anterior)/HomeRestaurante.ventas.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -237,11 +250,11 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">
+								<h6 class="card-title mb-3 font-weight-bold">
 									<h:outputText value="#{HomeRestaurante.ventas.actual}">
 										<f:convertNumber type="currency" currencySymbol="$U" />
 									</h:outputText>
-								</h5>
+								</h6>
 								<div class="card-img-bottom">
 									<p:graphicImage value="#{HomeRestaurante.chartVentasTotales}"
 										styleClass="card-img-top" stream="false" />
@@ -261,7 +274,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-down"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.clientes.actual-HomeRestaurante.clientes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.clientes.actual-HomeRestaurante.clientes.anterior)/HomeRestaurante.clientes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -269,15 +295,21 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">189</h5>
-								<div id="canvas-holderB">
-									<canvas id="chart_CardB" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.clientes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartClientesTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
+
 					</div>
 					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
@@ -287,7 +319,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.clientes.actual-HomeRestaurante.ordenes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.ordenes.actual-HomeRestaurante.ordenes.anterior)/HomeRestaurante.ordenes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -295,35 +340,59 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">153</h5>
-								<div id="canvas-holderC">
-									<canvas id="chart_CardC" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.ordenes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartOrdenesTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
-
 					</div>
+
 					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
 									<div class="col-md-8">
-										<h6 class="card-title mb-3 pt-1">Promedio de
-											&oacute;rdenes</h6>
+										<h6 class="card-title mb-3 pt-1">Promedio de &oacute;rdenes</h6>
 									</div>
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 3.0%</i>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.pedidosPromedio.actual/7-HomeRestaurante.pedidosPromedio.anterior/7>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.pedidosPromedio.actual/7-HomeRestaurante.pedidosPromedio.anterior/7)/(HomeRestaurante.pedidosPromedio.actual/7)}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
 								</div>
-
-								<h5 class="card-title mb-3 font-weight-bold">21</h5>
-								<div id="canvas-holderD">
-									<canvas id="chart_CardD" />
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.pedidosPromedio.actual/7}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartOrdenesPromedioTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>

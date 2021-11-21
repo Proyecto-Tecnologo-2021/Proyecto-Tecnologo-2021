@@ -191,6 +191,47 @@ public class EstadisticasService implements IEstadisticasService {
 			return estadisticasDAO.listarReclamosPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-		}	}
+		}
+	}
+
+	@Override
+	public DashTotalDTO listarClientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		try {
+			return estadisticasDAO.listarClientesPorRestaurante(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public DashTotalDTO listarOrdenesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		try {
+			return estadisticasDAO.listarOrdenesPorRestaurante(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public DashTotalDTO listarOrdenesPromedioPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		try {
+			return estadisticasDAO.listarOrdenesPromedioPorRestaurante(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashReclamoDTO> listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta, String calificacion) throws AppettitException {
+		try {
+			return estadisticasDAO.listarCalificacionesDetPorRestaurante(id, fechaDesde, fechaHasta, calificacion);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
 
 }

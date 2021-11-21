@@ -58,7 +58,7 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		
 		 pedidos =  em.createQuery("SELECT p FROM Pedido p "
 		 		+ "where id_restaurante=:id "
-		 		+ "and fecha>= :fechaDesde "
+		 		+ "and fecha> :fechaDesde "
 		 		+ "and fecha<= :fechaHasta "
 		 		+ "and estado not in (:rechazado, :entregado, :cancelado) "
 		 		+ "order by fecha desc", Pedido.class)
@@ -95,7 +95,7 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 						+ "	else SUM(p.total) " 
 						+ "	end total "
 					+ "	from pedidos p "
-					+ "	WHERE date(p.fecha)>= to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
 					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
 					+ "	and p.estado = 4 "
 					+ " and p.id_restaurante=" + id.toString()
@@ -107,13 +107,16 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 						+ "	else SUM(p.total) "
 						+ "	end total "
 					+ "	from pedidos p "
-					+ "	WHERE date(p.fecha)>= to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
 					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
 					+ "	and p.estado = 4 "
 					+ " and p.id_restaurante=" + id.toString()
 					+ "	UNION "
 					+ "	Select " 
-						+ "	'd'||date_part('day',aux.d), "
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
 						+ "	SUM(CASE p.total IS NULL "
 						   + "	when true THEN 0 "
 						   + "	else p.total "
@@ -121,7 +124,7 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 					+ "	from pedidos p "
 					+ "	right join "
 					+ "	generate_series "
-					        + "	( to_date('" + getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
 					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
 					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
 							+ "									and p.estado = 4 "
@@ -151,10 +154,6 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		
 		return new DashTotalDTO(valores, actual, anterior);
 		
-		
-		
-		
-		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -176,9 +175,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 							+ "JOIN pedidos p ON p.id = pm.pedido_id "
 							+ "JOIN menus m ON m.id = pm.menus_id "
 							+ "JOIN usuario u ON u.id = m.id_restaurante "
-							+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
-							+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
-							+ "' and p.id_restaurante = " + id.toString()
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.id_restaurante = " + id.toString()
 							+ " and p.pago = true "
 							+ "and p.estado = 4 "
 							+ "GROUP BY "
@@ -199,9 +198,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 							+ "JOIN pedidos p ON p.id = pp.pedido_id "
 							+ "JOIN promociones pr ON pr.id = pp.promociones_id "
 							+ "JOIN usuario u ON u.id = pr.id_restaurante "
-							+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
-							+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
-							+ "' and p.id_restaurante = " + id.toString()
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.id_restaurante = " + id.toString()
 							+ " and p.pago= true "
 							+ "and p.estado = 4 "
 							+ "GROUP BY "
@@ -280,9 +279,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 							+ "JOIN pedidos p ON p.id = pm.pedido_id "
 							+ "JOIN menus m ON m.id = pm.menus_id "
 							+ "JOIN usuario u ON u.id = m.id_restaurante "
-							+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
-							+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
-							+ "' and p.id_restaurante = " + id.toString()
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.id_restaurante = " + id.toString()
 							+ " and p.pago = true "
 							+ "and p.estado not in (2, 5)  "
 							+ "UNION 	 "
@@ -297,9 +296,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 							+ "JOIN pedidos p ON p.id = pp.pedido_id "
 							+ "JOIN promociones pr ON pr.id = pp.promociones_id "
 							+ "JOIN usuario u ON u.id = pr.id_restaurante "
-							+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
-							+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
-							+ "' and p.id_restaurante = " + id.toString()
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.id_restaurante = " + id.toString()
 							+ " and p.pago= true "
 							+ "and p.estado not in (2, 5) "
 							+ "ORDER BY fecha DESC"
@@ -479,5 +478,241 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		}
 		
 		return reclamos;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarClientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+							+ "									and p.id_restaurante=" + id.toString()
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarOrdenesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ " and p.id_restaurante=" + id.toString()
+					+ "	UNION "
+					+ "	Select " 
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+							+ "									and p.id_restaurante=" + id.toString()
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarOrdenesPromedioPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("Select " 
+						+ "	case date_part('day',aux.d) < 10 "
+						+ "	when true then '0' "
+				+ "	else '' "
+				+ "	end||date_part('day',aux.d), "
+				+ "	case COUNT(p.id) is null "
+				+ "	when true then 0 "
+				+ "	else COUNT(p.id) "
+				+ "	end total, "
+				+ "	ac.total as actual, "
+				+ "	an.total as anterior "
+			+ "	from pedidos p "
+			+ "	right join "
+			+ "	generate_series "
+			 + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+		        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+		        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+				+ "									and p.estado = 4 "
+				+ "									and p.id_restaurante=" + id.toString()
+			+ "	join ( "
+			+ "	Select "
+									+ "	'ACTUAL' as tipo, "
+									+ "	case COUNT(p.id) is null "
+									+ "	when true then 0 "
+									+ "	else COUNT(p.id) "
+									+ "	end total "
+								+ "	from pedidos p "
+								+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+								+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ "	and p.estado = 4 "
+								+ "	and p.id_restaurante=" + id.toString()
+								+ "	) as ac ON 1=1 "										
+			+ "	join ( "
+			+ "	Select "
+									+ "	'ANTERIOR' as tipo, "
+									+ "	case COUNT(p.id) is null "
+									+ "	when true then 0 "
+									+ "	else COUNT(p.id) "
+									+ "	end total "
+								+ "	from pedidos p "
+								+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+								+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ "	and p.estado = 4 "
+								+ "	and p.id_restaurante=" + id.toString()
+								+ "	) as an ON 1=1 "										
+			+ "	GROUP BY aux.d, ac.total, an.total "
+			+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			Double cantidad = 0D;
+			if(Double.valueOf(line[2].toString())>0)
+				cantidad = Double.valueOf(line[1].toString())/Double.valueOf(line[2].toString());
+			
+			valores.put(line[0].toString(), cantidad);
+			actual =  Double.valueOf(line[2].toString());
+			anterior =  Double.valueOf(line[3].toString());
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+	}
+
+	@Override
+	public List<DashReclamoDTO> listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta, String calificacion) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
