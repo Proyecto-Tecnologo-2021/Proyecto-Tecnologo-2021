@@ -318,26 +318,20 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteMDTO crearCliente(ClienteCrearDTO clienteData) throws AppettitException, ParseException {
-
 		List<DireccionDTO> direcciones = null;
-
 		if (clienteData.getDireccion() != null) {
 			LocalidadDTO barrio = geoSrv.localidadPorPunto(clienteData.getDireccion().getGeometry());
-
 			DireccionDTO dirDTO = DireccionDTO.builder().alias(clienteData.getDireccion().getAlias())
 					.apartamento(clienteData.getDireccion().getApartamento())
 					.calle(clienteData.getDireccion().getCalle()).numero(clienteData.getDireccion().getNumero())
 					.referencias(clienteData.getDireccion().getReferencias())
 					.geometry(clienteData.getDireccion().getGeometry()).barrio(barrio).quantity(0).build();
-
 			direcciones = new ArrayList<DireccionDTO>();
 			direcciones.add(dirDTO);
 		}
-
 		ClienteDTO cliente = new ClienteDTO(null, clienteData.getNombre(), clienteData.getUsername(),
 				clienteData.getPassword(), clienteData.getTelefono(), clienteData.getCorreo(),
 				clienteData.getTokenFireBase(), false, direcciones, null);
-
 		Cliente usuario = usrConverter.fromClienteDTO(cliente);
 		usuario.setNotificationFirebase(clienteData.getNotificationFirebase());
 
@@ -345,21 +339,14 @@ public class UsuarioService implements IUsuarioService {
 			if (usrDAO.existeCorreoTelefono(usuario.getCorreo(), usuario.getTelefono())) {
 				throw new AppettitException("Teléfono y/o correo ya registrado.", AppettitException.EXISTE_REGISTRO);
 			} else {
-				/* Se encripta la contraseña */
 				usuario.setPassword(BCrypt.withDefaults().hashToString(12, usuario.getPassword().toCharArray()));
-
 				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(usrDAO.crearCliente(usuario));
-
 				ClienteDTO ret = usrConverter.fromCliente(usrDAO.crearCliente(usuario));
 				clienteMDTO.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
-
 				String token = crearJsonWebToken(usuario);
 				clienteMDTO.setJwt(token);
-
 				return clienteMDTO;
-
 			}
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -368,21 +355,17 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public String editarCliente(Long id, ClienteModificarDTO clienteData) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
-		
 		if (cliente == null)
 			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-
 			cliente.setNombre(clienteData.getNombre());
 			cliente.setTelefono(clienteData.getTelefono());
 			cliente.setUsername(clienteData.getUsername());
 
 			//ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-
 			String token = this.crearJsonWebToken(cliente);
 
 			return token;
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -398,16 +381,12 @@ public class UsuarioService implements IUsuarioService {
 			cliente.setNombre(clienteData.getNombre());
 			cliente.setTelefono(clienteData.getTelefono());
 			cliente.setUsername(clienteData.getUsername());
-
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
 			ret.setCalificacion(usrDAO.calificacionGralCliente(ret.getId()));
-
 			ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
 			String token = crearJsonWebToken(cliente);
 			clienteMDTO.setJwt(token);
-
 			return clienteMDTO;
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

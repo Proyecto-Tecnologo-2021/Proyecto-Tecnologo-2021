@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
@@ -286,6 +287,7 @@ public class UsuarioServiceTest extends TestCase {
     public void testEditarClienteRE(){
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
         Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
         ClienteModificarDTO clienteModificarDTO = new ClienteModificarDTO("nombre", "username", "telefono");
         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
@@ -294,15 +296,11 @@ public class UsuarioServiceTest extends TestCase {
         CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
         ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
         ClienteMDTO clienteMDTO = new ClienteMDTO("token", false, direccionesDto, calificacionGralClienteDTO);
-        String tokenjwt = "token";
 
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
-        //Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
         Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
         Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
         Mockito.when(usuarioServiceI.usrConverter.ClienteMDTOfromCliente(cliente)).thenReturn(clienteMDTO);
-        //Mockito.when(usuarioServiceI.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
-        //Mockito.when(usuarioServiceI.crearJsonWebToken(cliente)).thenReturn(tokenjwt);
 
         try {
             ClienteMDTO obtenido = usuarioServiceI.editarClienteRE(1L, clienteModificarDTO);
@@ -343,9 +341,7 @@ public class UsuarioServiceTest extends TestCase {
         }
     }
 
-
-
-    /*@Test
+    @Test
     public void testCrearCliente() {
         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
         List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
@@ -353,18 +349,30 @@ public class UsuarioServiceTest extends TestCase {
         CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
         ClienteMDTO clienteMDTO = new ClienteMDTO("jwt", false, direccionesDto, calificacionGralClienteDTO);
         DireccionCrearDTO direccionCrearDTO = new DireccionCrearDTO(1L, "alias", "calle", "1234", "apartamento", "referencias", "-34.8844477,-56.1922389");
-        ClienteCrearDTO clienteCrearDTO = new ClienteCrearDTO("nombre", "username", "password", "1234", "mail@mail.com", "tokenF", direccionCrearDTO);
-        LocalidadDTO barrio = new LocalidadDTO(3L, 2L, 1L, "nombre", "-34.8844477,-56.1922389");
+        ClienteCrearDTO clienteCrearDTO = new ClienteCrearDTO("nombre", "username", "password", "1234", "mail@mail.com", "tokenF", direccionCrearDTO, "noti");
+        LocalidadDTO barrio = new LocalidadDTO(4L, 2L, 1L, "nombre", "-34.8844477,-56.1922389");
+        Direccion direccion = new Direccion(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        ClienteDTO clienteDTO = new ClienteDTO(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direccionesDto, null);
 
+        Mockito.when(usuarioServiceI.usrConverter.fromClienteDTO(any(ClienteDTO.class))).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrDAO.existeCorreoTelefono("mail@mail.com", "1234")).thenReturn(false);
+        Mockito.when(usuarioServiceI.usrDAO.crearCliente(cliente)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.ClienteMDTOfromCliente(cliente)).thenReturn(clienteMDTO);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
 
         try {
             Mockito.when(usuarioServiceI.geoSrv.localidadPorPunto(direccionCrearDTO.getGeometry())).thenReturn(barrio);
-
+            ClienteMDTO obtenido = usuarioServiceI.crearCliente(clienteCrearDTO);
+            assertEquals(obtenido, clienteMDTO);
         } catch (AppettitException | ParseException e) {
             e.printStackTrace();
         }
 
-    }*/
+    }
 
     @Test
     public void testEditarCliente() {
@@ -385,9 +393,6 @@ public class UsuarioServiceTest extends TestCase {
         String token = "token";
 
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
-        /*Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
-        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
-        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);*/
         Mockito.when(usuarioServiceI.crearJsonWebToken(cliente)).thenReturn(token);
 
         try {

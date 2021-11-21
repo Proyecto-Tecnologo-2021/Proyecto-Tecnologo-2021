@@ -44,32 +44,32 @@
            		<property name="hibernate.use_sql_comments" value="false"/>
 				
 				<property name="hibernate.show_sql" value="false" />
- 				<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-				<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
-				
-				<property name="javax.persistence.sql-load-script-source" value="META-INF/sql/datos.sql"/>
-				
-      </properties>
-	</persistence-unit>
-    <persistence-unit name="mongo-ogm" transaction-type="JTA">
-    	<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
-		<class>proyecto2021G03.appettit.entity.Imagen</class>
-      	<exclude-unlisted-classes>true</exclude-unlisted-classes>
-      
-		<properties>
-		   <property name="hibernate.ogm.datastore.provider" value="mongodb"/>
-		   <property name="hibernate.ogm.datastore.host" value="cluster0-shard-00-00.ap6pz.mongodb.net:27017,cluster0-shard-00-01.ap6pz.mongodb.net:27017,cluster0-shard-00-02.ap6pz.mongodb.net:27017"/>
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+           <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
 
-		   <property name="hibernate.ogm.datastore.database" value="appetitIMG"/>
-		   <property name="hibernate.ogm.datastore.create_database" value="true" />
+           <property name="javax.persistence.sql-load-script-source" value="META-INF/sql/datos.sql"/>
 
-		   <property name="hibernate.ogm.datastore.username" value="admin"/>
-		   <property name="hibernate.ogm.datastore.password" value="fnz1G8MJuO2QULl5"/>
-		   <property name="hibernate.ogm.mongodb.authentication_mechanism" value="SCRAM_SHA_1"/>
-		   <property name="hibernate.ogm.mongodb.driver.sslEnabled" value="true"/>
-		   
-		   <property name="hibernate.show_sql" value="true" />
-		</properties>
-   </persistence-unit>
-	
+ </properties>
+</persistence-unit>
+<persistence-unit name="mongo-ogm" transaction-type="JTA">
+   <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+   <class>proyecto2021G03.appettit.entity.Imagen</class>
+     <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+   <properties>
+      <property name="hibernate.ogm.datastore.provider" value="mongodb"/>
+      <property name="hibernate.ogm.datastore.host" value="cluster0-shard-00-00.ap6pz.mongodb.net:27017,cluster0-shard-00-01.ap6pz.mongodb.net:27017,cluster0-shard-00-02.ap6pz.mongodb.net:27017"/>
+
+      <property name="hibernate.ogm.datastore.database" value="appetitIMG"/>
+      <property name="hibernate.ogm.datastore.create_database" value="true" />
+
+      <property name="hibernate.ogm.datastore.username" value="admin"/>
+      <property name="hibernate.ogm.datastore.password" value="fnz1G8MJuO2QULl5"/>
+      <property name="hibernate.ogm.mongodb.authentication_mechanism" value="SCRAM_SHA_1"/>
+      <property name="hibernate.ogm.mongodb.driver.sslEnabled" value="true"/>
+
+      <property name="hibernate.show_sql" value="true" />
+   </properties>
+</persistence-unit>
+
 </persistence>
