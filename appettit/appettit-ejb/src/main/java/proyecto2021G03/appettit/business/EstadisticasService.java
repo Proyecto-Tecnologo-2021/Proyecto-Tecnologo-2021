@@ -15,6 +15,7 @@ import proyecto2021G03.appettit.converter.PedidoConverter;
 import proyecto2021G03.appettit.dao.IEstadisticasDAO;
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
+import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
@@ -229,6 +230,16 @@ public class EstadisticasService implements IEstadisticasService {
 			LocalDateTime fechaHasta, String calificacion) throws AppettitException {
 		try {
 			return estadisticasDAO.listarCalificacionesDetPorRestaurante(id, fechaDesde, fechaHasta, calificacion);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public DashGeoDTO listarGeoEntregasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarGeoEntregasPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

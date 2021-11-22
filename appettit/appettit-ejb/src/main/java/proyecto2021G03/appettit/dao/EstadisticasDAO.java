@@ -18,6 +18,7 @@ import javax.persistence.Query;
 import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
+import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
@@ -745,5 +746,43 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		}
 		
 		return new DashTotalDTO(valores, actual, anterior);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashGeoDTO listarGeoEntregasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		List<String> valores = new ArrayList<String>();
+		String centro = null;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "'[' || ST_Y(ST_Centroid(ST_Transform(ST_GeometryFromText(dr.geom, 32721), 4326))) || ', ' || "
+						+ "ST_X(ST_Centroid(ST_Transform(ST_GeometryFromText(dr.geom, 32721), 4326))) || ']' AS restaurante, "
+						+ "'[' || ST_Y(ST_Centroid(ST_Transform(ST_GeometryFromText(d.geom, 32721), 4326))) || ', ' || "
+						+ "ST_X(ST_Centroid(ST_Transform(ST_GeometryFromText(d.geom, 32721), 4326))) || ']' AS entregar "
+					+ "FROM pedidos p "
+					+ "join direcciones d on d.id = p.id_entrega "
+					+ "join usuario u on u.id = p.id_restaurante "
+					+ "join direcciones dr on dr.id = u.id_direccion "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ "	and p.id_restaurante=" + id.toString()
+					+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			centro = line[0].toString();
+			
+			valores.add(line[1].toString());
+		}
+		
+		return new DashGeoDTO(valores,centro);
+	
+		
 	}
 }

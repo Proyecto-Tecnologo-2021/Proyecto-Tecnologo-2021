@@ -27,13 +27,13 @@ import org.jboss.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.RingPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
@@ -49,6 +49,7 @@ import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
+import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
@@ -85,6 +86,9 @@ public class HomeRestauranteBean implements Serializable {
 	DashTotalDTO ordenes;
 	DashTotalDTO pedidosPromedio;
 	DashTotalDTO rapidez;
+	DashTotalDTO comida;
+	DashTotalDTO servicio;
+	DashGeoDTO influencia;
 	Boolean abierto;
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
@@ -154,6 +158,12 @@ public class HomeRestauranteBean implements Serializable {
 						fechaHasta, 7);
 				rapidez = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
 						fechaHasta, "rapidez"); 
+				comida = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, "comida"); 
+				servicio = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta, "servicio"); 
+				influencia = estadisitciasSrv.listarGeoEntregasPorRestaurante(restauranteDTO.getId(), fechaDesde,
+						fechaHasta);
 				abierto = restauranteDTO.getAbierto();
 
 			}
@@ -471,14 +481,70 @@ public class HomeRestauranteBean implements Serializable {
 			return getChartCalificacionTotales(rapidez.getData());
 	}
 	
+	public StreamedContent getChartComidaTotales() {
+		return getChartCalificacionTotales(comida.getData());
+	}
 	
+	public StreamedContent getChartServicioTotales() {
+		return getChartCalificacionTotales(servicio.getData());
+	}
+	
+	public StreamedContent getChartCalGralTotales() {
+		try {
+			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
+				try {
+					
+					DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+					
+					for (Map.Entry<String, Double> entry : rapidez.getData().entrySet()) {
+						dataset.addValue(entry.getValue(), "rapidez", entry.getKey());
+					}
+					for (Map.Entry<String, Double> entry : comida.getData().entrySet()) {
+						dataset.addValue(entry.getValue(), "comida", entry.getKey());
+					}
+					for (Map.Entry<String, Double> entry : servicio.getData().entrySet()) {
+						dataset.addValue(entry.getValue(), "servicio", entry.getKey());
+					}
+					
+					final JFreeChart chart = ChartFactory.createStackedBarChart(
+				            "",      // chart title
+				            "",                // domain axis label
+				            "",                   // range axis label
+				            (CategoryDataset) dataset,                   // data
+				            PlotOrientation.HORIZONTAL,  // orientation
+				            false,                      // include legend
+				            true,
+				            false
+				        );
+					
+					final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+					plot.setForegroundAlpha(0.5f);
+			        plot.setBackgroundPaint(Color.WHITE);
+			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+			        
+			        plot.setRenderer( new CustomHorizontalStackedBarChartRenderer());
+			        
+					NumberAxis vn = (NumberAxis) plot.getRangeAxis();   
+					vn.setTickUnit(new NumberTickUnit(1d)); 
+										
+					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	private StreamedContent getChartCalificacionTotales(Map<String, Double> datos) {
 		try {
 			
 			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
 				try {
-					CategoryDataset dataset = createCalificacionDataset(sortByKey(datos));
+					CategoryDataset dataset = createDataset(sortByKey(datos));
 					
 					final JFreeChart chart = ChartFactory.createBarChart(
 				            "",      // chart title
@@ -496,11 +562,11 @@ public class HomeRestauranteBean implements Serializable {
 			        plot.setBackgroundPaint(Color.WHITE);
 			        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
 			        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
-					plot.getRenderer().setSeriesPaint(0, new Color(242, 162, 44));
-					
+			        
+			        plot.setRenderer( new CustomHorizontalBarChartRenderer());
+			        
 					NumberAxis vn = (NumberAxis) plot.getRangeAxis();   
-					vn.setTickUnit(new NumberTickUnit(10d)); 
-					vn.setRange(0D, 5.0);
+					vn.setTickUnit(new NumberTickUnit(1d)); 
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
@@ -538,26 +604,6 @@ public class HomeRestauranteBean implements Serializable {
 		
 		return dataset;
 	}
-
-	private DefaultCategoryDataset createCalificacionDataset(Map<String, Double> datos) {
-		
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-	    
-        for (Map.Entry<String, Double> entry : datos.entrySet()) {
-        	if(entry.getKey().equalsIgnoreCase("1")) {
-        		dataset.addValue(entry.getValue(), "S1", entry.getKey());	
-        		dataset.addValue(0, "S1", "2");
-        		dataset.addValue(0, "S1", "3");
-        		dataset.addValue(0, "S1", "4");
-        		dataset.addValue(0, "S1", "5");
-        	}
-			
-		}
-
-		
-		return dataset;
-	}
-
 	
 	public String styleLabel(String tipo, String key) {
 		
@@ -602,4 +648,57 @@ public class HomeRestauranteBean implements Serializable {
         }
         return temp;
     }
+    
+    
+ 	class CustomHorizontalBarChartRenderer extends BarRenderer{
+		
+		private static final long serialVersionUID = 1L;
+		
+		public java.awt.Paint getItemPaint(int row,int column){
+			Color color = null;	
+			
+			if(column == 0) color = new Color(213,51,67);
+			else if(column == 1) color = new Color(247,187,7);
+	        else if(column == 2) color = new Color(23,162,184);
+	        else if(column == 3) color = new Color(0,123,255);
+	        else if(column == 4) color = new Color(40,167,69);
+			else color = new Color(0,0,0);
+			
+			return color;
+		}
+	}
+ 	
+	class CustomHorizontalStackedBarChartRenderer extends StackedBarRenderer {
+		
+		private static final long serialVersionUID = 1L;
+		
+		public java.awt.Paint getItemPaint(int row,int column){
+			Color color = null;	
+			
+			if(column == 0) {
+				if(row == 1) color = new Color(213,51,67, 150);
+				else color = new Color(213,51,67);
+			}
+			else if(column == 1) {
+				if(row == 1) color = new Color(247,187,7, 150);
+				else  color = new Color(247,187,7);
+			}
+	        else if(column == 2) {
+	        	if(row == 1) color = new Color(23,162,184, 150);
+	        	else  color = new Color(23,162,184);
+	        }
+	        else if(column == 3) {
+	        	if(row == 1) color = new Color(0,123,255, 150);
+	        	else color = new Color(0,123,255);
+	        }
+	        else if(column == 4) {
+	        	if (row == 1) color = new Color(40,167,69, 175);
+	        	else  color = new Color(40,167,69);
+	        }
+			else color = new Color(0,0,0);
+			
+			return color;
+		}
+	}
+
 }

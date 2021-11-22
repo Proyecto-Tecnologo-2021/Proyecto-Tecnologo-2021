@@ -119,7 +119,11 @@
 
 								<h5 class="card-title mb-3 font-weight-bold">
 									<h:outputText
-										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez} en #{HomeRestaurante.rapidez.actual} " />
+										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.rapidez.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
 									calificaciones
 								</h5>
 								<div class="card-img-bottom">
@@ -149,11 +153,16 @@
 
 								<h5 class="card-title mb-3 font-weight-bold">
 									<h:outputText
-										value="#{HomeRestaurante.restauranteDTO.calificacion.comida} en" />
-									30 calificaciones
+										value="#{HomeRestaurante.restauranteDTO.calificacion.comida}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.comida.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
 								</h5>
-								<div id="canvas-holderCalB">
-									<canvas id="chart_CalB" />
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartComidaTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
@@ -178,11 +187,16 @@
 
 								<h5 class="card-title mb-3 font-weight-bold">
 									<h:outputText
-										value="#{HomeRestaurante.restauranteDTO.calificacion.servicio} en" />
-									30 calificaciones
+										value="#{HomeRestaurante.restauranteDTO.calificacion.servicio}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.servicio.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
 								</h5>
-								<div id="canvas-holderCalC">
-									<canvas id="chart_CalC" />
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartServicioTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
@@ -207,16 +221,20 @@
 
 								<h5 class="card-title mb-3 font-weight-bold">
 									<h:outputText
-										value="#{HomeRestaurante.restauranteDTO.calificacion.general} en" />
-									30 calificaciones
+										value="#{HomeRestaurante.restauranteDTO.calificacion.general}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.servicio.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
 								</h5>
-								<div id="canvas-holderCalD">
-									<canvas id="chart_CalD" />
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartCalGralTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
 					</div>
-
 
 					<!-- Graficas Totales -->
 					<div
@@ -804,6 +822,36 @@
 	</section>
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+	
+	<script type="text/javascript">
+		/* MAPA */
+		var lat = -34.86157;
+		var lon = -56.17938;
+	
+		var clientes = [[-34.8685793867382,-56.1666772418927]]; 
+		<c:choose>
+		<c:when test="#{empty HomeBeanRestaurant.influencia.centro}">
+			var mapa = L.map('map').setView([lat, lon], 11);
+		</c:when>
+		<c:otherwise>
+			var mapa = L.map('map').setView(<h:outputText value="#{HomeBeanRestaurant.influencia.centro}"/>, 11);
+		</c:otherwise>
+	</c:choose>
+
+			
+		
+		
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(mapa);
+
+		var addressPoints = clientes.map(function (p) { return [p[0], p[1]]; });
+
+		var heat = L.heatLayer(addressPoints, {radius: 50});
+		mapa.addLayer(heat);
+
+	</script>
 
 
 </h:body>
