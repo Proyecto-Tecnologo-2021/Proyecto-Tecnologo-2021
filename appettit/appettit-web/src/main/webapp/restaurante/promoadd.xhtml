@@ -44,7 +44,7 @@
                                     <a class="dropdown-item"
                                        href="/appettit-web/restaurante/productos.xhtml">Productos</a> <a
                                         class="dropdown-item" href="/appettit-web/restaurante/menus.xhtml">Men&uacute;s</a>
-                                    <a class="dropdown-item" href="#">Promociones</a>
+                                    <a class="dropdown-item" href="/appettit-web/restaurante/promociones.xhtml">Promociones</a>
                                 </div></li>
                             <li class="nav-item dropdown"><a
                                     class="nav-link dropdown-toggle" href="#" id="navbarClientes"
@@ -142,7 +142,7 @@
                                                                   filter="true"
                                                                   filterMatchMode="startsWith"
                                                                   panelStyle="width: 25rem"
-                                                                  scrollHeight="300">
+                                                                  scrollHeight="300" update="@form">
                                                 <p:ajax event="itemUnselect" listener="#{beanAddPromocion.onItemUnselect}"/>
                                                 <f:selectItems value="#{beanAddPromocion.menusItems}"/>
                                             </p:selectCheckboxMenu>
@@ -156,7 +156,19 @@
                                         <div class="col-8  mb-3 mr-0 pr-0">
                                             <p:inputNumber id="addDescuento" required="true" name="addDescuento"
                                                            symbol="%" symbolPosition="s" emptyValue="always"
-                                                           value="#{beanAddPromocion.descuento}">
+                                                           value="#{beanAddPromocion.descuento}" update="@form">
+                                            </p:inputNumber>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex flex-row">
+                                        <div class="col-4  mb-3">
+                                            <p:outputLabel for="addPrice" value="subtotal" />
+                                        </div>
+                                        <div class="col-8  mb-3 mr-0 pr-0">
+                                            <p:inputNumber id="addSubtotal" required="true" name="addSubtotal"
+                                                           symbol="U$ " symbolPosition="p" decimalSeparator=","
+                                                           thousandSeparator="." value="#{beanAddPromocion.subtotal}" update="@form">
                                             </p:inputNumber>
                                         </div>
                                     </div>
@@ -168,7 +180,7 @@
                                         <div class="col-8  mb-3 mr-0 pr-0">
                                             <p:inputNumber id="addPrice" required="true" name="addPrice"
                                                            symbol="U$ " symbolPosition="p" decimalSeparator=","
-                                                           thousandSeparator="." value="#{beanAddPromocion.precio}">
+                                                           thousandSeparator="." value="#{beanAddPromocion.precio}" update="@form">
                                             </p:inputNumber>
                                         </div>
                                     </div>

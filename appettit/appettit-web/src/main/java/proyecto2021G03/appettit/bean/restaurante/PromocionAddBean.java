@@ -57,6 +57,8 @@ public class PromocionAddBean implements Serializable {
     private ImagenDTO imagen;
 
     // Variables auxiliares y contexto
+    private Double subtotal;
+
     private UploadedFile imgfile;
     private CroppedImage croppedImage;
     FacesContext facesContext;
@@ -121,6 +123,47 @@ public class PromocionAddBean implements Serializable {
             }
 
             loadMenusDelRestaurante();
+        }
+
+    }
+
+    public Double getPrecio() {
+
+        recalculatePrecios();
+        return this.precio;
+    }
+
+    public Double getSubtotal() {
+
+        recalculatePrecios();
+        return this.subtotal;
+    }
+
+    public void recalculatePrecios(){
+
+        this.precio = 0.0;
+        this.subtotal = 0.0;
+        List<MenuDTO> menus = new ArrayList<MenuDTO>(){};
+
+        if (this.menusSelectedItems.length > 0) {
+
+            logger.info("ENTRA");
+            for (String id : this.menusSelectedItems) {
+                menus.add(menusById.get(id));
+            }
+
+            if (!menus.isEmpty()) {
+                logger.info("SIZE : " + menus.size());
+                for (MenuDTO menu : menus) {
+                    this.subtotal = this.subtotal + menu.getPrecioTotal();
+                }
+
+                this.precio = (this.subtotal * (100 - this.descuento)) / 100;
+
+                logger.info("SUB : " + this.subtotal);
+                logger.info("PRE : " + this.precio);
+            }
+
         }
 
     }
@@ -309,6 +352,8 @@ public class PromocionAddBean implements Serializable {
         msg.setSeverity(FacesMessage.SEVERITY_INFO);
 
         context.addMessage(null, msg);
+
+        recalculatePrecios();
     }
 
     /////////////////////////////////////////////////
