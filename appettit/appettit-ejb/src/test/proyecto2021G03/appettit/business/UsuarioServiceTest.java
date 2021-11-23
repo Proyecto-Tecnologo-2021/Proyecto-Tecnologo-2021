@@ -10,12 +10,14 @@ import org.mockito.Mock;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.*;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.FileManagement;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ public class UsuarioServiceTest extends TestCase {
     @Mock
     private IGeoService mockiGeoSrvc;
 
+    @Mock
+    private DireccionConverter mockDirConverter;
+
     @Before
     public void init() {
         usuarioServiceI = Mockito.spy(new UsuarioService());
@@ -47,6 +52,7 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.usrConverter = this.mockusuarioConverter;
         usuarioServiceI.geoSrv = this.mockiGeoSrvc;
         usuarioServiceI.locConverter = this.mockLocalidadConverter;
+        usuarioServiceI.dirConverter = this.mockDirConverter;
     }
 
     @Test
@@ -225,26 +231,272 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.editarClienteRE(1L, clienteModificarDTO);
     }
 
+    @Test
+    public void testEliminarDireccion() {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionDTO direccionDTO = new DireccionDTO(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+        EliminarDeClienteDTO ec = new EliminarDeClienteDTO(1L);
 
-    /*public void testEliminarDireccion() {
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+        Mockito.when(usuarioServiceI.usrDAO.eliminarDireccion(cliente, direccion)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+//        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            ClienteDTO obtenido = usuarioServiceI.eliminarDireccion(2L, ec);
+            assertEquals(obtenido, clienteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test(expected = AppettitException.class)
+    public void testEliminarDireccion_cNoEx()   throws AppettitException {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        DireccionDTO direccionDTO = new DireccionDTO(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+        EliminarDeClienteDTO ec = new EliminarDeClienteDTO(1L);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+/*        Mockito.when(usuarioServiceI.usrDAO.eliminarDireccion(cliente, direccion)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+*/
+
+        ClienteDTO obtenido = usuarioServiceI.eliminarDireccion(2L, ec);
+
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testEliminarDireccion_dNoEx() throws AppettitException {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionDTO direccionDTO = new DireccionDTO(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+        EliminarDeClienteDTO ec = new EliminarDeClienteDTO(1L);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+/*        Mockito.when(usuarioServiceI.usrDAO.eliminarDireccion(cliente, direccion)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+*/
+        ClienteDTO obtenido = usuarioServiceI.eliminarDireccion(2L, ec);
+    }
+
+    @Test
     public void testAgregarDireccion() {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        Direccion direccion2 = new Direccion(1L, "alias2", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion2);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        LocalidadDTO barrioDTO = new LocalidadDTO(3L, 2L, 1L, "nombre", "-34.8844477,-56.1922389");
+        DireccionCrearDTO direccionDTO = new DireccionCrearDTO(1L, "alias", "calle", "123", "2", "refs", "-4.4555651,-43.8849088");
+        DireccionDTO direccionDTO2 = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO2);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+        //Mockito.when(usuarioServiceI.dirConverter.fromDTO(direccionDTO2)).thenReturn(direccion);
+        Mockito.when(usuarioServiceI.usrDAO.agregarDireccion(cliente)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        //Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.geoSrv.localidadPorPunto(direccionDTO.getGeometry())).thenReturn(barrioDTO);
+            ClienteDTO obtenido = usuarioServiceI.agregarDireccion(direccionDTO);
+            assertEquals(obtenido, clienteDTO);
+        } catch (AppettitException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test(expected = AppettitException.class)
+    public void testAgregarDireccion_aliasRep() throws AppettitException {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionCrearDTO direccionDTO = new DireccionCrearDTO(1L, "alias", "calle", "123", "2", "refs", "-4.4555651,-43.8849088");
+        DireccionDTO direccionDTO2 = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO2);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+        //Mockito.when(usuarioServiceI.dirConverter.fromDTO(direccionDTO2)).thenReturn(direccion);
+        //Mockito.when(usuarioServiceI.usrDAO.agregarDireccion(cliente)).thenReturn(cliente);
+        //Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        //Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+            ClienteDTO obtenido = usuarioServiceI.agregarDireccion(direccionDTO);
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testAgregarDireccion_cNoExiste() throws AppettitException {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        DireccionCrearDTO direccionDTO = new DireccionCrearDTO(1L, "alias", "calle", "123", "2", "refs", "-4.4555651,-43.8849088");
+        DireccionDTO direccionDTO2 = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO2);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+        ClienteDTO clienteDTO = new ClienteDTO(false, direccionesDto, calificacionGralClienteDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+//        Mockito.when(usuarioServiceI.dirConverter.fromDTO(direccionDTO2)).thenReturn(direccion);
+//        Mockito.when(usuarioServiceI.usrDAO.agregarDireccion(cliente)).thenReturn(cliente);
+//        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+//        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        ClienteDTO obtenido = usuarioServiceI.agregarDireccion(direccionDTO);
+    }
+
+    @Test
     public void testListarClientes() {
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        ClienteDTO clienteDTO = new ClienteDTO(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direccionesDto, null);
+        List<ClienteDTO> clientesDTO = new ArrayList<ClienteDTO>();
+        clientesDTO.add(clienteDTO);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+
+        Mockito.when(usuarioServiceI.usrDAO.listarClientes()).thenReturn(clientes);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(clientes)).thenReturn(clientesDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            List<ClienteDTO> obtenidos = usuarioServiceI.listarClientes();
+            assertEquals(obtenidos, clientesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
     public void testBuscarPorNombreCliente() {
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        ClienteDTO clienteDTO = new ClienteDTO(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direccionesDto, null);
+        List<ClienteDTO> clientesDTO = new ArrayList<ClienteDTO>();
+        clientesDTO.add(clienteDTO);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorNombreCliente("nombre")).thenReturn(clientes);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(clientes)).thenReturn(clientesDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            List<ClienteDTO> obtenidos = usuarioServiceI.buscarPorNombreCliente("nombre");
+            assertEquals(obtenidos, clientesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
     public void testBuscarPorIdCliente() {
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+        ClienteDTO clienteDTO = new ClienteDTO(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direccionesDto, null);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrConverter.fromCliente(cliente)).thenReturn(clienteDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            ClienteDTO obtenido = usuarioServiceI.buscarPorIdCliente(1L);
+            assertEquals(obtenido, clienteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
     public void testCalificacionGralCliente() {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        try {
+            CalificacionGralClienteDTO obtenido = usuarioServiceI.calificacionGralCliente(1L);
+            assertEquals(obtenido, calificacionGralClienteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test(expected = AppettitException.class)
+    public void testCalificacionGralCliente_noExiste() throws AppettitException {
+        CalificacionGralClienteDTO calificacionGralClienteDTO = new CalificacionGralClienteDTO(1,2);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(null);
+        //Mockito.when(usuarioServiceI.usrDAO.calificacionGralCliente(1L)).thenReturn(calificacionGralClienteDTO);
+
+        CalificacionGralClienteDTO obtenido = usuarioServiceI.calificacionGralCliente(1L);
+    }
+
+    /*@Test
     public void testLogin() {
+        Usuario usuario = new Usuario(1L, "nombre", "username", "password", "telefono", "correo", "tokenF", "notiF", "notiFWeb");
+
     }
 
     public void testLoginMobile() {
@@ -254,34 +506,354 @@ public class UsuarioServiceTest extends TestCase {
     }
 
     public void testCrearJsonWebToken() {
-    }
+    }*/
 
+    @Test
     public void testExisteAlias() {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        Boolean esperado = true;
+
+        Boolean obtenido = usuarioServiceI.existeAlias(cliente, "alias");
+        assertEquals(esperado, obtenido);
     }
 
+    @Test
+    public void testExisteAlias_false() {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        Boolean esperado = false;
+
+        Boolean obtenido = usuarioServiceI.existeAlias(cliente, "alias2");
+        assertEquals(esperado, obtenido);
+    }
+
+    @Test
     public void testObtenerIdDireccion() {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        Long esperado = 2L;
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+
+        try {
+            Long obtenido = usuarioServiceI.obtenerIdDireccion(1L, "alias");
+            assertEquals(obtenido, esperado);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test(expected = AppettitException.class)
+    public void testObtenerIdDireccion_cNoExiste() throws AppettitException {
+        usuarioServiceI.obtenerIdDireccion(1L, "alias");
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testObtenerIdDireccion_aliasNoEx() throws AppettitException {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+
+        usuarioServiceI.obtenerIdDireccion(1L, "alias2");
+    }
+
+    @Test
     public void testObtenerDireccionesCliente() {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+        Mockito.when(usuarioServiceI.dirConverter.fromEntity(direccion)).thenReturn(direccionDTO);
+
+        try {
+            List<DireccionDTO> obtenidos = usuarioServiceI.obtenerDireccionesCliente(1L);
+            assertEquals(obtenidos, direccionesDto);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test(expected = AppettitException.class)
+    public void testObtenerDireccionesCliente_cNoEx() throws AppettitException {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+//        Mockito.when(usuarioServiceI.dirConverter.fromEntity(direccion)).thenReturn(direccionDTO);
+
+        List<DireccionDTO> obtenidos = usuarioServiceI.obtenerDireccionesCliente(1L);
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testObtenerDireccionesCliente_noDir() throws AppettitException {
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, null);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
+        direccionesDto.add(direccionDTO);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+//        Mockito.when(usuarioServiceI.dirConverter.fromEntity(direccion)).thenReturn(direccionDTO);
+
+        List<DireccionDTO> obtenidos = usuarioServiceI.obtenerDireccionesCliente(1L);
+    }
+
+    @Test
     public void testBuscarAdministradorPorId() {
+        AdministradorDTO administradorDTO = new AdministradorDTO(1L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF");
+        Administrador administrador = new Administrador(1L, "nombre", "username", "pwd", "1234", "mail@mail.com", "token", "tokenF");
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarAdministradorPorId(1L)).thenReturn(administrador);
+        Mockito.when(usuarioServiceI.usrConverter.fromAdministrador(administrador)).thenReturn(administradorDTO);
+
+        try {
+            AdministradorDTO obtenido = usuarioServiceI.buscarAdministradorPorId(1L);
+            assertEquals(obtenido, administradorDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
     public void testBuscarRestaurantePorId() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        /*ImagenDTO img = new ImagenDTO();
+        FileManagement fm = new FileManagement();
+        img.setId("imagen");
+        img.setIdentificador("Sin Imagen");
+        img.setImagen(null);*/
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
+
+        try {
+            //Mockito.when(usuarioServiceI.imgSrv.buscarPorId("id")).thenReturn(img);
+            RestauranteDTO obtenido = usuarioServiceI.buscarRestaurantePorId(2L);
+            assertEquals(obtenido, restauranteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testBuscarRestaurantePorId_null() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        ImagenDTO img = new ImagenDTO();
+        FileManagement fm = new FileManagement();
+        img.setId("imagen");
+        img.setIdentificador("Sin Imagen");
+        img.setImagen(null);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
+
+        try {
+            //Mockito.when(usuarioServiceI.imgSrv.buscarPorId("id")).thenReturn(img);
+            RestauranteDTO obtenido = usuarioServiceI.buscarRestaurantePorId(2L);
+            assertEquals(obtenido, restauranteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testListarRestaurantes() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        List<RestauranteDTO> restaurantesDTO = new ArrayList<RestauranteDTO>();
+        restaurantesDTO.add(restauranteDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrDAO.listarRestaurantes()).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurantes)).thenReturn(restaurantesDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            List<RestauranteDTO> obtenidos = usuarioServiceI.listarRestaurantes();
+            assertEquals(obtenidos, restaurantesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testListarRestaurantes_imgNull() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        List<RestauranteDTO> restaurantesDTO = new ArrayList<RestauranteDTO>();
+        restaurantesDTO.add(restauranteDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrDAO.listarRestaurantes()).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurantes)).thenReturn(restaurantesDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            List<RestauranteDTO> obtenidos = usuarioServiceI.listarRestaurantes();
+            assertEquals(obtenidos, restaurantesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testBuscarPorNombreRestaurante() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        List<RestauranteDTO> restaurantesDTO = new ArrayList<RestauranteDTO>();
+        restaurantesDTO.add(restauranteDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorNombreRestaurante("nombre")).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurantes)).thenReturn(restaurantesDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            List<RestauranteDTO> obtenidos = usuarioServiceI.buscarPorNombreRestaurante("nombre");
+            assertEquals(obtenidos, restaurantesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testBuscarPorNombreRestaurante_imgNull() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        List<RestauranteDTO> restaurantesDTO = new ArrayList<RestauranteDTO>();
+        restaurantesDTO.add(restauranteDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorNombreRestaurante("nombre")).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurantes)).thenReturn(restaurantesDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            List<RestauranteDTO> obtenidos = usuarioServiceI.buscarPorNombreRestaurante("nombre");
+            assertEquals(obtenidos, restaurantesDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testBuscarPorCorreoRestaurante() {
-    }*/
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreoRestaurante("mail@mail.com")).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            RestauranteDTO obtenido = usuarioServiceI.buscarPorCorreoRestaurante("mail@mail.com");
+            assertEquals(obtenido, restauranteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testBuscarPorCorreoRestaurante_imgNull() {
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+        restauranteDTO.setDireccion(direccionDTO);
+        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, null);
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreoRestaurante("mail@mail.com")).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
+
+        try {
+            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+            RestauranteDTO obtenido = usuarioServiceI.buscarPorCorreoRestaurante("mail@mail.com");
+            assertEquals(obtenido, restauranteDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testEditarClienteRE(){
@@ -379,6 +951,7 @@ public class UsuarioServiceTest extends TestCase {
         ClienteModificarDTO clienteIn = new ClienteModificarDTO("nombre", "username", "1234");
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
         Cliente cliente = new Cliente(false, direcciones);
         cliente.setId(1L);
         cliente.setUsername("username");
