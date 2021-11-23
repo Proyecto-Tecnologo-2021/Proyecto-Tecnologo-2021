@@ -124,7 +124,6 @@ public class UsuarioService implements IUsuarioService {
 	public List<RestauranteDTO> listarRestaurantes() throws AppettitException {
 		List<RestauranteDTO> restaurantes = new ArrayList<RestauranteDTO>();
 		try {
-
 			Iterator<RestauranteDTO> it = usrConverter.fromRestaurante(usrDAO.listarRestaurantes()).iterator();
 			while (it.hasNext()) {
 				RestauranteDTO res = it.next();
@@ -146,15 +145,11 @@ public class UsuarioService implements IUsuarioService {
 						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 						logger.error(e.getMessage());
 					}
-
 				}
-
 				res.setImagen(img);
 				restaurantes.add(res);
 			}
-
 			return restaurantes;
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -785,8 +780,7 @@ public class UsuarioService implements IUsuarioService {
 					}
 				}
 				if (!existe_direccion) {
-					throw new AppettitException("La direccion con ese alias no existe para el cliente.",
-							AppettitException.NO_EXISTE_REGISTRO);
+					throw new AppettitException("La direccion con ese alias no existe para el cliente.", AppettitException.NO_EXISTE_REGISTRO);
 				} else {
 					return idDireccion;
 				}
