@@ -341,6 +341,38 @@ public class UsuarioREST {
 			}
 		}
 	}
+
+	@GET
+	@Path("/loginRedirect")
+	public Response loginRedirect(@QueryParam("idUsuario")Long idUsuario, @QueryParam("tipoUsuario")String tipoUsuario, @QueryParam("jwtToken")String token) {
+		RespuestaREST<String> respuesta = null;
+//		try {
+			System.out.println(idUsuario);
+			System.out.println(tipoUsuario);
+			System.out.println(token);
+			respuesta = new RespuestaREST<String>(true, "Inicio de sesión correcto.");
+
+			if(tipoUsuario.compareToIgnoreCase("restaurante") == 0){
+				String url = "http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml";
+				return Response.temporaryRedirect(URI.create(url)).build();
+			}else if(tipoUsuario.compareToIgnoreCase("administrador") == 0) {
+				String url = "http://localhost:8080/appettit-web/uploadFiles.xhtml";
+				return Response.temporaryRedirect(URI.create(url)).build();
+			}else{
+				respuesta = new RespuestaREST(false, "Algo ha salido mal.");
+				return Response.ok(respuesta).build();
+			}
+//		} 		catch (AppettitException e) {
+//			respuesta = new RespuestaREST<String>(false, e.getLocalizedMessage());
+//			if(e.getCodigo() == AppettitException.DATOS_INCORRECTOS) {
+//				return Response.status(Response.Status.BAD_REQUEST).entity(respuesta).build();
+//			} else {
+//				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(respuesta).build();
+//			}
+//		}
+	}
+
+
 	
 /*
 	@PUT
