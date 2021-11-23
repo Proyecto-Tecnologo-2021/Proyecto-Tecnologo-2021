@@ -43,7 +43,7 @@ public class UsuarioService implements IUsuarioService {
 	public UsuarioConverter usrConverter;
 
 	@EJB
-	IImagenService imgSrv;
+	public IImagenService imgSrv;
 
 	@EJB
 	DireccionConverter dirConverter;
@@ -216,8 +216,9 @@ public class UsuarioService implements IUsuarioService {
 				} else {
 					try {
 						img = imgSrv.buscarPorId(res.getId_imagen());
+						
 					} catch (Exception e) {
-						logger.error(e.getMessage());
+						logger.error("Find Restaurante IMG: " + e.getMessage());
 					}
 
 				}
@@ -267,9 +268,12 @@ public class UsuarioService implements IUsuarioService {
 
 			}
 			restaurante.setImagen(img);
+			return restaurante;
+		} else {
+			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		}
 
-		return restaurante;
+	
 	}
 
 	@Override
@@ -592,7 +596,7 @@ public class UsuarioService implements IUsuarioService {
 			/* Se verifica que la contraseña sea válida */
 
 			Usuario usuario;
-
+			
 			if (usuarios_correo.size() != 0) {
 				usuario = usuarios_correo.get(0);
 			} else {

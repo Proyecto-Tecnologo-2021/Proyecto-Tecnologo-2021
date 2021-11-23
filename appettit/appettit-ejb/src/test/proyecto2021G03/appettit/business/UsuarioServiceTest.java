@@ -1,27 +1,51 @@
 package proyecto2021G03.appettit.business;
 
-import com.vividsolutions.jts.io.ParseException;
-import junit.framework.TestCase;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import com.vividsolutions.jts.io.ParseException;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import junit.framework.TestCase;
 import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
-import proyecto2021G03.appettit.dto.*;
-import proyecto2021G03.appettit.entity.*;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
+import proyecto2021G03.appettit.dto.CalificacionGralClienteDTO;
+import proyecto2021G03.appettit.dto.CalificacionGralRestauranteDTO;
+import proyecto2021G03.appettit.dto.ClienteCrearDTO;
+import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.ClienteMDTO;
+import proyecto2021G03.appettit.dto.ClienteModificarDTO;
+import proyecto2021G03.appettit.dto.DireccionCrearDTO;
+import proyecto2021G03.appettit.dto.DireccionDTO;
+import proyecto2021G03.appettit.dto.EliminarDeClienteDTO;
+import proyecto2021G03.appettit.dto.EstadoRegistro;
+import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.LocalidadDTO;
+import proyecto2021G03.appettit.dto.LoginDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.entity.Administrador;
+import proyecto2021G03.appettit.entity.Cliente;
+import proyecto2021G03.appettit.entity.Direccion;
+import proyecto2021G03.appettit.entity.Imagen;
+import proyecto2021G03.appettit.entity.Localidad;
+import proyecto2021G03.appettit.entity.Restaurante;
+import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,6 +68,9 @@ public class UsuarioServiceTest extends TestCase {
 
     @Mock
     private DireccionConverter mockDirConverter;
+    
+    @Mock
+    private ImagenService imagenServiceI;
 
     @Before
     public void init() {
@@ -172,6 +199,7 @@ public class UsuarioServiceTest extends TestCase {
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         restaurante.setDireccion(direccion);
 
+        
         Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(1L)).thenReturn(restaurante);
         Mockito.when(usuarioServiceI.usrDAO.calificacionRestaurante(1L)).thenReturn(calificacion);
 
@@ -493,12 +521,83 @@ public class UsuarioServiceTest extends TestCase {
         CalificacionGralClienteDTO obtenido = usuarioServiceI.calificacionGralCliente(1L);
     }
 
-    /*@Test
+    @Test
     public void testLogin() {
-        Usuario usuario = new Usuario(1L, "nombre", "username", "password", "telefono", "correo", "tokenF", "notiF", "notiFWeb");
-
+    	Usuario usuario = new Cliente();
+    	usuario.setId(1L);
+    	usuario.setCorreo("prueba@appetit.com");
+    	usuario.setUsername("prueba@appetit.com");
+    	usuario.setTelefono("1234");
+    	usuario.setPassword(BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
+    	usuario.setNotificationFirebase("notiF");
+    	
+    	
+    	LoginDTO loginDTO = new LoginDTO();
+    	loginDTO.setUsuario("prueba@appetit.com");
+    	loginDTO.setPassword("password");
+    	loginDTO.setNotificationFirebase("notiF");
+    	
+    	List<Usuario> usuarios = new ArrayList<Usuario>();
+		
+		usuarios.add(usuario);
+		
+		try {
+			
+			Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreo(Mockito.anyString())).thenReturn(usuarios);
+			Mockito.when(usuarioServiceI.usrDAO.buscarPorTelefono(Mockito.anyString())).thenReturn(usuarios);
+			
+			String obtenido = usuarioServiceI.login(loginDTO);
+			
+		} catch (AppettitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
+    @Test(expected = AppettitException.class)
+    public void testLogin_badPassword() throws AppettitException {
+    	Usuario usuario = new Cliente();
+    	usuario.setId(1L);
+    	usuario.setCorreo("prueba@appetit.com");
+    	usuario.setTelefono("1234");
+    	usuario.setPassword("password");
+    	usuario.setNotificationFirebase("notiF");
+
+		LoginDTO loginDTO = new LoginDTO("prueba@appetit.com", "bad", "notiF");
+
+    	List<Usuario> usuarios = new ArrayList<Usuario>();
+		
+		usuarios.add(usuario);
+		
+		Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreo(Mockito.anyString())).thenReturn(usuarios);
+		Mockito.when(usuarioServiceI.usrDAO.buscarPorTelefono(Mockito.anyString())).thenReturn(usuarios);
+		
+		
+		String obtenido = usuarioServiceI.login(loginDTO);
+	
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testLogin_wrongUser() throws AppettitException {
+    	Usuario usuario = new Cliente();
+    	usuario.setId(1L);
+    	usuario.setCorreo("prueba@appetit.com");
+    	usuario.setTelefono("1234");
+    	usuario.setPassword("password");
+    	usuario.setNotificationFirebase("notiF");
+    	LoginDTO loginDTO = new LoginDTO("prueba@appetit.com", "bad", "notiF");
+    		
+    	List<Usuario> usuarios = new ArrayList<Usuario>();
+		
+		Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreo(Mockito.anyString())).thenReturn(usuarios);
+		Mockito.when(usuarioServiceI.usrDAO.buscarPorTelefono(Mockito.anyString())).thenReturn(usuarios);
+		
+		
+		String obtenido = usuarioServiceI.login(loginDTO);
+	
+    }
+
+    /*
     public void testLoginMobile() {
     }
 
@@ -650,11 +749,12 @@ public class UsuarioServiceTest extends TestCase {
         Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
         restaurante.setDireccion(direccion);
-        /*ImagenDTO img = new ImagenDTO();
-        FileManagement fm = new FileManagement();
-        img.setId("imagen");
-        img.setIdentificador("Sin Imagen");
-        img.setImagen(null);*/
+        
+        //ImagenDTO img = new ImagenDTO();
+        //FileManagement fm = new FileManagement();
+        //img.setId("imagen");
+        //img.setIdentificador("Sin Imagen");
+        //img.setImagen(null);
 
         Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
         Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
@@ -753,8 +853,11 @@ public class UsuarioServiceTest extends TestCase {
 
     @Test
     public void testBuscarPorNombreRestaurante() {
-        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+    	EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+    	byte[] mbyte = "imagen".getBytes();
+        ImagenDTO img = new ImagenDTO("iamgen", "imagen", mbyte);
         RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+        restauranteDTO.setImagen(img);
         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
         restauranteDTO.setDireccion(direccionDTO);
         List<RestauranteDTO> restaurantesDTO = new ArrayList<RestauranteDTO>();
@@ -769,16 +872,20 @@ public class UsuarioServiceTest extends TestCase {
         Mockito.when(usuarioServiceI.usrDAO.buscarPorNombreRestaurante("nombre")).thenReturn(restaurantes);
         Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
         Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurantes)).thenReturn(restaurantesDTO);
+        
+        
 
         try {
-            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
-            List<RestauranteDTO> obtenidos = usuarioServiceI.buscarPorNombreRestaurante("nombre");
+        	Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+        	//Mockito.when(usuarioServiceI.imgSrv.buscarPorId(Mockito.anyString())).thenReturn(img);
+        	List<RestauranteDTO> obtenidos = usuarioServiceI.buscarPorNombreRestaurante("nombre");
             assertEquals(obtenidos, restaurantesDTO);
         } catch (AppettitException e) {
             e.printStackTrace();
         }
+               
     }
-
+ 
     @Test
     public void testBuscarPorNombreRestaurante_imgNull() {
         EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
@@ -809,28 +916,29 @@ public class UsuarioServiceTest extends TestCase {
 
     @Test
     public void testBuscarPorCorreoRestaurante() {
-        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
-        RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
-        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
-        restauranteDTO.setDireccion(direccionDTO);
-        Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
-        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
-        restaurante.setDireccion(direccion);
-        CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
+    	 EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+         RestauranteDTO restauranteDTO = new RestauranteDTO(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+         restauranteDTO.setDireccion(direccionDTO);
+         Restaurante restaurante = new Restaurante(2L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "imagen");
+         Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+         restaurante.setDireccion(direccion);
+         CalificacionGralRestauranteDTO calif = new CalificacionGralRestauranteDTO(1, 2, 3, 4);
 
-        Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreoRestaurante("mail@mail.com")).thenReturn(restaurante);
-        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
-        Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
+         Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreoRestaurante("mail@mail.com")).thenReturn(restaurante);
+         Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(2L)).thenReturn(restaurante);
+         Mockito.when(usuarioServiceI.usrConverter.fromRestaurante(restaurante)).thenReturn(restauranteDTO);
 
-        try {
-            Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
-            RestauranteDTO obtenido = usuarioServiceI.buscarPorCorreoRestaurante("mail@mail.com");
-            assertEquals(obtenido, restauranteDTO);
-        } catch (AppettitException e) {
-            e.printStackTrace();
-        }
+         try {
+             Mockito.when(usuarioServiceI.calificacionRestaurante(2L)).thenReturn(calif);
+             RestauranteDTO obtenido = usuarioServiceI.buscarPorCorreoRestaurante("mail@mail.com");
+             assertEquals(obtenido, restauranteDTO);
+         } catch (AppettitException e) {
+             e.printStackTrace();
+         }
     }
 
+ 
     @Test
     public void testBuscarPorCorreoRestaurante_imgNull() {
         EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
@@ -854,6 +962,7 @@ public class UsuarioServiceTest extends TestCase {
             e.printStackTrace();
         }
     }
+
 
     @Test
     public void testEditarClienteRE(){
