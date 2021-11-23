@@ -208,7 +208,6 @@ public class MenuService implements IMenuService{
 				menus.add(men);
 
 			}
-
 			return menus;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);

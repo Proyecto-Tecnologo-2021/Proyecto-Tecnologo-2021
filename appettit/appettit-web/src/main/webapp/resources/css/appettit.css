@@ -198,7 +198,7 @@ body .ui-datepicker .ui-picker-down .ui-icon:before {
     overflow: visible !important;
 }
 
-#messages_container, .ui-dialog, .ui-selectonemenu-panel{
+#messages_container, .ui-dialog, .ui-selectonemenu-panel, .ui-selectcheckboxmenu-panel{
 	z-index: 1100 !important;
 }
 

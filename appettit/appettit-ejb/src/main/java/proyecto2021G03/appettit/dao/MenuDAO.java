@@ -63,15 +63,15 @@ public class MenuDAO implements IMenuDAO {
 	@Override
 	public List<Menu> listarPorRestaurate(Long id) {
 		List<Menu> menus = new ArrayList<Menu>();
-		try {
+		//try {
 			menus = em.createQuery("select _m " 
 					+ "from Menu _m "
 					+ "inner join _m.restaurante _r "
 					+ "where _r.id =:id", Menu.class)
 					.setParameter("id", id).getResultList();
-		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
-		}
+		//} catch (Exception e) {
+		//	logger.error(e.getLocalizedMessage());
+		//}
 
 		return menus;
 	}
