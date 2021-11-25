@@ -40,382 +40,374 @@ import java.util.*;
 //@RequestScoped
 public class MenuAddBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    static Logger logger = Logger.getLogger(MenuAddBean.class);
-
-    // Variables Menu
-    private Long id;
-    private Long id_restaurante;
-    private String nombre;
-    private RestauranteDTO restaurante;
-    private String descripcion;
-    private Double precioSimple;
-    private Double precioTotal;
-    private List<ProductoDTO> productos;
-    private List<ExtraMenuDTO> extras;
-    private String id_imagen;
-    private ImagenDTO imagen;
+	private static final long serialVersionUID = 1L;
+
+	static Logger logger = Logger.getLogger(MenuAddBean.class);
+
+	// Variables Menu
+	private Long id;
+	private Long id_restaurante;
+	private String nombre;
+	private RestauranteDTO restaurante;
+	private String descripcion;
+	private Double precioSimple;
+	private Double precioTotal;
+	private List<ProductoDTO> productos;
+	private List<ExtraMenuDTO> extras;
+	private String id_imagen;
+	private ImagenDTO imagen;
+
+	// Variables auxiliares y contexto
+	private UploadedFile imgfile;
+	private CroppedImage croppedImage;
+	FacesContext facesContext;
+	HttpSession session;
+	UsuarioDTO usuarioDTO;
+	private List<ProductoDTO> productosRestaurante;
+	private List<ExtraMenuDTO> extrasRestaurante;
+	private Map<Long, ProductoDTO> productosById;
+	private Map<Long, ExtraMenuDTO> extrasById;
+
+	// Variables de SelectCheckboxMenu
+	List<SelectItem> productsItems;
+	String[] productsSelectedItems;
+	List<SelectItem> extrasItems;
+	String[] extrasSelectedItems;
+
+	@EJB
+	IUsuarioService usrSrv;
+
+	@EJB
+	IMenuService menuSrv;
+
+	@EJB
+	IProductoService prodSrv;
+
+	@EJB
+	IExtraMenuService extraSrv;
+
+	@EJB
+	IImagenService imgSrv;
 
-    // Variables auxiliares y contexto
-    private UploadedFile imgfile;
-    private CroppedImage croppedImage;
-    FacesContext facesContext;
-    HttpSession session;
-    UsuarioDTO usuarioDTO;
-    private List<ProductoDTO> productosRestaurante;
-    private List<ExtraMenuDTO> extrasRestaurante;
-    private Map<Long, ProductoDTO> productosById;
-    private Map<Long, ExtraMenuDTO> extrasById;
+	@EJB
+	IDepartamentoService deptoSrv;
 
-    // Variables de SelectCheckboxMenu
-    List<SelectItem> productsItems;
-    String[] productsSelectedItems;
-    List<SelectItem> extrasItems;
-    String[] extrasSelectedItems;
-
-    @EJB
-    IUsuarioService usrSrv;
+	@EJB
+	GeoConverter geoConverter;
+
+	@PostConstruct
+	public void init() {
+		clearParam();
+
+		facesContext = FacesContext.getCurrentInstance();
+		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+
+		usuarioDTO = getUserSession();
 
-    @EJB
-    IMenuService menuSrv;
+		if (usuarioDTO == null) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+		} else {
+			try {
+				id_restaurante = usuarioDTO.getId();
+				restaurante = (RestauranteDTO) usuarioDTO;
+				productosById = new HashMap<Long, ProductoDTO>();
+				extrasById = new HashMap<Long, ExtraMenuDTO>();
+
+				productosRestaurante = prodSrv.listarPorRestaurante(id_restaurante);
+				extrasRestaurante = extraSrv.listarPorRestaurante(id_restaurante);
 
-    @EJB
-    IProductoService prodSrv;
+				if (!productosRestaurante.isEmpty()) {
+					for (ProductoDTO prod : productosRestaurante) {
+
+						productosById.put(prod.getId(), prod);
+					}
+				}
+
+				if (!extrasRestaurante.isEmpty()) {
+					for (ExtraMenuDTO ext : extrasRestaurante) {
+
+						extrasById.put(ext.getId(), ext);
+					}
+				}
+
+				loadProductosDelRestaurante();
+				loadExtrasDelRestaurante();
+			} catch (AppettitException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
+			}
+		}
+
+	}
 
-    @EJB
-    IExtraMenuService extraSrv;
+	public void addMenu() {
+		String id_imagen = null;
+		Boolean loadImg = false;
+		imagen = null;
 
-    @EJB
-    IImagenService imgSrv;
+		productos = new ArrayList<ProductoDTO>();
+		extras = new ArrayList<ExtraMenuDTO>();
 
-    @EJB
-    IDepartamentoService deptoSrv;
+		try {
+			crop();
 
-    @EJB
-    GeoConverter geoConverter;
+			try {
+				byte[] bimg = getImageAsByteArray();
+				if (bimg != null) {
 
-    @PostConstruct
-    public void init() throws AppettitException {
-        clearParam();
+					String identificador = "menu." + restaurante.getCorreo().trim() + System.currentTimeMillis();
+
+					imagen = imgSrv.buscarPorIdentificador(identificador);
+
+					if (imagen == null) {
+
+						imagen = new ImagenDTO();
+						imagen.setIdentificador(identificador);
+						imagen.setImagen(bimg);
+
+						imgSrv.crear(imagen);
+						imagen = imgSrv.buscarPorIdentificador(identificador);
+					}
+
+					id_imagen = imagen.getId();
+					loadImg = true;
+				}
+
+			} catch (IOException e) {
+				logger.info(e.getMessage().trim());
+				loadImg = false;
+			}
+
+			try {
+
+				if (productsSelectedItems.length > 0) {
+
+					for (String id : productsSelectedItems) {
+						ProductoDTO prodSelected = productosById.get(Long.valueOf(id));
+
+						productos.add(prodSelected);
+					}
+				}
+
+				if (extrasSelectedItems.length > 0) {
+					for (String id : extrasSelectedItems) {
+						ExtraMenuDTO extraSelected = extrasById.get(Long.valueOf(id));
+
+						extras.add(extraSelected);
+					}
+				}
+
+				MenuDTO restDTO = new MenuDTO(id, id_restaurante, nombre, restaurante, descripcion, precioSimple,
+						precioTotal, productos, extras, id_imagen, imagen);
+
+				menuSrv.crear(restDTO);
+
+				if (loadImg) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Menu " + restDTO.getNombre() + " creado con éxito.", null));
+
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Menu " + restDTO.getNombre() + " creado con éxito.", null));
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No fue posible cargar la imagen."));
+				}
+
+			} catch (ParseException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			}
+
+		} catch (AppettitException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+
+		} finally {
+			clearParam();
+		}
+	}
+
+	private void clearParam() {
+
+		this.id = null;
+		this.nombre = null;
+		this.descripcion = null;
+		this.precioTotal = null;
+		this.imagen = null;
+		this.imgfile = null;
+		this.croppedImage = null;
+		setProductsSelectedItems(new String[] {});
+		setExtrasSelectedItems(new String[] {});
+	}
+
+	public byte[] getImageAsByteArray() throws IOException {
+
+		if (this.croppedImage != null) {
+			return this.croppedImage.getBytes();
+		} else {
+			return null;
+		}
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+		this.imgfile = null;
+		this.croppedImage = null;
+		UploadedFile file = event.getFile();
+		if (file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
+			this.imgfile = file;
+		}
+	}
+
+	public void crop() {
+		if (!(this.croppedImage == null || this.croppedImage.getBytes() == null
+				|| this.croppedImage.getBytes().length == 0)) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito", "Recorte exitoso."));
+		}
+	}
+
+	public StreamedContent getImage() {
+		return DefaultStreamedContent.builder().contentType(imgfile == null ? null : imgfile.getContentType())
+				.stream(() -> {
+					if (imgfile == null || imgfile.getContent() == null || imgfile.getContent().length == 0) {
+						return null;
+					}
 
-        facesContext = FacesContext.getCurrentInstance();
-        session = (HttpSession) facesContext.getExternalContext().getSession(true);
+					try {
+						return new ByteArrayInputStream(imgfile.getContent());
+					} catch (Exception e) {
+						e.printStackTrace();
+						return null;
+					}
+				}).build();
+	}
+
+	public StreamedContent getCropped() {
+		return DefaultStreamedContent.builder().contentType(imgfile == null ? null : imgfile.getContentType())
+				.stream(() -> {
+					if (croppedImage == null || croppedImage.getBytes() == null
+							|| croppedImage.getBytes().length == 0) {
+						return null;
+					}
 
-        usuarioDTO = getUserSession();
+					try {
+						return new ByteArrayInputStream(this.croppedImage.getBytes());
+					} catch (Exception e) {
+						e.printStackTrace();
+						return null;
+					}
+				}).build();
+	}
 
-        if (usuarioDTO == null) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-        }
-        else {
-            id_restaurante = usuarioDTO.getId();
-            restaurante = (RestauranteDTO) usuarioDTO;
-            productosById = new HashMap<Long, ProductoDTO>();
-            extrasById =  new HashMap<Long, ExtraMenuDTO>();
+	public UsuarioDTO getUserSession() {
+		UsuarioDTO usuarioDTO = null;
+		try {
+			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+		} catch (Exception e) {
+			logger.error("Intento de acceso");
+		}
 
-            productosRestaurante = prodSrv.listarPorRestaurante(id_restaurante);
-            extrasRestaurante = extraSrv.listarPorRestaurante(id_restaurante);
+		return usuarioDTO;
 
-            if (!productosRestaurante.isEmpty()) {
-                for (ProductoDTO prod : productosRestaurante) {
+	}
 
-                    productosById.put(prod.getId(), prod);
-                }
-            }
+	///////////////////////////////////////////////
+	public List<SelectItem> getProductsItems() {
+		return productsItems;
+	}
 
-            if (!extrasRestaurante.isEmpty()) {
-                for (ExtraMenuDTO ext : extrasRestaurante) {
+	public void setProductsItems(List<SelectItem> products) {
+		this.productsItems = products;
+	}
 
-                    extrasById.put(ext.getId(), ext);
-                }
-            }
+	public String[] getProductsSelectedItems() {
+		return productsSelectedItems;
+	}
 
-            loadProductosDelRestaurante();
-            loadExtrasDelRestaurante();
-        }
+	public void setProductsSelectedItems(String[] selectedProducts) {
+		this.productsSelectedItems = selectedProducts;
+	}
 
-    }
+	public void onItemUnselect(UnselectEvent event) {
+		FacesContext context = FacesContext.getCurrentInstance();
 
-    public void addMenu() {
-        String id_imagen = null;
-        Boolean loadImg = false;
-        imagen = null;
+		FacesMessage msg = new FacesMessage();
+		msg.setSummary("Item unselected: " + event.getObject().toString());
+		msg.setSeverity(FacesMessage.SEVERITY_INFO);
 
-        productos = new ArrayList<ProductoDTO>();
-        extras = new ArrayList<ExtraMenuDTO>();
+		context.addMessage(null, msg);
+	}
 
-        try {
-            crop();
+	/////////////////////////////////////////////////
 
-            try {
-                byte[] bimg = getImageAsByteArray();
-                if (bimg != null) {
+	private void loadProductosDelRestaurante() throws AppettitException {
 
-                    String identificador = "menu." + restaurante.getCorreo().trim() + System.currentTimeMillis();
+		productsItems = new ArrayList<>();
 
-                    imagen = imgSrv.buscarPorIdentificador(identificador);
+		if (!productosRestaurante.isEmpty()) {
 
-                    if(imagen == null) {
+			Map<String, List<ProductoDTO>> productsByCategory = new HashMap<String, List<ProductoDTO>>();
 
-                        imagen = new ImagenDTO();
-                        imagen.setIdentificador(identificador);
-                        imagen.setImagen(bimg);
+			for (ProductoDTO prod : productosRestaurante) {
 
-                        imgSrv.crear(imagen);
-                        imagen = imgSrv.buscarPorIdentificador(identificador);
-                    }
+				List<ProductoDTO> existingProductList = new ArrayList<>();
 
-                    id_imagen = imagen.getId();
-                    loadImg = true;
-                }
+				if (productsByCategory.keySet().contains(prod.getCategoria().getNombre())) {
+					existingProductList = productsByCategory.get(prod.getCategoria().getNombre());
+				}
 
-            } catch (IOException e) {
-                logger.info(e.getMessage().trim());
-                loadImg = false;
-            }
+				existingProductList.add(prod);
+				productsByCategory.put(prod.getCategoria().getNombre(), existingProductList);
+			}
 
+			for (String catName : productsByCategory.keySet()) {
 
-            try {
-
-                if (productsSelectedItems.length > 0) {
+				SelectItemGroup itemGroup = new SelectItemGroup(catName);
+				SelectItem[] items = new SelectItem[productsByCategory.get(catName).size()];
 
-                    for (String id : productsSelectedItems) {
-                        ProductoDTO prodSelected = productosById.get(Long.valueOf(id));
-
-                        productos.add(prodSelected);
-                    }
-                }
-
-                if (extrasSelectedItems.length > 0) {
-                    for (String id : extrasSelectedItems) {
-                        ExtraMenuDTO extraSelected = extrasById.get(Long.valueOf(id));
-
-                        extras.add(extraSelected);
-                    }
-                }
-
-                MenuDTO restDTO = new MenuDTO(id, id_restaurante, nombre, restaurante, descripcion, precioSimple,
-                                              precioTotal, productos, extras, id_imagen, imagen);
-
-                menuSrv.crear(restDTO);
-
-                if(loadImg) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Menu " + restDTO.getNombre() + " creado con éxito.", null));
-
-                }else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Menu " + restDTO.getNombre() + " creado con éxito.", null));
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error", "No fue posible cargar la imagen."));
-                }
-
-            } catch (ParseException e) {
-                logger.info(e.getMessage().trim());
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-            }
-
-
-        } catch (AppettitException e) {
-            logger.info(e.getMessage().trim());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-
-        } finally {
-            clearParam();
-        }
-    }
-
-    private void clearParam() {
-
-        this.id = null;
-        this.nombre = null;
-        this.descripcion = null;
-        this.precioTotal = null;
-        this.imagen = null;
-        this.imgfile = null;
-        this.croppedImage = null;
-        setProductsSelectedItems(new String[]{});
-        setExtrasSelectedItems(new String[]{});
-    }
-
-
-    public byte[] getImageAsByteArray() throws IOException {
-
-        if (this.croppedImage != null) {
-            return this.croppedImage.getBytes();
-        } else {
-            return null;
-        }
-    }
-
-
-    public void handleFileUpload(FileUploadEvent event) {
-        this.imgfile = null;
-        this.croppedImage = null;
-        UploadedFile file = event.getFile();
-        if (file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
-            this.imgfile = file;
-        }
-    }
-
-    public void crop() {
-        if (!(this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0)) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito",
-                    "Recorte exitoso."));
-        }
-    }
-
-    public StreamedContent getImage() {
-        return DefaultStreamedContent.builder()
-                .contentType(imgfile == null ? null : imgfile.getContentType())
-                .stream(() -> {
-                    if (imgfile == null
-                            || imgfile.getContent() == null
-                            || imgfile.getContent().length == 0) {
-                        return null;
-                    }
+				Integer count = 0;
 
-                    try {
-                        return new ByteArrayInputStream(imgfile.getContent());
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .build();
-    }
+				for (ProductoDTO prod : productsByCategory.get(catName)) {
 
-    public StreamedContent getCropped() {
-        return DefaultStreamedContent.builder()
-                .contentType(imgfile == null ? null : imgfile.getContentType())
-                .stream(() -> {
-                    if (croppedImage == null
-                            || croppedImage.getBytes() == null
-                            || croppedImage.getBytes().length == 0) {
-                        return null;
-                    }
+					SelectItem item = new SelectItem(prod.getId(), prod.getNombre());
+					items[count] = item;
 
-                    try {
-                        return new ByteArrayInputStream(this.croppedImage.getBytes());
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .build();
-    }
+					count++;
+				}
 
-    public UsuarioDTO getUserSession() {
-        UsuarioDTO usuarioDTO = null;
-        try {
-            usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
-        } catch (Exception e) {
-            logger.error("Intento de acceso");
-        }
+				itemGroup.setSelectItems(items);
+				productsItems.add(itemGroup);
+			}
 
-        return usuarioDTO;
+		}
+	}
 
-    }
+	private void loadExtrasDelRestaurante() {
 
-    ///////////////////////////////////////////////
-    public List<SelectItem> getProductsItems() {
-        return productsItems;
-    }
+		extrasItems = new ArrayList<>();
 
-    public void setProductsItems(List<SelectItem> products) {
-        this.productsItems = products;
-    }
+		if (!extrasRestaurante.isEmpty()) {
 
-    public String[] getProductsSelectedItems() {
-        return productsSelectedItems;
-    }
+			SelectItemGroup itemGroup = new SelectItemGroup("Extras");
+			SelectItem[] items = new SelectItem[extrasRestaurante.size()];
 
-    public void setProductsSelectedItems(String[] selectedProducts) {
-        this.productsSelectedItems = selectedProducts;
-    }
+			Integer count = 0;
 
-    public void onItemUnselect(UnselectEvent event) {
-        FacesContext context = FacesContext.getCurrentInstance();
+			for (ExtraMenuDTO extra : extrasRestaurante) {
 
-        FacesMessage msg = new FacesMessage();
-        msg.setSummary("Item unselected: " + event.getObject().toString());
-        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+				SelectItem item = new SelectItem(extra.getId(), extra.getProducto().getNombre());
+				items[count] = item;
 
-        context.addMessage(null, msg);
-    }
+				count++;
+			}
 
-    /////////////////////////////////////////////////
-
-    private void loadProductosDelRestaurante() throws AppettitException {
-
-        productsItems = new ArrayList<>();
-
-        if (!productosRestaurante.isEmpty()) {
-
-            Map<String, List<ProductoDTO>> productsByCategory = new HashMap<String, List<ProductoDTO>>();
-
-            for (ProductoDTO prod : productosRestaurante) {
-
-                List<ProductoDTO> existingProductList = new ArrayList<>();
-
-                if (productsByCategory.keySet().contains(prod.getCategoria().getNombre())) {
-                    existingProductList =  productsByCategory.get(prod.getCategoria().getNombre());
-                }
-
-                existingProductList.add(prod);
-                productsByCategory.put(prod.getCategoria().getNombre(), existingProductList);
-            }
-
-
-            for (String catName : productsByCategory.keySet()) {
-
-                SelectItemGroup itemGroup = new SelectItemGroup(catName);
-                SelectItem[] items = new SelectItem[productsByCategory.get(catName).size()];
-
-                Integer count = 0;
-
-                for (ProductoDTO prod : productsByCategory.get(catName)) {
-
-                    SelectItem item = new SelectItem(prod.getId(), prod.getNombre());
-                    items[count] = item;
-
-                    count ++;
-                }
-
-                itemGroup.setSelectItems(items);
-                productsItems.add(itemGroup);
-            }
-
-        }
-    }
-
-    private void loadExtrasDelRestaurante() {
-
-        extrasItems = new ArrayList<>();
-
-        if (!extrasRestaurante.isEmpty()) {
-
-            SelectItemGroup itemGroup = new SelectItemGroup("Extras");
-            SelectItem[] items = new SelectItem[extrasRestaurante.size()];
-
-            Integer count = 0;
-
-            for (ExtraMenuDTO extra : extrasRestaurante) {
-
-                SelectItem item = new SelectItem(extra.getId(), extra.getProducto().getNombre());
-                items[count] = item;
-
-                count ++;
-            }
-
-            itemGroup.setSelectItems(items);
-            extrasItems.add(itemGroup);
-        }
-    }
+			itemGroup.setSelectItems(items);
+			extrasItems.add(itemGroup);
+		}
+	}
 
 }

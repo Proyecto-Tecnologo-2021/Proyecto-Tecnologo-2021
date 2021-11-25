@@ -17,4 +17,5 @@ public class DashGeoDTO {
 
 	List<String> coordenadas;
 	String centro;
+	String zona;
 }

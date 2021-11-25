@@ -307,3 +307,7 @@ body .card-comentarios {
     border: 1px solid #f2a22c !important;
     margin: 5px !important;
 }
+
+.ui-selectlistbox-listcontainer{
+	height: 200px !important;
+}

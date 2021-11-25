@@ -69,7 +69,6 @@ public class GeoDAO implements IGeoDAO {
 		return localidad;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Restaurante> repartoRestaurantesPorPunto(String point) {
 		List<Restaurante> restaurantes = new ArrayList<Restaurante>();
@@ -88,19 +87,6 @@ public class GeoDAO implements IGeoDAO {
 	         .stream()
 	         .map(item -> item instanceof BigInteger ? usrDAO.buscarRestaurantePorId(((BigInteger) item ).longValue()): null)
 	         .collect(Collectors.toList());
-			
-			/*
-			List<Object[]> datos = consulta.getResultList();
-			
-			Iterator<Object[]> it = datos.iterator();
-			
-			while (it.hasNext()) {
-				Object[] data = it.next();
-				Restaurante restaurante = usrDAO.buscarRestaurantePorId(Long.valueOf(data[0].toString()));
-				restaurantes.add(restaurante);
-			}	
-				
-			*/
 			
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());

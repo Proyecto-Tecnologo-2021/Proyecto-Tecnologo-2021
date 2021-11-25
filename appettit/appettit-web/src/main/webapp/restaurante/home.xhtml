@@ -827,16 +827,27 @@
 		/* MAPA */
 		var lat = -34.86157;
 		var lon = -56.17938;
-	
-		var clientes = [[-34.8685793867382,-56.1666772418927]]; 
+		var latlngs=[];
+		
+		var clientes = [ 
+		<c:forEach items="#{HomeRestaurante.influencia.coordenadas}"	var="in">
+			<h:outputText value="#{in}" />,
+		</c:forEach>
+			];
+
 		<c:choose>
-		<c:when test="#{empty HomeBeanRestaurant.influencia.centro}">
-			var mapa = L.map('map').setView([lat, lon], 11);
+		<c:when test="#{empty HomeRestaurante.influencia.centro}">
+			var mapa = L.map('map').setView([lat, lon], 14);
 		</c:when>
 		<c:otherwise>
-			var mapa = L.map('map').setView(<h:outputText value="#{HomeBeanRestaurant.influencia.centro}"/>, 11);
+			var mapa = L.map('map').setView(<h:outputText value="#{HomeRestaurante.influencia.centro}"/>, 14);
+			latlngs = <h:outputText value="[#{HomeRestaurante.influencia.zona}];"/>
 		</c:otherwise>
-	</c:choose>
+		</c:choose>
+
+	
+
+		var polygon = L.polygon(latlngs, {color: 'red'});
 
 			
 		
@@ -850,6 +861,7 @@
 
 		var heat = L.heatLayer(addressPoints, {radius: 50});
 		mapa.addLayer(heat);
+		mapa.addLayer(polygon);
 
 	</script>
 

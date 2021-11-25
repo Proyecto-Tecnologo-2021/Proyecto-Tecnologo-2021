@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.bean.restaurante;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -122,6 +123,7 @@ public class HomeRestauranteBean implements Serializable {
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
+				FacesContext.getCurrentInstance().getExternalContext().dispatch("/foo.xhtml");
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
@@ -172,12 +174,15 @@ public class HomeRestauranteBean implements Serializable {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+		} catch (IOException e) {
+			logger.error(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		}
 
 	}
 
 	public void abrirRestaurante() throws AppettitException {
-		logger.info("abrio");
 		restauranteDTO = usrService.abrirRestaurante(restauranteDTO.getId());
 		abierto = restauranteDTO.getAbierto();
 	}

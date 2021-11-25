@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -27,7 +27,7 @@ import proyecto2021G03.appettit.dto.TipoPago;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
 import proyecto2021G03.appettit.entity.Pedido;
 
-@Stateless
+@Singleton
 public class EstadisticasDAO implements IEstadisticasDAO {
 	
 	static Logger logger = Logger.getLogger(EstadisticasDAO.class);
@@ -47,10 +47,6 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 	@PersistenceContext(name = "Proyecto2021G03")
 	private EntityManager em;	
 
-
-	public EstadisticasDAO() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public List<Pedido> listarPedidosPendientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
@@ -753,22 +749,28 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 	public DashGeoDTO listarGeoEntregasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		List<String> valores = new ArrayList<String>();
 		String centro = null;
+		String reparto = null;
 		
 		Query consulta = em
 				.createNativeQuery("select "
 						+ "'[' || ST_Y(ST_Centroid(ST_Transform(ST_GeometryFromText(dr.geom, 32721), 4326))) || ', ' || "
 						+ "ST_X(ST_Centroid(ST_Transform(ST_GeometryFromText(dr.geom, 32721), 4326))) || ']' AS restaurante, "
 						+ "'[' || ST_Y(ST_Centroid(ST_Transform(ST_GeometryFromText(d.geom, 32721), 4326))) || ', ' || "
-						+ "ST_X(ST_Centroid(ST_Transform(ST_GeometryFromText(d.geom, 32721), 4326))) || ']' AS entregar "
-					+ "FROM pedidos p "
+						+ "ST_X(ST_Centroid(ST_Transform(ST_GeometryFromText(d.geom, 32721), 4326))) || ']' AS entregar, "
+						+ "array_to_string( "
+						+ "		array_agg( "
+						+ "		'[' || ST_Y(ST_Centroid(ST_Transform(aux.geom, 4326))) || ', ' || "
+						+ "		ST_X(ST_Centroid(ST_Transform(aux.geom, 4326))) || ']'), ',') AS reparto "
+						+ "FROM pedidos p "
 					+ "join direcciones d on d.id = p.id_entrega "
 					+ "join usuario u on u.id = p.id_restaurante "
 					+ "join direcciones dr on dr.id = u.id_direccion "
+					+ "join (SELECT (ST_dumppoints(ST_GeometryFromText(u.geom, 32721))).geom FROM usuario u where u.id =" + id.toString() + ") as aux ON 1=1"
 					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
 					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
 					+ "	and p.estado = 4 "
 					+ "	and p.id_restaurante=" + id.toString()
-					+ "");
+					+ " group by dr.geom, d.geom");
 				
 		List<Object[]> datos = consulta.getResultList();
 		
@@ -777,11 +779,12 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 			Object[] line = it.next();
 			
 			centro = line[0].toString();
+			reparto = line[2].toString();
 			
 			valores.add(line[1].toString());
 		}
 		
-		return new DashGeoDTO(valores,centro);
+		return new DashGeoDTO(valores,centro, reparto);
 	
 		
 	}

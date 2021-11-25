@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -25,7 +26,8 @@ import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanPromocion")
-@SessionScoped
+//@SessionScoped
+@RequestScoped
 @Getter
 @Setter
 @AllArgsConstructor
