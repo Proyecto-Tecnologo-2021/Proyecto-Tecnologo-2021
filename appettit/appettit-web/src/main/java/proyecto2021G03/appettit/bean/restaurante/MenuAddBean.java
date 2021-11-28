@@ -1,20 +1,12 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
-import com.vividsolutions.jts.io.ParseException;
-import lombok.*;
-import org.apache.commons.math3.stat.descriptive.summary.Product;
-import org.jboss.logging.Logger;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.UnselectEvent;
-import org.primefaces.model.CroppedImage;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.file.UploadedFile;
-import proyecto2021G03.appettit.business.*;
-import proyecto2021G03.appettit.converter.GeoConverter;
-import proyecto2021G03.appettit.dto.*;
-import proyecto2021G03.appettit.exception.AppettitException;
-import proyecto2021G03.appettit.util.Constantes;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,10 +17,37 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
+
+import org.jboss.logging.Logger;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.CroppedImage;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.file.UploadedFile;
+
+import com.vividsolutions.jts.io.ParseException;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import proyecto2021G03.appettit.business.IDepartamentoService;
+import proyecto2021G03.appettit.business.IExtraMenuService;
+import proyecto2021G03.appettit.business.IImagenService;
+import proyecto2021G03.appettit.business.IMenuService;
+import proyecto2021G03.appettit.business.IProductoService;
+import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.converter.GeoConverter;
+import proyecto2021G03.appettit.dto.ExtraMenuDTO;
+import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.MenuDTO;
+import proyecto2021G03.appettit.dto.ProductoDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
+import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanAddMenu")
 @SessionScoped
@@ -332,6 +351,7 @@ public class MenuAddBean implements Serializable {
 		this.productsSelectedItems = selectedProducts;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void onItemUnselect(UnselectEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
 

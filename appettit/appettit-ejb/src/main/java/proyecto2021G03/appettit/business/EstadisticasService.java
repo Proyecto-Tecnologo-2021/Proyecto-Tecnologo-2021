@@ -245,4 +245,52 @@ public class EstadisticasService implements IEstadisticasService {
 		}
 	}
 
+	@Override
+	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarClientesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarOrdenesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarOrdenesPromedioPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarFormaPagoPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarReclamosTPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashTotalDTO listarRestaurantesAutorizar() throws AppettitException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

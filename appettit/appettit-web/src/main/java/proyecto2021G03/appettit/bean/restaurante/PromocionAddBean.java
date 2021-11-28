@@ -26,15 +26,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.business.IDepartamentoService;
-import proyecto2021G03.appettit.business.IExtraMenuService;
 import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IMenuService;
-import proyecto2021G03.appettit.business.IProductoService;
+import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.business.IUsuarioService;
-import proyecto2021G03.appettit.converter.GeoConverter;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.MenuDTO;
+import proyecto2021G03.appettit.dto.PromocionDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -78,11 +76,12 @@ public class PromocionAddBean implements Serializable {
 	@EJB
 	IMenuService menuSrv;
 
-	
 	@EJB
 	IImagenService imgSrv;
 
-	
+	@EJB
+	IPromocionService promoSrv;
+
 	@PostConstruct
 	public void init() {
 		clearParam();
@@ -100,7 +99,10 @@ public class PromocionAddBean implements Serializable {
 				id_restaurante = usuarioDTO.getId();
 				restaurante = (RestauranteDTO) usuarioDTO;
 				menus = menuSrv.listarPorRestaurante(id_restaurante);
-				
+				logger.info("Menus promociones: " + menus.size());
+
+				menuSel = new ArrayList<MenuDTO>();
+
 			} catch (AppettitException e) {
 				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
@@ -121,13 +123,11 @@ public class PromocionAddBean implements Serializable {
 			try {
 				byte[] bimg = getImageAsByteArray();
 				if (bimg != null) {
-
-					String identificador = "menu." + restaurante.getCorreo().trim() + System.currentTimeMillis();
+					String identificador = "promocion." + this.restaurante.getId() + "." + +System.currentTimeMillis();
 
 					imagen = imgSrv.buscarPorIdentificador(identificador);
 
 					if (imagen == null) {
-
 						imagen = new ImagenDTO();
 						imagen.setIdentificador(identificador);
 						imagen.setImagen(bimg);
@@ -145,14 +145,37 @@ public class PromocionAddBean implements Serializable {
 				loadImg = false;
 			}
 
+			PromocionDTO promocionDTO = new PromocionDTO(null, restaurante.getId(), nombre, null, descripcion,
+					descuento, precioTotal, menuSel, id_imagen, null);
+
+			promocionDTO = promoSrv.crear(promocionDTO);
+
+			if (loadImg) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Promoci&oacute;n " + promocionDTO.getNombre() + " creada con éxito.", null));
+
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Promoci&oacute;n " + promocionDTO.getNombre() + " creada con éxito.", null));
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No fue posible cargar la imagen."));
+			}
+
 		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-
 		} finally {
 			clearParam();
+			try {
+				menus = menuSrv.listarPorRestaurante(id_restaurante);
+			} catch (AppettitException e) {
+				logger.info(e.getMessage().trim());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+			}
 		}
+
 	}
 
 	private void clearParam() {
@@ -162,10 +185,12 @@ public class PromocionAddBean implements Serializable {
 		this.imagen = null;
 		this.imgfile = null;
 		this.croppedImage = null;
-		//this.menuSel = new ArrayList<MenuDTO>();
+		this.menuSel = new ArrayList<MenuDTO>();
 		this.descuento = 0D;
 		this.subTotal = 0D;
 		this.precioTotal = 0D;
+		this.menus = new ArrayList<MenuDTO>();
+		this.id_imagen = null;
 
 	}
 
@@ -247,10 +272,27 @@ public class PromocionAddBean implements Serializable {
 		for (MenuDTO m : menuSel) {
 			this.subTotal = this.subTotal + m.getPrecioTotal();
 		}
-		
-		this.precioTotal = subTotal * (100-this.descuento)/100;
-		
-		logger.debug(this.subTotal);
+
+		this.precioTotal = subTotal * (100 - this.descuento) / 100;
+
 	}
 
+	public void addMenu(MenuDTO menu) {
+		menuSel.add(menu);
+		calcularPrecio();
+
+	}
+
+	public void deleteMenu(MenuDTO menu) {
+		int id = 0;
+		for (MenuDTO m : menuSel) {
+			if (m.getId() == menu.getId()) {
+				menuSel.remove(id);
+				break;
+			}
+			id++;
+		}
+
+		calcularPrecio();
+	}
 }

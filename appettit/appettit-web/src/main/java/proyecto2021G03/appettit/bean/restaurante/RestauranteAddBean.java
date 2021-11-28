@@ -168,10 +168,6 @@ public class RestauranteAddBean implements Serializable {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-		//} catch (IOException e) {
-		//	logger.info(e.getMessage().trim());
-		//	FacesContext.getCurrentInstance().addMessage(null,
-		//			new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		} finally {
 			clearParam();
 		}
