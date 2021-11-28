@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jsonwebtoken.Jwts;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import junit.framework.TestCase;
 import proyecto2021G03.appettit.converter.DireccionConverter;
 import proyecto2021G03.appettit.converter.LocalidadConverter;
 import proyecto2021G03.appettit.converter.UsuarioConverter;
+import proyecto2021G03.appettit.dao.GeoDAO;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
 import proyecto2021G03.appettit.dto.*;
 import proyecto2021G03.appettit.entity.Administrador;
@@ -31,6 +33,7 @@ import proyecto2021G03.appettit.entity.Localidad;
 import proyecto2021G03.appettit.entity.Restaurante;
 import proyecto2021G03.appettit.entity.Usuario;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 import proyecto2021G03.appettit.util.FileManagement;
 
 
@@ -58,6 +61,12 @@ public class UsuarioServiceTest extends TestCase {
     @Mock
     private ImagenService imagenServiceI;
 
+    @Mock
+    private IMailService mockiMailService;
+
+    @Mock
+    private GeoDAO mockGeoDao;
+
     @Before
     public void init() {
         usuarioServiceI = Mockito.spy(new UsuarioService());
@@ -66,6 +75,8 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.geoSrv = this.mockiGeoSrvc;
         usuarioServiceI.locConverter = this.mockLocalidadConverter;
         usuarioServiceI.dirConverter = this.mockDirConverter;
+        usuarioServiceI.iMailService = this.mockiMailService;
+        usuarioServiceI.geoDAO = this.mockGeoDao;
     }
 
     @Test
@@ -1369,6 +1380,7 @@ public class UsuarioServiceTest extends TestCase {
         usuario.setPassword(BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
         usuario.setNotificationFirebase("notiF");
         String obtenido = usuarioServiceI.crearJsonWebToken(usuario);
+        //String esperado = Jwts.parser().setSigningKey(Constantes.JWT_KEY).parseClaimsJws(obtenido);
     }
 
     @Test
@@ -1564,5 +1576,116 @@ public class UsuarioServiceTest extends TestCase {
     public void testCambioContraseña_cNoExiste() throws AppettitException{
         Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(null);
         usuarioServiceI.cambioContraseña("pwd", 1L);
+    }
+
+    @Test
+    public void testSetFirebaseTokenWeb(){
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(cliente);
+        Mockito.when(usuarioServiceI.usrDAO.editarCliente(cliente)).thenReturn(cliente);
+
+        try {
+            usuarioServiceI.setFirebaseTokenWeb("token", 1L);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testSetFirebaseTokenWeb_cNoexiste() throws AppettitException{
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdCliente(1L)).thenReturn(null);
+        usuarioServiceI.setFirebaseTokenWeb("token", 1L);
+    }
+
+    @Test
+    public void testSolicitarCorreoVerificador(){
+        Usuario usuario = new Cliente();
+        usuario.setId(1L);
+        usuario.setCorreo("mail@mail.com");
+        usuario.setUsername("mail@mail.com");
+        usuario.setTelefono("1234");
+        usuario.setPassword(BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
+        usuario.setNotificationFirebase("notiF");
+        MailDTO mailDTO = new MailDTO("mail@mail.com");
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        usuarios.add(usuario);
+        String token = "token";
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreo("mail@mail.com")).thenReturn(usuarios);
+        Mockito.when(usuarioServiceI.crearJsonWebToken(usuario)).thenReturn(token);
+
+        try {
+            usuarioServiceI.solicitarCorreoVerificador(mailDTO);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test(expected = AppettitException.class)
+    public void testSolicitarCorreoVerificador_usuNoExiste() throws AppettitException{
+        MailDTO mailDTO = new MailDTO("mail@mail.com");
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorCorreo("mail@mail.com")).thenReturn(usuarios);
+        usuarioServiceI.solicitarCorreoVerificador(mailDTO);
+    }
+
+    @Test
+    public void testListarRestaurantesPorPunto(){
+        String punto = "8.9858014,-79.526725";
+        byte[] mbyte = "imagen".getBytes();
+        ImagenDTO img = new ImagenDTO("iamgen", "imagen", mbyte);
+        CalificacionGralRestauranteDTO calificacion = new CalificacionGralRestauranteDTO(1,2,3,4);
+        RestauranteRDTO restauranteRDTO = new RestauranteRDTO(1L, "nombre", LocalTime.now(), LocalTime.now(), true, img, "id_imagen", "direccion", calificacion, "1234");
+        List<RestauranteRDTO> restaurantesRDTO = new ArrayList<RestauranteRDTO>();
+        restaurantesRDTO.add(restauranteRDTO);
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        Restaurante restaurante = new Restaurante(1L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "id_imagen");
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+
+        Mockito.when(usuarioServiceI.geoDAO.repartoRestaurantesPorPunto(punto)).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrConverter.RDTOfromRestaurante(restaurantes)).thenReturn(restaurantesRDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionRestaurante(1L)).thenReturn(calificacion);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(1L)).thenReturn(restaurante);
+
+        try {
+            List<RestauranteRDTO> obtenidos = usuarioServiceI.listarRestaurantesPorPunto(punto);
+            assertEquals(restaurantesRDTO, obtenidos);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testListarRestaurantesPorPunto_imgnull(){
+        String punto = "8.9858014,-79.526725";
+        CalificacionGralRestauranteDTO calificacion = new CalificacionGralRestauranteDTO(1,2,3,4);
+        RestauranteRDTO restauranteRDTO = new RestauranteRDTO(1L, "nombre", LocalTime.now(), LocalTime.now(), true, null, "", "direccion", calificacion, "1234");
+        List<RestauranteRDTO> restaurantesRDTO = new ArrayList<RestauranteRDTO>();
+        restaurantesRDTO.add(restauranteRDTO);
+        EstadoRegistro estadoRegistro = EstadoRegistro.APROBADO;
+        Restaurante restaurante = new Restaurante(1L, "nombre", "username", "pwd", "1234", "mail@mail.com", "tokenF", "123445356", estadoRegistro, false, LocalTime.now(), LocalTime.now(), true, true, "-34.8299416,-56.1407427", null, "");
+        Direccion direccion = new Direccion(2L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        restaurante.setDireccion(direccion);
+        List<Restaurante> restaurantes = new ArrayList<Restaurante>();
+        restaurantes.add(restaurante);
+
+        Mockito.when(usuarioServiceI.geoDAO.repartoRestaurantesPorPunto(punto)).thenReturn(restaurantes);
+        Mockito.when(usuarioServiceI.usrConverter.RDTOfromRestaurante(restaurantes)).thenReturn(restaurantesRDTO);
+        Mockito.when(usuarioServiceI.usrDAO.calificacionRestaurante(1L)).thenReturn(calificacion);
+        Mockito.when(usuarioServiceI.usrDAO.buscarRestaurantePorId(1L)).thenReturn(restaurante);
+
+        try {
+            List<RestauranteRDTO> obtenidos = usuarioServiceI.listarRestaurantesPorPunto(punto);
+            assertEquals(restaurantesRDTO, obtenidos);
+        } catch (AppettitException e) {
+            e.printStackTrace();
+        }
     }
 }

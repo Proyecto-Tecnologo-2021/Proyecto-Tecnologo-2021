@@ -999,15 +999,12 @@ public class UsuarioService implements IUsuarioService {
 	public List<RestauranteRDTO> listarRestaurantesPorPunto(String punto) throws AppettitException {
 		List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
         try {
-
             Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(geoDAO.repartoRestaurantesPorPunto(punto)).iterator();
             while (it.hasNext()) {
                 RestauranteRDTO res = it.next();
                 ImagenDTO img = new ImagenDTO();
-
                 if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
                     FileManagement fm = new FileManagement();
-
                     img.setIdentificador("Sin Imagen");
                     img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
                 } else {
@@ -1015,21 +1012,16 @@ public class UsuarioService implements IUsuarioService {
                         img = imgSrv.buscarPorId(res.getId_imagen());
                     } catch (Exception e) {
                         FileManagement fm = new FileManagement();
-
                         img.setIdentificador("Sin Imagen");
                         img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
                         logger.error(e.getMessage());
                     }
-
                 }
-
                 res.setImagen(img);
                 res.setCalificacion(calificacionRestaurante(res.getId()));
                 restaurantes.add(res);
             }
-
             return restaurantes;
-
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
