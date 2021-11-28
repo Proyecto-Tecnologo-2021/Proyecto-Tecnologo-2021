@@ -2,6 +2,7 @@ package proyecto2021G03.appettit.dao;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +22,10 @@ import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
+import proyecto2021G03.appettit.dto.DashRestauranteDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.dto.TipoPago;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
 import proyecto2021G03.appettit.entity.Pedido;
@@ -787,5 +790,542 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 		return new DashGeoDTO(valores,centro, reparto);
 	
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case SUM(p.total) is null "
+						+ "	when true then 0 "
+						+ "	else SUM(p.total) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case SUM(p.total) is null "
+						+ "	when true then 0 "
+						+ "	else SUM(p.total) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
+						+ "	SUM(CASE p.total IS NULL "
+						   + "	when true THEN 0 "
+						   + "	else p.total "
+						   + "	end) "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarClientesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
+						+ "	case COUNT(DISTINCT p.id_cliente) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(DISTINCT p.id_cliente) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarOrdenesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	'ANTERIOR' as tipo, "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) " 
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') " 
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "	'ACTUAL' as tipo, "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					+ "	and p.estado = 4 "
+					+ "	UNION "
+					+ "	Select " 
+						+ "case date_part('day',aux.d) < 10 "
+						+ "when true then '0' "
+						+ "else '' "
+						+ "end||date_part('day',aux.d), "
+						+ "	case COUNT(p.id) is null "
+						+ "	when true then 0 "
+						+ "	else COUNT(p.id) "
+						+ "	end total "
+					+ "	from pedidos p "
+					+ "	right join "
+					+ "	generate_series "
+					        + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+					        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+							+ "									and p.estado = 4 "
+					+ "	GROUP BY aux.d "
+					+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad = Double.valueOf(line[1].toString());     //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(!(line[0].toString().equalsIgnoreCase("ACTUAL") || line[0].toString().equalsIgnoreCase("ANTERIOR")))
+				valores.put(line[0].toString(), cantidad);
+			
+			if(line[0].toString().equalsIgnoreCase("ACTUAL"))
+				actual =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			if(line[0].toString().equalsIgnoreCase("ANTERIOR"))
+				anterior =  Double.valueOf(line[1].toString()); //line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarOrdenesPromedioPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer periodo) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double actual = 0D;
+		Double anterior = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("Select " 
+						+ "	case date_part('day',aux.d) < 10 "
+						+ "	when true then '0' "
+				+ "	else '' "
+				+ "	end||date_part('day',aux.d), "
+				+ "	case COUNT(p.id) is null "
+				+ "	when true then 0 "
+				+ "	else COUNT(p.id) "
+				+ "	end total, "
+				+ "	ac.total as actual, "
+				+ "	an.total as anterior "
+			+ "	from pedidos p "
+			+ "	right join "
+			+ "	generate_series "
+			 + "	( to_date('" + getFechaHora(fechaDesde.plusDays(1), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+		        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+		        + "	, interval '1 day') as aux(d) ON date(aux.d)= date(p.fecha) "
+				+ "									and p.estado = 4 "
+			+ "	join ( "
+			+ "	Select "
+									+ "	'ACTUAL' as tipo, "
+									+ "	case COUNT(p.id) is null "
+									+ "	when true then 0 "
+									+ "	else COUNT(p.id) "
+									+ "	end total "
+								+ "	from pedidos p "
+								+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+								+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ "	and p.estado = 4 "
+								+ "	) as ac ON 1=1 "										
+			+ "	join ( "
+			+ "	Select "
+									+ "	'ANTERIOR' as tipo, "
+									+ "	case COUNT(p.id) is null "
+									+ "	when true then 0 "
+									+ "	else COUNT(p.id) "
+									+ "	end total "
+								+ "	from pedidos p "
+								+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde.minusDays(periodo), "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+								+ "	and date(p.fecha)<=to_date('"+ getFechaHora(fechaHasta.minusDays(periodo), "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ "	and p.estado = 4 "
+								+ "	) as an ON 1=1 "										
+			+ "	GROUP BY aux.d, ac.total, an.total "
+			+ "	ORDER BY 1 "
+						+ "");
+				
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			Double cantidad = 0D;
+			if(Double.valueOf(line[2].toString())>0)
+				cantidad = Double.valueOf(line[1].toString())/Double.valueOf(line[2].toString());
+			
+			valores.put(line[0].toString(), cantidad);
+			actual =  Double.valueOf(line[2].toString());
+			anterior =  Double.valueOf(line[3].toString());
+			
+		}
+		
+		return new DashTotalDTO(valores, actual, anterior);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarFormaPagoPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double total = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "	p.tipo, "
+						+ "	Count(p.tipo) cantidad "
+						+ "from pedidos p "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' and p.estado = 4 "
+						+ "GROUP BY p.tipo "
+						+ "ORDER BY cantidad "
+						+ "");
+		
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			TipoPago fp = TipoPago.values()[Integer.valueOf(line[0].toString())];
+			Double cantidad =  line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			valores.put(fp.toString(), cantidad);
+			total = total + cantidad;
+		}
+		
+		
+		return new DashTotalDTO(valores, total, 0D);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DashTotalDTO listarReclamosTPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		Map<String, Double> valores = new HashMap<String, Double>();
+		Double total = 0D;
+		
+		Query consulta = em
+				.createNativeQuery("select "
+						+ "'R' AS tipo, "
+						+ "Count(r.id) cantidad "
+						+ "from pedidos p "
+						+ "join reclamos r on r.id = p.id_reclamo "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' UNION "
+						+ "select "
+						+ "'T' AS tipo, "
+						+ "Count(p.id) cantidad "
+						+ "from pedidos p "
+						+ "WHERE p.fecha>= '" + getFechaHora(fechaDesde, "yyyy-MM-dd HH:mm")
+						+ "' and p.fecha <= '" + getFechaHora(fechaHasta, "yyyy-MM-dd HH:mm")
+						+ "' ORDER BY tipo");
+		
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			Double cantidad =  line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+			
+			valores.put(line[0].toString(), cantidad);
+			if(line[0].toString().equalsIgnoreCase("T"))	
+			total = line[1] instanceof BigInteger ? ((BigInteger) line[1]).doubleValue(): 0;
+		}
+		
+		
+		return new DashTotalDTO(valores, total, 0D);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RestauranteRDTO> listarRestaurantesAutorizar() {
+		List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
+		
+		Query consulta = em
+					.createNativeQuery("select "
+							+ " u.id, "
+							+ " u.nombre, "
+							+ " to_char(u.horarioapertura, 'HH24:MI:SS') as apertura, "
+							+ " to_char(u.horariocierre, 'HH24:MI:SS') as cierre, "
+							+ " u.abierto, "
+							+ " u.id_imagen, "
+							+ " u.telefono, "
+							+ " d.calle || ' ' || d.numero || (case d.apartamento is null when true then '' else ', ' ||d.apartamento end) "
+							+ " from usuario u "
+							+ " join direcciones d on d.id = u.id_direccion "
+							+ " where dtype = 'restaurante' "
+							+ " and estado = 0 "
+							+ "");
+		
+			
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			while (it.hasNext()) {
+				Object[] line = it.next();
+				
+				LocalTime horarioApertura = LocalTime.parse(line[2].toString());
+				LocalTime horarioCierre = LocalTime.parse(line[3].toString());
+				restaurantes.add(new RestauranteRDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, line[5].toString(), line[7].toString(), null, line[6].toString()));
+			}
+	
+		
+		return restaurantes;	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashMenuDTO> listarTendenciasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer top) {
+List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
+		
+		Query consulta = em
+					.createNativeQuery("SELECT "
+							+ "	pm.menus_id AS id, "
+							+ "	m.nombre AS nombre, "
+							+ "	u.nombre AS r_nombre, "
+							+ "	m.preciototal AS precio, "
+							+ "	m.id_imagen AS imagen, "
+							+ "	COUNT(pm.menus_id) cantidad "
+							+ "FROM pedidos_menus pm "
+							+ "JOIN pedidos p ON p.id = pm.pedido_id "
+							+ "JOIN menus m ON m.id = pm.menus_id "
+							+ "JOIN usuario u ON u.id = m.id_restaurante "
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.pago = true "
+							+ "and p.estado = 4 "
+							+ "GROUP BY "
+							+ "	pm.menus_id, "
+							+ "	m.nombre, "
+							+ "	u.nombre, "
+							+ "	m.preciototal,  "
+							+ "	m.id_imagen "
+							+ "UNION 	 "
+							+ "SELECT  "
+							+ "	pp.promociones_id AS id, "
+							+ "	pr.nombre AS nombre, "
+							+ "	u.nombre AS r_nombre, "
+							+ "	pr.precio AS precio, "
+							+ "	pr.id_imagen AS imagen, "
+							+ "	COUNT(pp.promociones_id) cantidad "
+							+ "FROM pedidos_promociones pp "
+							+ "JOIN pedidos p ON p.id = pp.pedido_id "
+							+ "JOIN promociones pr ON pr.id = pp.promociones_id "
+							+ "JOIN usuario u ON u.id = pr.id_restaurante "
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.pago= true "
+							+ "and p.estado = 4 "
+							+ "GROUP BY "
+							+ "	pp.promociones_id, "
+							+ "	pr.nombre, "
+							+ "	u.nombre, "
+							+ "	pr.precio,  "
+							+ "	pr.id_imagen "
+							+ "ORDER BY cantidad DESC"
+							+ "");
+		
+			consulta.setMaxResults(top);
+			
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			while (it.hasNext()) {
+				Object[] line = it.next();
+				
+				
+				Double total = Double.valueOf(line[3].toString())*
+						(line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 1);
+				
+				Integer cantidad =  line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 0;
+				
+				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, line[4].toString(), null));
+			}
+	
+		
+		return tendencias;
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashRestauranteDTO> listarTopRestaurantesPorFecha(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta, Integer top) {
+		List<DashRestauranteDTO> restaurantes = new ArrayList<DashRestauranteDTO>();
+		
+		Query consulta = em
+					.createNativeQuery("select "
+							+ " u.id, "
+							+ " u.nombre, "
+							+ " to_char(u.horarioapertura, 'HH24:MI:SS') as apertura, "
+							+ " to_char(u.horariocierre, 'HH24:MI:SS') as cierre, "
+							+ " u.abierto, "
+							+ " u.id_imagen, "
+							+ " u.telefono, "
+							+ " d.calle || ' ' || d.numero || (case d.apartamento is null when true then '' else ', ' ||d.apartamento end), "
+							+ " case SUM(p.total) is null " 
+							+ " when true then 0 "
+							+ " else SUM(p.total) "
+							+ " end total "
+							+ " from pedidos p " 
+							+ " join usuario u on u.id = p.id_restaurante "
+							+ " join direcciones d on d.id = u.id_direccion "
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.estado = 4 "
+							+ " group by "
+							+ " u.id, "
+							+ " u.nombre,"
+							+ " to_char(u.horarioapertura, 'HH24:MI:SS'), "
+							+ " to_char(u.horariocierre, 'HH24:MI:SS'), "
+							+ " u.abierto, "
+							+ " u.id_imagen, "
+							+ " u.telefono, "
+							+ " d.calle || ' ' || d.numero || (case d.apartamento is null when true then '' else ', ' ||d.apartamento end) "
+							+ "");
+		
+		consulta.setMaxResults(top);
+	
+		List<Object[]> datos = consulta.getResultList();
+		
+		Iterator<Object[]> it = datos.iterator();
+		while (it.hasNext()) {
+			Object[] line = it.next();
+			
+			LocalTime horarioApertura = LocalTime.parse(line[2].toString());
+			LocalTime horarioCierre = LocalTime.parse(line[3].toString());
+			restaurantes.add(new DashRestauranteDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, line[5].toString(), line[7].toString(), null, line[6].toString(), Double.valueOf(line[8].toString())));
+		}
+	
+		
+		return restaurantes;	
 	}
 }

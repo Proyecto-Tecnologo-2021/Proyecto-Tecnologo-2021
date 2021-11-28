@@ -62,7 +62,6 @@ import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 
 @Named("HomeRestaurante")
-//@SessionScoped
 @RequestScoped
 @Getter
 @Setter

@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui" lang="sp">
+	xmlns:p="http://primefaces.org/ui" lang="sp"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 
 <h:head>
@@ -30,7 +31,7 @@
 		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
 	<div class="navigation w-100">
 		<div class="container">
-			<ui:include src="/WEB-INF/includes/navAdmin.xhtml"/>
+			<ui:include src="/WEB-INF/includes/navAdmin.xhtml" />
 		</div>
 	</div>
 	</header>
@@ -47,8 +48,9 @@
 									<div class="col-md-6">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
 											<h5 class="card-title mb-3 pt-1">
-												Restaurantes a autorizar: 
-												<h:outputText value="#{beanHomeAdministrador.fechaHora}" />
+												Restaurantes a autorizar:
+												<h:outputText
+													value="#{fn:length(beanHomeAdministrador.autorizar)}" />
 											</h5>
 										</div>
 									</div>
@@ -79,7 +81,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.ventas.actual-beanHomeAdministrador.ventas.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.ventas.actual-beanHomeAdministrador.ventas.anterior)/beanHomeAdministrador.ventas.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -87,9 +102,15 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">$ 172.800</h5>
-								<div id="canvas-holderA">
-									<canvas id="chart_CardA" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.ventas.actual}">
+										<f:convertNumber type="currency" currencySymbol="$U" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartVentasTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
@@ -106,7 +127,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-down"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.clientes.actual-beanHomeAdministrador.clientes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.clientes.actual-beanHomeAdministrador.clientes.anterior)/beanHomeAdministrador.clientes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -114,15 +148,22 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">189</h5>
-								<div id="canvas-holderB">
-									<canvas id="chart_CardB" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.clientes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartClientesTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
+
 					</div>
 					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
@@ -132,7 +173,20 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 1.0%</i>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.clientes.actual-beanHomeAdministrador.ordenes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.ordenes.actual-beanHomeAdministrador.ordenes.anterior)/beanHomeAdministrador.ordenes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
@@ -140,16 +194,22 @@
 								<div class="row">
 									<div class="col-md-12"></div>
 								</div>
-								<h5 class="card-title mb-3 font-weight-bold">153</h5>
-								<div id="canvas-holderC">
-									<canvas id="chart_CardC" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.ordenes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartOrdenesTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
-
 					</div>
+
 					<div
-						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
@@ -160,15 +220,37 @@
 									<div class="col-md-4">
 										<div class="ms-chart-label bg-dark">
 											<h6>
-												<i class="fas fa-arrow-up"> 3.0%</i>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.pedidosPromedio.actual/7-beanHomeAdministrador.pedidosPromedio.anterior/7>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.pedidosPromedio.actual/7-beanHomeAdministrador.pedidosPromedio.anterior/7)/(beanHomeAdministrador.pedidosPromedio.actual/7)}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
 											</h6>
 										</div>
 									</div>
 								</div>
-
-								<h5 class="card-title mb-3 font-weight-bold">21</h5>
-								<div id="canvas-holderD">
-									<canvas id="chart_CardD" />
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{beanHomeAdministrador.pedidosPromedio.actual/7}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartOrdenesPromedioTotales}"
+										styleClass="card-img-top" stream="false" />
 								</div>
 							</div>
 						</div>
@@ -193,65 +275,31 @@
 								</div>
 							</div>
 							<div class="card-body">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Restaurante</th>
-											<th scope="col">Total Venta</th>
-											<th scope="col">Califiaci&oacute;n</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><img class="img_list_data"
-												src="/codigo-web/resources/images/food/pizza.jpg" alt="">
-													Restaurante 1</img></td>
-											<td>$ 1800</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img class="img_list_data"
-												src="/codigo-web/resources/images/food/french-fries.jpg"
-												alt=""> Restaurante 2</img></td>
-											<td>$ 1700</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img class="img_list_data"
-												src="/codigo-web/resources/images/food/cereals.jpg" alt="">
-													Restaunate 3</img></td>
-											<td>$ 1500</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span>
-											</td>
-										</tr>
-										<tr>
-											<td><img class="img_list_data"
-												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt=""> Reataurante 56</img></td>
-											<td>$ 1240</td>
-											<td><span class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star text-warning"></span> <span
-												class="fa fa-star"></span> <span class="fa fa-star"></span></td>
-										</tr>
-									</tbody>
+							<p:dataTable var="restaurante" styleClass="table table-hover"
+									value="#{beanHomeAdministrador.topRestaurante}">
 
-								</table>
-
+									<p:column headerText="Restaurante">
+										<p:graphicImage value="#{restaurante.imagen.imagen}"
+											styleClass="img-table-circle" stream="false" />
+										<h:outputText value="#{restaurante.nombre}" />
+									</p:column>
+									<p:column headerText="Total Venta"
+										styleClass="text-right">
+										<h:outputText value="#{restaurante.total}">
+											<f:convertNumber type="currency" currencySymbol="$U" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Calificaci&oacute;n"
+										styleClass="text-right">
+										<p:rating readonly="true" styleClass="text-warning"
+													value="#{restaurante.calificacion.general}" />
+									</p:column>
+								</p:dataTable>
+							
 							</div>
 						</div>
 					</div>
+
 					<div
 						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
 						<div class="card">
@@ -260,10 +308,36 @@
 							</div>
 							<div class="card-body">
 
-								<h6 class="card-title mb-3 font-weight-bold">8 de 153
-									pedidos (5.22%)</h6>
-								<div id="canvas-holderF">
-									<canvas id="chart_CardF" />
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{beanHomeAdministrador.reclamos.data['R']}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									de
+									<h:outputText value="#{beanHomeAdministrador.reclamos.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									(
+									<h:outputText
+										value="#{beanHomeAdministrador.reclamos.data['R']/beanHomeAdministrador.reclamos.actual}">
+										<f:convertNumber minFractionDigits="2" type="percent" />
+									</h:outputText>
+									)
+
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{beanHomeAdministrador.chartReclamos}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											todos los pedidos)</div>
+
+									</div>
 								</div>
 							</div>
 						</div>
@@ -276,14 +350,49 @@
 								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
 
 							</div>
-							<div class="card-body">
-								<h6 class="card-title mb-3 font-weight-bold">153 pedidos</h6>
-								<div id="canvas-holderE">
-									<canvas id="chart_CardE" />
+							<div class="card-body" id="formaPagosPedidos">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.formapago.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									Pedidos
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{beanHomeAdministrador.chartFormaPago}"
+										styleClass="card-img-top" stream="false" />
+
+								</div>
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<c:forEach var="fplegend"
+										items="#{beanHomeAdministrador.formapago.data}">
+
+										<div class="row">
+											<div class="col-xl-2 col-lg-2 col-md-2"
+												style="#{beanHomeAdministrador.styleLabel('fp', fplegend.key)}">
+												<h:outputText value="#{fplegend.value}">
+													<f:convertNumber minFractionDigits="0" />
+												</h:outputText>
+											</div>
+											<div class="col">
+												<h:outputText value="#{fplegend.key}" />
+											</div>
+										</div>
+									</c:forEach>
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											pedidos entregados)</div>
+
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
+
+
 					<div
 						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
 
@@ -291,129 +400,60 @@
 							<div class="card-header">
 								<h5 class="card-title mb-3">Tendencias</h5>
 							</div>
+
 							<div class="card-body">
 								<div class="row mb-3">
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/pizza.jpg"
-												alt="pizza"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
-												</div>
-
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Pizza</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$1800</h6>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/food-4.jpg"
-												alt="Hamburguesa"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 1</h5>
-												</div>
-											
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Hamburguesa</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$220</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">11</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$2420</h6>
+									<c:forEach var="tendencia"
+										items="#{beanHomeAdministrador.tendencias}">
+										<div
+											class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+											<div class="card">
+												<p:graphicImage value="#{tendencia.imagen.imagen}"
+													styleClass="card-img-top" stream="false" />
+												<div class="card-body"></div>
+												<div class="card-footer bg-transparent">
+													<div class="d-flex flex-row">
+														<h5 class="mr-auto card-title mb-3 pt-1">
+															<h:outputText value="#{tendencia.nombre}" />
+														</h5>
+														<h5 class="card-title mb-3 pt-1 text-success">
+															<h:outputText value="#{tendencia.precio}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h5>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+														<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.ordenes}" />
+														</h6>
+														<h6 class="card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.total}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h6>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/egg-sandwich.jpg"
-												alt="Chivito"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 2</h5>
-												</div>
-											
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Chivito</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$180</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">15</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$2700</h6>
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div
-										class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
-										<div class="card">
-											<img class="card-img-top"
-												src="/codigo-web/resources/images/food/food-3.jpg"
-												alt="Ensalada"></img>
-											<div class="card-body"></div>
-											<div class="card-footer bg-transparent">
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Restaurante 56</h5>
-												</div>
-												
-												<div class="d-flex flex-row">
-													<h5 class="mr-auto card-title mb-3 pt-1">Ensalada</h5>
-													<h5 class="card-title mb-3 pt-1 text-success">$190</h5>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
-													<h6 class="card-subtitle mb-2 text-muted">Total</h6>
-												</div>
-												<div class="d-flex flex-row">
-													<h6 class="mr-auto card-subtitle mb-2 text-danger">10</h6>
-													<h6 class="card-subtitle mb-2 text-danger">$1900</h6>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
-										*Per&iacute;odo de an&aacute;lisis -</div>
+									</c:forEach>
 								</div>
 							</div>
+
 						</div>
+					</div>
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						*Per&iacute;odo de an&aacute;lisis
+						<h:outputText
+							value="#{beanHomeAdministrador.strFechaDesde()} - #{beanHomeAdministrador.strFechaHasta()}" />
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
-
 
 	<section class="section" id="main_section">
 	<div></div>
@@ -422,392 +462,6 @@
 
 	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
 
-	<script>
-		const opCal = {
-			indexAxis: 'y',
-			responsive: true,
-			plugins: {
-	  		    	legend: {
-		  		        display: false
-		  		    },
-	  		      	title: {
-	  		        	display: false
-	  		      	}
-	  		    },
-  		    scales: {
-		     		x: {
-		     			ticks: {
-		                	display: false
-		          	 	},
-		          	 	grid: {
-	  		              	display: false,
-	  		          	},
-		         	},
-		     		y: {
-	     				ticks: {
-	                  		display: true
-	          	 		},
-	          	 		grid: {
-	  		             	display: false,
-		  		        },
-	         		},
-  		     },  
-  		    
-		};
 
-		const colorCal = ['rgb(40,167,69)', 'rgb(0,123,255)', 'rgb(23,162,184)', 'rgb(247,187,7)', 'rgb(213,51,67)' ];
-		const colorCalG = ['rgba(40,167,69,0.5)', 'rgba(0,123,255, 0.5)', 'rgba(23,162,184, 0.5)', 'rgba(247,187,7, 0.5)', 'rgba(213,51,67, 0.5)' ]; 
-		const labelsCal = ['5', '4', '3', '2', '1'];
-		const labelsT = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
-		const colorT = 'rgb(242, 162, 44)';
-		const colorTC = 'rgba(242, 162, 44, 0.5)';
-		const colorSec = 'rgb(0, 128, 55)';
-		const colorSecC = 'rgba(0, 128, 55, 0.5)';
-
-			
-		const op = {
-	  		    responsive: true,
-	  		    scales: {
-  		     		x: {
-  		           		ticks: {
-  		                	display: false
-  		          	 	},
-	  		          	grid: {
-	  		              display: true,
-	  		          	},
-	  		         },
-  		     		y: {
-	           			ticks: {
-	                  		display: false
-	          	 		},
-	          	 	 	grid: {
-	  		              display: true,
-	  		          	},
-		         	},
-	  		     },  
-	  		    plugins: {
-	  		    	legend: {
-		  		        display: false
-		  		    },
-	  		      	title: {
-	  		        	display: false
-	  		      	}
-	  		    }
-			};
-
-		const dataCardA = {
-				  labels: labelsT,
-				  datasets: [
-				    {
-				      label: 'Total',
-				      data: [13000, 13500, 14000, 12300, 45000, 60000, 15000],
-				      borderColor: colorT,
-				      backgroundColor: colorT,
-				      fill: true
-				    },
-				  ]
-				};
-		
-		const dataCardB = {
-				  labels: labelsT,
-				  datasets: [
-				    {
-				      label: 'Total',
-				      data: [15, 13, 18, 23, 47, 45, 28],
-				      borderColor: colorT,
-				      backgroundColor: colorTC,
-				      fill: true
-				    },
-				  ]
-				};
-		
-		const dataCardC = {
-				  labels: labelsT,
-				  datasets: [
-				    {
-				      label: 'Total',
-				      data: [16, 13, 18, 23, 12, 28, 43],
-				      borderColor: colorT,
-				      backgroundColor: colorT,
-				      fill: true
-				    },
-				  ]
-				};
-				
-		const dataCardD = {
-		  labels: labelsT,
-		  datasets: [
-		    {
-		      label: 'Total',
-		      data: [16, 13, 18, 23, 12, 28, 43],
-		      borderColor: colorT,
-		      backgroundColor: colorTC,
-		      fill: true
-		    },
-		  ]
-		};
-
-		//const dataR = [12, 8, 6, 3, 1];
-		//const dataC = [10, 8, 8, 2, 2];
-		//const dataS = [10, 12, 6, 2, 0];
-		
-		const dataR = 0;
-		const dataC = 0;
-		const dataS = 0;
-			
-		const dataRapidez = {
-				  labels: labelsCal,
-				  datasets: [
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Total',
-					    data: dataR,
-					    backgroundColor: colorCal,
-					    fill: true
-				    },
-				  ]
-				};
-				
-		const dataComida = {
-				  labels: labelsCal,
-				  datasets: [
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Total',
-					    data: dataC,
-					    backgroundColor: colorCal,
-					    fill: true
-				    },
-				  ]
-				};
-
-		const dataServicio = {
-				  labels: labelsCal,
-				  datasets: [
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Total',
-					    data: dataS,
-					    backgroundColor: colorCal,
-					    fill: true
-				    },
-				  ]
-				};
-		
-		const dataGral = {
-				  labels: labelsCal,
-				  datasets: [
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Rapidez',
-					    data: dataR,
-					    borderColor: colorCal,
-					    backgroundColor: colorCalG,
-					    fill: true,
-				    },
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Comida',
-					    data: dataC,
-					    borderColor: colorCal,
-					    backgroundColor: colorCal,
-					    fill: true,
-				    },
-				    {
-				    	indexAxis: 'y', 
-					    label: 'Servicio',
-					    data: dataS,
-					    borderColor: colorCal,
-					    backgroundColor: colorCalG,
-					    fill: true
-				    },
-				  ]
-				};
-
-
-		
-		const configRapidez = {
-				  type: 'bar',
-				  data: dataRapidez,
-				  options: opCal,
-				};
-
-		const configComida = {
-				  type: 'bar',
-				  data: dataComida,
-				  options: opCal,
-				};
-
-		const configServico = {
-				  type: 'bar',
-				  data: dataServicio,
-				  options: opCal,
-				};
-
-		const configGral = {
-				type: 'bar',
-				  data: dataGral,
-				  
-				  options: {
-					  indexAxis: 'y',
-					  
-						responsive: true,
-						 plugins: {
-				  		    	legend: {
-					  		        display: false
-					  		    },
-				  		      	title: {
-				  		        	display: false
-				  		      	}
-				  		    },
-			  		    scales: {
-					     		x: {
-					     			stacked: true,
-					     			ticks: {
-					                	display: false
-					          	 	},
-					          	 	grid: {
-				  		              	display: false,
-				  		          	},
-					         	},
-					     		y: {
-					     			stacked: true,
-				     				ticks: {
-				                  		display: true
-				          	 		},
-				          	 		grid: {
-				  		             	display: false,
-					  		        },
-				         		},
-			  		     },  
-					  }
-				};
-		
-		const configCardA = {
-		  		  type: 'line',
-		  		  data: dataCardA,
-		  		  options: op,
-		  		};
-
-		const configCardB = {
-		  		  type: 'line',
-		  		  data: dataCardB,
-		  		  options: op,
-		  		};
-
-		const configCardC = {
-		  		  type: 'line',
-		  		  data: dataCardC,
-		  		  options: op,
-		  		};
-			
-	    const configCardD = {
-	  		  type: 'line',
-	  		  data: dataCardD,
-	  		  options: op,
-	  		};
-	
-	    var configCardE = {
-	            type: 'doughnut',
-	            data: {
-	                datasets: [{
-	                    data: [50, 103],
-	                    backgroundColor: [colorSec, colorT],
-	                    label: 'Forma de Pago'
-	                }],
-	                labels: [
-	                    "PayPal",
-	                    "Contado",
-	                ]
-	            },
-	            options: {
-	                responsive: true,
-	                maintainAspectRatio: false,
-	                cutoutPercentage: 40, 
-	                plugins: {
-		  		    	legend: {
-			  		        display: true,
-			  		      position: 'right',
-			  		    },
-		  		      	title: {
-		  		        	display: false
-		  		      	}
-		  		    },
-	                animation: {
-	                    animateScale: true,
-	                    animateRotate: true
-	                }
-	            }
-	        };  
-
-	    var configCardF = {
-	            type: 'doughnut',
-	            data: {
-	                datasets: [{
-	                    data: [5.22, 94.78],
-	                    backgroundColor: [colorCal[4], colorTC],
-	                    label: 'Forma de Pago'
-	                }],
-	                labels: [
-	                    "Reclamos",
-	                    "Sin reclamos",
-	                ]
-	            },
-	            options: {
-	                responsive: true,
-	                maintainAspectRatio: false,
-	                cutout: 80, 
-	                plugins: {
-		  		    	legend: {
-			  		        display: false,
-			  		      position: 'right',
-			  		    },
-		  		      	title: {
-		  		        	display: false
-		  		      	}
-		  		    },
-	                animation: {
-	                    animateScale: true,
-	                    animateRotate: true
-	                }
-	            }
-	        };  
-	    
-			  
-	window.onload = function() {
-			var ctxCalA = document.getElementById("chart_CalA").getContext("2d");
-			  window.myGraphA = new Chart(ctxCalA, configRapidez);
-
-			  var ctxCalB = document.getElementById("chart_CalB").getContext("2d");
-			  window.myGraphB = new Chart(ctxCalB, configComida);
-
-			var ctxCalC = document.getElementById("chart_CalC").getContext("2d");
-			window.myGraphC = new Chart(ctxCalC, configServico);
-
-			var ctxCalD = document.getElementById("chart_CalD").getContext("2d");
-			window.myGraphD = new Chart(ctxCalD, configGral);
-			
-			var ctxCardA = document.getElementById("chart_CardA").getContext("2d");
-			  window.myGraphA = new Chart(ctxCardA, configCardA);
-			
-			var ctxCardB = document.getElementById("chart_CardB").getContext("2d");
-			  window.GraphB = new Chart(ctxCardB, configCardB);
-
-			var ctxCardC = document.getElementById("chart_CardC").getContext("2d");
-			  window.GraphC = new Chart(ctxCardC, configCardC);
-				  	
-			var ctxCardD = document.getElementById("chart_CardD").getContext("2d");
-			window.GraphD = new Chart(ctxCardD, configCardD);
-
-			var ctxCardE = document.getElementById("chart_CardE").getContext("2d");
-			window.GraphE = new Chart(ctxCardE, configCardE);
-
-			var ctxCardF = document.getElementById("chart_CardF").getContext("2d");
-			window.GraphF = new Chart(ctxCardF, configCardF);
-			
-		};
-
-
-	</script>
 </h:body>
 </html>

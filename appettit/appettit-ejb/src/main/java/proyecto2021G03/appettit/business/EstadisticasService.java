@@ -18,9 +18,12 @@ import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
+import proyecto2021G03.appettit.dto.DashRestauranteDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
 
@@ -40,6 +43,9 @@ public class EstadisticasService implements IEstadisticasService {
 
 	@EJB
 	IImagenService imgSrv;
+	
+	@EJB
+	IUsuarioService usrSrv;
 
 	@Override
 	public List<PedidoDTO> listarPedidosPendientesPorRestaurante(Long id, LocalDateTime fechaDesde,
@@ -248,49 +254,148 @@ public class EstadisticasService implements IEstadisticasService {
 	@Override
 	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
 			Integer periodo) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarVentasPorFecha(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public DashTotalDTO listarClientesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
 			Integer periodo) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarClientesPorFecha(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public DashTotalDTO listarOrdenesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
 			Integer periodo) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarOrdenesPorFecha(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+
 	}
 
 	@Override
 	public DashTotalDTO listarOrdenesPromedioPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
 			Integer periodo) throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarOrdenesPromedioPorFecha(id, fechaDesde, fechaHasta, periodo);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+
 	}
 
 	@Override
 	public DashTotalDTO listarFormaPagoPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
 			throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarFormaPagoPorFecha(id, fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
 	public DashTotalDTO listarReclamosTPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
 			throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return estadisticasDAO.listarReclamosTPorFecha(id, fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 	@Override
-	public DashTotalDTO listarRestaurantesAutorizar() throws AppettitException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<RestauranteRDTO> listarRestaurantesAutorizar() throws AppettitException {
+		try {
+			return estadisticasDAO.listarRestaurantesAutorizar();
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashMenuDTO> listarTendenciasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
+			Integer top) throws AppettitException {
+		List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
+
+		try {
+
+			Iterator<DashMenuDTO> it = estadisticasDAO.listarTendenciasPorFecha(id, fechaDesde, fechaHasta, top)
+					.iterator();
+			while (it.hasNext()) {
+				DashMenuDTO men = it.next();
+				ImagenDTO img = new ImagenDTO();
+
+				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(men.getId_imagen());
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+				men.setImagen(img);
+				tendencias.add(men);
+
+			}
+
+			return tendencias;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+		
+		
+	}
+
+	@Override
+	public List<DashRestauranteDTO> listarTopRestaurantesPorFecha(Long id, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta, Integer top) throws AppettitException {
+		List<DashRestauranteDTO> restaurantes = new ArrayList<DashRestauranteDTO>();
+		
+		try {
+			Iterator<DashRestauranteDTO> it = estadisticasDAO.listarTopRestaurantesPorFecha(id, fechaDesde, fechaHasta, top).iterator();
+			while (it.hasNext()) {
+				DashRestauranteDTO res = it.next();
+				res.setCalificacion(usrSrv.calificacionRestaurante(res.getId()));
+				ImagenDTO img = new ImagenDTO();
+
+				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
+					FileManagement fm = new FileManagement();
+
+					img.setIdentificador("Sin Imagen");
+					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+				} else {
+					try {
+						img = imgSrv.buscarPorId(res.getId_imagen());
+					} catch (Exception e) {
+						FileManagement fm = new FileManagement();
+
+						img.setIdentificador("Sin Imagen");
+						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
+						logger.error(e.getMessage());
+					}
+				}
+				res.setImagen(img);
+				restaurantes.add(res);
+			}
+			return restaurantes;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
 	}
 
 }
