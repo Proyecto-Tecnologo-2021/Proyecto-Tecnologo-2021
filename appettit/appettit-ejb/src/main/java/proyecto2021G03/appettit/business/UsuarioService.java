@@ -160,7 +160,6 @@ public class UsuarioService implements IUsuarioService {
     public List<RestauranteRDTO> listarRestaurantesAbiertos() throws AppettitException {
         List<RestauranteRDTO> restaurantes = new ArrayList<RestauranteRDTO>();
         try {
-
             Iterator<RestauranteRDTO> it = usrConverter.RDTOfromRestaurante(usrDAO.listarRestaurantesAbiertos()).iterator();
             while (it.hasNext()) {
                 RestauranteRDTO res = it.next();
@@ -181,16 +180,12 @@ public class UsuarioService implements IUsuarioService {
                         img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
                         logger.error(e.getMessage());
                     }
-
                 }
-
                 res.setImagen(img);
                 res.setCalificacion(calificacionRestaurante(res.getId()));
                 restaurantes.add(res);
             }
-
             return restaurantes;
-
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
@@ -616,7 +611,6 @@ public class UsuarioService implements IUsuarioService {
 
 	@Override
 	public ClienteMDTO loginMobile(LoginDTO loginDTO) throws AppettitException {
-		
 		/* Se valida que exista el correo electrónico o el teléfono */
 		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(loginDTO.getUsuario());
 		List<Usuario> usuarios_telefono = usrDAO.buscarPorTelefono(loginDTO.getUsuario());
@@ -636,7 +630,6 @@ public class UsuarioService implements IUsuarioService {
 			if (usuario instanceof Cliente)
 				existe = true;
 		}
-		
 		if (existe) {
 			Cliente cliente = (Cliente) usuario;
 			BCrypt.Result resultado = null;
@@ -644,21 +637,17 @@ public class UsuarioService implements IUsuarioService {
 			if (resultado.verified) {
 				usuario.setNotificationFirebase(loginDTO.getNotificationFirebase());
 				usrDAO.editarCliente((Cliente) usuario);
-				
 				ClienteDTO clienteDTO = usrConverter.fromCliente(cliente);
 				CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
-
 				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente(cliente);
 				String token = crearJsonWebToken(usuario);
 				clienteMDTO.setCalificacion(califDTO);
 				clienteMDTO.setJwt(token);
-
 				return clienteMDTO;
 			} else {
 				throw new AppettitException("Password incorrecto.",
 						AppettitException.DATOS_INCORRECTOS);
 			}
-			
 		} else {
 			throw new AppettitException("Usuario y/o password incorrecto.", AppettitException.DATOS_INCORRECTOS);
 		}
@@ -672,22 +661,17 @@ public class UsuarioService implements IUsuarioService {
 		if ((usuarios_correo.size() == 0)) {
 			throw new AppettitException("Usuario no registrado.", AppettitException.DATOS_INCORRECTOS);
 		} else {
-
 			Usuario usuario = usuarios_correo.get(0);
 			if (usuario instanceof Cliente) {
-
 				usuario.setTokenFireBase(loginDTO.getPassword());
 				usuario.setNotificationFirebase(loginDTO.getNotificationFirebase());
 				usrDAO.editarCliente((Cliente) usuario);
-
 				ClienteDTO clienteDTO = usrConverter.fromCliente((Cliente) usuario);
 				CalificacionGralClienteDTO califDTO = usrDAO.calificacionGralCliente(clienteDTO.getId());
-
 				ClienteMDTO clienteMDTO = usrConverter.ClienteMDTOfromCliente((Cliente) usuario);
 				clienteMDTO.setCalificacion(califDTO);
 				String token = crearJsonWebToken(usuario);
 				clienteMDTO.setJwt(token);
-
 				return clienteMDTO;
 			} else {
 				throw new AppettitException("Usuario no habilitado para mobile.", AppettitException.DATOS_INCORRECTOS);
@@ -877,9 +861,7 @@ public class UsuarioService implements IUsuarioService {
 			if (restaurante == null) {
 				throw new AppettitException("No existe el restaurante.", AppettitException.NO_EXISTE_REGISTRO);
 			} else {
-			
 				RestauranteRDTO res = usrConverter.RDTOfromRestaurante(restaurante);
-				
 				res.setCalificacion(calificacionRestaurante(res.getId()));
 				ImagenDTO img = new ImagenDTO();
 	
@@ -925,11 +907,9 @@ public class UsuarioService implements IUsuarioService {
 		if (cliente == null)
 			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-			
 			cliente.setBloqueado(true);
 			@SuppressWarnings("unused")
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -939,13 +919,11 @@ public class UsuarioService implements IUsuarioService {
 	public void desbloquearCliente(Long id) throws AppettitException {
 		Cliente cliente = usrDAO.buscarPorIdCliente(id);
 		if (cliente == null)
-			throw new AppettitException("El restaurante indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
+			throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
 		try {
-			
 			cliente.setBloqueado(false);
 			@SuppressWarnings("unused")
 			ClienteDTO ret = usrConverter.fromCliente(usrDAO.editarCliente(cliente));
-			
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
@@ -1012,7 +990,6 @@ public class UsuarioService implements IUsuarioService {
 		try {
 			ClienteDTO clienteDTO = usrConverter.fromCliente(usrDAO.buscarPorCorreoCliente(correo));
 			return clienteDTO;
-
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
