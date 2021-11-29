@@ -182,10 +182,8 @@ public class PromocionAddBean implements Serializable {
 
 		this.nombre = null;
 		this.descripcion = null;
-		this.imagen = null;
-		this.imgfile = null;
 		this.croppedImage = null;
-		this.menuSel = new ArrayList<MenuDTO>();
+		//this.menuSel = new ArrayList<MenuDTO>();
 		this.descuento = 0D;
 		this.subTotal = 0D;
 		this.precioTotal = 0D;

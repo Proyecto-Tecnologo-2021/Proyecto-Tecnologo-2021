@@ -10,6 +10,10 @@
 <h:head>
 	<meta charset="ISO-8859-1"></meta>
 	<title>Appetit-AddMenu</title>
+	
+	<f:metadata>
+        <f:event type="preRenderView" listener="#{beanAddMenu.init() }" />
+    </f:metadata>
 
 	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
 
@@ -124,7 +128,7 @@
 																  label="Extras"
 																  style="width: 100%"
 																  multiple="true"
-																  required="true"
+																  required="false"
 																  filter="true"
 																  filterMatchMode="startsWith"
 																  panelStyle="width: 25rem"

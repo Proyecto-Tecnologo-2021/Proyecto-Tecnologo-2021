@@ -149,7 +149,7 @@ public class RestauranteAddBean implements Serializable {
 								"No fue posible cargar la imagen."));
 					}
 						
-					//	FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
+					FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
 					
 				} else {
 					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
@@ -157,7 +157,7 @@ public class RestauranteAddBean implements Serializable {
 					logger.info("Localidad vacia");
 				}
 				
-			} catch (ParseException e) {
+			} catch (ParseException | IOException e) {
 				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));

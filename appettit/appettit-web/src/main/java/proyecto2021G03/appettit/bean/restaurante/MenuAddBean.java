@@ -116,7 +116,7 @@ public class MenuAddBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		clearParam();
+		//clearParam();
 
 		facesContext = FacesContext.getCurrentInstance();
 		session = (HttpSession) facesContext.getExternalContext().getSession(true);
@@ -256,9 +256,9 @@ public class MenuAddBean implements Serializable {
 		this.nombre = null;
 		this.descripcion = null;
 		this.precioTotal = null;
-		this.imagen = null;
-		this.imgfile = null;
 		this.croppedImage = null;
+		this.productosRestaurante = null;
+		this.extrasRestaurante = null;
 		setProductsSelectedItems(new String[] {});
 		setExtrasSelectedItems(new String[] {});
 	}
