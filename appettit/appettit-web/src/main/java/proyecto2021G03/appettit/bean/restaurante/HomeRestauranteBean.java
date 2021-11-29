@@ -115,7 +115,8 @@ public class HomeRestauranteBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		try {
-
+			abierto = false;
+			
 			facesContext = FacesContext.getCurrentInstance();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
@@ -127,45 +128,51 @@ public class HomeRestauranteBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
+				
+				if(restauranteDTO==null) {
+					FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+					Date fechaBase = new Date();
+					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					fechaHora = dateFormat.format(fechaBase);
+					fpSytleLabel = new HashMap<String, String>();
 
-				Date fechaBase = new Date();
-				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-				fechaHora = dateFormat.format(fechaBase);
-				fpSytleLabel = new HashMap<String, String>();
-
-				pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				comentarios = estadisitciasSrv.listarCalificacionesPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 3);
-				tendencias = estadisitciasSrv.listarTendenciasPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 4);
-				recientes = estadisitciasSrv.listarPediosRecientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 4);
-				formapago = estadisitciasSrv.listarFormaPagoPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				reclamos = estadisitciasSrv.listarReclamosTPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta); 
-				estados  = estadisitciasSrv.listarEstadoPedidosPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				reclamosDTO = estadisitciasSrv.listarReclamosPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				ventas = estadisitciasSrv.listarVentasPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7); 
-				clientes = estadisitciasSrv.listarClientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				ordenes = estadisitciasSrv.listarOrdenesPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				rapidez = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, "rapidez"); 
-				comida = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, "comida"); 
-				servicio = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, "servicio"); 
-				influencia = estadisitciasSrv.listarGeoEntregasPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				abierto = restauranteDTO.getAbierto();
+					pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta);
+					comentarios = estadisitciasSrv.listarCalificacionesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 3);
+					tendencias = estadisitciasSrv.listarTendenciasPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 4);
+					recientes = estadisitciasSrv.listarPediosRecientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 4);
+					formapago = estadisitciasSrv.listarFormaPagoPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta);
+					reclamos = estadisitciasSrv.listarReclamosTPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta); 
+					estados  = estadisitciasSrv.listarEstadoPedidosPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta);
+					reclamosDTO = estadisitciasSrv.listarReclamosPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta);
+					ventas = estadisitciasSrv.listarVentasPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 7); 
+					clientes = estadisitciasSrv.listarClientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 7);
+					ordenes = estadisitciasSrv.listarOrdenesPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 7);
+					pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, 7);
+					rapidez = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, "rapidez"); 
+					comida = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, "comida"); 
+					servicio = estadisitciasSrv.listarCalificacionesDetPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta, "servicio"); 
+					influencia = estadisitciasSrv.listarGeoEntregasPorRestaurante(restauranteDTO.getId(), fechaDesde,
+							fechaHasta);
+					abierto = restauranteDTO.getAbierto();
+				}
 
 			}
 

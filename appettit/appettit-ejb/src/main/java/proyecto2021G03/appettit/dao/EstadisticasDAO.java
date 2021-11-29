@@ -227,7 +227,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 				
 				Integer cantidad =  line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 0;
 				
-				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, line[4].toString(), null));
+				String id_imagen = line[4]==null?"":line[4].toString();
+				
+				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, id_imagen, null));
 			}
 	
 		
@@ -319,7 +321,9 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 				
 				Integer cantidad =  line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 0;
 				
-				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, line[4].toString(), null));
+				String id_imagen = line[4]==null?"":line[4].toString();
+				
+				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, id_imagen, null));
 			}
 	
 		
@@ -1194,7 +1198,8 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 				
 				LocalTime horarioApertura = LocalTime.parse(line[2].toString());
 				LocalTime horarioCierre = LocalTime.parse(line[3].toString());
-				restaurantes.add(new RestauranteRDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, line[5].toString(), line[7].toString(), null, line[6].toString()));
+				String id_imagen = line[5]==null?"":line[5].toString();
+				restaurantes.add(new RestauranteRDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, id_imagen, line[7].toString(), null, line[6].toString()));
 			}
 	
 		
@@ -1267,8 +1272,8 @@ List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
 						(line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 1);
 				
 				Integer cantidad =  line[5] instanceof BigInteger ? ((BigInteger) line[5]).intValue(): 0;
-				
-				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, line[4].toString(), null));
+				String id_imagen = line[4]==null?"":line[4].toString();
+				tendencias.add(new DashMenuDTO(Long.valueOf(line[0].toString()), line[2].toString(), line[1].toString(), Double.valueOf(line[3].toString()), total, cantidad, id_imagen, null));
 			}
 	
 		
@@ -1323,7 +1328,8 @@ List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
 			
 			LocalTime horarioApertura = LocalTime.parse(line[2].toString());
 			LocalTime horarioCierre = LocalTime.parse(line[3].toString());
-			restaurantes.add(new DashRestauranteDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, line[5].toString(), line[7].toString(), null, line[6].toString(), Double.valueOf(line[8].toString())));
+			String id_imagen = line[5]==null?"":line[5].toString();
+			restaurantes.add(new DashRestauranteDTO(Long.valueOf(line[0].toString()), line[1].toString(), horarioApertura, horarioCierre, Boolean.valueOf(line[4].toString()), null, id_imagen, line[7].toString(), null, line[6].toString(), Double.valueOf(line[8].toString())));
 		}
 	
 		
