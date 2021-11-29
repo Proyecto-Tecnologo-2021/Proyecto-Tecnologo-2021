@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.bean.restaurante.HomeRestauranteBean;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.util.Constantes;
@@ -40,6 +41,7 @@ public class UserBean implements Serializable {/**
 	FacesContext facesContext;
 	HttpSession session;
 	RestauranteDTO restaurante;
+	AdministradorDTO admin;
 	
 	@PostConstruct
 	public void init() {
@@ -69,10 +71,21 @@ public class UserBean implements Serializable {/**
 		} catch (Exception e) {
 			logger.error("No se encontró el Restaurante");
 		}
+	}
+
+	public void getAdministradorReg() {
+		Long id = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+		
+		try {
+			admin = usrSrv.buscarAdministradorPorId(id);
+			createSession((UsuarioDTO) admin);
+			
+		} catch (Exception e) {
+			logger.error("No se encontró el Restaurante");
+		}
 		
 		
 	}
-	
 	public void createSession(UsuarioDTO usuarioDTO) {
 		session.setAttribute(Constantes.LOGINUSUARIO, usuarioDTO);
 	}

@@ -20,6 +20,7 @@ import org.jboss.logging.Logger;
 
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
+import proyecto2021G03.appettit.dto.DashInformeDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashRestauranteDTO;
@@ -1327,5 +1328,120 @@ List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
 	
 		
 		return restaurantes;	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFecha(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		List<DashInformeDTO> informe = new ArrayList<DashInformeDTO>();
+		Double acumulado = 0D;
+		
+		Query consulta = em
+					.createNativeQuery("SELECT "
+							+ " to_char(aux.d, 'yyyy-MM-dd'), "
+							+ " SUM(case p.total is null when true then 0 else p.total end) "
+							+ " from pedidos p "
+							+ " right join "
+							+ " generate_series " 
+							+ "	( to_date('" + getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ " , interval '1 day') as aux(d) on date(aux.d)= date(p.fecha) "
+								+ " 						and p.estado = 4 "
+							+ " group by aux.d "
+							+ " ORDER by aux.d asc "
+							+ "");
+		
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			while (it.hasNext()) {
+				Object[] line = it.next();
+				
+				acumulado = acumulado + Double.valueOf(line[1].toString());
+			
+				informe.add(new DashInformeDTO(line[0].toString(), "", "", Double.valueOf(line[1].toString()), acumulado));
+			}
+	
+		
+		return informe;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFechaRestaurante(LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta) {
+		List<DashInformeDTO> informe = new ArrayList<DashInformeDTO>();
+		Double acumulado = 0D;
+		
+		Query consulta = em
+					.createNativeQuery("SELECT "
+							+ " to_char(aux.d, 'yyyy-MM-dd'), "
+							+ " u.id|| '-' || u.nombre, " 
+							+ " SUM(case p.total is null when true then 0 else p.total end) "
+							+ " from pedidos p "
+							+ " right join usuario u on u.id = p.id_restaurante"
+							+ " right join "
+							+ " generate_series " 
+							+ "	( to_date('" + getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+					        + "	, to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+								+ " , interval '1 day') as aux(d) on date(aux.d)= date(p.fecha) "
+								+ " 						and p.estado = 4 "
+							+ " group by aux.d, u.id, u.nombre "
+							+ " ORDER by aux.d asc, u.id "
+							+ "");
+		
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			while (it.hasNext()) {
+				Object[] line = it.next();
+				
+				acumulado = acumulado + Double.valueOf(line[2].toString());
+				String nombre = line[1]==null?"":line[1].toString();
+			
+				informe.add(new DashInformeDTO(line[0].toString(), nombre, "", Double.valueOf(line[2].toString()), acumulado));
+			}
+	
+		
+		return informe;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFechaBarrio(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		List<DashInformeDTO> informe = new ArrayList<DashInformeDTO>();
+		Double acumulado = 0D;
+		
+		Query consulta = em
+					.createNativeQuery("SELECT "
+							+ " '"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + " - " + getFechaHora(fechaHasta, "yyyy-MM-dd") +"' as periodo, "
+							+ " dto.nombre as departamento, "
+							+ " l.nombre as barrio, "
+							+" SUM(case p.total is null when true then 0 else p.total end) as total"
+							+" from pedidos p "
+							+" join usuario u on u.id = p.id_restaurante "
+							+" join direcciones d on d.id = p.id_entrega "
+							+" join localidades l on st_contains(ST_GeometryFromText(l.geom), ST_GeometryFromText(d.geom)) "
+							+" join departamentos dto on dto.id = l.id_departamento "
+							+ "	WHERE date(p.fecha)> to_date('"+ getFechaHora(fechaDesde, "yyyy-MM-dd") + "', 'YYYY-MM-dd') " 
+							+ "	and date(p.fecha)<=to_date('" + getFechaHora(fechaHasta, "yyyy-MM-dd") + "',  'YYYY-MM-dd') "
+							+ " and p.estado = 4 "
+							+" group by  dto.nombre, l.nombre "
+							+" ORDER by dto.nombre, l.nombre "
+							+ "");
+		
+			List<Object[]> datos = consulta.getResultList();
+			
+			Iterator<Object[]> it = datos.iterator();
+			while (it.hasNext()) {
+				Object[] line = it.next();
+				
+				acumulado = acumulado + Double.valueOf(line[3].toString());
+				
+				informe.add(new DashInformeDTO(line[0].toString(), line[1].toString(), line[2].toString(), Double.valueOf(line[3].toString()), acumulado));
+			}
+	
+		
+		return informe;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
+import proyecto2021G03.appettit.dto.DashInformeDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashRestauranteDTO;
@@ -12,7 +13,6 @@ import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.entity.ClasificacionPedido;
 import proyecto2021G03.appettit.entity.Pedido;
-import proyecto2021G03.appettit.exception.AppettitException;
 
 public interface IEstadisticasDAO {
 	public List<Pedido> listarPedidosPendientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta );
@@ -41,7 +41,9 @@ public interface IEstadisticasDAO {
 	public List<DashMenuDTO> listarTendenciasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top );
 	public List<DashRestauranteDTO> listarTopRestaurantesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top);
 	
-	
+	public List<DashInformeDTO> listarInfoVentasPorFecha(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	public List<DashInformeDTO> listarInfoVentasPorFechaRestaurante(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	public List<DashInformeDTO> listarInfoVentasPorFechaBarrio(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
 	
 }

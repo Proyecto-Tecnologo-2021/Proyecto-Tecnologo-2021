@@ -122,7 +122,7 @@ public class HomeRestauranteBean implements Serializable {
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				FacesContext.getCurrentInstance().getExternalContext().dispatch("/foo.xhtml");
+				FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {

@@ -16,13 +16,13 @@ import proyecto2021G03.appettit.dao.IEstadisticasDAO;
 import proyecto2021G03.appettit.dto.CalificacionPedidoDTO;
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
+import proyecto2021G03.appettit.dto.DashInformeDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashReclamoDTO;
 import proyecto2021G03.appettit.dto.DashRestauranteDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.PedidoDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.FileManagement;
@@ -393,6 +393,36 @@ public class EstadisticasService implements IEstadisticasService {
 				restaurantes.add(res);
 			}
 			return restaurantes;
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFecha(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarInfoVentasPorFecha(fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFechaRestaurante(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarInfoVentasPorFechaRestaurante(fechaDesde, fechaHasta);
+		} catch (Exception e) {
+			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
+		}
+	}
+
+	@Override
+	public List<DashInformeDTO> listarInfoVentasPorFechaBarrio(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
+			throws AppettitException {
+		try {
+			return estadisticasDAO.listarInfoVentasPorFechaBarrio(fechaDesde, fechaHasta);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}

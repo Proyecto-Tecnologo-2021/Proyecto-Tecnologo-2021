@@ -1,80 +1,110 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
 
+
+	<p:remoteCommand name="rc"
+		action="#{beanUserLoged.getAdministradorReg()}" update="userProfileName" />
+
+	<p:remoteCommand name="rc2" oncomplete="loadinfoFromLocalStorage();"
+		autoRun="true" />
+
+	
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
 		<div class="container">
 			<div class="row no-gutters">
 				<div class="col-lg-12 text-right text-lg-right">
 					<div class="dropdown show">
+
 						<a class="nav-link text-secondary" id="userDropdown" href="#"
 							data-toggle="dropdown">
 							<div class="navbar-profile">
 								<p class="mb-0 d-sm-block navbar-profile-name"
-									id="userProfileName">
-									<i class="fas fa-user-circle h3"></i>
+									id="userProfileData">
 
+									<h:outputText value="#{beanUserLoged.admin.nombre }" id="userProfileName"/>
+									<i class="fas fa-user-circle h3"></i>
 								</p>
 							</div>
 						</a>
-
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
 							<h6 class="p-3 mb-0">Perfil</h6>
 							<div class="dropdown-divider"></div>
-							<a href="javascript:clearLocalStorage();"
-								class="list-group-item list-group-item-action">Salir</a>
+							<a href="#" class="list-group-item list-group-item-action">Salir</a>
+
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<script>
-	/*
 			var userTOKEN;
-
-			loadLocalStorage();
-
+			
+			//loadLocalStorage();
+			
+			function loadinfoFromLocalStorage() {
+				storeLocalStorage();
+				loadLocalStorage();
+			}
+			
             function loadLocalStorage() {
-                var prefix = 'flutter.vacunasUYUser';
+                var prefix = 'react.appetitUser';
+                console.log(prefix);
                 getLocalStorageValue(prefix);
-
             }
 
-            function clearLocalStorage() {
+            function storeLocalStorage(){
+            	var prefix = 'react.appetitUser';
+
+            	var contenido = "{\"id\":\"4\", \"correo\":\"mpulidouy@hotmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Admin Prueba Cookie \",\"rol\":\"administrador\"}";
+            	localStorage.setItem(prefix, contenido);
+                
+            }
+
+            function clearLocalStorage(prefix) {
             	localStorage.clear();
-            	window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
+            	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
             }
 
             function getLocalStorageValue(prefix) {
-                if (localStorage.getItem(prefix)) {
-                        var prefixValue = JSON.parse(localStorage.getItem(prefix));
-                    	prefixValue = JSON.parse(prefixValue);
+            	if (localStorage.getItem(prefix)) {
+                	console.log(localStorage.getItem(prefix));
+                	var prefixValue = JSON.parse(localStorage.getItem(prefix));
+                	
+                	//prefixValue = JSON.parse(prefixValue);
+                	console.log(prefixValue);
+                    
+                 	userTOKEN =  prefixValue["token"];
 
-                        
-                       	userTOKEN =  prefixValue["token"];
+                    //var n = document.getElementById("userProfileName"); 
+                    //n.val(prefixValue["nombre"]);
 
-                       	var n = document.getElementById("userProfileName"); 
-                       	n.append(prefixValue["nombre"]);
-                        
-                        if(prefixValue["rol"] != 1){
-							console.log("ERROR ROL 1");
-			            	localStorage.clear();
-							
-							window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
-                        }
-                        
+                    //var n = document.getElementById("userProfileCorreo");
+                    //n.append(prefixValue["correo"]);
+					
+					rc([{name: 'id', value: prefixValue["id"]}]);                 
+                 
+					if(prefixValue["rol"] != 'administrador'){
+						console.log("ERROR ROL ADMIN");
+						localStorage.clear();
+						window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
+	                }
+
+                    
+                    
                 }else{
                 	console.log("ERROR NO COOKIE");
-                	window.location.href = 'https://vacunasuy.web.elasticloud.uy/';
-                }
+                	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
+				}
             }
-            */
-        </script>
+
+            </script>
+
 
 </ui:composition>

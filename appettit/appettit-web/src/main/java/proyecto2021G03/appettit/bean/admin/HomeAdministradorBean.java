@@ -19,7 +19,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -40,18 +39,17 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.DashMenuDTO;
 import proyecto2021G03.appettit.dto.DashRestauranteDTO;
 import proyecto2021G03.appettit.dto.DashTotalDTO;
 import proyecto2021G03.appettit.dto.EstadoPedido;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.RestauranteRDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
@@ -72,7 +70,6 @@ public class HomeAdministradorBean implements Serializable {
 	List<DashMenuDTO> tendencias;
 	DashTotalDTO formapago;
 	DashTotalDTO reclamos;
-	DashTotalDTO estados;
 	DashTotalDTO ventas;
 	DashTotalDTO clientes;
 	DashTotalDTO ordenes;
@@ -80,12 +77,12 @@ public class HomeAdministradorBean implements Serializable {
 	List<RestauranteRDTO> autorizar;
 	List<DashRestauranteDTO> topRestaurante;
 	String fechaHora;
-	RestauranteDTO restauranteDTO;
+	AdministradorDTO administradorDTO;
 	Long id_restaurante;
 	FacesContext facesContext;
 	HttpSession session;
 	LocalDateTime fechaHasta = LocalDateTime.now();;
-	LocalDateTime fechaDesde = fechaHasta.minusDays(7);; 
+	LocalDateTime fechaDesde = fechaHasta.minusDays(7); 
 
 	private Paint[] Colores = new Paint[] { new Color(0, 128, 55), new Color(242, 162, 44), new Color(213,51,67),new Color(213,51,67, 50), };
 	private String[] fpHexaColores = new String[] { "#008037", "#F2A22C", };
@@ -111,38 +108,43 @@ public class HomeAdministradorBean implements Serializable {
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				FacesContext.getCurrentInstance().getExternalContext().dispatch("/foo.xhtml");
+				FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
-				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
-
-				Date fechaBase = new Date();
-				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-				fechaHora = dateFormat.format(fechaBase);
-				fpSytleLabel = new HashMap<String, String>();
-
-				tendencias = estadisitciasSrv.listarTendenciasPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 4);
-				formapago = estadisitciasSrv.listarFormaPagoPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				reclamos = estadisitciasSrv.listarReclamosTPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta); 
-				estados  = estadisitciasSrv.listarEstadoPedidosPorRestaurante(restauranteDTO.getId(), fechaDesde,
-						fechaHasta);
-				ventas = estadisitciasSrv.listarVentasPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7); 
-				clientes = estadisitciasSrv.listarClientesPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				ordenes = estadisitciasSrv.listarOrdenesPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
-				topRestaurante = estadisitciasSrv.listarTopRestaurantesPorFecha(restauranteDTO.getId(), fechaDesde,
-						fechaHasta, 7);
+				administradorDTO = usrService.buscarAdministradorPorId(usuarioDTO.getId());
 				
-				autorizar = estadisitciasSrv.listarRestaurantesAutorizar(); 
-				
+				if (administradorDTO == null) {
+					FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+					
+				} else {
+					Date fechaBase = new Date();
+					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					fechaHora = dateFormat.format(fechaBase);
+					fpSytleLabel = new HashMap<String, String>();
+					
+					tendencias = estadisitciasSrv.listarTendenciasPorFecha(null, fechaDesde,
+							fechaHasta, 4);
+					formapago = estadisitciasSrv.listarFormaPagoPorFecha(null, fechaDesde,
+							fechaHasta);
+					reclamos = estadisitciasSrv.listarReclamosTPorFecha(null, fechaDesde,
+							fechaHasta); 
+					ventas = estadisitciasSrv.listarVentasPorFecha(null, fechaDesde,
+							fechaHasta, 7); 
+					clientes = estadisitciasSrv.listarClientesPorFecha(null, fechaDesde,
+							fechaHasta, 7);
+					ordenes = estadisitciasSrv.listarOrdenesPorFecha(null, fechaDesde,
+							fechaHasta, 7);
+					pedidosPromedio = estadisitciasSrv.listarOrdenesPromedioPorFecha(null, fechaDesde,
+							fechaHasta, 7);
+					topRestaurante = estadisitciasSrv.listarTopRestaurantesPorFecha(null, fechaDesde,
+							fechaHasta, 7);
+					
+					autorizar = estadisitciasSrv.listarRestaurantesAutorizar(); 
+					
+				}
 			}
 
 		} catch (AppettitException e) {
@@ -247,51 +249,6 @@ public class HomeAdministradorBean implements Serializable {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public StreamedContent getChartEstados() {
-		try {
-			
-			return DefaultStreamedContent.builder().contentType("image/png").writer((os) -> {
-				try {
-					PieDataset dataset = createRingDataset(estados.getData());
-					JFreeChart chart = ChartFactory.createRingChart("", dataset, false, true, false);
-					RingPlot pie = (RingPlot) chart.getPlot();
-
-					pie.setBackgroundPaint(Color.WHITE);
-					pie.setOutlineVisible(false);
-					pie.setLabelGenerator(null);
-					pie.setSectionDepth(0.33);
-					pie.setSectionOutlinesVisible(false);
-					pie.setShadowPaint(null);
-					
-					
-					
-					for(int d = 0; d< dataset.getKeys().size(); d++  ) {
-						if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.SOLICITADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(255, 255, 36));
-						} else if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.CONFIRMADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(255, 103, 0));
-						} else if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.ENVIADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(242, 162, 44));
-						} else if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.ENTREGADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(11, 171, 100));
-						} else if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.RECHAZADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(255, 36, 0));
-						} else if (dataset.getKey(d).toString().equalsIgnoreCase(EstadoPedido.CANCELADO.toString())) {
-							pie.setSectionPaint(dataset.getKey(d), new Color(128,128,128));
-						}
-					}
-					
-					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}).build();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 	
 	public StreamedContent getChartVentasTotales() {
 		try {
