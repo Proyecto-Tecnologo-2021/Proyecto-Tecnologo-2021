@@ -52,17 +52,14 @@ public class ExtraMenuService implements IExtraMenuService{
     public ExtraMenuDTO editar(Long id, ExtraMenuDTO extraMenuDTO) throws AppettitException {
         ExtraMenu extraMenuService = iExtraMenuDAO.listarPorId(extraMenuDTO.getId());
         if (extraMenuService == null)
-            throw new AppettitException("El departamento indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
+            throw new AppettitException("El extra menu indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
         try {
-
             extraMenuService.setPrecio(extraMenuDTO.getPrecio());
             return extraMenuConverter.fromEntity(iExtraMenuDAO.editar(extraMenuService));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
         }
     }
-
 
 
     @Override
