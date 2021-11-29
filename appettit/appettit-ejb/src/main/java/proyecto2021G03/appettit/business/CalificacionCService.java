@@ -35,26 +35,25 @@ public class CalificacionCService implements ICalificacionCService {
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.listarPorId(id));
         } catch (Exception e) {
             return null; //throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }    }
+        }
+    }
 
     @Override
     public CalificacionClienteDTO crear(CalificacionClienteDTO calificacionClienteDTO) throws AppettitException {
         ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(calificacionClienteDTO.getId_cliente());
         try {
-
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.crear(clasificacionCliente));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }       }
+        }
+    }
 
     @Override
     public CalificacionClienteDTO editar(Long id, CalificacionClienteDTO calificacionClienteDTO) throws AppettitException {
         ClasificacionCliente clasificacionCliente = iClasificacionClienteDAO.listarPorId(calificacionClienteDTO.getId_cliente());
         if (clasificacionCliente == null)
             throw new AppettitException("El cliente indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
         try {
-
             return clasificacionClienteConverter.fromEntity(iClasificacionClienteDAO.editar(clasificacionCliente));
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
