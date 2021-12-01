@@ -1636,8 +1636,11 @@ public class UsuarioServiceTest extends TestCase {
     @Test
     public void testListarRestaurantesPorPunto(){
         String punto = "8.9858014,-79.526725";
-        byte[] mbyte = "imagen".getBytes();
-        ImagenDTO img = new ImagenDTO("iamgen", "imagen", mbyte);
+        ImagenDTO img = new ImagenDTO();
+        FileManagement fm = new FileManagement();
+        img.setId("id");
+        img.setIdentificador("Sin Imagen");
+        img.setImagen(null);
         CalificacionGralRestauranteDTO calificacion = new CalificacionGralRestauranteDTO(1,2,3,4);
         RestauranteRDTO restauranteRDTO = new RestauranteRDTO(1L, "nombre", LocalTime.now(), LocalTime.now(), true, img, "id_imagen", "direccion", calificacion, "1234");
         List<RestauranteRDTO> restaurantesRDTO = new ArrayList<RestauranteRDTO>();

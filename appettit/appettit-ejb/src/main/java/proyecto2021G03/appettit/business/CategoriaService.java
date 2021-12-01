@@ -37,7 +37,6 @@ public class CategoriaService implements ICategoriaService{
 
 	@Override
 	public CategoriaDTO crear(CategoriaCrearDTO ccDTO) throws AppettitException {
-		
 		if(existeNombreCategoria(ccDTO.getNombre())) {
 			throw new AppettitException("Ya existe una categoria con ese nombre.", AppettitException.EXISTE_REGISTRO);
 		}else {	
@@ -52,7 +51,6 @@ public class CategoriaService implements ICategoriaService{
 
 	@Override
 	public CategoriaDTO editar(Long id, CategoriaCrearDTO ccDTO) throws AppettitException {
-		
 		if(existeNombreCategoriaExcluirId (id, ccDTO.getNombre())) {
 			throw new AppettitException ("Ya existe una categoria con ese nombre.", AppettitException.EXISTE_REGISTRO);
 		}else {	
@@ -68,7 +66,7 @@ public class CategoriaService implements ICategoriaService{
 
 	@Override
 	public void eliminar(Long id) throws AppettitException {
-		/* Se valida que exista la enfermedad */
+		/* Se valida que exista la categoría */
 		Categoria categoria= cDAO.listarPorId(id);
 		if(categoria == null) {
 			throw new AppettitException("La categoria indicada no existe.", AppettitException.NO_EXISTE_REGISTRO);
@@ -82,7 +80,6 @@ public class CategoriaService implements ICategoriaService{
 	}
 
 	public boolean existeNombreCategoria (String nombre) {
-		
 		List<CategoriaDTO> categorias = cConverter.fromEntity(cDAO.listar());
 		for (CategoriaDTO c: categorias) {
 			if (c.getNombre().equals(nombre)) {
@@ -93,7 +90,6 @@ public class CategoriaService implements ICategoriaService{
 	}
 	
 	public boolean existeNombreCategoriaExcluirId (Long id, String nombre) {
-		
 		List<CategoriaDTO> catogorias = cConverter.fromEntity(cDAO.listar());
 		for (CategoriaDTO c: catogorias) {
 			if (!c.getId().equals(id)) {
