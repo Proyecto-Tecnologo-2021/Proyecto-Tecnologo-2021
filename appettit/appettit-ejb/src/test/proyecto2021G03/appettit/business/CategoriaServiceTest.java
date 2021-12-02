@@ -92,7 +92,7 @@ public class CategoriaServiceTest extends TestCase {
         }
     }
 
-    /*@Test(expected = AppettitException.class)
+    @Test(expected = AppettitException.class)
     public void testCrear_yaExiste() throws AppettitException {
         Categoria categoria = new Categoria(1L, "nombre");
         List<Categoria> categorias = new ArrayList<Categoria>();
@@ -104,10 +104,11 @@ public class CategoriaServiceTest extends TestCase {
 
         Mockito.when(categoriaServiceI.cDAO.listar()).thenReturn(categorias);
         Mockito.when(categoriaServiceI.cConverter.fromEntity(categorias)).thenReturn(categoriasDTO);
-        Mockito.when(categoriaServiceI.existeNombreCategoria(categoria.getNombre())).thenReturn(true);
+        CategoriaService categoriaServiceMock = Mockito.mock(CategoriaService.class);
+        Mockito.lenient().doReturn(true).when(categoriaServiceMock).existeNombreCategoria("nombre");
 
         categoriaServiceI.crear(categoriaCrearDTO);
-    }*/
+    }
 
     @Test
     public void testEditar() {
@@ -127,7 +128,7 @@ public class CategoriaServiceTest extends TestCase {
         }
     }
 
-    /*@Test(expected = AppettitException.class)
+    @Test(expected = AppettitException.class)
     public void testEditar_yaExiste() throws AppettitException {
         Categoria categoria = new Categoria(1L, "nombre");
         List<Categoria> categorias = new ArrayList<Categoria>();
@@ -137,13 +138,13 @@ public class CategoriaServiceTest extends TestCase {
         categoriasDTO.add(categoriaDTO);
         CategoriaCrearDTO categoriaCrearDTO = new CategoriaCrearDTO("nombre");
 
-        Mockito.when(categoriaServiceI.cDAO.listarPorId(1L)).thenReturn(categoria);
-        Mockito.when(categoriaServiceI.cDAO.editar(categoria)).thenReturn(categoria);
-        Mockito.when(categoriaServiceI.cConverter.fromEntity(categoria)).thenReturn(categoriaDTO);
-        Mockito.when(categoriaServiceI.existeNombreCategoria(categoria.getNombre())).thenReturn(true);
+        //Mockito.when(categoriaServiceI.cDAO.listar()).thenReturn(categorias);
+        //Mockito.when(categoriaServiceI.cConverter.fromEntity(categorias)).thenReturn(categoriasDTO);
+        CategoriaService categoriaServiceMock = Mockito.mock(CategoriaService.class);
+        Mockito.lenient().doReturn(true).when(categoriaServiceMock).existeNombreCategoria("nombre");
 
         categoriaServiceI.editar(1L, categoriaCrearDTO);
-    }*/
+    }
 
     @Test
     public void testEliminar() {
