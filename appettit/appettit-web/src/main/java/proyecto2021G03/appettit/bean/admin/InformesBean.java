@@ -15,9 +15,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.inject.Named;
@@ -27,16 +27,13 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.RingPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
 import org.primefaces.component.export.PDFOptions;
-import org.primefaces.model.DefaultStreamedContent;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -111,19 +108,22 @@ public class InformesBean implements Serializable {
 		try {
 
 			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
+
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
-				administradorDTO = usrService.buscarAdministradorPorId(usuarioDTO.getId());
+				if (!(usuarioDTO instanceof AdministradorDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
 
-				if (administradorDTO == null) {
-					FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 
@@ -138,10 +138,6 @@ public class InformesBean implements Serializable {
 				}
 			}
 
-		} catch (AppettitException e) {
-			logger.error(e.getMessage().trim());
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		} catch (IOException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -185,22 +181,6 @@ public class InformesBean implements Serializable {
 		pdfOpt.setFontName("Verdana");
 	}
 
-/*
-	public void preProcessPDF(Object document) throws IOException, BadElementException, DocumentException {
-		Document pdf = (Document) document;
-		pdf.open();
-		pdf.setMargins(1, 1, 1, 1);
-		pdf.setPageSize(PageSize.A4);
-
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-
-		String separator = File.separator;
-		String logo = externalContext.getRealPath("") + separator + "resources" + separator + "images" + separator
-				+ "logo.png";
-
-		pdf.add(Image.getInstance(logo));
-	}
-*/
 	public void listarInforme() {
 		if (!(selectedOption == null || range.get(0) == null || range.get(1) == null)) {
 			try {
@@ -225,7 +205,7 @@ public class InformesBean implements Serializable {
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked", "static-access" })
+	@SuppressWarnings({ "rawtypes", "unchecked", "static-access", "unused" })
 	public void exportarInforme() {
 		if (!(selectedOption == null || range.get(0) == null || range.get(1) == null)) {
 			

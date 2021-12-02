@@ -1,13 +1,14 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -18,10 +19,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.business.IUsuarioService;
-import proyecto2021G03.appettit.dto.*;
+import proyecto2021G03.appettit.dto.ImagenDTO;
+import proyecto2021G03.appettit.dto.MenuDTO;
+import proyecto2021G03.appettit.dto.PromocionDTO;
+import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 
@@ -34,83 +38,95 @@ import proyecto2021G03.appettit.util.Constantes;
 @NoArgsConstructor
 public class PromocionBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    static Logger logger = Logger.getLogger(PromocionBean.class);
+	static Logger logger = Logger.getLogger(PromocionBean.class);
 
-    private Long id;
-    private Long id_restaurante;
-    private String nombre;
-    private RestauranteDTO restaurante;
-    private String descripcion;
-    private Double descuento;
-    private Double precio;
-    private String id_imagen;
-    private ImagenDTO imagen;
-    private List<MenuDTO> menus;
+	private Long id;
+	private Long id_restaurante;
+	private String nombre;
+	private RestauranteDTO restaurante;
+	private String descripcion;
+	private Double descuento;
+	private Double precio;
+	private String id_imagen;
+	private ImagenDTO imagen;
+	private List<MenuDTO> menus;
 
-    private List<PromocionDTO> promos;
-    private List<PromocionDTO> filterPromos;
+	private List<PromocionDTO> promos;
+	private List<PromocionDTO> filterPromos;
 
-    private boolean globalFilterOnly;
-    FacesContext facesContext;
-    HttpSession session;
-    private Boolean disabledBloquedado = true;
+	private boolean globalFilterOnly;
+	FacesContext facesContext;
+	HttpSession session;
+	UsuarioDTO usuarioDTO;
+	private Boolean disabledBloquedado = true;
 
+	@EJB
+	IUsuarioService usrSrv;
 
-    @EJB
-    IUsuarioService usrSrv;
+	@EJB
+	IPromocionService promoSrv;
 
-    @EJB
-    IPromocionService promoSrv;
+	@PostConstruct
+	public void init() {
 
-    @PostConstruct
-    public void init() {
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-        facesContext = FacesContext.getCurrentInstance();
-        session = (HttpSession) facesContext.getExternalContext().getSession(true);
+			usuarioDTO = getUserSession();
 
-        UsuarioDTO usuarioDTO = getUserSession();
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-        if (usuarioDTO == null) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-        } else {
-            try {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
 
-                promos = promoSrv.listarPorRestaurante(usuarioDTO.getId());
-                restaurante = (RestauranteDTO) usuarioDTO;
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
 
-            } catch (AppettitException e) {
-                logger.info(e.getMessage().trim());
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-            }
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
 
-        }
-    }
+					promos = promoSrv.listarPorRestaurante(usuarioDTO.getId());
+					restaurante = (RestauranteDTO) usuarioDTO;
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
+		}
 
-    public void toggleGlobalFilter() {
-        setGlobalFilterOnly(!isGlobalFilterOnly());
-    }
+	}
 
-    public boolean isGlobalFilterOnly() {
-        return globalFilterOnly;
-    }
+	public void toggleGlobalFilter() {
+		setGlobalFilterOnly(!isGlobalFilterOnly());
+	}
 
-    public void setGlobalFilterOnly(boolean globalFilterOnly) {
-        this.globalFilterOnly = globalFilterOnly;
-    }
+	public boolean isGlobalFilterOnly() {
+		return globalFilterOnly;
+	}
 
-    public UsuarioDTO getUserSession() {
-        UsuarioDTO usuarioDTO = null;
-        try {
-            usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
-        } catch (Exception e) {
-            logger.error("Intento de acceso");
-        }
+	public void setGlobalFilterOnly(boolean globalFilterOnly) {
+		this.globalFilterOnly = globalFilterOnly;
+	}
 
-        return usuarioDTO;
+	public UsuarioDTO getUserSession() {
+		UsuarioDTO usuarioDTO = null;
+		try {
+			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+		} catch (Exception e) {
+			logger.error("Intento de acceso");
+		}
 
-    }
+		return usuarioDTO;
+
+	}
 }

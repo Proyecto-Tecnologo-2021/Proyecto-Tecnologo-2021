@@ -13,6 +13,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 import org.primefaces.component.export.PDFOptions;
@@ -30,10 +31,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.MenuDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanAdminRestaurante")
 //@SessionScoped
@@ -56,6 +60,9 @@ public class RestauranteBean implements Serializable {
 	private Long id;
 	private boolean globalFilterOnly;
 	private PDFOptions pdfOpt;
+	FacesContext facesContext;
+	HttpSession session;
+
 
 	@EJB
 	IUsuarioService usrSrv;
@@ -65,16 +72,41 @@ public class RestauranteBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		customizationOptions();
+
 		try {
-			restaurantes = usrSrv.listarRestaurantes();
-			logger.info("Restaurantes: " + restaurantes.size());
 
-			// menuRestaurante = null;
-			menuDeshabilitado = false;
-			selRestaurante = null;
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		} catch (AppettitException e) {
+			UsuarioDTO usuarioDTO = getUserSession();
+
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
+
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+			} else {
+				if (!(usuarioDTO instanceof AdministradorDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+
+				} else {
+
+					customizationOptions();
+					restaurantes = usrSrv.listarRestaurantes();
+					logger.info("Restaurantes: " + restaurantes.size());
+
+					// menuRestaurante = null;
+					menuDeshabilitado = false;
+					selRestaurante = null;
+				}
+			}
+		} catch (AppettitException | IOException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
@@ -176,6 +208,18 @@ public class RestauranteBean implements Serializable {
 				+ "logo.png";
 
 		pdf.add(Image.getInstance(logo));
+	}
+
+	public UsuarioDTO getUserSession() {
+		UsuarioDTO usuarioDTO = null;
+		try {
+			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+		} catch (Exception e) {
+			logger.error("Intento de acceso");
+		}
+
+		return usuarioDTO;
+
 	}
 
 }

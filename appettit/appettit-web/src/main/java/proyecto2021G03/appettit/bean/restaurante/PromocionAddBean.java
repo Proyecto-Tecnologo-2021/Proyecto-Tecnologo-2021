@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -86,30 +87,41 @@ public class PromocionAddBean implements Serializable {
 	public void init() {
 		clearParam();
 
-		facesContext = FacesContext.getCurrentInstance();
-		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		usuarioDTO = getUserSession();
+			usuarioDTO = getUserSession();
 
-		if (usuarioDTO == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-		} else {
-			try {
-				id_restaurante = usuarioDTO.getId();
-				restaurante = (RestauranteDTO) usuarioDTO;
-				menus = menuSrv.listarPorRestaurante(id_restaurante);
-				logger.info("Menus promociones: " + menus.size());
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-				menuSel = new ArrayList<MenuDTO>();
-
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-			}
-		}
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
 
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+					id_restaurante = usuarioDTO.getId();
+					restaurante = (RestauranteDTO) usuarioDTO;
+					menus = menuSrv.listarPorRestaurante(id_restaurante);
+					logger.info("Menus promociones: " + menus.size());
+
+					menuSel = new ArrayList<MenuDTO>();
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
+		}
 	}
 
 	public void addPromocion() {
@@ -183,7 +195,7 @@ public class PromocionAddBean implements Serializable {
 		this.nombre = null;
 		this.descripcion = null;
 		this.croppedImage = null;
-		//this.menuSel = new ArrayList<MenuDTO>();
+		// this.menuSel = new ArrayList<MenuDTO>();
 		this.descuento = 0D;
 		this.subTotal = 0D;
 		this.precioTotal = 0D;

@@ -46,70 +46,81 @@ import proyecto2021G03.appettit.util.Constantes;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuBean implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(MenuBean.class);
-	
+
 	private List<MenuDTO> menus;
 	private List<ProductoDTO> productos;
 	private List<MenuDTO> filterMenus;
 
-	
 	private Long id;
-    private Long id_restaurante;
-    private String nombre;
-    private RestauranteDTO restaurante;
-    private String descripcion;
-    private Double precioSimple;
-    private Double precioTotal;
-    private List<ExtraMenuDTO> extras;
-    private String id_imagen;
-    private boolean globalFilterOnly;
+	private Long id_restaurante;
+	private String nombre;
+	private RestauranteDTO restaurante;
+	private String descripcion;
+	private Double precioSimple;
+	private Double precioTotal;
+	private List<ExtraMenuDTO> extras;
+	private String id_imagen;
+	private boolean globalFilterOnly;
 	FacesContext facesContext;
 	HttpSession session;
 	private Boolean disabledBloquedado = true;
 	private MenuDTO selMenu;
 	private PDFOptions pdfOpt;
-	
-    
+	private UsuarioDTO usuarioDTO;
+
 	@EJB
 	IUsuarioService usrSrv;
 
 	@EJB
 	IProductoService prodSrv;
-	
+
 	@EJB
 	IMenuService menuSrv;
 
 	@PostConstruct
 	public void init() {
 
-		facesContext = FacesContext.getCurrentInstance();
-		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		UsuarioDTO usuarioDTO = getUserSession();
+			usuarioDTO = getUserSession();
 
-		if (usuarioDTO == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-		} else {
-			try {
-			
-				productos = prodSrv.listarPorRestaurante(usuarioDTO.getId());
-				menus = menuSrv.listarPorRestaurante(usuarioDTO.getId());
-				restaurante = (RestauranteDTO) usuarioDTO;
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-			}
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
 
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+
+					productos = prodSrv.listarPorRestaurante(usuarioDTO.getId());
+					menus = menuSrv.listarPorRestaurante(usuarioDTO.getId());
+					restaurante = (RestauranteDTO) usuarioDTO;
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
 		}
+
 	}
-	
-	
+
+
 	public void toggleGlobalFilter() {
 		setGlobalFilterOnly(!isGlobalFilterOnly());
 	}
@@ -133,7 +144,7 @@ public class MenuBean implements Serializable {
 		return usuarioDTO;
 
 	}
-	
+
 	public void customizationOptions() {
 		pdfOpt = new PDFOptions();
 		pdfOpt.setFacetBgColor("#f2a22c");

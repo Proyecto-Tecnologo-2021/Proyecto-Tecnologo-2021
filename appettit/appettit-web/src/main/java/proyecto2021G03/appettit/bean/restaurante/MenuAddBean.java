@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
@@ -116,47 +117,60 @@ public class MenuAddBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		//clearParam();
+		// clearParam();
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		facesContext = FacesContext.getCurrentInstance();
-		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+			usuarioDTO = getUserSession();
 
-		usuarioDTO = getUserSession();
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-		if (usuarioDTO == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-		} else {
-			try {
-				id_restaurante = usuarioDTO.getId();
-				restaurante = (RestauranteDTO) usuarioDTO;
-				productosById = new HashMap<Long, ProductoDTO>();
-				extrasById = new HashMap<Long, ExtraMenuDTO>();
-
-				productosRestaurante = prodSrv.listarPorRestaurante(id_restaurante);
-				extrasRestaurante = extraSrv.listarPorRestaurante(id_restaurante);
-
-				if (!productosRestaurante.isEmpty()) {
-					for (ProductoDTO prod : productosRestaurante) {
-
-						productosById.put(prod.getId(), prod);
-					}
-				}
-
-				if (!extrasRestaurante.isEmpty()) {
-					for (ExtraMenuDTO ext : extrasRestaurante) {
-
-						extrasById.put(ext.getId(), ext);
-					}
-				}
-
-				loadProductosDelRestaurante();
-				loadExtrasDelRestaurante();
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
+
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+
+					id_restaurante = usuarioDTO.getId();
+					restaurante = (RestauranteDTO) usuarioDTO;
+					productosById = new HashMap<Long, ProductoDTO>();
+					extrasById = new HashMap<Long, ExtraMenuDTO>();
+
+					productosRestaurante = prodSrv.listarPorRestaurante(id_restaurante);
+					extrasRestaurante = extraSrv.listarPorRestaurante(id_restaurante);
+
+					if (!productosRestaurante.isEmpty()) {
+						for (ProductoDTO prod : productosRestaurante) {
+
+							productosById.put(prod.getId(), prod);
+						}
+					}
+
+					if (!extrasRestaurante.isEmpty()) {
+						for (ExtraMenuDTO ext : extrasRestaurante) {
+
+							extrasById.put(ext.getId(), ext);
+						}
+					}
+
+					loadProductosDelRestaurante();
+					loadExtrasDelRestaurante();
+				}
 			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
 		}
 
 	}

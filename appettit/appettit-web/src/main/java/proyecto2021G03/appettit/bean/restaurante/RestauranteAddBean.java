@@ -11,6 +11,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -36,7 +37,9 @@ import proyecto2021G03.appettit.dto.EstadoRegistro;
 import proyecto2021G03.appettit.dto.ImagenDTO;
 import proyecto2021G03.appettit.dto.LocalidadDTO;
 import proyecto2021G03.appettit.dto.RestauranteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanAddRestaurante")
 @SessionScoped
@@ -66,7 +69,7 @@ public class RestauranteAddBean implements Serializable {
 	private CroppedImage croppedImage;
 	private String point;
 	private String strareaentrega;
-	
+	HttpSession session;
 	
 	@EJB
 	IUsuarioService usrSrv;
@@ -82,6 +85,8 @@ public class RestauranteAddBean implements Serializable {
 	
 	@EJB
 	GeoConverter geoConverter;
+	
+	
 	
 	@PostConstruct
 	public void init() {
@@ -148,8 +153,12 @@ public class RestauranteAddBean implements Serializable {
 						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
 								"No fue posible cargar la imagen."));
 					}
+					
+					session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
+					session.setAttribute(Constantes.LOGINUSUARIO, (UsuarioDTO) restaurante);
 						
-					FacesContext.getCurrentInstance().getExternalContext().redirect("/appettit-web/restaurante/home.xhtml");	
+					FacesContext.getCurrentInstance().getExternalContext().redirect(Constantes.REDIRECT_RESTAURANTE_HOME_URI);	
 					
 				} else {
 					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",

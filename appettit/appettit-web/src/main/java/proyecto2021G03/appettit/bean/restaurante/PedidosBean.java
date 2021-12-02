@@ -68,41 +68,52 @@ public class PedidosBean implements Serializable {
 	private PDFOptions pdfOpt;
 	FacesContext facesContext;
 	HttpSession session;
-	
+
 	@EJB
 	IUsuarioService usrSrv;
 
 	@EJB
 	IPedidoService pedSrv;
-	
+
 	@EJB
 	ICalificacionRRService califSrv;
 
 	@PostConstruct
 	public void init() {
 
-		facesContext = FacesContext.getCurrentInstance();
-		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		usuarioDTO = getUserSession();
+			usuarioDTO = getUserSession();
 
-		if (usuarioDTO == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-		} else {
-			try {
-				
-				//pedidos = pedSrv.listarPorRestaurante(usuarioDTO.getId());
-				pedidos = pedSrv.listarPorRestaurante(usuarioDTO.getId());
-				restaurante = (RestauranteDTO) usuarioDTO;
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-			}
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
 
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+
+					pedidos = pedSrv.listarPorRestaurante(usuarioDTO.getId());
+					restaurante = (RestauranteDTO) usuarioDTO;
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
 		}
+
 	}
 
 	public void toggleGlobalFilter() {
@@ -122,31 +133,29 @@ public class PedidosBean implements Serializable {
 
 	}
 
-	public String getHoraPedido (Long id) throws AppettitException {
-		
-		return pedSrv.listarPorId(id).getFecha()
-			       .format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
+	public String getHoraPedido(Long id) throws AppettitException {
+
+		return pedSrv.listarPorId(id).getFecha().format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
 	}
-	
-	
-	public String getNombreCliente (Long id) throws AppettitException {
+
+	public String getNombreCliente(Long id) throws AppettitException {
 		return usrSrv.buscarPorIdCliente(id).getNombre();
 	}
-	
-	public String getTelCliente (Long id) throws AppettitException {
+
+	public String getTelCliente(Long id) throws AppettitException {
 		return usrSrv.buscarPorIdCliente(id).getTelefono();
 	}
-	
-	public  DireccionDTO getDireccion (Long id) throws AppettitException {
+
+	public DireccionDTO getDireccion(Long id) throws AppettitException {
 		return usrSrv.buscarDireccionPorId(id);
 	}
-	
-	public List<ItemDTO> getMenus () throws AppettitException {
-		
+
+	public List<ItemDTO> getMenus() throws AppettitException {
+
 		ItemDTO aux = null;
 		List<ItemDTO> ret = new ArrayList<ItemDTO>();
 		List<MenuDTO> menus = pedSrv.listarPorId(selPedido.getId()).getMenus();
-		for (MenuDTO menu: menus) {
+		for (MenuDTO menu : menus) {
 			if (existeEnItemDTO(ret, menu.getId())) {
 				aux = obtenerItemDTO(ret, menu.getId());
 				aux.setCantidad(aux.getCantidad() + 1);
@@ -156,16 +165,16 @@ public class PedidosBean implements Serializable {
 				ret.add(aux);
 			}
 		}
-		
+
 		return ret;
 	}
-	
-	public List<ItemDTO> getPromos () throws AppettitException {
-		
+
+	public List<ItemDTO> getPromos() throws AppettitException {
+
 		ItemDTO aux = null;
 		List<ItemDTO> ret = new ArrayList<ItemDTO>();
 		List<PromocionDTO> promos = pedSrv.listarPorId(selPedido.getId()).getPromociones();
-		for (PromocionDTO promo: promos) {
+		for (PromocionDTO promo : promos) {
 			if (existeEnItemDTO(ret, promo.getId())) {
 				aux = obtenerItemDTO(ret, promo.getId());
 				aux.setCantidad(aux.getCantidad() + 1);
@@ -175,19 +184,20 @@ public class PedidosBean implements Serializable {
 				ret.add(aux);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	public CalificacionRPedidoDTO getCalificacion() throws AppettitException {
-		
+
 		CalificacionRPedidoDTO cali = califSrv.listarPorId(selPedido.getId(), selPedido.getId_cliente());
 		if (cali == null) {
-			cali = new CalificacionRPedidoDTO(0, 0, 0, "Pedido no calificado", selPedido.getId(), selPedido.getId_cliente());
+			cali = new CalificacionRPedidoDTO(0, 0, 0, "Pedido no calificado", selPedido.getId(),
+					selPedido.getId_cliente());
 		}
 		return cali;
 	}
-	
+
 	public void onRowSelect(RowEditEvent<PedidoDTO> event) {
 		disabledBloquedado = false;
 	}
@@ -199,7 +209,7 @@ public class PedidosBean implements Serializable {
 			pedSrv.editarEstadoPago(event.getObject());
 			pedidos = pedSrv.listarPorRestaurante(usuarioDTO.getId());
 			FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage("Edición correcta", event.getObject().getId().toString()));
+					new FacesMessage("Edición correcta", event.getObject().getId().toString()));
 
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
@@ -250,13 +260,13 @@ public class PedidosBean implements Serializable {
 		return usuarioDTO;
 
 	}
-	
-	public boolean existeEnItemDTO (List<ItemDTO> items, Long id) {
-		
+
+	public boolean existeEnItemDTO(List<ItemDTO> items, Long id) {
+
 		if (items == null) {
 			return false;
 		} else {
-			for(ItemDTO item: items) {
+			for (ItemDTO item : items) {
 				if (item.getId().compareTo(id) == 0) {
 					return true;
 				}
@@ -264,14 +274,14 @@ public class PedidosBean implements Serializable {
 			return false;
 		}
 	}
-	
-	public ItemDTO obtenerItemDTO (List<ItemDTO> items, Long id) {
-		for(ItemDTO item: items) {
+
+	public ItemDTO obtenerItemDTO(List<ItemDTO> items, Long id) {
+		for (ItemDTO item : items) {
 			if (item.getId().compareTo(id) == 0) {
 				return item;
 			}
 		}
 		return null;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package proyecto2021G03.appettit.bean.admin;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -19,12 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.ICategoriaService;
-import proyecto2021G03.appettit.business.IProductoService;
-import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
 import proyecto2021G03.appettit.dto.CategoriaDTO;
-import proyecto2021G03.appettit.dto.ProductoDTO;
-import proyecto2021G03.appettit.dto.RestauranteDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
@@ -56,22 +55,45 @@ public class CategoriasBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-			try {
-				categorias = catSrv.listar();
+		try {
 
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
+
+			UsuarioDTO usuarioDTO = getUserSession();
+
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
+
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-			}
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+			} else {
+				if (!(usuarioDTO instanceof AdministradorDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
 
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+
+				} else {
+
+					categorias = catSrv.listar();
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
 		}
-	
+
+	}
 
 	public void addCategoria() {
 
-		logger.info("addCategoria 'nombre': " + nombre);
-		CategoriaDTO nprod = null;
+		//logger.info("addCategoria 'nombre': " + nombre);
+		//CategoriaDTO nprod = null;
 		try {
 			CategoriaCrearDTO categoriaCDTO = new CategoriaCrearDTO(nombre);
 
@@ -100,7 +122,7 @@ public class CategoriasBean implements Serializable {
 		this.id = null;
 		this.nombre = null;
 	}
-	
+
 	public void toggleGlobalFilter() {
 		setGlobalFilterOnly(!isGlobalFilterOnly());
 	}
@@ -130,10 +152,10 @@ public class CategoriasBean implements Serializable {
 	}
 
 	public void onRowEdit(RowEditEvent<CategoriaDTO> event) {
-		
+
 		try {
 			logger.info("onRowEdit Categoria - ID: " + event.getObject().getId());
-			
+
 			CategoriaCrearDTO categoriaCDTO = new CategoriaCrearDTO(event.getObject().getNombre());
 			catSrv.editar(event.getObject().getId(), categoriaCDTO);
 			categorias = catSrv.listar();

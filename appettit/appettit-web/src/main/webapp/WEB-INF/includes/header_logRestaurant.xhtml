@@ -3,14 +3,19 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" lang="sp">
-
+	
+	
 	<p:remoteCommand name="rc"
 		action="#{beanUserLoged.getRestauranteReg()}" update="userProfileName userProfileImg" />
 
-	<p:remoteCommand name="rc2" oncomplete="loadinfoFromLocalStorage();"
+
+	<p:remoteCommand name="rc2" oncomplete="loadLocalStorage();"
 		autoRun="true" />
-
-
+ 	
+	<p:remoteCommand name="rds"
+		action="#{beanUserLoged.destroySession()}"/>
+		
+	
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
 		<div class="container">
@@ -33,9 +38,10 @@
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
-							<h6 class="p-3 mb-0">Perfil</h6>
+							<!-- <h6 class="p-3 mb-0">Perfil</h6> -->
 							<div class="dropdown-divider"></div>
-							<a href="#" class="list-group-item list-group-item-action">Salir</a>
+							<a href="javascript:clearLocalStorage();"
+								class="list-group-item list-group-item-action">Salir</a>
 
 						</div>
 					</div>
@@ -47,10 +53,8 @@
 	<script>
 			var userTOKEN;
 			
-			//loadLocalStorage();
-			
 			function loadinfoFromLocalStorage() {
-				storeLocalStorage();
+				//storeLocalStorage();
 				loadLocalStorage();
 			}
 			
@@ -70,7 +74,7 @@
 
             function clearLocalStorage(prefix) {
             	localStorage.clear();
-            	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
+            	rds();
             }
 
             function getLocalStorageValue(prefix) {
@@ -79,8 +83,6 @@
                 	var prefixValue = JSON.parse(localStorage.getItem(prefix));
                 	
                 	//prefixValue = JSON.parse(prefixValue);
-                	console.log(prefixValue);
-                    
                  	userTOKEN =  prefixValue["token"];
 
                     //var n = document.getElementById("userProfileName"); 
@@ -94,14 +96,14 @@
 					if(prefixValue["rol"] != 'restaurante'){
 						console.log("ERROR ROL RESTAURANTE");
 						localStorage.clear();
-						window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
+						window.location.href = "#{beanUserLoged.constantes.REDIRECT_URI}";
 	                }
 
                     
                     
                 }else{
                 	console.log("ERROR NO COOKIE");
-                	window.location.href = 'http://127.0.0.1:8080/appettit-web/restaurante/addrestaurante.xhtml';
+                	window.location.href = "#{beanUserLoged.constantes.REDIRECT_URI}";
 				}
             }
 

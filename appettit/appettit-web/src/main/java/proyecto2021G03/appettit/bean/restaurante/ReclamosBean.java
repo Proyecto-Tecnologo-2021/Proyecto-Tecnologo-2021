@@ -67,39 +67,51 @@ public class ReclamosBean implements Serializable {
 	private PDFOptions pdfOpt;
 	FacesContext facesContext;
 	HttpSession session;
-	
+
 	@EJB
 	IUsuarioService usrSrv;
 
 	@EJB
 	IReclamoService recSrv;
-	
+
 	@EJB
 	IPedidoService pedSrv;
 
 	@PostConstruct
 	public void init() {
 
-		facesContext = FacesContext.getCurrentInstance();
-		session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		try {
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
-		usuarioDTO = getUserSession();
+			usuarioDTO = getUserSession();
 
-		if (usuarioDTO == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
-		} else {
-			try {
-				reclamos = recSrv.listarPorRestaurante(usuarioDTO.getId());
-				restaurante = (RestauranteDTO) usuarioDTO;
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 
-			} catch (AppettitException e) {
-				logger.info(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
-			}
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+			} else {
 
+				if (!(usuarioDTO instanceof RestauranteDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+				} else {
+					reclamos = recSrv.listarPorRestaurante(usuarioDTO.getId());
+					restaurante = (RestauranteDTO) usuarioDTO;
+				}
+			}
+		} catch (AppettitException | IOException e) {
+			logger.info(e.getMessage().trim());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));
 		}
+
 	}
 
 	public void toggleGlobalFilter() {
@@ -114,55 +126,54 @@ public class ReclamosBean implements Serializable {
 		this.globalFilterOnly = globalFilterOnly;
 	}
 
-	
-	public String getHoraReclamo (Long id) throws AppettitException {
-		
-		return recSrv.listarPorId(id).getFecha()
-			       .format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
+	public String getHoraReclamo(Long id) throws AppettitException {
+
+		return recSrv.listarPorId(id).getFecha().format(DateTimeFormatter.ofPattern("HH:mm - dd/MM"));
 	}
-	
-	public String getNombreCliente (Long id) throws AppettitException {
-		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(id);	
-		return usrSrv.buscarPorIdCliente(pedidoDTO.getId_cliente()).getId() + " - " + usrSrv.buscarPorIdCliente(pedidoDTO.getId_cliente()).getNombre();
+
+	public String getNombreCliente(Long id) throws AppettitException {
+		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(id);
+		return usrSrv.buscarPorIdCliente(pedidoDTO.getId_cliente()).getId() + " - "
+				+ usrSrv.buscarPorIdCliente(pedidoDTO.getId_cliente()).getNombre();
 	}
-	
-	public String getTelefonoCliente (Long id) throws AppettitException {
-		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(id);	
+
+	public String getTelefonoCliente(Long id) throws AppettitException {
+		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(id);
 		return usrSrv.buscarPorIdCliente(pedidoDTO.getId_cliente()).getTelefono();
 	}
-	
-	public String getTelCliente (Long id) throws AppettitException {
+
+	public String getTelCliente(Long id) throws AppettitException {
 		return usrSrv.buscarPorIdCliente(id).getTelefono();
 	}
-	
-	public  DireccionDTO getDireccion (Long id) throws AppettitException {
+
+	public DireccionDTO getDireccion(Long id) throws AppettitException {
 		return usrSrv.buscarDireccionPorId(id);
 	}
-	
-	public  PedidoDTO getPedido () throws AppettitException {
+
+	public PedidoDTO getPedido() throws AppettitException {
 		return pedSrv.listarPorReclamo(selReclamo.getId());
 	}
-	
-	public Long getNumPedido () throws AppettitException {
+
+	public Long getNumPedido() throws AppettitException {
 		return pedSrv.listarPorReclamo(selReclamo.getId()).getId();
 	}
-	
-	public Long getNumeroPedido (Long id_reclamo) throws AppettitException {
+
+	public Long getNumeroPedido(Long id_reclamo) throws AppettitException {
 		return pedSrv.listarPorReclamo(id_reclamo).getId();
 	}
-	
-	public Long getIdCliente () throws AppettitException {
+
+	public Long getIdCliente() throws AppettitException {
 		return pedSrv.listarPorReclamo(selReclamo.getId()).getId_cliente();
 	}
-	
-	public List<ItemDTO> getMenus () throws AppettitException {
-		
+
+	public List<ItemDTO> getMenus() throws AppettitException {
+
 		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(selReclamo.getId());
-		
+
 		ItemDTO aux = null;
 		List<ItemDTO> ret = new ArrayList<ItemDTO>();
 		List<MenuDTO> menus = pedSrv.listarPorId(pedidoDTO.getId()).getMenus();
-		for (MenuDTO menu: menus) {
+		for (MenuDTO menu : menus) {
 			if (existeEnItemDTO(ret, menu.getId())) {
 				aux = obtenerItemDTO(ret, menu.getId());
 				aux.setCantidad(aux.getCantidad() + 1);
@@ -172,18 +183,18 @@ public class ReclamosBean implements Serializable {
 				ret.add(aux);
 			}
 		}
-		
+
 		return ret;
 	}
-	
-	public List<ItemDTO> getPromos () throws AppettitException {
-		
+
+	public List<ItemDTO> getPromos() throws AppettitException {
+
 		PedidoDTO pedidoDTO = pedSrv.listarPorReclamo(selReclamo.getId());
-		
+
 		ItemDTO aux = null;
 		List<ItemDTO> ret = new ArrayList<ItemDTO>();
 		List<PromocionDTO> promos = pedSrv.listarPorId(pedidoDTO.getId()).getPromociones();
-		for (PromocionDTO promo: promos) {
+		for (PromocionDTO promo : promos) {
 			if (existeEnItemDTO(ret, promo.getId())) {
 				aux = obtenerItemDTO(ret, promo.getId());
 				aux.setCantidad(aux.getCantidad() + 1);
@@ -193,10 +204,10 @@ public class ReclamosBean implements Serializable {
 				ret.add(aux);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	public void onRowSelect(RowEditEvent<ReclamoDTO> event) {
 		disabledBloquedado = false;
 	}
@@ -205,10 +216,10 @@ public class ReclamosBean implements Serializable {
 
 		try {
 			selReclamo = event.getObject();
-			//recSrv.editarEstadoPago(event.getObject());
+			// recSrv.editarEstadoPago(event.getObject());
 			reclamos = recSrv.listarPorRestaurante(usuarioDTO.getId());
 			FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage("Edición correcta", event.getObject().getId().toString()));
+					new FacesMessage("Edición correcta", event.getObject().getId().toString()));
 
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
@@ -259,13 +270,13 @@ public class ReclamosBean implements Serializable {
 		return usuarioDTO;
 
 	}
-	
-	public boolean existeEnItemDTO (List<ItemDTO> items, Long id) {
-		
+
+	public boolean existeEnItemDTO(List<ItemDTO> items, Long id) {
+
 		if (items == null) {
 			return false;
 		} else {
-			for(ItemDTO item: items) {
+			for (ItemDTO item : items) {
 				if (item.getId().compareTo(id) == 0) {
 					return true;
 				}
@@ -273,14 +284,14 @@ public class ReclamosBean implements Serializable {
 			return false;
 		}
 	}
-	
-	public ItemDTO obtenerItemDTO (List<ItemDTO> items, Long id) {
-		for(ItemDTO item: items) {
+
+	public ItemDTO obtenerItemDTO(List<ItemDTO> items, Long id) {
+		for (ItemDTO item : items) {
 			if (item.getId().compareTo(id) == 0) {
 				return item;
 			}
 		}
 		return null;
 	}
-	
+
 }

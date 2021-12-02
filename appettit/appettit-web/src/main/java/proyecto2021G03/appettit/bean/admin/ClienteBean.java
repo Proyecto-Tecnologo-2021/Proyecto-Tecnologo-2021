@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
 import org.primefaces.component.export.PDFOptions;
@@ -28,8 +29,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto2021G03.appettit.business.IUsuarioService;
+import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.ClienteDTO;
+import proyecto2021G03.appettit.dto.UsuarioDTO;
 import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanAdminCliente")
 //@SessionScoped
@@ -46,24 +50,49 @@ public class ClienteBean implements Serializable {
 
 	private List<ClienteDTO> clientes = null;
 	private List<ClienteDTO> filterClientes = null;
-	//private ClienteDTO selCliente = null;
 	private Boolean disabledBloquedado = true;
 	private Long id;
 	private boolean globalFilterOnly;
 	private PDFOptions pdfOpt;
+	FacesContext facesContext;
+	HttpSession session;
 
 	@EJB
 	IUsuarioService usrSrv;
 
 	@PostConstruct
 	public void init() {
-		customizationOptions();
-		try {
-			clientes = usrSrv.listarClientes();
-			logger.info("Clientes: " + clientes.size());
-			//selCliente = null;
 
-		} catch (AppettitException e) {
+		try {
+
+			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			session = (HttpSession) facesContext.getExternalContext().getSession(true);
+
+			UsuarioDTO usuarioDTO = getUserSession();
+
+			if (usuarioDTO == null) {
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
+
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+			} else {
+				if (!(usuarioDTO instanceof AdministradorDTO)) {
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
+
+				} else {
+					customizationOptions();
+					clientes = usrSrv.listarClientes();
+					//logger.info("Clientes: " + clientes.size());
+					// selCliente = null;
+				}
+			}
+		} catch (AppettitException | IOException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
@@ -86,13 +115,13 @@ public class ClienteBean implements Serializable {
 		disabledBloquedado = false;
 	}
 
-	public void onRowEdit(RowEditEvent<ClienteDTO> event){
+	public void onRowEdit(RowEditEvent<ClienteDTO> event) {
 
 		try {
-			//selCliente = event.getObject();
+			// selCliente = event.getObject();
 
 			logger.info("onRowEdit - Bloqueado: " + event.getObject().getBloqueado());
-			
+
 			if ((event.getObject().getBloqueado() == true)) {
 				usrSrv.bloquearCliente(event.getObject().getId());
 			} else {
@@ -100,7 +129,7 @@ public class ClienteBean implements Serializable {
 			}
 			clientes = usrSrv.listarClientes();
 			FacesContext.getCurrentInstance().addMessage(null,
-			new FacesMessage("Edición correcta", event.getObject().getNombre()));
+					new FacesMessage("Edición correcta", event.getObject().getNombre()));
 
 		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
@@ -138,6 +167,18 @@ public class ClienteBean implements Serializable {
 				+ "logo.png";
 
 		pdf.add(Image.getInstance(logo));
+	}
+
+	public UsuarioDTO getUserSession() {
+		UsuarioDTO usuarioDTO = null;
+		try {
+			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
+		} catch (Exception e) {
+			logger.error("Intento de acceso");
+		}
+
+		return usuarioDTO;
+
 	}
 
 }

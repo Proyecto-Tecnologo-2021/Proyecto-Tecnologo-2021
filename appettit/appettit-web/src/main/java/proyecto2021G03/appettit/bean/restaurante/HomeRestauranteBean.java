@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -118,19 +119,23 @@ public class HomeRestauranteBean implements Serializable {
 			abierto = false;
 			
 			facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
+				externalContext.invalidateSession();
+				externalContext.redirect(Constantes.REDIRECT_URI);
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
 				
 				if(restauranteDTO==null) {
-					FacesContext.getCurrentInstance().getExternalContext().dispatch("https://20.197.240.46:8080/");
+					externalContext.invalidateSession();
+					externalContext.redirect(Constantes.REDIRECT_URI);
+					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 				} else {
@@ -176,11 +181,7 @@ public class HomeRestauranteBean implements Serializable {
 
 			}
 
-		} catch (AppettitException e) {
-			logger.error(e.getMessage().trim());
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-		} catch (IOException e) {
+		} catch (AppettitException | IOException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
