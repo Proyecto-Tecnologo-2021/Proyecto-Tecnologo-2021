@@ -4,18 +4,6 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" lang="sp">
 	
-	
-	<p:remoteCommand name="rc"
-		action="#{beanUserLoged.getRestauranteReg()}" update="userProfileName userProfileImg" />
-
-
-	<p:remoteCommand name="rc2" oncomplete="loadLocalStorage();"
-		autoRun="true" />
- 	
-	<p:remoteCommand name="rds"
-		action="#{beanUserLoged.destroySession()}"/>
-		
-	
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
 		<div class="container">
@@ -38,11 +26,8 @@
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
-							<!-- <h6 class="p-3 mb-0">Perfil</h6> -->
-							<div class="dropdown-divider"></div>
-							<a href="javascript:clearLocalStorage();"
-								class="list-group-item list-group-item-action">Salir</a>
-
+							
+							<p:button value="Salir" icon="pi pi-arrow-left" action="#{beanHomeAdministrador.logout()}" styleClass="ui-button-warning ui-button-flat"/>
 						</div>
 					</div>
 				</div>
@@ -50,6 +35,7 @@
 		</div>
 	</div>
 
+	<!-- 
 	<script>
 			var userTOKEN;
 			
@@ -108,5 +94,5 @@
             }
 
             </script>
-
+ -->
 </ui:composition>

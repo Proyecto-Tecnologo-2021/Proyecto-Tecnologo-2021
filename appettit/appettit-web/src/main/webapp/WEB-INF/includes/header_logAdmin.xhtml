@@ -4,18 +4,6 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" lang="sp">
 
-<!-- 
-	<p:remoteCommand name="rc"
-		action="#{beanUserLoged.getAdministradorReg()}" update="userProfileName" />
-
-	<p:remoteCommand name="rc2" oncomplete="loadLocalStorage();"
-		autoRun="true" />
- 
- 	
-	<p:remoteCommand name="rds"
-		action="#{beanUserLoged.destroySession()}"/>
-
- -->
 	
 	<!-- top header -->
 	<div class="top-header py-2 bg-white">
@@ -30,7 +18,7 @@
 								<p class="mb-0 d-sm-block navbar-profile-name"
 									id="userProfileData">
 
-									<h:outputText value="#{beanUserLoged.admin.nombre }" id="userProfileName"/>
+									<h:outputText value="#{beanUserLoged.admin.nombre}" id="userProfileName"/>
 									<i class="fas fa-user-circle h3"></i>
 								</p>
 							</div>
@@ -38,11 +26,8 @@
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
-							<!-- <h6 class="p-3 mb-0">Perfil</h6>-->
-							<div class="dropdown-divider"></div>
-							<a href="javascript:clearLocalStorage();"
-								class="list-group-item list-group-item-action">Salir</a>
-
+							
+							<p:button value="Salir" icon="pi pi-arrow-left" action="#{beanHomeAdministrador.logout()}" styleClass="ui-button-warning ui-button-flat"/>
 
 						</div>
 					</div>
@@ -50,6 +35,8 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 
 	<script>
 			var userTOKEN;
 			
@@ -69,7 +56,8 @@
             function storeLocalStorage(){
             	var prefix = 'react.appetitUser';
 
-            	var contenido = "{\"id\":\"4\", \"correo\":\"mpulidouy@hotmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Admin Prueba Cookie \",\"rol\":\"administrador\"}";
+            	//var contenido = "{\"id\":\"4\", \"correo\":\"mpulidouy@hotmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Admin Prueba Cookie \",\"rol\":\"administrador\"}";
+            	var contenido = "%7B%22sub%22%3A%2214%22%2C%22iat%22%3A1638469090%2C%22exp%22%3A1638472690%2C%22tipoUsuario%22%3A%22cliente%22%2C%22idUsuario%22%3A14%2C%22userName%22%3A%221212%22%2C%22nombre%22%3A%221212%22%2C%22correo%22%3A%22121%40gmail.com%22%2C%22telefono%22%3A%2212312%22%7D"
             	localStorage.setItem(prefix, contenido);
                 
             }
@@ -112,6 +100,6 @@
             }
 
             </script>
-
+ 	-->
 
 </ui:composition>

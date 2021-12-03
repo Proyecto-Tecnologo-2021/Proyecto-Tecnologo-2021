@@ -15,9 +15,10 @@ public class Constantes {
 	public static final String LOGINUSUARIO = "LOGINUSUARIO";
 	public static final String URL_HOME = "/appettit-web";
 	
-	public static final String REDIRECT_URI = "https://appetit.brazilsouth.cloudapp.azure.com:8443/";
-	public static final String REDIRECT_RESTAURANTE_HOME_URI = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/restaurante/home.xhtml";
-	public static final String REDIRECT_ADMINISTRADOR_HOME_URI = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/admin/home.xhtml";
+	//public static final String REDIRECT_URI = "https://appetit.brazilsouth.cloudapp.azure.com:8443/";
+	public static final String REDIRECT_URI = "/FalseLogin.xhtml";
+	public static final String REDIRECT_RESTAURANTE_HOME_URI = "/appettit-web/restaurante/home.xhtml";
+	public static final String REDIRECT_ADMINISTRADOR_HOME_URI = "/appettit-web/admin/home.xhtml";
 	
 	/*Sesiones*/
 	public static final String COOKIE_NAME = "_FOsession";

@@ -47,6 +47,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -112,6 +113,9 @@ public class HomeRestauranteBean implements Serializable {
 
 	@EJB
 	IEstadisticasService estadisitciasSrv;
+	
+	@EJB
+	UserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -122,19 +126,23 @@ public class HomeRestauranteBean implements Serializable {
 			ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
+			usrSession.getRestauranteReg();
+			
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
 				externalContext.invalidateSession();
-				externalContext.redirect(Constantes.REDIRECT_URI);
+				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.redirect(Constantes.REDIRECT_URI);
+				
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
-				restauranteDTO = usrService.buscarRestaurantePorId(usuarioDTO.getId());
-				
-				if(restauranteDTO==null) {
+				if(!(usuarioDTO instanceof RestauranteDTO)) {
 					externalContext.invalidateSession();
-					externalContext.redirect(Constantes.REDIRECT_URI);
+					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.redirect(Constantes.REDIRECT_URI);
+					
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
@@ -143,6 +151,8 @@ public class HomeRestauranteBean implements Serializable {
 					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 					fechaHora = dateFormat.format(fechaBase);
 					fpSytleLabel = new HashMap<String, String>();
+					
+					restauranteDTO = (RestauranteDTO) usuarioDTO;
 
 					pedidos = estadisitciasSrv.listarPedidosPendientesPorRestaurante(restauranteDTO.getId(), fechaDesde,
 							fechaHasta);

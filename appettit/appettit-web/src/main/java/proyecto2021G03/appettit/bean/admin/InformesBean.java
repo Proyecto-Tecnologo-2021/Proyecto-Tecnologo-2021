@@ -115,14 +115,18 @@ public class InformesBean implements Serializable {
 
 			if (usuarioDTO == null) {
 				externalContext.invalidateSession();
-				externalContext.redirect(Constantes.REDIRECT_URI);
+				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.redirect(Constantes.REDIRECT_URI);
+				
 
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				if (!(usuarioDTO instanceof AdministradorDTO)) {
 					externalContext.invalidateSession();
-					externalContext.redirect(Constantes.REDIRECT_URI);
+					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.redirect(Constantes.REDIRECT_URI);
+					
 
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));

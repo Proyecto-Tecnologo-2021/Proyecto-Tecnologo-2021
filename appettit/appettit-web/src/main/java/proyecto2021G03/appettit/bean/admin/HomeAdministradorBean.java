@@ -23,8 +23,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
@@ -45,7 +43,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserBean;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -81,7 +79,7 @@ public class HomeAdministradorBean implements Serializable {
 	List<RestauranteRDTO> autorizar;
 	List<DashRestauranteDTO> topRestaurante;
 	String fechaHora;
-	AdministradorDTO administradorDTO;
+	//AdministradorDTO administradorDTO;
 	Long id_restaurante;
 	FacesContext facesContext;
 	HttpSession session;
@@ -102,8 +100,9 @@ public class HomeAdministradorBean implements Serializable {
 	@EJB
 	IEstadisticasService estadisitciasSrv;
 	
-	UserBean usrBean;
-
+	@EJB
+	UserSession usrSession;
+	
 	@PostConstruct
 	public void init() {
 		try {
@@ -111,24 +110,15 @@ public class HomeAdministradorBean implements Serializable {
 			facesContext = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
-			usrBean = new UserBean();
-			usrBean.getAdministradorReg();
 			
-			/*
-			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+			usrSession.getAdministradorReg();
 			
-			for (Cookie cookie : request.getCookies()) {
-				logger.info(cookie.getName());
-			}
-			*/
-			
-
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
 				externalContext.invalidateSession();
-				externalContext.dispatch(null);
-				externalContext.redirect(Constantes.REDIRECT_URI);
+				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.redirect(Constantes.REDIRECT_URI);
 				
 				
 				FacesContext.getCurrentInstance().addMessage(null,
@@ -136,8 +126,8 @@ public class HomeAdministradorBean implements Serializable {
 			} else {
 				if (!(usuarioDTO instanceof AdministradorDTO)) {
 					externalContext.invalidateSession();
-					externalContext.dispatch(null);
-					externalContext.redirect(Constantes.REDIRECT_URI);
+					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.redirect(Constantes.REDIRECT_URI);
 
 					
 					FacesContext.getCurrentInstance().addMessage(null,
@@ -192,6 +182,10 @@ public class HomeAdministradorBean implements Serializable {
 
 		return usuarioDTO;
 
+	}
+	
+	public void logout() {
+		usrSession.destroySession();
 	}
 
 	public String getFechaHora(LocalDateTime fecha, String formato) {
@@ -494,5 +488,7 @@ public class HomeAdministradorBean implements Serializable {
         }
         return temp;
     }
- 	
+    
+    
+	
 }

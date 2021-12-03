@@ -96,16 +96,18 @@ public class PromocionAddBean implements Serializable {
 
 			if (usuarioDTO == null) {
 				externalContext.invalidateSession();
-				externalContext.redirect(Constantes.REDIRECT_URI);
-
+				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.redirect(Constantes.REDIRECT_URI);
+				
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
 			} else {
 
 				if (!(usuarioDTO instanceof RestauranteDTO)) {
 					externalContext.invalidateSession();
-					externalContext.redirect(Constantes.REDIRECT_URI);
-
+					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.redirect(Constantes.REDIRECT_URI);
+					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 				} else {
