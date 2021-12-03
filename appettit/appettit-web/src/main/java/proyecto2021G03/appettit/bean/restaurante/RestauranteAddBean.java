@@ -158,8 +158,8 @@ public class RestauranteAddBean implements Serializable {
 					RestauranteDTO restaurante = usrSrv.buscarPorCorreoRestaurante(correo);
 					session.setAttribute(Constantes.LOGINUSUARIO, (UsuarioDTO) restaurante);
 						
-					//FacesContext.getCurrentInstance().getExternalContext().redirect(Constantes.REDIRECT_URI);
-					FacesContext.getCurrentInstance().getExternalContext().dispatch(Constantes.REDIRECT_URI);
+					FacesContext.getCurrentInstance().getExternalContext().redirect(Constantes.REDIRECT_URI);
+					//FacesContext.getCurrentInstance().getExternalContext().dispatch(Constantes.REDIRECT_URI);
 					
 				} else {
 					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
