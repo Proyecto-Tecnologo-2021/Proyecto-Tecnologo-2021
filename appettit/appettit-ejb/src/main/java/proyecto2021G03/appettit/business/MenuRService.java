@@ -39,14 +39,6 @@ public class MenuRService implements IMenuRService{
     
     @Override
     public List<MenuRDTO> listar() throws AppettitException {
-    	/*
-        try {
-            return menuRConverter.fromEntity(iMenuRDAO.listar());
-        } catch (Exception e) {
-            throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
-        }
-        */
-    	
     	List<MenuRDTO> menus = new ArrayList<MenuRDTO>();
 		try {
 			Iterator<MenuRDTO> it = menuRConverter.fromEntity(iMenuRDAO.listar())
@@ -55,10 +47,8 @@ public class MenuRService implements IMenuRService{
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -67,21 +57,14 @@ public class MenuRService implements IMenuRService{
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
-
 				menus.add(men);
-
 			}
-
 			return menus;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-    	
-    	
-    	
     }
 
 	@Override
@@ -90,10 +73,8 @@ public class MenuRService implements IMenuRService{
 			MenuRDTO men = menuRConverter.fromEntity(iMenuRDAO.listarPorId(id_restaurante, id));
 			ImagenDTO img = new ImagenDTO();
 			men.setCal_restaurante(usrSrv.calificacionRestaurante(id_restaurante).getGeneral());
-
 			if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 				FileManagement fm = new FileManagement();
-
 				img.setIdentificador("Sin Imagen");
 				img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 			} else {
@@ -102,10 +83,8 @@ public class MenuRService implements IMenuRService{
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-
 			}
 			men.setImagen(img);
-
             return men;
         } catch (Exception e) {
             throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -122,10 +101,8 @@ public class MenuRService implements IMenuRService{
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(id_restaurante).getGeneral());
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -134,19 +111,14 @@ public class MenuRService implements IMenuRService{
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
-
 				menus.add(men);
-
 			}
-
 			return menus;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-    	
 	}
 
 	@Override
@@ -159,10 +131,8 @@ public class MenuRService implements IMenuRService{
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
 				men.setCal_restaurante(usrSrv.calificacionRestaurante(men.getId_restaurante()).getGeneral());
-				
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -171,14 +141,10 @@ public class MenuRService implements IMenuRService{
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
-
 				menus.add(men);
-
 			}
-
 			return menus;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
