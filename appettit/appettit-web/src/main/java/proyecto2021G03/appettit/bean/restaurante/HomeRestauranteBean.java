@@ -123,7 +123,7 @@ public class HomeRestauranteBean implements Serializable {
 			abierto = false;
 			
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
 			usrSession.getRestauranteReg();
@@ -131,18 +131,19 @@ public class HomeRestauranteBean implements Serializable {
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
+				logout();
 				
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				if(!(usuarioDTO instanceof RestauranteDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
-					
+					logout();
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
@@ -191,7 +192,7 @@ public class HomeRestauranteBean implements Serializable {
 
 			}
 
-		} catch (AppettitException | IOException e) {
+		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
@@ -221,6 +222,11 @@ public class HomeRestauranteBean implements Serializable {
 		return usuarioDTO;
 
 	}
+	
+	public void logout() {
+		usrSession.destroySession();
+	}
+
 
 	public String getFechaHora(LocalDateTime fecha, String formato) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formato);
@@ -261,11 +267,11 @@ public class HomeRestauranteBean implements Serializable {
 					
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -292,11 +298,11 @@ public class HomeRestauranteBean implements Serializable {
 					
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -338,11 +344,11 @@ public class HomeRestauranteBean implements Serializable {
 					
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -376,11 +382,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -414,11 +420,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -452,11 +458,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -490,11 +496,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -552,11 +558,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -592,11 +598,11 @@ public class HomeRestauranteBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}

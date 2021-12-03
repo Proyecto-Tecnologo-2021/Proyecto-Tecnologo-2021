@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IReclamoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -77,39 +78,43 @@ public class ReclamosBean implements Serializable {
 	@EJB
 	IPedidoService pedSrv;
 
+	@EJB
+	UserSession usrSession;
+
 	@PostConstruct
 	public void init() {
-
 		try {
+			
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
-
-			usuarioDTO = getUserSession();
+			
+			usrSession.getRestauranteReg();
+			
+			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
+				usrSession.destroySession();
 				
-
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
-
-				if (!(usuarioDTO instanceof RestauranteDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+				if(!(usuarioDTO instanceof RestauranteDTO)) {
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
+					usrSession.destroySession();
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
-				} else {
-					reclamos = recSrv.listarPorRestaurante(usuarioDTO.getId());
+				} else {					reclamos = recSrv.listarPorRestaurante(usuarioDTO.getId());
 					restaurante = (RestauranteDTO) usuarioDTO;
 				}
 			}
-		} catch (AppettitException | IOException e) {
+		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));

@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.bean.restaurante;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -19,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.ImagenDTO;
@@ -68,40 +67,44 @@ public class PromocionBean implements Serializable {
 	@EJB
 	IPromocionService promoSrv;
 
+	@EJB
+	UserSession usrSession;
+
 	@PostConstruct
 	public void init() {
-
 		try {
+			
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
-
-			usuarioDTO = getUserSession();
+			
+			usrSession.getRestauranteReg();
+			
+			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
+				usrSession.destroySession();
 				
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "USUARIO NO LOGUEADO"));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
-
-				if (!(usuarioDTO instanceof RestauranteDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+				if(!(usuarioDTO instanceof RestauranteDTO)) {
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
+					usrSession.destroySession();
 					
-
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 				} else {
-
 					promos = promoSrv.listarPorRestaurante(usuarioDTO.getId());
 					restaurante = (RestauranteDTO) usuarioDTO;
 				}
 			}
-		} catch (AppettitException | IOException e) {
+		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage().trim()));

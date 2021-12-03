@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
@@ -70,37 +71,38 @@ public class RestauranteBean implements Serializable {
 	@EJB
 	IMenuService menuSRV;
 
+	@EJB
+	UserSession usrSession;
+
 	@PostConstruct
 	public void init() {
-
 		try {
 
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
+				usrSession.destroySession();
 				
-
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				if (!(usuarioDTO instanceof AdministradorDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
-					
+					usrSession.destroySession();
 
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 
 				} else {
-
 					customizationOptions();
 					restaurantes = usrSrv.listarRestaurantes();
 					logger.info("Restaurantes: " + restaurantes.size());
@@ -110,7 +112,7 @@ public class RestauranteBean implements Serializable {
 					selRestaurante = null;
 				}
 			}
-		} catch (AppettitException | IOException e) {
+		} catch (AppettitException e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));

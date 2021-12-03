@@ -17,17 +17,19 @@
 								<p class="mb-0 d-sm-block navbar-profile-name"
 									id="userProfileData">
 
-									<h:outputText value="#{beanUserLoged.restaurante.nombre }" id="userProfileName"/>
+									<h:outputText value="#{HomeRestaurante.restauranteDTO.nombre }" id="userProfileName"/>
 									<p:graphicImage styleClass="img-profile"
-										value="#{beanUserLoged.restaurante.imagen.imagen}" id="userProfileImg"/>
+										value="#{HomeRestaurante.restauranteDTO.imagen.imagen}" id="userProfileImg"/>
 								</p>
 							</div>
 						</a>
 						<div
 							class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
 							aria-labelledby="profileDropdown">
+							<h:form>
+								<h:commandButton value="Salir" icon="pi pi-arrow-left" action="#{HomeRestaurante.logout()}" styleClass="btn btn-outline-warning btn-lg btn-block"/>
+						    </h:form>
 							
-							<p:button value="Salir" icon="pi pi-arrow-left" action="#{beanHomeAdministrador.logout()}" styleClass="ui-button-warning ui-button-flat"/>
 						</div>
 					</div>
 				</div>
@@ -35,64 +37,4 @@
 		</div>
 	</div>
 
-	<!-- 
-	<script>
-			var userTOKEN;
-			
-			function loadinfoFromLocalStorage() {
-				//storeLocalStorage();
-				loadLocalStorage();
-			}
-			
-            function loadLocalStorage() {
-                var prefix = 'react.appetitUser';
-                console.log(prefix);
-                getLocalStorageValue(prefix);
-            }
-
-            function storeLocalStorage(){
-            	var prefix = 'react.appetitUser';
-
-            	var contenido = "{\"correo\":\"comoencasa.gf@gmail.com\", \"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlt7ImlkIjoxLCJub21icmUiOiJBZG1pbmlzdHJhZG9yIn1dLCJpYXQiOjE2MjQ1NTQ2MjMsImV4cCI6MTYyNDU1ODIyM30.e5-4eu_JK7s3pN6Pxp2HjJIYsEOgQ2U4OuLYToJ3XGggLTAPlocbo-sYslaSKjiwJtMLVaIfoQ914dFB3E8VXg\",\"nombre\":\"Restaurante Prueba Cookie \",\"rol\":\"restaurante\"}";
-            	localStorage.setItem(prefix, contenido);
-                
-            }
-
-            function clearLocalStorage(prefix) {
-            	localStorage.clear();
-            	rds();
-            }
-
-            function getLocalStorageValue(prefix) {
-            	if (localStorage.getItem(prefix)) {
-                	console.log(localStorage.getItem(prefix));
-                	var prefixValue = JSON.parse(localStorage.getItem(prefix));
-                	
-                	//prefixValue = JSON.parse(prefixValue);
-                 	userTOKEN =  prefixValue["token"];
-
-                    //var n = document.getElementById("userProfileName"); 
-                    //n.val(prefixValue["nombre"]);
-
-                    //var n = document.getElementById("userProfileCorreo");
-                    //n.append(prefixValue["correo"]);
-					
-					rc([{name: 'correo', value: prefixValue["correo"]}]);                 
-                 
-					if(prefixValue["rol"] != 'restaurante'){
-						console.log("ERROR ROL RESTAURANTE");
-						localStorage.clear();
-						window.location.href = "#{beanUserLoged.constantes.REDIRECT_URI}";
-	                }
-
-                    
-                    
-                }else{
-                	console.log("ERROR NO COOKIE");
-                	window.location.href = "#{beanUserLoged.constantes.REDIRECT_URI}";
-				}
-            }
-
-            </script>
- -->
 </ui:composition>

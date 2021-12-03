@@ -79,7 +79,7 @@ public class HomeAdministradorBean implements Serializable {
 	List<RestauranteRDTO> autorizar;
 	List<DashRestauranteDTO> topRestaurante;
 	String fechaHora;
-	//AdministradorDTO administradorDTO;
+	AdministradorDTO administradorDTO;
 	Long id_restaurante;
 	FacesContext facesContext;
 	HttpSession session;
@@ -108,7 +108,7 @@ public class HomeAdministradorBean implements Serializable {
 		try {
 
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
 			usrSession.getAdministradorReg();
@@ -116,24 +116,25 @@ public class HomeAdministradorBean implements Serializable {
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
-				
+				logout();
 				
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				if (!(usuarioDTO instanceof AdministradorDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
-
+					logout();
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 					
 				} else {
+					administradorDTO = (AdministradorDTO) usuarioDTO;
 					Date fechaBase = new Date();
 					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 					fechaHora = dateFormat.format(fechaBase);
@@ -165,10 +166,6 @@ public class HomeAdministradorBean implements Serializable {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-		} catch (IOException e) {
-			logger.error(e.getMessage().trim());
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
 		}
 	}	
 	
@@ -185,6 +182,8 @@ public class HomeAdministradorBean implements Serializable {
 	}
 	
 	public void logout() {
+		logger.info("OnLogout");
+		
 		usrSession.destroySession();
 	}
 
@@ -227,11 +226,11 @@ public class HomeAdministradorBean implements Serializable {
 					
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -258,11 +257,11 @@ public class HomeAdministradorBean implements Serializable {
 					
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -297,11 +296,11 @@ public class HomeAdministradorBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -335,11 +334,11 @@ public class HomeAdministradorBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -373,11 +372,11 @@ public class HomeAdministradorBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}
@@ -411,11 +410,11 @@ public class HomeAdministradorBean implements Serializable {
 										
 					ChartUtils.writeChartAsPNG(os, chart, 375, 300);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage().trim());
 				}
 			}).build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage().trim());
 			return null;
 		}
 	}

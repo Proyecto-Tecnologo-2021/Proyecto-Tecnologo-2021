@@ -17,6 +17,7 @@ import org.jboss.logging.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
+import proyecto2021G03.appettit.bean.user.UserSession;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
@@ -51,30 +52,34 @@ public class AdministradorBean implements Serializable {
 
 	@EJB
 	IUsuarioService usrSrv;
+	
+	@EJB
+	UserSession usrSession;
 
 	@PostConstruct
 	public void init() {
 		try {
 
 			facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
+			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 
 			UsuarioDTO usuarioDTO = getUserSession();
 
 			if (usuarioDTO == null) {
-				externalContext.invalidateSession();
-				externalContext.dispatch(Constantes.REDIRECT_URI);
+				//externalContext.invalidateSession();
+				//externalContext.dispatch(Constantes.REDIRECT_URI);
 				//externalContext.redirect(Constantes.REDIRECT_URI);
+				usrSession.destroySession();
 				
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
 			} else {
 				if (!(usuarioDTO instanceof AdministradorDTO)) {
-					externalContext.invalidateSession();
-					externalContext.dispatch(Constantes.REDIRECT_URI);
+					//externalContext.invalidateSession();
+					//externalContext.dispatch(Constantes.REDIRECT_URI);
 					//externalContext.redirect(Constantes.REDIRECT_URI);
-					
+					usrSession.destroySession();
 
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR, "USUARIO NO LOGUEADO", null));
@@ -84,7 +89,7 @@ public class AdministradorBean implements Serializable {
 					administradores = usrSrv.listarAdminsitradores();
 				}
 			}
-		} catch (AppettitException | IOException e) {
+		} catch (AppettitException e) {
 			logger.info(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));

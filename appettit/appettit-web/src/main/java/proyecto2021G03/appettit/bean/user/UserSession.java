@@ -3,6 +3,8 @@ package proyecto2021G03.appettit.bean.user;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,12 +41,14 @@ public class UserSession {
 	public void getRestauranteReg() {
 		try {
 
+			logger.info("getRestauranteReg");
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 
 			Long id = null;
 
 			for (Cookie cookie : request.getCookies()) {
+				logger.info(cookie.getName());	
 				if (cookie.getName().equals(Constantes.COOKIE_NAME)) {
 					String decode = URLDecoder.decode(cookie.getValue(), "UTF-8");
 					JSONObject jsonObject = new JSONObject(decode);
@@ -108,24 +112,21 @@ public class UserSession {
 		logger.info("En destroySession");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
-		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		//HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		
 		try {
+			//externalContext.invalidateSession();
+			session.removeAttribute(Constantes.LOGINUSUARIO);
 			
-			for (Cookie cookie : request.getCookies()) {
-				logger.info(cookie.getName());
-				if (cookie.getName().equals(Constantes.COOKIE_NAME)) {
-					//cookie.setValue("");
-					//cookie.setMaxAge(0);
-					//cookie.setPath("/");
-					break;
-				}
-			}
+			Map<String, Object> properties = new HashMap<>();
+			properties.put("maxAge", 0);
+			properties.put("path", "/");
 			
+			externalContext.addResponseCookie(Constantes.COOKIE_NAME, "", properties);
 			
-			externalContext.invalidateSession();
-			externalContext.dispatch(Constantes.REDIRECT_URI);
-			//externalContext.redirect(Constantes.REDIRECT_URI);
+				
+			//externalContext.dispatch(Constantes.REDIRECT_URI);
+			externalContext.redirect(Constantes.REDIRECT_URI);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
