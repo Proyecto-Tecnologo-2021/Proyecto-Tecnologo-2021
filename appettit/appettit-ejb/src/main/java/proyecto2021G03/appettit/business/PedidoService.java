@@ -91,14 +91,10 @@ public class PedidoService implements IPedidoService {
 	public PedidoDTO crear(PedidoDTO pedidoDTO) throws AppettitException {
 		Pedido PedidoService = iPedidoDao.listarPorId(pedidoDTO.getId());
 		try {
-
-			PedidoDTO pdto = pedidoConverter.fromEntity(iPedidoDao.crear(PedidoService)); 
-			
+			PedidoDTO pdto = pedidoConverter.fromEntity(iPedidoDao.crear(PedidoService));
 			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
 			if(pdto.getCliente().getNotificationFirebase() != null) {
-				
-				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
-				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
 				+ " Total: " + pdto.getTotal()
 				+ "Forma de Pago: " + pdto.getTipo().toString()
@@ -107,9 +103,7 @@ public class PedidoService implements IPedidoService {
 						"Pedido registrado con éxito.", msg );
 			}
 			if(pdto.getCliente().getNotificationFirebaseWeb() != null) {
-
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
 				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
 						+ " Total: " + pdto.getTotal()
 						+ "Forma de Pago: " + pdto.getTipo().toString()
@@ -117,7 +111,6 @@ public class PedidoService implements IPedidoService {
 				notificacionSrv.enviarNotificacionFirebase(pdto.getCliente().getNotificationFirebaseWeb(),
 						"Pedido registrado con éxito.", msg );
 			}
-			
 			return pdto;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -130,7 +123,6 @@ public class PedidoService implements IPedidoService {
 		Pedido pedido = iPedidoDao.listarPorId(pedidoDTO.getId());
 		if (pedido == null)
 			throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
 		try {
 			pedido.setCliente(pedido.getCliente());
 			pedido.setId(pedido.getId());
@@ -146,7 +138,6 @@ public class PedidoService implements IPedidoService {
 			pedido.setTotal(pedido.getTotal());
 			pedido.setTipo(pedido.getTipo());
 			pedido.setExtraMenus(pedido.getExtraMenus());
-
 			return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -158,27 +149,19 @@ public class PedidoService implements IPedidoService {
 		Pedido pedido = iPedidoDao.listarPorId(pedidoDTO.getId());
 		if (pedido == null)
 			throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
 		try {
-			
 			String estado = "";
-			
 			if(!pedido.getEstado().toString().equalsIgnoreCase(pedidoDTO.getEstado().toString())) {
 				estado = "\nEstado: " + pedidoDTO.getEstado().toString(); 
 			}
-			
 			if(!pedido.getPago()==pedidoDTO.getPago()) {
 				estado = estado +  "\nPago registrado"; 
 			}
-			
 			pedido.setEstado(pedidoDTO.getEstado());
 			pedido.setPago(pedidoDTO.getPago());
-			
 			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
 			if(pedido.getCliente().getNotificationFirebase() != null) {
-				
-				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
-				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 				String msg = "Pedido: " + pedido.getId()
 				+ "\nFecha: " + pedido.getFecha().format(dateFormat)
 				+ "\nTotal: " + pedido.getTotal()
@@ -188,9 +171,7 @@ public class PedidoService implements IPedidoService {
 						"Actualización de pedido.", msg );
 			}
 			if(pedido.getCliente().getNotificationFirebaseWeb() != null) {
-
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
 				String msg = "Pedido: " + pedido.getId()
 						+ "\nFecha: " + pedido.getFecha().format(dateFormat)
 						+ "\nTotal: " + pedido.getTotal()
@@ -199,8 +180,6 @@ public class PedidoService implements IPedidoService {
 				notificacionSrv.enviarNotificacionFirebase(pedido.getCliente().getNotificationFirebaseWeb(),
 						"Actualización de pedido.", msg );
 			}
-
-
 			return pedidoConverter.fromEntity(iPedidoDao.editar(pedido));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -209,7 +188,6 @@ public class PedidoService implements IPedidoService {
 
 	@Override
 	public void eliminar(Long id) throws AppettitException {
-
 		Pedido pedido = iPedidoDao.listarPorId(id);
 		if (pedido == null) {
 			throw new AppettitException("El Pedido indicado no existe.", AppettitException.NO_EXISTE_REGISTRO);
@@ -228,18 +206,13 @@ public class PedidoService implements IPedidoService {
 		// LA FECHA DEL PEDIDO ES LA FECHA HORA ACTUAL
 		pedidoRDTO.setEstado(EstadoPedido.SOLICITADO);
 		pedidoRDTO.setFecha(LocalDateTime.now());
-
 		Pedido pedido = pedidoRConverter.fromDTO(pedidoRDTO);
 		try {
-
 			PedidoRDTO pdto = pedidoRConverter.fromEntity(iPedidoDao.crear(pedido));
 			Cliente cliente = usrDAO.buscarPorIdCliente(pedidoRDTO.getIdcli());
-			
 			/* Si el cliente tiene un token de firebase definido, se le envía la notificación */
 			if(cliente.getNotificationFirebase() != null) {
-				
-				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");  
-				
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
 				+ "\nTotal: " + pdto.getTotal()
 				+ "\nForma de Pago: " + pdto.getTipo().toString()
@@ -248,9 +221,7 @@ public class PedidoService implements IPedidoService {
 						"Pedido registrado con éxito.", msg );
 			}
 			if(cliente.getNotificationFirebaseWeb() != null) {
-
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
 				String msg = "Fecha: " + pdto.getFecha().format(dateFormat)
 						+ "\nTotal: " + pdto.getTotal()
 						+ "\nForma de Pago: " + pdto.getTipo().toString()
@@ -258,7 +229,6 @@ public class PedidoService implements IPedidoService {
 				notificacionSrv.enviarNotificacionFirebase(cliente.getNotificationFirebaseWeb(),
 						"Pedido registrado con éxito.", msg );
 			}
-			
 			return pdto;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -288,16 +258,13 @@ public class PedidoService implements IPedidoService {
 		try {
 			PedidoRDTO pedido = pedidoRConverter.fromEntity(iPedidoDao.ultimo(id));
 			pedido.setCalificacion(calificacionSrv.listarPorId(pedido.getId(), pedido.getIdcli()));
-			
 			List<MenuRDTO> menus = pedido.getMenus();
 			Iterator<MenuRDTO> it = menus.iterator();
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -306,11 +273,9 @@ public class PedidoService implements IPedidoService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 			}
-
 			return pedido;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -320,19 +285,15 @@ public class PedidoService implements IPedidoService {
 	@Override
 	public PedidoRDTO listarPorIdREST(Long id) throws AppettitException {
 		try {
-
 			PedidoRDTO pedido = pedidoRConverter.fromEntity(iPedidoDao.listarPorId(id));
 			pedido.setCalificacion(calificacionSrv.listarPorId(pedido.getId(), pedido.getIdcli()));
-
 			List<MenuRDTO> menus = pedido.getMenus();
 			Iterator<MenuRDTO> it = menus.iterator();
 			while (it.hasNext()) {
 				MenuRDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -341,11 +302,9 @@ public class PedidoService implements IPedidoService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 			}
-
 			return pedido;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
