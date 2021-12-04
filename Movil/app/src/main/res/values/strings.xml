@@ -5,7 +5,7 @@
     <string name="google_login">Ingresar con Google</string>
     <string name="appettit_login">Ingresar de otra forma</string>
     <string name="appettit_logout">Salir</string>
-    <string name="alert_t_info">Infomración</string>
+    <string name="alert_t_info">Información</string>
     <string name="alert_t_error">Error</string>
     <string name="alert_btn_positive">Si</string>
     <string name="alert_btn_negative">No</string>

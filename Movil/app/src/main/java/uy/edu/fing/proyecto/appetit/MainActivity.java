@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.SSLCertificateSocketFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -44,7 +45,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -53,11 +56,23 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import uy.edu.fing.proyecto.appetit.constant.ConnConstants;
 import uy.edu.fing.proyecto.appetit.obj.DtCalificacion;
@@ -322,12 +337,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
+
             try {
                 return LoginInfoGralUrl(urls[0]);
-            } catch (IOException e) {
-                //return getString(R.string.err_recuperarpag);
+            } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+                e.printStackTrace();
                 return e.getMessage();
             }
+
         }
 
         // onPostExecute displays the results of the AsyncTask.
@@ -373,15 +390,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private DtResponse LoginInfoGralUrl(String myurl) throws IOException {
+    private DtResponse LoginInfoGralUrl(String myurl) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         InputStream is = null;
         HttpURLConnection conn = null;
+        //HttpsURLConnection conn = null;
         try {
-
             //String authorization ="Bearer  " + usuario.getToken();
-
             URL url = new URL(myurl);
-            conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpsURLConnection) url.openConnection();
+
             conn.setRequestProperty("User-Agent", ConnConstants.USER_AGENT);
             //conn.setRequestProperty("Authorization", authorization);
             conn.setRequestProperty("Content-Type", "application/json");
