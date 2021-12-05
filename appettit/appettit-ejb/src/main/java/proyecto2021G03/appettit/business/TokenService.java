@@ -50,9 +50,7 @@ public class TokenService implements ITokenService {
 			return claims.get(claim).toString();
 		}else
 			throw new Exception("Error");
-
 	}
-
 }
 
 

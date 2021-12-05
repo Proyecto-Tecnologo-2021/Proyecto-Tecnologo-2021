@@ -682,7 +682,6 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public String loginGoogle(String correo, String nombre) throws AppettitException {
 		Boolean exist = existeCorreoUsuario(correo);
-
 		if (!exist) {
 			//SI NO EXISTE LE CREO UN USUARIO
 			ClienteCrearDTO nuevoCliente = new ClienteCrearDTO();
@@ -691,7 +690,6 @@ public class UsuarioService implements IUsuarioService {
 			nuevoCliente.setUsername(correo);
 			nuevoCliente.setPassword("");
 			nuevoCliente.setTelefono(correo);
-
 			try {
 				crearCliente(nuevoCliente);
 			} catch (ParseException e) {
@@ -714,7 +712,6 @@ public class UsuarioService implements IUsuarioService {
 		Date ahora = new Date();
 		/* 1 horas de validez */
 		Date expiracion = new Date(ahora.getTime() + (1000 * 60 * 60));
-
 		String tipoUsuario;
 
 		if (usuario instanceof Cliente) {
@@ -741,7 +738,6 @@ public class UsuarioService implements IUsuarioService {
 	public Boolean existeAlias(Cliente cliente, String alias) {
 
 		List<Direccion> direcciones = cliente.getDirecciones();
-
 		for (Direccion d : direcciones) {
 			if (d.getAlias().equals(alias)) {
 				return true;

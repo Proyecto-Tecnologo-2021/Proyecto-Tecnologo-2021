@@ -984,6 +984,21 @@ public class UsuarioServiceTest extends TestCase {
         usuarioServiceI.editarDireccion(1L, direccionDTO);
     }
 
+    @Test(expected = AppettitException.class)
+    public void testEditarDireccion_dNoExiste()  throws AppettitException {
+        Direccion direccion = new Direccion(1L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389");
+        List<Direccion> direcciones = new ArrayList<Direccion>();
+        direcciones.add(direccion);
+        Cliente cliente = new Cliente(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direcciones);
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        clientes.add(cliente);
+        DireccionCrearDTO direccionDTO = new DireccionCrearDTO(1L, "alias", "calle", "123", "2", "refs", "-4.4555651,-43.8849088");
+
+        Mockito.when(usuarioServiceI.usrDAO.buscarPorIdClienteInteger(1L)).thenReturn(clientes);
+
+        usuarioServiceI.editarDireccion(2L, direccionDTO);
+    }
+
     @Test
     public void testCrearCliente() {
         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);

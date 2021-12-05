@@ -73,22 +73,16 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer top) throws AppettitException {
-
+	public List<DashMenuDTO> listarTendenciasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
-
 		try {
-
 			Iterator<DashMenuDTO> it = estadisticasDAO.listarTendenciasPorRestaurante(id, fechaDesde, fechaHasta, top)
 					.iterator();
 			while (it.hasNext()) {
 				DashMenuDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -97,13 +91,10 @@ public class EstadisticasService implements IEstadisticasService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				tendencias.add(men);
-
 			}
-
 			return tendencias;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -111,33 +102,25 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<CalificacionPedidoDTO> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta, Integer top) throws AppettitException {
+	public List<CalificacionPedidoDTO> listarCalificacionesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		// TODO Auto-generated method stub
 		try {
-			return calConverter
-					.fromEntity(estadisticasDAO.listarCalificacionesPorRestaurante(id, fechaDesde, fechaHasta, top));
+			return calConverter.fromEntity(estadisticasDAO.listarCalificacionesPorRestaurante(id, fechaDesde, fechaHasta, top));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
 
 	@Override
-	public List<DashMenuDTO> listarPediosRecientesPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta, Integer top) throws AppettitException {
+	public List<DashMenuDTO> listarPediosRecientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		List<DashMenuDTO> recientes = new ArrayList<DashMenuDTO>();
-
 		try {
-
-			Iterator<DashMenuDTO> it = estadisticasDAO
-					.listarPediosRecientesPorRestaurante(id, fechaDesde, fechaHasta, top).iterator();
+			Iterator<DashMenuDTO> it = estadisticasDAO.listarPediosRecientesPorRestaurante(id, fechaDesde, fechaHasta, top).iterator();
 			while (it.hasNext()) {
 				DashMenuDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -146,13 +129,10 @@ public class EstadisticasService implements IEstadisticasService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				recientes.add(men);
-
 			}
-
 			return recientes;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
@@ -160,8 +140,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarFormaPagoPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta) throws AppettitException {
+	public DashTotalDTO listarFormaPagoPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarFormaPagoPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -170,8 +149,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarReclamosTPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public DashTotalDTO listarReclamosTPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarReclamosTPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -180,8 +158,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarEstadoPedidosPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public DashTotalDTO listarEstadoPedidosPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)	throws AppettitException {
 		try {
 			return estadisticasDAO.listarEstadoPedidosPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -190,8 +167,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashReclamoDTO> listarReclamosPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta) throws AppettitException {
+	public List<DashReclamoDTO> listarReclamosPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarReclamosPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -200,8 +176,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarClientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) throws AppettitException {
+	public DashTotalDTO listarClientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) throws AppettitException {
 		try {
 			return estadisticasDAO.listarClientesPorRestaurante(id, fechaDesde, fechaHasta, periodo);
 		} catch (Exception e) {
@@ -230,8 +205,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta, String calificacion) throws AppettitException {
+	public DashTotalDTO listarCalificacionesDetPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, String calificacion) throws AppettitException {
 		try {
 			return estadisticasDAO.listarCalificacionesDetPorRestaurante(id, fechaDesde, fechaHasta, calificacion);
 		} catch (Exception e) {
@@ -240,8 +214,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashGeoDTO listarGeoEntregasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public DashGeoDTO listarGeoEntregasPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarGeoEntregasPorRestaurante(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -250,8 +223,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) throws AppettitException {
+	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) throws AppettitException {
 		try {
 			return estadisticasDAO.listarVentasPorFecha(id, fechaDesde, fechaHasta, periodo);
 		} catch (Exception e) {
@@ -260,8 +232,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarClientesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) throws AppettitException {
+	public DashTotalDTO listarClientesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) throws AppettitException {
 		try {
 			return estadisticasDAO.listarClientesPorFecha(id, fechaDesde, fechaHasta, periodo);
 		} catch (Exception e) {
@@ -270,30 +241,25 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public DashTotalDTO listarOrdenesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) throws AppettitException {
+	public DashTotalDTO listarOrdenesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) throws AppettitException {
 		try {
 			return estadisticasDAO.listarOrdenesPorFecha(id, fechaDesde, fechaHasta, periodo);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-
 	}
 
 	@Override
-	public DashTotalDTO listarOrdenesPromedioPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) throws AppettitException {
+	public DashTotalDTO listarOrdenesPromedioPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer periodo) throws AppettitException {
 		try {
 			return estadisticasDAO.listarOrdenesPromedioPorFecha(id, fechaDesde, fechaHasta, periodo);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-
 	}
 
 	@Override
-	public DashTotalDTO listarFormaPagoPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public DashTotalDTO listarFormaPagoPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarFormaPagoPorFecha(id, fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -321,21 +287,16 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashMenuDTO> listarTendenciasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer top) throws AppettitException {
+	public List<DashMenuDTO> listarTendenciasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
-
 		try {
-
 			Iterator<DashMenuDTO> it = estadisticasDAO.listarTendenciasPorFecha(id, fechaDesde, fechaHasta, top)
 					.iterator();
 			while (it.hasNext()) {
 				DashMenuDTO men = it.next();
 				ImagenDTO img = new ImagenDTO();
-
 				if (men.getId_imagen() == null || men.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/menu.png"));
 				} else {
@@ -344,36 +305,27 @@ public class EstadisticasService implements IEstadisticasService {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-
 				}
 				men.setImagen(img);
 				tendencias.add(men);
-
 			}
-
 			return tendencias;
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-		
-		
 	}
 
 	@Override
-	public List<DashRestauranteDTO> listarTopRestaurantesPorFecha(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta, Integer top) throws AppettitException {
+	public List<DashRestauranteDTO> listarTopRestaurantesPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer top) throws AppettitException {
 		List<DashRestauranteDTO> restaurantes = new ArrayList<DashRestauranteDTO>();
-		
 		try {
 			Iterator<DashRestauranteDTO> it = estadisticasDAO.listarTopRestaurantesPorFecha(id, fechaDesde, fechaHasta, top).iterator();
 			while (it.hasNext()) {
 				DashRestauranteDTO res = it.next();
 				res.setCalificacion(usrSrv.calificacionRestaurante(res.getId()));
 				ImagenDTO img = new ImagenDTO();
-
 				if (res.getId_imagen() == null || res.getId_imagen().equals("")) {
 					FileManagement fm = new FileManagement();
-
 					img.setIdentificador("Sin Imagen");
 					img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 				} else {
@@ -381,7 +333,6 @@ public class EstadisticasService implements IEstadisticasService {
 						img = imgSrv.buscarPorId(res.getId_imagen());
 					} catch (Exception e) {
 						FileManagement fm = new FileManagement();
-
 						img.setIdentificador("Sin Imagen");
 						img.setImagen(fm.getFileAsByteArray("META-INF/img/restaurante.png"));
 						logger.error(e.getMessage());
@@ -397,8 +348,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashInformeDTO> listarInfoVentasPorFecha(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public List<DashInformeDTO> listarInfoVentasPorFecha(LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarInfoVentasPorFecha(fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -407,8 +357,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashInformeDTO> listarInfoVentasPorFechaRestaurante(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public List<DashInformeDTO> listarInfoVentasPorFechaRestaurante(LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarInfoVentasPorFechaRestaurante(fechaDesde, fechaHasta);
 		} catch (Exception e) {
@@ -417,8 +366,7 @@ public class EstadisticasService implements IEstadisticasService {
 	}
 
 	@Override
-	public List<DashInformeDTO> listarInfoVentasPorFechaBarrio(LocalDateTime fechaDesde, LocalDateTime fechaHasta)
-			throws AppettitException {
+	public List<DashInformeDTO> listarInfoVentasPorFechaBarrio(LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
 			return estadisticasDAO.listarInfoVentasPorFechaBarrio(fechaDesde, fechaHasta);
 		} catch (Exception e) {

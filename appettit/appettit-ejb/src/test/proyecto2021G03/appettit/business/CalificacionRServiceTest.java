@@ -60,7 +60,6 @@ public class CalificacionRServiceTest extends TestCase {
         List<ExtraMenuDTO> extras = new ArrayList<ExtraMenuDTO>();
         extras.add(extraMenuDTO);
         ImagenDTO img = new ImagenDTO();
-        FileManagement fm = new FileManagement();
         img.setId("id");
         img.setIdentificador("Sin Imagen");
         img.setImagen(null);
