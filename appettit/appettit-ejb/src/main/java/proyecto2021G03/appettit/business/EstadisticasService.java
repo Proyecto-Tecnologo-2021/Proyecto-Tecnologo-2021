@@ -48,11 +48,9 @@ public class EstadisticasService implements IEstadisticasService {
 	IUsuarioService usrSrv;
 
 	@Override
-	public List<PedidoDTO> listarPedidosPendientesPorRestaurante(Long id, LocalDateTime fechaDesde,
-			LocalDateTime fechaHasta) throws AppettitException {
+	public List<PedidoDTO> listarPedidosPendientesPorRestaurante(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta) throws AppettitException {
 		try {
-			return pedidoConverter
-					.fromEntity(estadisticasDAO.listarPedidosPendientesPorRestaurante(id, fechaDesde, fechaHasta));
+			return pedidoConverter.fromEntity(estadisticasDAO.listarPedidosPendientesPorRestaurante(id, fechaDesde, fechaHasta));
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
