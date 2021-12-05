@@ -90,11 +90,15 @@ public class EstadisticasServiceTest extends TestCase {
         List<Pedido> pedidos = new ArrayList<Pedido>();
         pedidos.add(pedido);
 
-        Mockito.when(estadisticasServiceI.estadisticasDAO.listarPedidosPendientesPorRestaurante(2L, LocalDateTime.now(), LocalDateTime.now())).thenReturn(pedidos);
+        LocalDateTime fechaDesde = LocalDateTime.now();
+        LocalDateTime fechaHasta = LocalDateTime.now();
+        
+        
+        Mockito.when(estadisticasServiceI.estadisticasDAO.listarPedidosPendientesPorRestaurante(2L, fechaDesde, fechaHasta)).thenReturn(pedidos);
         Mockito.when(estadisticasServiceI.pedidoConverter.fromEntity(pedidos)).thenReturn(pedidosDTO);
 
         try {
-            List<PedidoDTO> obtenidos = estadisticasServiceI.listarPedidosPendientesPorRestaurante(2L, LocalDateTime.now(), LocalDateTime.now());
+            List<PedidoDTO> obtenidos = estadisticasServiceI.listarPedidosPendientesPorRestaurante(2L, fechaDesde, fechaHasta);
             assertEquals(pedidosDTO, obtenidos);
         } catch (AppettitException e) {
             e.printStackTrace();
