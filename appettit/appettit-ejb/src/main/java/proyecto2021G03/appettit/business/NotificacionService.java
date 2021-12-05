@@ -26,9 +26,7 @@ public class NotificacionService implements INotificacionService {
 	
 	@Override
 	@Asynchronous
-	public void enviarNotificacionFirebase(String destinatario, String titulo, String mensaje)
-			throws AppettitException {
-		
+	public void enviarNotificacionFirebase(String destinatario, String titulo, String mensaje) throws AppettitException {
 		try {
 			Client cliente = ClientBuilder.newClient();
 			WebTarget target = cliente.target(Constantes.FIREBASE_FCM_URL);
@@ -50,8 +48,5 @@ public class NotificacionService implements INotificacionService {
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-
-
 	}
-
 }
