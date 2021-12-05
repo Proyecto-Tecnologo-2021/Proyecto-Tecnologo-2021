@@ -33,7 +33,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IExtraMenuService;
 import proyecto2021G03.appettit.business.IImagenService;
@@ -116,7 +116,7 @@ public class MenuAddBean implements Serializable {
 	GeoConverter geoConverter;
 
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -126,7 +126,7 @@ public class MenuAddBean implements Serializable {
 			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
-			usrSession.getRestauranteReg();
+			//usrSession.getRestauranteReg();
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 
@@ -320,7 +320,8 @@ public class MenuAddBean implements Serializable {
 					try {
 						return new ByteArrayInputStream(imgfile.getContent());
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("getImage: " + e.getMessage());
+						//e.printStackTrace();
 						return null;
 					}
 				}).build();
@@ -337,7 +338,8 @@ public class MenuAddBean implements Serializable {
 					try {
 						return new ByteArrayInputStream(this.croppedImage.getBytes());
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("getCropped: " + e.getMessage());
+						//e.printStackTrace();
 						return null;
 					}
 				}).build();

@@ -1,6 +1,5 @@
 package proyecto2021G03.appettit.bean.admin;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -20,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.ICategoriaService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.CategoriaCrearDTO;
@@ -55,7 +53,7 @@ public class CategoriasBean implements Serializable {
 	ICategoriaService catSrv;
 	
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {

@@ -30,7 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IPedidoService;
 import proyecto2021G03.appettit.business.IReclamoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -79,7 +79,7 @@ public class ReclamosBean implements Serializable {
 	IPedidoService pedSrv;
 
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -89,7 +89,7 @@ public class ReclamosBean implements Serializable {
 			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
-			usrSession.getRestauranteReg();
+			//usrSession.getRestauranteReg();
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 

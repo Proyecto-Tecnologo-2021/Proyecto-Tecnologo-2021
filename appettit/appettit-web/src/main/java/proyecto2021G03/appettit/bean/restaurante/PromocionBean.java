@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IPromocionService;
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.ImagenDTO;
@@ -68,7 +68,7 @@ public class PromocionBean implements Serializable {
 	IPromocionService promoSrv;
 
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -78,7 +78,7 @@ public class PromocionBean implements Serializable {
 			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
-			usrSession.getRestauranteReg();
+			//usrSession.getRestauranteReg();
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 

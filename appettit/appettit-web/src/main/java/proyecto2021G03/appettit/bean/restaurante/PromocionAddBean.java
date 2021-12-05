@@ -26,7 +26,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IImagenService;
 import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IPromocionService;
@@ -84,7 +84,7 @@ public class PromocionAddBean implements Serializable {
 	IPromocionService promoSrv;
 
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -94,7 +94,7 @@ public class PromocionAddBean implements Serializable {
 			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
-			usrSession.getRestauranteReg();
+			//usrSession.getRestauranteReg();
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 
@@ -246,7 +246,8 @@ public class PromocionAddBean implements Serializable {
 					try {
 						return new ByteArrayInputStream(imgfile.getContent());
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("getImage: " + e.getMessage());
+						//e.printStackTrace();
 						return null;
 					}
 				}).build();
@@ -263,7 +264,8 @@ public class PromocionAddBean implements Serializable {
 					try {
 						return new ByteArrayInputStream(this.croppedImage.getBytes());
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("getCropped: " + e.getMessage());
+						//e.printStackTrace();
 						return null;
 					}
 				}).build();

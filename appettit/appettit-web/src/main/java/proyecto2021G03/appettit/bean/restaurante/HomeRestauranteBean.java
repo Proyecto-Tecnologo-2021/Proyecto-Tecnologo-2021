@@ -2,7 +2,6 @@ package proyecto2021G03.appettit.bean.restaurante;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -47,7 +45,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IDepartamentoService;
 import proyecto2021G03.appettit.business.IEstadisticasService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -115,7 +113,7 @@ public class HomeRestauranteBean implements Serializable {
 	IEstadisticasService estadisitciasSrv;
 	
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -196,6 +194,8 @@ public class HomeRestauranteBean implements Serializable {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
+		} catch (Exception e) {
+			logger.error(e.getMessage().trim());
 		}
 
 	}

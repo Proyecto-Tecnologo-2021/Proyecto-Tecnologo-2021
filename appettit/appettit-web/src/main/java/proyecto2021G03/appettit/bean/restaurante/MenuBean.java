@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto2021G03.appettit.bean.user.UserSession;
+import proyecto2021G03.appettit.bean.user.IUserSession;
 import proyecto2021G03.appettit.business.IMenuService;
 import proyecto2021G03.appettit.business.IProductoService;
 import proyecto2021G03.appettit.business.IUsuarioService;
@@ -83,7 +83,7 @@ public class MenuBean implements Serializable {
 	IMenuService menuSrv;
 
 	@EJB
-	UserSession usrSession;
+	IUserSession usrSession;
 
 	@PostConstruct
 	public void init() {
@@ -93,7 +93,7 @@ public class MenuBean implements Serializable {
 			//ExternalContext externalContext = facesContext.getExternalContext();
 			session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
-			usrSession.getRestauranteReg();
+			//usrSession.getRestauranteReg();
 			
 			UsuarioDTO usuarioDTO = getUserSession();
 

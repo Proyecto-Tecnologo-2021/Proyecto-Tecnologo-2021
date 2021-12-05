@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
+import org.jboss.logging.Logger;
+
 import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.business.UsuarioService;
 import proyecto2021G03.appettit.dao.IUsuarioDAO;
@@ -15,6 +17,8 @@ import proyecto2021G03.appettit.exception.AppettitException;
 @Singleton
 public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
 
+	static Logger logger = Logger.getLogger(MenuRConverter.class);
+	
 @EJB
     ProductoConverter productoConverter;
 @EJB
@@ -80,7 +84,8 @@ public class MenuRConverter extends AbstractConverter<Menu,MenuRDTO>{
                         .productos(productoConverter.fromEntityToRDTO(m.getProductos()))
                         .build());
             } catch (AppettitException e) {
-                e.printStackTrace();
+            	logger.error("fromEntityList: " + e.getMessage());
+            	//e.printStackTrace();
             }
 
         }

@@ -242,7 +242,8 @@ public class RestauranteAddBean implements Serializable {
                         return new ByteArrayInputStream(imgfile.getContent());
                     }
                     catch (Exception e) {
-                        e.printStackTrace();
+                    	logger.error("getImage: " + e.getMessage());
+                        //e.printStackTrace();
                         return null;
                     }
                 })
@@ -263,6 +264,7 @@ public class RestauranteAddBean implements Serializable {
                         return new ByteArrayInputStream(this.croppedImage.getBytes());
                     }
                     catch (Exception e) {
+                    	logger.error("getCropped: " + e.getMessage());
                         e.printStackTrace();
                         return null;
                     }

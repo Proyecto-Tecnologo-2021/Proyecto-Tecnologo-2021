@@ -695,7 +695,8 @@ public class UsuarioService implements IUsuarioService {
 			try {
 				crearCliente(nuevoCliente);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				logger.error("loginGoogle: " + e.getMessage());
+				//e.printStackTrace();
 			}
 		}
 		List<Usuario> usuarios_correo = usrDAO.buscarPorCorreo(correo);

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -25,7 +26,7 @@ import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 
 @Stateless
-public class UserSession {
+public class UserSession implements IUserSession {
 	
 	static Logger logger = Logger.getLogger(UserSession.class);
 
@@ -38,6 +39,7 @@ public class UserSession {
 	AdministradorDTO admin;
 	
 
+	@Override
 	public void getRestauranteReg() {
 		try {
 
@@ -61,6 +63,7 @@ public class UserSession {
 			}
 			// Long id =
 			// Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+			logger.info("getRestauranteReg: " + id);
 			restaurante = usrSrv.buscarRestaurantePorId(id);
 			
 			createSession((UsuarioDTO) restaurante);
@@ -71,9 +74,10 @@ public class UserSession {
 
 	}
 
+	@Override
 	public void getAdministradorReg() {
 		try {
-
+			logger.info("getAdministradorReg");
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 
@@ -92,6 +96,7 @@ public class UserSession {
 			}
 			// Long id =
 			// Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+			logger.info("getAdministradorReg: " + id);
 			admin = usrSrv.buscarAdministradorPorId(id);
 			
 			createSession((UsuarioDTO) admin);
@@ -102,10 +107,12 @@ public class UserSession {
 
 	}
 
+	@Override
 	public void createSession(UsuarioDTO usuarioDTO) {
 		session.setAttribute(Constantes.LOGINUSUARIO, usuarioDTO);
 	}
 	
+	@Override
 	public void destroySession() {
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 

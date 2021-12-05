@@ -83,6 +83,7 @@ public class FileUpload implements Serializable {
 
 	@EJB
 	IMenuService menuSrv;
+	
 	@EJB
 	IPromocionService promoService;
 
