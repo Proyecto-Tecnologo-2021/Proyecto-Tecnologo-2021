@@ -123,10 +123,14 @@ public class EstadisticasServiceTest extends TestCase {
         map.put("a", 20.00);
         DashTotalDTO dashTotalDTO = new DashTotalDTO(map, 10.00, 15.00);
 
-        Mockito.when(estadisticasServiceI.estadisticasDAO.listarVentasPorRestaurante(1L, LocalDateTime.now(), LocalDateTime.now(), 5)).thenReturn(dashTotalDTO);
+        LocalDateTime fechaDesde = LocalDateTime.now();
+        LocalDateTime fechaHasta = LocalDateTime.now();
+        
+        
+        Mockito.when(estadisticasServiceI.estadisticasDAO.listarVentasPorRestaurante(1L, fechaDesde, fechaHasta, 5)).thenReturn(dashTotalDTO);
 
         try {
-            DashTotalDTO obtenido = estadisticasServiceI.listarVentasPorRestaurante(1L, LocalDateTime.now(), LocalDateTime.now(), 5);
+            DashTotalDTO obtenido = estadisticasServiceI.listarVentasPorRestaurante(1L, fechaDesde, fechaHasta, 5);
             assertEquals(dashTotalDTO, obtenido);
         } catch (AppettitException e) {
             e.printStackTrace();
