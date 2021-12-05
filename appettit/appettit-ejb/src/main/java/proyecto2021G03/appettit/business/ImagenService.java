@@ -35,7 +35,6 @@ public class ImagenService implements IImagenService {
 		Imagen imagen = imagenDAO.buscarPorId(imagenDTO.getId());
 		if (imagen == null)
 			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
 		try {
 			return imagenConverter.fromEntity(imagenDAO.editar(imagen));
 		} catch (Exception e) {
@@ -48,13 +47,11 @@ public class ImagenService implements IImagenService {
 		Imagen imagen = imagenDAO.buscarPorId(id);
 		if (imagen == null)
 			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
 		try {
 			imagenDAO.eliminar(imagen);
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
-
 	}
 
 	@Override
@@ -71,7 +68,6 @@ public class ImagenService implements IImagenService {
 		Imagen imagen = imagenDAO.buscarPorId(id);
 		if (imagen == null)
 			throw new AppettitException("La imagen no existe.", AppettitException.NO_EXISTE_REGISTRO);
-
 		try {
 			return imagenConverter.fromEntity(imagen);
 		} catch (Exception e) {
