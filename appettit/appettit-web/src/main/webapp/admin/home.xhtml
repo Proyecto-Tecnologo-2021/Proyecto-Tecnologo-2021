@@ -1,0 +1,472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Administrador</title>
+
+	
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logAdmin.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navAdmin.xhtml" />
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+
+			<div class="content-wrapper">
+				<div class="row mb-3 pt-3">
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						<div class="card">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5 class="card-title mb-3 pt-1">
+												Restaurantes a autorizar:
+												<h:outputText
+													value="#{fn:length(beanHomeAdministrador.autorizar)}" />
+											</h5>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<h5 class="card-title mb-3 pt-1">
+												&Uacute;ltima Actualizaci&oacute;n:
+												<h:outputText value="#{beanHomeAdministrador.fechaHora}" />
+											</h5>
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Graficas Totales -->
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de ventas</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.ventas.actual-beanHomeAdministrador.ventas.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.ventas.actual-beanHomeAdministrador.ventas.anterior)/beanHomeAdministrador.ventas.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.ventas.actual}">
+										<f:convertNumber type="currency" currencySymbol="$U" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartVentasTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de clientes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.clientes.actual-beanHomeAdministrador.clientes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.clientes.actual-beanHomeAdministrador.clientes.anterior)/beanHomeAdministrador.clientes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.clientes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartClientesTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de &oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.clientes.actual-beanHomeAdministrador.ordenes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.ordenes.actual-beanHomeAdministrador.ordenes.anterior)/beanHomeAdministrador.ordenes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.ordenes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartOrdenesTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Promedio de
+											&oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{beanHomeAdministrador.pedidosPromedio.actual/7-beanHomeAdministrador.pedidosPromedio.anterior/7>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(beanHomeAdministrador.pedidosPromedio.actual/7-beanHomeAdministrador.pedidosPromedio.anterior/7)/(beanHomeAdministrador.pedidosPromedio.actual/7)}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{beanHomeAdministrador.pedidosPromedio.actual/7}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage
+										value="#{beanHomeAdministrador.chartOrdenesPromedioTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-6 col-lg-6  col-md-6 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="card-title mb-3">Top 5 de Restaurantes</h5>
+									</div>
+
+									<div class="col-md-6 justify-content-md-end">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<button type="button" class="btn btn-primary">Ver
+												todos</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+							<p:dataTable var="restaurante" styleClass="table table-hover"
+									value="#{beanHomeAdministrador.topRestaurante}">
+
+									<p:column headerText="Restaurante">
+										<p:graphicImage value="#{restaurante.imagen.imagen}"
+											styleClass="img-table-circle" stream="false" />
+										<h:outputText value="#{restaurante.nombre}" />
+									</p:column>
+									<p:column headerText="Total Venta"
+										styleClass="text-right">
+										<h:outputText value="#{restaurante.total}">
+											<f:convertNumber type="currency" currencySymbol="$U" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Calificaci&oacute;n"
+										styleClass="text-right">
+										<p:rating readonly="true" styleClass="text-warning"
+													value="#{restaurante.calificacion.general}" />
+									</p:column>
+								</p:dataTable>
+							
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Reclamos</h5>
+							</div>
+							<div class="card-body">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{beanHomeAdministrador.reclamos.data['R']}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									de
+									<h:outputText value="#{beanHomeAdministrador.reclamos.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									(
+									<h:outputText
+										value="#{beanHomeAdministrador.reclamos.data['R']/beanHomeAdministrador.reclamos.actual}">
+										<f:convertNumber minFractionDigits="2" type="percent" />
+									</h:outputText>
+									)
+
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{beanHomeAdministrador.chartReclamos}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											todos los pedidos)</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
+
+							</div>
+							<div class="card-body" id="formaPagosPedidos">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{beanHomeAdministrador.formapago.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									Pedidos
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{beanHomeAdministrador.chartFormaPago}"
+										styleClass="card-img-top" stream="false" />
+
+								</div>
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<c:forEach var="fplegend"
+										items="#{beanHomeAdministrador.formapago.data}">
+
+										<div class="row">
+											<div class="col-xl-2 col-lg-2 col-md-2"
+												style="#{beanHomeAdministrador.styleLabel('fp', fplegend.key)}">
+												<h:outputText value="#{fplegend.value}">
+													<f:convertNumber minFractionDigits="0" />
+												</h:outputText>
+											</div>
+											<div class="col">
+												<h:outputText value="#{fplegend.key}" />
+											</div>
+										</div>
+									</c:forEach>
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											pedidos entregados)</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Tendencias</h5>
+							</div>
+
+							<div class="card-body">
+								<div class="row mb-3">
+									<c:forEach var="tendencia"
+										items="#{beanHomeAdministrador.tendencias}">
+										<div
+											class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+											<div class="card">
+												<p:graphicImage value="#{tendencia.imagen.imagen}"
+													styleClass="card-img-top" stream="false" />
+												<div class="card-body"></div>
+												<div class="card-footer bg-transparent">
+													<div class="d-flex flex-row">
+														<h5 class="mr-auto card-title mb-3 pt-1">
+															<h:outputText value="#{tendencia.nom_restaurante}" />
+														</h5>
+													</div>
+													<div class="d-flex flex-row">
+														<h5 class="mr-auto card-title mb-3 pt-1">
+															<h:outputText value="#{tendencia.nombre}" />
+														</h5>
+														<h5 class="card-title mb-3 pt-1 text-success">
+															<h:outputText value="#{tendencia.precio}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h5>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+														<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.ordenes}" />
+														</h6>
+														<h6 class="card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.total}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h6>
+													</div>
+												</div>
+											</div>
+										</div>
+									</c:forEach>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						*Per&iacute;odo de an&aacute;lisis
+						<h:outputText
+							value="#{beanHomeAdministrador.strFechaDesde()} - #{beanHomeAdministrador.strFechaHasta()}" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="section" id="main_section">
+	<div></div>
+
+	</section>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+
+</h:body>
+</html>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="0dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/menu_restaurante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="bottom"
+                android:paddingEnd="10dp"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+            <RatingBar
+                android:id="@+id/menu_star"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_toStartOf="@+id/menu_restaurante_rating"
+                android:isIndicator="false"
+                android:numStars="1"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/menu_restaurante_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/rest_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@id/menu_restaurante"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:background="@color/main_color"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/rest_trapidez"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@id/menu_restaurante"
+                android:layout_toStartOf="@+id/rest_rapidez"
+                android:layout_marginTop="10dp"
+                android:text="@string/pedidos_rapidez"
+                android:textSize="12sp"/>
+
+            <RatingBar
+                android:id="@+id/rest_rapidez"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/menu_restaurante"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/rest_tcomida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rest_trapidez"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_toStartOf="@+id/rest_comida"
+                android:text="@string/pedidos_comida"
+                android:textSize="12sp"/>
+
+            <RatingBar
+                android:id="@+id/rest_comida"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/rest_rapidez"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/rest_tservicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rest_tcomida"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_toStartOf="@+id/rest_servicio"
+                android:text="@string/pedidos_servicio"
+                android:textSize="12sp"/>
+
+
+            <RatingBar
+                android:id="@+id/rest_servicio"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/rest_comida"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:stepSize="1" />
+
+
+            <TextView
+                android:id="@+id/rest_thorario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rest_img"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/res_thorario"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rest_horario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rest_img"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_toEndOf="@+id/rest_thorario"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/rest_abierto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rest_img"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rest_dir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rest_thorario"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

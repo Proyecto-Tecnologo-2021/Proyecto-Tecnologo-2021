@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AltaCliente">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
+
+        <RelativeLayout
+            android:id="@+id/map_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/data_gral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/data_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="@string/datos_name"
+                    android:layout_marginTop="5dp"/>
+                <EditText
+                    android:id="@+id/data_correo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/datos_email"
+                    android:layout_marginTop="5dp"/>
+                <EditText
+                    android:id="@+id/data_tel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:hint="@string/datos_phone"
+                    android:layout_marginTop="5dp"/>
+            <!--    <EditText
+                    android:id="@+id/data_pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:hint="@string/datos_pass"
+                    android:layout_marginTop="5dp"/>
+                <EditText
+                    android:id="@+id/data_pass2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:hint="@string/datos_pass2"
+                    android:layout_marginTop="5dp"/>
+                -->
+
+                <TextView
+                    android:id="@+id/DirTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textStyle="bold"
+                    android:text="@string/datos_tdireccion" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/dirListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottomNavigationView"
+                android:layout_below="@+id/data_gral"
+                android:layout_alignParentTop="@id/bottomNavigationView"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:background="@color/menu_bar_bg"
+                app:itemIconTint="@color/menu_bar_text"
+                app:itemTextColor="@color/menu_bar_text"
+                app:menu="@menu/bottom_navigation_menu"/>
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/pBarAddCliente"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

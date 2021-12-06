@@ -1,0 +1,140 @@
+<resources>
+    <!--GRAL-->
+    <string name="app_name">Appetit</string>
+    <string name="login_welcome">¡Bienvenido!</string>
+    <string name="google_login">Ingresar con Google</string>
+    <string name="appettit_login">Ingresar de otra forma</string>
+    <string name="appettit_logout">Salir</string>
+    <string name="alert_t_info">Información</string>
+    <string name="alert_t_error">Error</string>
+    <string name="alert_btn_positive">Si</string>
+    <string name="alert_btn_negative">No</string>
+    <string name="alert_btn_neutral">OK</string>
+    <string name="alert_btn_cancel">Cancelar</string>
+    <string name="alert_btn_confirmar">Confirmar</string>
+    <string name="alert_btn_calificar">Calificar</string>
+    <string name="alert_btn_calificar_upd">Actualizar</string>
+    <string name="alert_btn_reclamar">Reclamar</string>
+
+    <!--CONNECTION MESSAGES-->
+    <string name="err_conntitle">Error de conectiviad</string>
+    <string name="err_conectividad">Error de conectiviad. No existe conexión de red disponible.</string>
+    <string name="err_recuperarpag">Error de conectiviad. No se puede conectar con el servicio.</string>
+    <string name="registros_err">Error del tipo de dato retornado</string>
+
+    <!--VIEW INFO -->
+    <string name="info_title">Información</string>
+
+    <!-- ACCESS-->
+    <string name="access_title_err">Error de Permisos</string>
+    <string name="access_msg_err">¿Desea Asignar los permisos?</string>
+    <string name="text_load">Cargando…</string>
+    <string name="text_load_btn">Reintentar</string>
+    <string name="text_load_btn_main">Ir a Activiad Principal</string>
+    <string name="firebase_error">No es posible autenticar con Google</string>
+    <string name="nuevo_usuario_q">¿Desa registrarse?</string>
+
+    <!-- VIEWS-->
+    <string name="title_addDireccion">Mi Dirección</string>
+    <string name="title_addDatos">Mis Datos</string>
+    <string name="title_PedidosGral">Menús</string>
+    <string name="title_Pedido">Mi pedido</string>
+    <string name="title_Pedidos">Mis pedidos</string>
+    <string name="title_Perfil">Mi perfil</string>
+    <string name="title_Restaurante">Restaurantes</string>
+
+    <!--LOGIN-->
+    <string name="login_mail">Correo</string>
+    <string name="login_pass">Contraseña</string>
+    <string name="login_input">Ingresar</string>
+    <string name="login_close">Cerrar sesión</string>
+
+    <!--MENU-->
+    <string name="menu_offer">Menús</string>
+    <string name="menu_order">Pedidos</string>
+    <string name="menu_profile">Mi perfil</string>
+    <string name="menu_restaurante">Restaurantes</string>
+
+    <!--VIEW MAP-->
+    <string name="map_text_calle">Calle</string>
+    <string name="map_text_alias">Alias</string>
+    <string name="map_text_ref">Referencias</string>
+    <string name="map_text_apto">Apto.</string>
+    <string name="map_text_nro">Nro.</string>
+    <string name="map_text_distancia_title">Ingreso de distancia (Km)</string>
+    <string name="map_text_btn">Confirmar</string>
+    <string name="map_text_loc">Mi Ubicación</string>
+    <string name="map_copyright">&#169; OpenStreetMap | Appetit</string>
+    <string name="map_text_loc_err">Activar ubicación</string>
+    <string name="map_text_loc_err_msg">Su ubicación esta desactivada.\nPor favor active su ubicación</string>
+    <string name="map_err_talias">Error</string>
+    <string name="map_err_alias">Se debe colocar un alias</string>
+
+
+    <!-- Mis Datos -->
+    <string name="datos_name">Nombre</string>
+    <string name="datos_email">Correo</string>
+    <string name="datos_phone">Teléfono</string>
+    <string name="datos_pass">Contraseña</string>
+    <string name="datos_pass2">Verificar contraseña</string>
+    <string name="datos_err_name">Debe ingresar un nombre</string>
+    <string name="datos_err_email">Debe ingresar un correo</string>
+    <string name="datos_err_phone">Debe ingresar un teléfono</string>
+    <string name="datos_err_pass">Debe ingresar un contraseña</string>
+    <string name="datos_err_pass2">Las contraseñas no coinciden</string>
+    <string name="datos_tdireccion">Mis direcciones</string>
+    <string name="datos_vdireccion">¿Ver dirección?</string>
+    <string name="datos_adireccion">Nueva dirección</string>
+    <string name="datos_modificar">Actualizar datos</string>
+    <string name="datos_qmodificar">¿Actualizar datos?</string>
+    <string name="datos_ddireccion">¿Eliminar dirección?</string>
+    <string name="datos_err_ddireccion">No es posible eliminar la dirección.\nDebe tener por lo menos una dirección</string>
+
+
+    <!-- Carrito -->
+    <string name="carr_symbol">$U</string>
+    <string name="carr_dto">% OFF</string>
+    <string name="carr_add_prod">Agregar a mi pedido</string>
+    <string name="carr_add_cant">Cantidad</string>
+    <string name="carr_confirmar">Confirmar pedido</string>
+    <string name="carr_t_fp">Seleccionar Forma de pago</string>
+    <string name="carr_quitar_item">¿Desea quitar el producto?</string>
+    <string name="carr_titulo">Total:</string>
+    <string name="carr_cancelpaypal">El pago fue cancelado</string>
+    <string name="carr_errpaypal">Transacción inválida</string>
+    <string name="menu_gral">Mi pedido</string>
+    <string name="menu_ver">Ver mi pedido</string>
+
+    <!-- PEDIDOS-->
+    <string name="pedidos_id">Pedido:</string>
+    <string name="pedidos_fecha">Fecha:</string>
+    <string name="pedidos_total">Total:</string>
+    <string name="pedidos_fp">Forma de pago:</string>
+    <string name="pedidos_cot">Cotización:</string>
+    <string name="pedidos_calificar">Calificación</string>
+    <string name="pedidos_reclamo">Reclamo</string>
+    <string name="pedidos_detalle">Detalle</string>
+    <string name="pedidos_califica_true">Calificado</string>
+    <string name="pedidos_califica_false">Sin calificar</string>
+    <string name="pedidos_rapidez">Rapidez</string>
+    <string name="pedidos_comida">Comida</string>
+    <string name="pedidos_servicio">Servicio</string>
+    <string name="pedidos_observa">Observaciones</string>
+    <string name="pedidos_reclamo_motivo">Motivo</string>
+    <string name="pedidos_reclamo_detalle">Detalle</string>
+
+
+    <!--MENUS PROMOCIONES-->
+    <string name="mp_direccion">Dirección de entrega</string>
+
+    <!--RESTAURANTES-->
+    <string name="res_thorario">Horario:</string>
+    <string name="res_ttel">Teléfono:</string>
+    <string name="res_tdir">Dirección:</string>
+    <string name="res_tcalgral">General</string>
+    <string name="res_abierto">Abierto</string>
+    <string name="res_cerrado">Cerrado</string>
+    <string name="res_verproductos">¿Ver productos?</string>
+
+
+</resources>

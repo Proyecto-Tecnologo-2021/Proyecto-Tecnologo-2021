@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="uy.edu.fing.proyecto.appetit">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Appetit">
+        <activity
+            android:name=".MenuRestauranteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddDireccionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerPedidoHechoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerPedidosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PayPalActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NoActionBar"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter android:label="uy.edu.fing.proyecto.appetit://paypalpay">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="paypalpay"
+                    android:scheme="uy.edu.fing.proyecto.appetit" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".VerPedidoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerMenuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NoActionBar" />
+        <activity
+            android:name=".MenuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AltaDireccionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AltaCliente"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".notification.NotificacionFirebase"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- Icono para la notificación -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/appetitlogo" />
+
+        <service
+            android:name="com.paypal.android.sdk.payments.PayPalService"
+            android:exported="false" />
+    </application>
+
+</manifest>

@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Productos</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="row mb-3 pt-3">
+					<div class="card">
+						<h:form id="form">
+							<p:dataTable var="producto" editable="true" id="tableProductos"
+								value="#{beanProducto.productos}" widgetVar="tableProductos"
+								emptyMessage="No existen Productos"
+								globalFilterOnly="#{beanProducto.globalFilterOnly}"
+								filteredValue="#{beanProducto.filterProductos}" rows="10"
+								paginator="true" rowKey="#{producto.id}" selectionMode="single"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+								rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+								<p:ajax event="rowEdit" listener="#{beanProducto.onRowEdit}"
+									update=":form:messages tableProductos" />
+
+								<p:ajax event="rowEditCancel"
+									listener="#{beanProducto.onRowCancel}"
+									update=":form:messages tableProductos" />
+
+								<f:facet name="header">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+												<h5>Lista de Productos del Restaurante</h5>
+											</div>
+										</div>
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+												<p:inputText id="globalFilter"
+													onkeyup="PF('tableProductos').filter()" style="width:10rem"
+													placeholder="Palabra clave" />
+												<p:commandButton value="Buscar" update="@form"
+													action="#{beanProducto.toggleGlobalFilter()}"
+													class="btn btn-primary" />
+											</div>
+										</div>
+									</div>
+
+								</f:facet>
+
+								<p:column headerText="Id" sortBy="#{producto.id}">
+									<h:outputText value="#{producto.id}" />
+								</p:column>
+
+								<p:column headerText="Nombre" sortBy="#{producto.nombre}"
+									filterBy="#{producto.nombre}">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText
+												style="vertical-align: middle; margin-left: .5rem"
+												value="#{producto.nombre}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{producto.nombre}" style="width:100%"
+												label="Nombre" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column headerText="Categor&iacute;a"
+									filterBy="#{producto.categoria.id}"
+									sortBy="#{producto.categoria.nombre}" filterMatchMode="exact">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText
+												style="vertical-align: middle; margin-left: .5rem"
+												styleClass="restaurante-badge"
+												value="#{producto.categoria.nombre}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:selectOneMenu value="#{producto.id_categoria}"
+												styleClass="custom-filter">
+
+												<f:selectItems value="#{beanProducto.categorias}" var="cat"
+													itemLabel="#{cat.nombre}" itemValue="#{cat.id}" />
+											</p:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+									<f:facet name="filter">
+										<p:selectOneMenu onchange="PF('tableProductos').filter()"
+											styleClass="custom-filter">
+
+											<f:selectItem itemLabel="All" itemValue="#{null}"
+												noSelectionOption="true" />
+
+											<f:selectItems value="#{beanProducto.categorias}"
+												var="categoria" itemLabel="#{categoria.nombre}"
+												itemValue="#{categoria.id}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:column>
+								<p:column style="width:6rem">
+									<p:rowEditor editTitle="Editar Producto"
+										cancelTitle="Cancelar Edici&oacute;n"
+										saveTitle="Confirmar Edici&oacute;n" />
+								</p:column>
+							</p:dataTable>
+							<div class="col-12">
+								<p:growl id="messages" showDetail="true" />
+							</div>
+
+						</h:form>
+					</div>
+				</div>
+				<div class="col-12 d-flex flex-row-reverse">
+					<div class="p-2">
+						<div class="btn-group" data-toggle="buttons">
+							<a class="btn btn-secondary" href="javascript:addProducto();"
+								role="button" title="Agregar Producto"><i
+								class="fas fa-plus"></i> </a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal ADD-->
+	<div class="modal" tabindex="-1" role="dialog" id="addProducto">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Crear Producto</h3>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"> &times; </span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h:form class="addusuario-form">
+						<div class="col-12">
+							<div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
+									<p:outputLabel for="addRestaurante" value="Restaurante" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0">
+									<h:inputText type="text" class="form-control"
+										id="addRestaurante" name="addName"
+										value="#{beanProducto.restaurante.nombre}" disabled="true">
+									</h:inputText>
+								</div>
+							</div>
+							<div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
+									<p:outputLabel for="addName" value="Nombre" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0">
+									<h:inputText type="text" class="form-control" id="addName"
+										required="true" name="addName" value="#{beanProducto.nombre}">
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="col-12 d-flex flex-row">
+								<div class="col-3  mb-3">
+									<p:outputLabel for="addCategoria" value="Categor&iacute;a" />
+								</div>
+								<div class="col-9  mb-3 mr-0 pr-0">
+
+									<p:selectOneMenu value="#{beanProducto.id_categoria}"
+										styleClass="form-control" id="addCategoria">
+
+										<f:selectItems value="#{beanProducto.categorias}" var="cat"
+											itemLabel="#{cat.nombre}" itemValue="#{cat.id}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="col-12 d-flex flex-row">
+								<h:commandButton class="btn btn-primary"
+									action="#{beanProducto.addProducto()}" value="CREAR" />
+							</div>
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<section class="section" id="main_section">
+	<div></div>
+
+	</section>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+		
+				
+		function addProducto(){
+			$ds('#addProducto').modal('show');
+		}
+
+		
+	</script>
+</h:body>
+</html>

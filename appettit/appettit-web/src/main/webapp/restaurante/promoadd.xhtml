@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-AddMenu</title>
+	<!--
+	<f:metadata>
+        <f:event type="preRenderView" listener="#{beanAddPromocion.init()}" />
+    </f:metadata>
+	-->
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml" />
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="content-wrapper">
+				<h:form class="addusuario-form" autocomplete="off" id="promForm">
+					<div class="row mb-3 pt-3">
+						<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+							<div class="card">
+								<div class="cadr-body">
+									<div class="row">
+										<div class="col-12 mb-1 text-center">
+											<p:outputPanel id="cropperPanel"
+												style="text-align: -webkit-center;">
+												<h:panelGrid columns="1"
+													rendered="#{not empty beanAddPromocion.imgfile}">
+
+													<h:panelGrid columns="2" cellpadding="7">
+
+														<p:imageCropper value="#{beanAddPromocion.croppedImage}"
+															id="imageCropper" cache="false"
+															image="#{beanAddPromocion.image}" />
+														<p:outputPanel id="cropped">
+															<p:graphicImage cache="false"
+																rendered="#{not empty beanAddPromocion.croppedImage}"
+																value="#{beanAddPromocion.cropped}" />
+														</p:outputPanel>
+
+													</h:panelGrid>
+												</h:panelGrid>
+											</p:outputPanel>
+										</div>
+
+										<div class="col-12 mb-3 text-center">
+											<p:fileUpload mode="advanced" multiple="false"
+												label="Cargar Imagen" sizeLimit="2097152"
+												allowTypes="/(\.|\/)(gif|jpe?g)$/"
+												invalidSizeMessage="Tama&ntilde;o m&acute;ximo 2MB"
+												invalidFileMessage="Formatos soportados: gif | jpg | jpeg"
+												update="messages cropperPanel" auto="true"
+												listener="#{beanAddPromocion.handleFileUpload}" />
+										</div>
+
+										<div class="col-6 d-flex flex-row">
+											<div class="row">
+												<div class="col-4  mb-3">
+													<p:outputLabel for="addName" value="Nombre" />
+												</div>
+												<div class="col-8  mb-3 mr-0 pr-0">
+													<h:inputText type="text" class="form-control" id="addName"
+														required="true" name="addName"
+														value="#{beanAddPromocion.nombre}">
+													</h:inputText>
+												</div>
+												<div class="col-4  mb-3">
+													<p:outputLabel for="addDescripcion" value="Descripcion" />
+												</div>
+												<div class="col-8  mb-3 mr-0 pr-0">
+													<h:inputTextarea type="text" class="form-control"
+														id="addDescripcion" required="true" name="addDescripcion"
+														value="#{beanAddPromocion.descripcion}" row="30" col="50" />
+												</div>
+											</div>
+										</div>
+
+										<div class="col-6 d-flex flex-row">
+											<div class="row">
+												<div class="col-4  mb-3">
+													<p:outputLabel for="addDescuento" value="Descuento" />
+												</div>
+												<div class="col-8  mb-3 mr-0 pr-0">
+													<p:inputNumber id="addDescuento" required="true"
+														name="addDescuento" symbol=" %" symbolPosition="s"
+														decimalSeparator="," thousandSeparator="."
+														value="#{beanAddPromocion.descuento}">
+														<f:ajax listener="#{beanAddPromocion.calcularPrecio}"
+														 update="promForm:sMenusTable promForm:addSubTotal promForm:addTotalPrice" />
+													</p:inputNumber>
+												</div>
+												<div class="col-4  mb-3">SubTotal</div>
+												<div class="col-8  mb-3 mr-0 pr-0">
+													<h:outputText id="addSubTotal"
+														value="#{beanAddPromocion.subTotal}">
+														<f:convertNumber type="currency" currencySymbol="$U" />
+													</h:outputText>
+												</div>
+												<div class="col-4  mb-3">Precio</div>
+												<div class="col-8  mb-3 mr-0 pr-0">
+													<h:outputText id="addTotalPrice"
+														value="#{beanAddPromocion.precioTotal}">
+														<f:convertNumber type="currency" currencySymbol="$U" />
+													</h:outputText>
+												</div>
+											</div>
+										</div>
+
+
+										<div class="col-12 d-flex flex-row">
+											<div class="row">
+												<div class="col-6 order-2 mb-3">
+													<p:dataTable var="smenu" editable="false" id="sMenusTable"
+														value="#{beanAddPromocion.menuSel}"
+														widgetVar="sMenusTable" emptyMessage="Sin Menus" rows="5"
+														paginator="true" rowKey="#{smenu.id}"
+														selectionMode="single"
+														paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+														currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros">
+
+														<f:facet name="header">
+															<div class="row">
+																<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+																	<div
+																		class="d-grid gap-2 d-md-flex justify-content-md-start">
+																		<h6>Men&uacute;s de la promoci&oacute;n</h6>
+																	</div>
+																</div>
+															</div>
+
+														</f:facet>
+
+														<p:column headerText="Id">
+															<h:outputText value="#{smenu.id}" />
+														</p:column>
+
+														<p:column headerText="Imagen">
+															<p:graphicImage value="#{smenu.imagen.imagen}"
+																styleClass="p-shadow-2" stream="false" />
+														</p:column>
+
+														<p:column headerText="Nombre">
+															<h:outputText
+																style="vertical-align: middle; margin-left: .5rem"
+																value="#{smenu.nombre}" />
+														</p:column>
+
+														<p:column headerText="Precio">
+															<h:outputText value="#{smenu.precioTotal}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</p:column>
+														<p:column>
+															<p:commandButton class="ui-button-danger rounded-button"
+																process="promForm:sMenusTable @this" icon="pi pi-trash"
+																update="promForm:sMenusTable promForm:addSubTotal promForm:addTotalPrice"
+																actionListener="#{beanAddPromocion.deleteMenu(smenu)}">
+
+															</p:commandButton>
+														</p:column>
+													</p:dataTable>
+												</div>
+
+												<div class="col-6 order-1 mb-3">
+													<p:dataTable var="menu" editable="false" id="menusTable"
+														value="#{beanAddPromocion.menus}" widgetVar="menusTable"
+														emptyMessage="No existen Menus" rows="5" paginator="true"
+														rowKey="#{menu.id}" selectionMode="single"
+														paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+														currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros">
+
+														<f:facet name="header">
+															<div class="row">
+																<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+																	<div
+																		class="d-grid gap-2 d-md-flex justify-content-md-start pb-0 pt-0">
+																		<h6>Men&uacute;s</h6>
+																	</div>
+																</div>
+															</div>
+
+														</f:facet>
+
+														<p:column headerText="Id">
+															<h:outputText value="#{menu.id}" />
+														</p:column>
+
+														<p:column headerText="Imagen">
+															<p:graphicImage value="#{menu.imagen.imagen}"
+																styleClass="p-shadow-2" stream="false" />
+														</p:column>
+
+														<p:column headerText="Nombre">
+															<h:outputText
+																style="vertical-align: middle; margin-left: .5rem"
+																value="#{menu.nombre}" />
+														</p:column>
+
+														<p:column headerText="Precio">
+															<h:outputText value="#{menu.precioTotal}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</p:column>
+														<p:column>
+															<p:commandButton class="ui-button-success rounded-button"
+																process="promForm:sMenusTable @this"
+																icon="pi pi-plus-circle"
+																update="promForm:sMenusTable promForm:addSubTotal promForm:addTotalPrice"
+																actionListener="#{beanAddPromocion.addMenu(menu)}">
+															</p:commandButton>
+														</p:column>
+
+													</p:dataTable>
+												</div>
+
+
+											</div>
+										</div>
+										<div class="col-12">
+											<p:growl id="messages" showDetail="true" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+
+						<!-- Boton -->
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
+							<div class="float-right">
+								<div class="col-12 d-flex flex-row">
+									<p:commandButton value="CREAR"
+										action="#{beanAddPromocion.addPromocion}" update="messages"
+										styleClass="btn btn-primary" />
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+	</script>
+</h:body>
+</html>

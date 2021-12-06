@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-AddMenu</title>
+	
+	<f:metadata>
+        <f:event type="preRenderView" listener="#{beanAddMenu.init() }" />
+    </f:metadata>
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+			src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+		<div class="navigation w-100">
+			<div class="container">
+				<ui:include src="/WEB-INF/includes/navRestaurante.xhtml" />
+			</div>
+		</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="content-wrapper">
+				<h:form class="addusuario-form" autocomplete="off">
+					<div class="row mb-3 pt-3">
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
+							<div class="card">
+								<div class="cadr-body">
+									<div class="col-12 mb-1 text-center">
+										<p:outputPanel id="cropperPanel" style="text-align: -webkit-center;">
+											<h:panelGrid columns="1"
+												rendered="#{not empty beanAddMenu.imgfile}">
+
+												<h:panelGrid columns="2" cellpadding="7">
+
+													<p:imageCropper value="#{beanAddMenu.croppedImage}"
+														id="imageCropper" cache="false"
+														image="#{beanAddMenu.image}"
+														/>
+													<p:outputPanel id="cropped">
+								                        <p:graphicImage cache="false"
+								                                        rendered="#{not empty beanAddMenu.croppedImage}"
+								                                        value="#{beanAddMenu.cropped}"/>
+								                    </p:outputPanel>
+
+												</h:panelGrid>
+											</h:panelGrid>
+										</p:outputPanel>
+									</div>
+
+									<div class="col-12 mb-3 text-center">
+										<p:fileUpload mode="advanced" multiple="false"
+											label="Cargar Imagen" sizeLimit="2097152"
+											allowTypes="/(\.|\/)(gif|jpe?g)$/"
+											invalidSizeMessage="Tama&ntilde;o m&acute;ximo 2MB"
+											invalidFileMessage="Formatos soportados: gif | jpg | jpeg"
+											update="messages cropperPanel" auto="true"
+											listener="#{beanAddMenu.handleFileUpload}" />
+									</div>
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addName" value="Nombre" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0">
+											<h:inputText type="text" class="form-control" id="addName"
+												required="true" name="addName"
+												value="#{beanAddMenu.nombre}">
+											</h:inputText>
+										</div>
+									</div>
+
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addDescripcion" value="Descripcion" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0">
+											<h:inputTextarea type="text" class="form-control" id="addDescripcion"
+															 required="true" name="addDescripcion"
+															 value="#{beanAddMenu.descripcion}" row="30" col="50" />
+										</div>
+									</div>
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addProducts" value="Productos" />
+										</div>
+										<div class="col-8 mb-3 mr-0 pr-0">
+											<p:selectCheckboxMenu id="addProducts"
+																  value="#{beanAddMenu.productsSelectedItems}"
+																  label="Productos"
+																  style="width: 100%"
+																  multiple="true"
+																  required="true"
+																  filter="true"
+																  filterMatchMode="startsWith"
+																  panelStyle="width: 25rem"
+																  scrollHeight="300">
+												<p:ajax event="itemUnselect" listener="#{beanAddMenu.onItemUnselect}"/>
+												<f:selectItems value="#{beanAddMenu.productsItems}"/>
+											</p:selectCheckboxMenu>
+										</div>
+									</div>
+
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addExtras" value="Extras" />
+										</div>
+										<div class="col-8 mb-3 mr-0 pr-0">
+											<p:selectCheckboxMenu id="addExtras"
+																  value="#{beanAddMenu.extrasSelectedItems}"
+																  label="Extras"
+																  style="width: 100%"
+																  multiple="true"
+																  required="false"
+																  filter="true"
+																  filterMatchMode="startsWith"
+																  panelStyle="width: 25rem"
+																  scrollHeight="300">
+												<p:ajax event="itemUnselect" listener="#{beanAddMenu.onItemUnselect}"/>
+												<f:selectItems value="#{beanAddMenu.extrasItems}"/>
+											</p:selectCheckboxMenu>
+										</div>
+									</div>
+
+									<div class="col-12 d-flex flex-row">
+										<div class="col-4  mb-3">
+											<p:outputLabel for="addTotalPrice" value="Precio" />
+										</div>
+										<div class="col-8  mb-3 mr-0 pr-0">
+<!--											<h:inputText type="number" class="form-control" id="addTotalPrice"-->
+<!--														 required="true" name="addTotalPrice"-->
+<!--														 value="#{beanAddMenu.precioTotal}">-->
+<!--											</h:inputText>-->
+											<p:inputNumber id="addTotalPrice" required="true" name="addTotalPrice"
+														   symbol="U$ " symbolPosition="p" decimalSeparator=","
+														   thousandSeparator="." value="#{beanAddMenu.precioTotal}">
+											</p:inputNumber>
+										</div>
+									</div>
+
+									<div class="col-12">
+										<p:growl id="messages" showDetail="true" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+
+						<!-- Boton -->
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+						<div class="col-xl-6 col-lg-6 col-md-6 pb-3 pt-3">
+							<div class="float-right">
+								<div class="col-12 d-flex flex-row">
+									<p:commandButton value="CREAR"
+													 action="#{beanAddMenu.addMenu}"
+											         update="messages"
+													 styleClass="btn btn-primary" />
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-lg-3 col-md-3 pb-3 pt-3"></div>
+
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<!-- Load Esri Leaflet from CDN -->
+	<script src="https://unpkg.com/esri-leaflet@3.0.3/dist/esri-leaflet.js"
+			integrity="sha512-kuYkbOFCV/SsxrpmaCRMEFmqU08n6vc+TfAVlIKjR1BPVgt75pmtU9nbQll+4M9PN2tmZSAgD1kGUCKL88CscA=="
+			crossorigin=""></script>
+
+	<script
+			src="https://unpkg.com/esri-leaflet-geocoder@3.1.1/dist/esri-leaflet-geocoder.js"
+			integrity="sha512-enHceDibjfw6LYtgWU03hke20nVTm+X5CRi9ity06lGQNtC9GkBNl/6LoER6XzSudGiXy++avi1EbIg9Ip4L1w=="
+			crossorigin=""></script>
+
+	<script src="/appettit-web/resources/js/appetitmap.js"></script>
+
+	<script src="/appettit-web/resources/js/Leaflet.SelectAreaFeature.js"></script>
+
+	<script src="/appettit-web/resources/js/proj4js-combined.js"></script>
+	<script src="/appettit-web/resources/js/defs/EPSG32721.js"></script>
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+
+		/*Add mapa*/
+		initMap();
+		//		initMapSelectRegion();
+		getLocation();
+
+	</script>
+
+</h:body>
+</html>

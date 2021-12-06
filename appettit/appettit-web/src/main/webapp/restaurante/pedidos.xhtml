@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Pedidos</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="card">
+					<h:form id="form">
+						<p:toolbar>
+							<p:toolbarGroup align="right">
+								<p:commandButton value="Exportar" icon="pi pi-upload"
+									styleClass="ui-button-help" ajax="false">
+									<p:dataExporter type="pdf" target="tablePedidos"
+										fileName="Pedidos" options="#{beanPedidos.pdfOpt}"
+										preProcessor="#{beanPedidos.preProcessPDF}"/>
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+
+						<p:dataTable var="pedido" editable="true"
+							id="tablePedidos"
+							value="#{beanPedidos.pedidos}"
+							widgetVar="pedidosTable"
+							emptyMessage="No existen pedidos"
+							globalFilterOnly="#{beanPedidos.globalFilterOnly}"
+							filteredValue="#{beanPedidos.filterPedidos}"
+							rows="10" paginator="true" rowKey="#{pedido.id}"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+							<p:ajax event="rowEdit"
+								listener="#{beanPedidos.onRowEdit}"
+								update=":form:messages tablePedidos" />
+
+							<p:ajax event="rowEditCancel"
+								listener="#{beanPedidos.onRowCancel}"
+								update=":form:messages tablePedidos" />
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de pedidos</h5>
+										</div>
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('pedidosTable').filter()"
+												style="width:10rem" placeholder="Palabra clave" />
+											<p:commandButton value="Buscar" update="@form"
+												action="#{beanAdminRestaurante.toggleGlobalFilter()}"
+												class="btn btn-primary" />
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="N&uacute;mero" sortBy="#{pedido.id}"
+								filterBy="#{pedido.id}">
+								<div style="text-align:center;">
+									<h:outputText 
+									value="#{pedido.id}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Hora" sortBy="#{beanPedidos.getHoraPedido(pedido.id)}"
+								filterBy="#{beanPedidos.getHoraPedido(pedido.id)}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanPedidos.getHoraPedido(pedido.id)}" />
+							</p:column>
+
+							<p:column headerText="Cliente" sortBy="#{beanPedidos.getNombreCliente(pedido.id_cliente)}"
+								filterBy="#{beanPedidos.getNombreCliente(pedido.id_cliente)}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanPedidos.getNombreCliente(pedido.id_cliente)}" />
+							</p:column>
+
+							<p:column headerText="Tel&eacute;fono" sortBy="#{beanPedidos.getTelCliente(pedido.id_cliente)}"
+								filterBy="#{beanPedidos.getTelCliente(pedido.id_cliente)}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanPedidos.getTelCliente(pedido.id_cliente)}" />
+							</p:column>
+
+							<p:column headerText="Direcci&oacute;n"
+								sortBy="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}"
+								filterBy="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanPedidos.getDireccion(pedido.id_entrega).calle} #{beanPedidos.getDireccion(pedido.id_entrega).numero}" />
+							</p:column>
+
+							<p:column style="width:3rem;text-align: center" exportable="false">
+								<p:commandButton update=":form:direccionDetail"
+									oncomplete="PF('direccionDialog').show()" icon="pi pi-search"
+									title="Ver direccion completa">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="Estado" filterBy="#{pedido.estado}"
+								sortBy="#{pedido.estado}" filterMatchMode="exact">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											style="vertical-align: middle; margin-left: .5rem"
+											styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
+											value="#{pedido.estado.toString()}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{pedido.estado}"
+											styleClass="custom-filter">
+
+											<f:selectItems
+												value="#{beanPedidos.pedidoEstado}"
+												var="estado" itemLAbel="#{estado.toString()}"
+												itemValue="#{estado}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('pedidosTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{beanPedidos.pedidoEstado}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+							
+							<p:column headerText="Tipo" sortBy="#{pedido.tipo}"
+								filterBy="#{pedido.tipo}">
+								<h:outputText 
+									value="#{pedido.tipo}" />
+							</p:column>
+							
+							<p:column headerText="Pago"
+								filterBy="#{pedido.pago}"
+								sortBy="#{pedido.pago}" filterMatchMode="exact">
+								<p:cellEditor class="mostrar-#{pedido.tipo}">
+									<f:facet name="output">
+										<div style="width: 4rem;text-align:center;"
+											class="btn-sm mostrar-#{pedido.tipo} bloqueado-restaurante-#{!(pedido.pago).toString().toLowerCase()}">
+											<h:outputText value="#{pedido.pago ?  'Si' : 'No'}" />
+										</div>
+									</f:facet>
+									<f:facet name="input">
+										<div class="mostrar-#{pedido.tipo}">
+											<p:selectBooleanButton onLabel="Si" offLabel="No"
+												style="width:4rem" value="#{pedido.pago}" />
+										</div>
+									</f:facet>
+								</p:cellEditor>
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('pedidosTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="All" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="#{true}"
+											noSelectionOption="false" />
+										<f:selectItem itemLabel="No" itemValue="#{false}"
+											noSelectionOption="false" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:column>
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:pedidoDetail"
+									oncomplete="PF('pedidoDialog').show()"
+									title="Ver pedido" value="Ver pedido">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
+							</p:column>
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:califDetail"
+									oncomplete="PF('califDialog').show()" icon="pi pi-star-o"
+									title="Ver calificacion">
+									<f:setPropertyActionListener value="#{pedido}"
+										target="#{beanPedidos.selPedido}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column style="width:6rem" exportable="false">
+								<p:rowEditor editTitle="Editar pedido"
+									cancelTitle="Cancelar Edici&oacute;n"
+									saveTitle="Confirmar Edici&oacute;n" />
+							</p:column>
+						</p:dataTable>
+						
+						<p:dialog header="Informaci&oacute;n del pedido" width="800"
+							widgetVar="pedidoDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="pedidoDetail" style="text-align:center;">
+								
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<p:dataTable var="lineaMenu"
+												id="tableMenus"
+												value="#{beanPedidos.getMenus()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.cantidad}" />
+													</p:column>
+													<p:column headerText="Men&uacute;" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br />
+												<p:dataTable var="lineaPromo"
+												id="tablePromos"
+												value="#{beanPedidos.getPromos()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.cantidad}" />
+													</p:column>
+													<p:column headerText="Promoci&oacute;n" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br/><br/>
+												<h:outputText style="vertical-align: middle; margin-left: .5rem; font-size: xx-large; font-weight: bolder;"
+														value="Precio total: $#{beanPedidos.selPedido.total}" />
+											</div>
+										</div>
+									</div>
+								</p:column>
+								
+							</p:outputPanel>
+						</p:dialog>
+						
+						<p:dialog header="Informaci&oacute;n de la direcci&oacute;n"
+							widgetVar="direccionDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="direccionDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<h:outputText
+													value="#{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).calle} #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).numero}&lt;br /&gt;Apartamento: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).apartamento}&lt;br /&gt;Barrio/Localidad: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).barrio.nombre}&lt;br /&gt;Referencias: #{beanPedidos.getDireccion(beanPedidos.selPedido.id_entrega).referencias}"                  
+													styleClass="product-price" escape="false"/>
+												<div class="product-grid-item-bottom"></div>
+											</div>
+											<div class="product-grid-item-bottom">
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						
+						<p:dialog header="Calificaci&oacute;n del pedido"
+							widgetVar="califDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="califDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanPedidos.selPedido}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<h:outputText value="Rapidez" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.rapidez}" />
+												<br /> 		
+												<h:outputText value="Comida" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.comida}" />
+												<br />
+												<h:outputText value="Servicio" styleClass="product-price" escape="false"/>
+												<p:rating readonly="true" value="#{beanPedidos.calificacion.servicio}" />
+												<br /><br />		
+												<h:outputText value="Comentario del cliente:" styleClass="product-price" escape="false"/>
+												<br /><br />
+												<h:outputText value="#{beanPedidos.calificacion.comentario}" styleClass="product-price" escape="false"/>						
+												<div class="product-grid-item-bottom"></div>
+											</div>
+											<div class="product-grid-item-bottom">
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+			
+	</script>
+</h:body>
+</html>

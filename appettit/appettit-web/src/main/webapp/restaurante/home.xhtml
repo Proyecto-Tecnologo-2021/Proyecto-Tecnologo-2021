@@ -1,0 +1,855 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Restaurante</title>
+	
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml" />
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="content-wrapper">
+				<div class="row mb-3">
+					<!-- Estado -->
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						<div class="card">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-2">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h:form>
+												<c:choose>
+													<c:when test="#{HomeRestaurante.abierto}">
+														<h:commandButton class="btn btn-warning"
+															value="Cerrar restaurante"
+															action="#{HomeRestaurante.cerrarRestaurante()}" />
+													</c:when>
+													<c:otherwise>
+														<h:commandButton class="btn btn-success"
+															value="Abrir restaurante"
+															action="#{HomeRestaurante.abrirRestaurante()}" />
+													</c:otherwise>
+												</c:choose>
+											</h:form>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<h5 class="card-title mb-3 pt-1">
+												Registro:
+												<h:outputText
+													style="vertical-align: middle; margin-left: .5rem"
+													styleClass="restaurante-badge status-restaurante-#{HomeRestaurante.restauranteDTO.estado.toString().toLowerCase()}"
+													value="#{HomeRestaurante.restauranteDTO.estado.toString()}" />
+											</h5>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<h5 class="card-title mb-3 pt-1">Estado:</h5>
+											<div
+												class="btn-sm bloqueado-restaurante-#{HomeRestaurante.restauranteDTO.bloqueado.toString().toLowerCase()}">
+												<i
+													class="pi pi-#{HomeRestaurante.restauranteDTO.bloqueado ?  'lock' : 'lock-open'}"></i>&nbsp;
+												<h:outputText
+													value="#{HomeRestaurante.restauranteDTO.bloqueado ?  'Bloqueado' : 'Desbloqueado'}" />
+											</div>
+										</div>
+									</div>
+									<div class="col-md-5">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<h5 class="card-title mb-3 pt-1">
+												&Uacute;ltima Actualizaci&oacute;n:
+												<h:outputText value="#{HomeRestaurante.fechaHora}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Calificacion -->
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Rapidez</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.rapidez}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.rapidez.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
+								</h5>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartRapidezTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Comida</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.comida}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.comida}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.comida.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
+								</h5>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartComidaTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">Servicio</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.servicio}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.servicio}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.servicio.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
+								</h5>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartServicioTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-4 p-0">
+											<h5 class="card-title font-weight-bold">General</h5>
+										</div>
+										<div class="col-xl-8 p-0">
+											<h5 class="card-title font-weight-bold">
+												<p:rating readonly="true" styleClass="text-warning"
+													value="#{HomeRestaurante.restauranteDTO.calificacion.general}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+
+								<h5 class="card-title mb-3 font-weight-bold">
+									<h:outputText
+										value="#{HomeRestaurante.restauranteDTO.calificacion.general}" /> en 
+									<h:outputText
+										value="#{HomeRestaurante.servicio.actual}">
+										<f:convertNumber minFractionDigits="0"/>
+									</h:outputText>
+									calificaciones
+								</h5>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartCalGralTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Graficas Totales -->
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de ventas</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.ventas.actual-HomeRestaurante.ventas.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.ventas.actual-HomeRestaurante.ventas.anterior)/HomeRestaurante.ventas.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.ventas.actual}">
+										<f:convertNumber type="currency" currencySymbol="$U" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartVentasTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de clientes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.clientes.actual-HomeRestaurante.clientes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.clientes.actual-HomeRestaurante.clientes.anterior)/HomeRestaurante.clientes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.clientes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartClientesTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Total de &oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.clientes.actual-HomeRestaurante.ordenes.anterior>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.ordenes.actual-HomeRestaurante.ordenes.anterior)/HomeRestaurante.ordenes.actual}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.ordenes.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartOrdenesTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-8">
+										<h6 class="card-title mb-3 pt-1">Promedio de &oacute;rdenes</h6>
+									</div>
+									<div class="col-md-4">
+										<div class="ms-chart-label bg-dark">
+											<h6>
+												<c:choose>
+													<c:when
+														test="#{HomeRestaurante.pedidosPromedio.actual/7-HomeRestaurante.pedidosPromedio.anterior/7>0}">
+														<i class="fas fa-arrow-up"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fas fa-arrow-down"></i>
+													</c:otherwise>
+												</c:choose>
+												<h:outputText
+													value="#{(HomeRestaurante.pedidosPromedio.actual/7-HomeRestaurante.pedidosPromedio.anterior/7)/(HomeRestaurante.pedidosPromedio.actual/7)}">
+													<f:convertNumber minFractionDigits="1" type="percent" />
+												</h:outputText>
+
+											</h6>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12"></div>
+								</div>
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.pedidosPromedio.actual/7}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartOrdenesPromedioTotales}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+						<div class="card">
+
+							<p:dataTable var="pedido" value="#{HomeRestaurante.pedidos}">
+								<f:facet name="header">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+											<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+												<h5>Pedidos en curso:
+													"#{fn:length(HomeRestaurante.pedidos)}"</h5>
+											</div>
+										</div>
+									</div>
+								</f:facet>
+								<p:columnGroup type="header">
+									<p:column headerText="#Orden"
+										styleClass="bg-dark text-white pl-3 p-1" />
+									<p:column headerText="Cliente"
+										styleClass="bg-dark text-white p-1" />
+									<p:column headerText="Barrio"
+										styleClass="bg-dark text-white p-1" />
+									<p:column headerText="Estado"
+										styleClass="bg-dark text-white p-1 text-center" />
+									<p:column headerText="Hora del pedido"
+										styleClass="bg-dark text-white p-1 text-center" />
+									<p:column headerText="Precio"
+										styleClass="bg-dark text-white pr-3 p-1 text-right" />
+								</p:columnGroup>
+
+								<p:column headerText="Orden">
+									<h:outputText value="#{pedido.id}" />
+								</p:column>
+
+								<p:column headerText="Cliente">
+									<h:outputText value="#{pedido.cliente.nombre}" />
+								</p:column>
+
+								<p:column headerText="Barrio">
+									<h:outputText value="#{pedido.entrega.barrio.nombre}" />
+								</p:column>
+
+								<p:column headerText="Estado">
+									<h:outputText
+										style="vertical-align: middle; margin-left: .5rem"
+										styleClass="restaurante-badge status-pedido-#{pedido.estado.toString().toLowerCase()}"
+										value="#{pedido.estado.toString()}" />
+								</p:column>
+
+								<p:column headerText="Hora del pedido">
+									<h:outputText
+										style="vertical-align: middle; margin-left: .5rem"
+										value="#{HomeRestaurante.getFechaHora(pedido.fecha, 'dd/MM/yyyy HH:mm')}" />
+								</p:column>
+
+								<p:column headerText="Precio" styleClass="text-right">
+									<h:outputText value="#{pedido.total}">
+										<f:convertNumber type="currency" currencySymbol="$U" />
+									</h:outputText>
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3  col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+
+							<div class="card-header">
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="card-title mb-3">Pedidos Recientes</h5>
+									</div>
+
+									<div class="col-md-6 justify-content-md-end">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<a href="/appettit-web/restaurante/pedidos.xhtml"
+												class="btn btn-primary" role="button" aria-pressed="true">Ver
+												todos</a>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<p:dataTable var="reciente" styleClass="table table-hover"
+									value="#{HomeRestaurante.recientes}">
+
+									<p:column headerText="Detalle" width="50%">
+										<p:graphicImage value="#{reciente.imagen.imagen}"
+											styleClass="img-table-circle" stream="false" />
+										<h:outputText value="#{reciente.nombre}" />
+									</p:column>
+									<p:column headerText="Precio" width="20%"
+										styleClass="text-right">
+										<h:outputText value="#{reciente.precio}">
+											<f:convertNumber type="currency" currencySymbol="$U" />
+										</h:outputText>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Estado de pedidos</h5>
+							</div>
+							<div class="card-body">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.estados.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									Pedidos
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartEstados}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+
+									<c:forEach var="eslegend"
+										items="#{HomeRestaurante.estados.data}">
+										<div class="row">
+											<div class="col-xl-1 col-lg-1 col-md-1"
+												style="#{HomeRestaurante.styleLabel('es', eslegend.key)}">
+												<h:outputText value="#{eslegend.value}">
+													<f:convertNumber minFractionDigits="0" />
+												</h:outputText>
+											</div>
+											<div class="col">
+												<h:outputText value="#{eslegend.key}" />
+											</div>
+										</div>
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Reclamos</h5>
+							</div>
+							<div class="card-body">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.reclamos.data['R']}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									de
+									<h:outputText value="#{HomeRestaurante.reclamos.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									(
+									<h:outputText
+										value="#{HomeRestaurante.reclamos.data['R']/HomeRestaurante.reclamos.actual}">
+										<f:convertNumber minFractionDigits="2" type="percent" />
+									</h:outputText>
+									)
+
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartReclamos}"
+										styleClass="card-img-top" stream="false" />
+								</div>
+
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											todos los pedidos)</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3 pt-1">Forma de pago</h5>
+
+							</div>
+							<div class="card-body" id="formaPagosPedidos">
+
+								<h6 class="card-title mb-3 font-weight-bold">
+									<h:outputText value="#{HomeRestaurante.formapago.actual}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									Pedidos
+								</h6>
+								<div class="card-img-bottom">
+									<p:graphicImage value="#{HomeRestaurante.chartFormaPago}"
+										styleClass="card-img-top" stream="false" />
+
+								</div>
+							</div>
+							<div class="card-footer bg-transparent">
+								<div class="container">
+									<c:forEach var="fplegend"
+										items="#{HomeRestaurante.formapago.data}">
+
+										<div class="row">
+											<div class="col-xl-2 col-lg-2 col-md-2"
+												style="#{HomeRestaurante.styleLabel('fp', fplegend.key)}">
+												<h:outputText value="#{fplegend.value}">
+													<f:convertNumber minFractionDigits="0" />
+												</h:outputText>
+											</div>
+											<div class="col">
+												<h:outputText value="#{fplegend.key}" />
+											</div>
+										</div>
+									</c:forEach>
+									<div class="row">
+										<div class="col-xl-12 col-lg-12 col-md-12 mt-1">(*Sobre
+											pedidos entregados)</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-12 col-lg-12 col-md-12 grid-margin stretch-card pb-3">
+
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Tendencias</h5>
+							</div>
+							<div class="card-body">
+								<div class="row mb-3">
+									<c:forEach var="tendencia"
+										items="#{HomeRestaurante.tendencias}">
+										<div
+											class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-1">
+											<div class="card">
+												<p:graphicImage value="#{tendencia.imagen.imagen}"
+													styleClass="card-img-top" stream="false" />
+												<div class="card-body"></div>
+												<div class="card-footer bg-transparent">
+													<div class="d-flex flex-row">
+														<h5 class="mr-auto card-title mb-3 pt-1">
+															<h:outputText value="#{tendencia.nombre}" />
+														</h5>
+														<h5 class="card-title mb-3 pt-1 text-success">
+															<h:outputText value="#{tendencia.precio}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h5>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-muted">&Oacute;rdenes</h6>
+														<h6 class="card-subtitle mb-2 text-muted">Total</h6>
+													</div>
+													<div class="d-flex flex-row">
+														<h6 class="mr-auto card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.ordenes}" />
+														</h6>
+														<h6 class="card-subtitle mb-2 text-danger">
+															<h:outputText value="#{tendencia.total}">
+																<f:convertNumber type="currency" currencySymbol="$U" />
+															</h:outputText>
+														</h6>
+													</div>
+												</div>
+											</div>
+										</div>
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-6 col-lg-6 col-md-6 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Zonas de influencia</h5>
+							</div>
+							<div class="card-body">
+								<div id="map"
+									class="leflet-map leaflet-container leaflet-fade-anim border">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Comentarios</h5>
+							</div>
+							<div class="card-body card-comentarios">
+
+								<div class="list-group">
+									<c:forEach var="comentario"
+										items="#{HomeRestaurante.comentarios}">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">
+												<h:outputText value="#{comentario.cliente.nombre}" />
+											</h5>
+											<small> <h:outputText
+													value="#{HomeRestaurante.getFechaHora(comentario.pedido.fecha, 'dd/MM/yyyy')}" />
+											</small>
+										</div>
+										<p class="mb-1">
+											<h6>
+												<h:outputText value="Pedido: #{comentario.pedido.id}" />
+											</h6>
+										</p>
+
+										<p class="mb-1">
+											<h:outputText value="#{comentario.comentario}" />
+										</p>
+										<p>
+											<p:rating readonly="true" styleClass="text-warning"
+												value="#{comentario.getGeneral()}" />
+										</p>
+
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="col-xl-3 col-lg-3 col-md-3 grid-margin stretch-card pb-3">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-3">Reclamos</h5>
+							</div>
+							<div class="card-body card-comentarios">
+
+								<div class="list-group">
+									<c:forEach var="reclamo" items="#{HomeRestaurante.reclamosDTO}">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">
+												<h:outputText value="#{reclamo.cliente}" />
+											</h5>
+											<small> <h:outputText
+													value="#{HomeRestaurante.getFechaHora(reclamo.fecha, 'dd/MM/yyyy')}" />
+											</small>
+										</div>
+										<p class="mb-1">
+											<h6>
+												<h:outputText value="Pedido: #{reclamo.id}" />
+											</h6>
+										</p>
+										<p class="mb-1">
+											<h6>Motivo:</h6>
+											<h:outputText value="#{reclamo.motivo}" />
+										</p>
+										<p class="mb-1">
+											<h6>Detalle:</h6>
+											<h:outputText value="#{reclamo.detalles}" />
+										</p>
+
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-12 col-lg-12 col-md-12 pb-3 pt-3">
+						*Per&iacute;odo de an&aacute;lisis
+						<h:outputText
+							value="#{HomeRestaurante.strFechaDesde()} - #{HomeRestaurante.strFechaHasta()}" />
+					</div>
+					<div class="col-12">
+						<p:growl id="messages" showDetail="true" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<section class="section" id="main_section">
+	<div></div>
+
+	</section>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+	
+	<script type="text/javascript">
+		/* MAPA */
+		var lat = -34.86157;
+		var lon = -56.17938;
+		var latlngs=[];
+		
+		var clientes = [ 
+		<c:forEach items="#{HomeRestaurante.influencia.coordenadas}"	var="in">
+			<h:outputText value="#{in}" />,
+		</c:forEach>
+			];
+
+		<c:choose>
+		<c:when test="#{empty HomeRestaurante.influencia.centro}">
+			var mapa = L.map('map').setView([lat, lon], 14);
+		</c:when>
+		<c:otherwise>
+			var mapa = L.map('map').setView(<h:outputText value="#{HomeRestaurante.influencia.centro}"/>, 14);
+			latlngs = <h:outputText value="[#{HomeRestaurante.influencia.zona}];"/>
+		</c:otherwise>
+		</c:choose>
+
+	
+
+		var polygon = L.polygon(latlngs, {color: 'red'});
+
+			
+		
+		
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(mapa);
+
+		var addressPoints = clientes.map(function (p) { return [p[0], p[1]]; });
+
+		var heat = L.heatLayer(addressPoints, {radius: 50});
+		mapa.addLayer(heat);
+		mapa.addLayer(polygon);
+
+	</script>
+
+
+</h:body>
+</html>

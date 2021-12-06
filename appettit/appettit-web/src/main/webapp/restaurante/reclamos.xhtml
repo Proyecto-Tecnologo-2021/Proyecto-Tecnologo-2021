@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Reclamos</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logRestaurant.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navRestaurante.xhtml"/>
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="card">
+					<h:form id="form">
+						<p:toolbar>
+							<p:toolbarGroup align="right">
+								<p:commandButton value="Exportar" icon="pi pi-upload"
+									styleClass="ui-button-help" ajax="false">
+									<p:dataExporter type="pdf" target="tableReclamos"
+										fileName="Reclamos" options="#{beanReclamos.pdfOpt}"
+										preProcessor="#{beanReclamos.preProcessPDF}"/>
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+
+						<p:dataTable var="reclamo" editable="true"
+							id="tableReclamos"
+							value="#{beanReclamos.reclamos}"
+							widgetVar="reclamosTable"
+							emptyMessage="No existen reclamos"
+							globalFilterOnly="#{beanReclamos.globalFilterOnly}"
+							filteredValue="#{beanReclamos.filterReclamos}"
+							rows="10" paginator="true" rowKey="#{reclamo.id}"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,25,50,100,{ShowAll|'All'}">
+
+							<p:ajax event="rowEdit"
+								listener="#{beanReclamos.onRowEdit}"
+								update=":form:messages tableReclamos" />
+
+							<p:ajax event="rowEditCancel"
+								listener="#{beanReclamos.onRowCancel}"
+								update=":form:messages tableReclamos" />
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>Lista de reclamos</h5>
+										</div>
+									</div>
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('reclamosTable').filter()"
+												style="width:10rem" placeholder="Palabra clave" />
+											<p:commandButton value="Buscar" update="@form"
+												action="#{beanReclamos.toggleGlobalFilter()}"
+												class="btn btn-primary" />
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="N&uacute;mero" sortBy="#{reclamo.id}"
+								filterBy="#{reclamo.id}">
+								<div style="text-align:center;">
+									<h:outputText 
+									value="#{reclamo.id}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Hora" sortBy="#{beanReclamos.getHoraReclamo(reclamo.id)}"
+								filterBy="#{beanReclamos.getHoraReclamo(reclamo.id)}">
+								<div style="text-align:center;">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanReclamos.getHoraReclamo(reclamo.id)}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Pedido" sortBy="#{beanReclamos.getNumeroPedido(reclamo.id)}"
+								filterBy="#{beanReclamos.getNumeroPedido(reclamo.id)}">
+								<div style="text-align:center;">
+									<h:outputText style="vertical-align: middle; margin-left: .5rem"
+										value="#{beanReclamos.getNumeroPedido(reclamo.id)}"/>
+								</div>		
+							</p:column>
+
+							<p:column headerText="Cliente" sortBy="#{beanReclamos.getNombreCliente(reclamo.id)}"
+								filterBy="#{beanReclamos.getNombreCliente(reclamo.id)}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanReclamos.getNombreCliente(reclamo.id)}" />
+							</p:column>
+							
+							<p:column headerText="Tel&eacute;fono" sortBy="#{beanReclamos.getTelefonoCliente(reclamo.id)}"
+								filterBy="#{beanReclamos.getTelefonoCliente(reclamo.id)}">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{beanReclamos.getTelefonoCliente(reclamo.id)}" />
+							</p:column>
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:reclamoDetail"
+									oncomplete="PF('reclamoDialog').show()"
+									title="Ver reclamo" value="Ver reclamo">
+									<f:setPropertyActionListener value="#{reclamo}"
+										target="#{beanReclamos.selReclamo}" />
+								</p:commandButton>
+							</p:column>
+							
+							<p:column style="text-align: center" exportable="false">
+								<p:commandButton update=":form:pedidoDetail"
+									oncomplete="PF('pedidoDialog').show()"
+									title="Ver pedido" value="Ver pedido">
+									<f:setPropertyActionListener value="#{reclamo}"
+										target="#{beanReclamos.selReclamo}" />
+								</p:commandButton>
+							</p:column>
+
+							
+						</p:dataTable>
+						
+						<p:dialog header="Informaci&oacute;n del pedido" width="800"
+							widgetVar="pedidoDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="pedidoDetail" style="text-align:center;">
+								
+								<p:column
+									rendered="#{not empty beanReclamos.selReclamo}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content">
+												<p:dataTable var="lineaMenu"
+												id="tableMenus"
+												value="#{beanReclamos.getMenus()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.cantidad}" />
+													</p:column>
+													<p:column headerText="Men&uacute;" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaMenu.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br />
+												<p:dataTable var="lineaPromo"
+												id="tablePromos"
+												value="#{beanReclamos.getPromos()}">
+													<p:column headerText="Cantidad" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.cantidad}" />
+													</p:column>
+													<p:column headerText="Promoci&oacute;n" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.nombre}" />
+													</p:column>
+													<p:column headerText="Precio" style="text-align:center; margin-left: .5rem;">
+													<h:outputText style="vertical-align: middle; margin-left: .5rem;"
+														value="#{lineaPromo.precio}" />
+													</p:column>
+												</p:dataTable>
+												<br/><br/>
+												<h:outputText style="vertical-align: middle; margin-left: .5rem; font-size: xx-large; font-weight: bolder;"
+														value="Precio total: $#{beanReclamos.pedido.total}" />
+											</div>
+										</div>
+									</div>
+								</p:column>
+								
+							</p:outputPanel>
+						</p:dialog>
+						
+						<p:dialog header="Informaci&oacute;n del reclamo"
+							widgetVar="reclamoDialog" modal="true" showEffect="fade"
+							hideEffect="fade" resizable="false">
+							<p:outputPanel id="reclamoDetail" style="text-align:center;">
+
+								<p:column
+									rendered="#{not empty beanReclamos.selReclamo}">
+									<div class="product">
+										<div class="product-grid-item card" style="margin-bottom: 0">
+											<div class="product-grid-item-content" style="max-width: 400px">
+												<h:outputText styleClass="product-price" value="Motivo del reclamo:" escape="false"/><br />
+												<h:outputText value="#{beanReclamos.selReclamo.motivo}" escape="false"/><br /><br />
+												<h:outputText styleClass="product-price" value="Detalles del reclamo:" escape="false"/><br />
+												<h:outputText value="#{beanReclamos.selReclamo.detalles}" escape="false"/><br /><br />
+												<div class="product-grid-item-bottom"></div>
+											</div>
+											<div class="product-grid-item-bottom">
+											</div>
+										</div>
+									</div>
+								</p:column>
+
+							</p:outputPanel>
+						</p:dialog>
+						
+						
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+	</script>
+</h:body>
+</html>

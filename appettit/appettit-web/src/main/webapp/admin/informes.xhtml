@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" lang="sp">
+
+
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Appetit-Restaurantes</title>
+
+
+	<ui:include src="/WEB-INF/includes/header_lib.xhtml" />
+
+	<style>
+.selected {
+	background-color: #008037 !important;
+}
+</style>
+
+
+</h:head>
+
+<h:body>
+
+
+	<header class="fixed-top header"> <ui:include
+		src="/WEB-INF/includes/header_logAdmin.xhtml" /> <!-- top header -->
+	<div class="navigation w-100">
+		<div class="container">
+			<ui:include src="/WEB-INF/includes/navAdmin.xhtml" />
+		</div>
+	</div>
+	</header>
+
+	<div class="main-panel">
+		<div class="container">
+			<div class="wrapper pt-3">
+				<div class="card">
+					<h:form id="form">
+						<p:toolbar>
+							<p:toolbarGroup align="left">
+								<div class="p-field p-col-12 p-md-4">
+									<p:outputLabel for="@next" value="Informe" />
+									<p:selectOneMenu id="option"
+										value="#{beanAdminInformes.selectedOption}">
+										<f:selectItem itemLabel="Seleccione uno" itemValue="" />
+										<f:selectItem itemLabel="Ventas diarias totales"
+											itemValue="Option1" />
+										<f:selectItem
+											itemLabel="Ventas diarias por restaurante totales"
+											itemValue="Option2" />
+										<f:selectItem
+											itemLabel="Ventas por Departamento barrio totales"
+											itemValue="Option3" />
+									</p:selectOneMenu>
+								</div>
+								<div class="p-field p-col-12 p-md-4">
+									<p:outputLabel for="range" value="Per&iacute;odo" />
+									<p:datePicker id="range" selectionMode="range"
+										value="#{beanAdminInformes.range}" readonlyInput="true" />
+								</div>
+								<div class="p-field p-col-12 p-md-4">
+									<h:commandButton class="btn btn-primary"
+										value="Ver"
+										update=":form:tableContenido :form:exportButton"
+										action="#{beanAdminInformes.listarInforme()}">
+									</h:commandButton>
+								</div>
+
+
+							</p:toolbarGroup>
+
+							<p:toolbarGroup align="right" id="exportButton">
+								<h:commandButton icon="pi pi-upload" styleClass="btn btn-primary"
+									value="Exportar" 
+									action="#{beanAdminInformes.exportarInforme()}">
+									
+								</h:commandButton>
+							</p:toolbarGroup>
+
+						</p:toolbar>
+
+
+						<p:dataTable var="detalle" id="tableContenido"
+							widgetVar="tableContenido" value="#{beanAdminInformes.contenido}"
+							emptyMessage="Sin datos">
+
+							<f:facet name="header">
+								<div class="row">
+									<div class="col-xl-6 col-lg-6 col-md-6 pb-0 pt-0">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+											<h5>
+												<h:outputText value="#{beanAdminInformes.tinforme}" />
+											</h5>
+										</div>
+									</div>
+								</div>
+
+							</f:facet>
+
+							<p:column headerText="Per&iacute;odo">
+								<h:outputText value="#{detalle.periodo}" />
+							</p:column>
+
+							<p:column headerText="Detalle">
+								<h:outputText value="#{detalle.detalle}" />
+							</p:column>
+
+							<p:column headerText="Detalle 2">
+								<h:outputText value="#{detalle.detalleB}" />
+							</p:column>
+
+							<p:column headerText="Total">
+								<h:outputText value="#{detalle.total}" />
+							</p:column>
+							<p:column headerText="Acumulado">
+								<h:outputText value="#{detalle.totalB}" />
+							</p:column>
+						</p:dataTable>
+						<div class="col-12">
+							<p:growl id="messages" showDetail="true" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ui:include src="/WEB-INF/includes/footer_lib.xhtml" />
+
+	<script type="text/javascript">
+		var $ds = jQuery.noConflict();
+
+		PrimeFaces.locales['es'] = {
+		        closeText: 'Cerrar',
+		        prevText: 'Anterior',
+		        nextText: 'Siguiente',
+		        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		        dayNames: ['Domingo', 'Lunes', 'Martes', 'Mi&eacute;rcoles', 'Jueves', 'Viernes', 'S&aacute;bado'],
+		        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		        weekHeader: 'Semana',
+		        firstDay: 1,
+		        isRTL: false,
+		        showMonthAfterYear: false,
+		        yearSuffix: '',
+		        timeOnlyTitle: 'S&oacute;lo hora',
+		        timeText: 'Tiempo',
+		        hourText: 'Hora',
+		        minuteText: 'Minuto',
+		        secondText: 'Segundo',
+		        millisecondText: 'Milisegundo',
+		        currentText: 'Fecha actual',
+		        ampm: false,
+		        month: 'Mes',
+		        week: 'Semana',
+		        day: 'D&iacute;a',
+		        allDayText: 'Todo el d&iacute;a',
+		        today: 'Hoy',
+		        clear: 'Claro'
+		    };
+	</script>
+</h:body>
+</html>

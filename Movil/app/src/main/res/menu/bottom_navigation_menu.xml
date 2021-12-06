@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_menus"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/menu_offer"/>
+    <item
+        android:id="@+id/menu_rest"
+        android:enabled="true"
+        android:icon="@drawable/ic_restaurante"
+        android:title="@string/menu_restaurante"/>
+
+    <item
+        android:id="@+id/menu_pedido"
+        android:enabled="true"
+        android:icon="@drawable/ic_pedido"
+        android:title="@string/menu_order"/>
+
+    <item
+        android:id="@+id/menu_perfil"
+        android:enabled="true"
+        android:icon="@drawable/ic_user"
+        android:title="@string/menu_profile"/>
+</menu>
