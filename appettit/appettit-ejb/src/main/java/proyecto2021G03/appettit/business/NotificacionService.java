@@ -29,21 +29,26 @@ public class NotificacionService implements INotificacionService {
 	public void enviarNotificacionFirebase(String destinatario, String titulo, String mensaje) throws AppettitException {
 		try {
 			Client cliente = ClientBuilder.newClient();
+			System.out.println("ANTES");
 			WebTarget target = cliente.target(Constantes.FIREBASE_FCM_URL);
+			System.out.println("ANTES2");
 			NotificacionDTO notificacion = NotificacionDTO.builder()
 					.title(titulo)
 					.body(mensaje)
 					.build();
+			System.out.println("ANTES3");
 			NotificacionFirebaseDTO notificacionFirebase = NotificacionFirebaseDTO.builder()
 					.to(destinatario)
 					.notification(notificacion)
 					.build();
+			
 			Response response = target.request(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON)
 	                .header(HttpHeaders.AUTHORIZATION, "key=" + Constantes.FIREBASE_API_KEY)
 	                .post(Entity.json(notificacionFirebase));
 			if(response.getStatus() != 200) {
-				logger.error("Error al enviar notificación por Firebase.");
+				//logger.error("Error al enviar notificación por Firebase.");
+				throw new AppettitException("Error al enviar notificación por Firebase.", AppettitException.ERROR_GENERAL);
 			}
 		} catch (Exception e) {
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);

@@ -33,8 +33,6 @@ public class UserSession implements IUserSession {
 	@EJB
 	IUsuarioService usrSrv;
 	
-	FacesContext facesContext = FacesContext.getCurrentInstance();
-	HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
 	RestauranteDTO restaurante;
 	AdministradorDTO admin;
 	
@@ -109,6 +107,9 @@ public class UserSession implements IUserSession {
 
 	@Override
 	public void createSession(UsuarioDTO usuarioDTO) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		
 		session.setAttribute(Constantes.LOGINUSUARIO, usuarioDTO);
 	}
 	
@@ -119,6 +120,8 @@ public class UserSession implements IUserSession {
 		logger.info("En destroySession");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
+		HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		
 		//HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		
 		try {
