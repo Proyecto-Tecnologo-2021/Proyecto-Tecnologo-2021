@@ -44,7 +44,7 @@ public class Constantes {
 
 	// LINK DE REDIRECCION PARA ENVIAR EN EL MAIL, ENVIA AL SERVICIO Q VERIFICA EL TOKEN Y REDIRIGE AL FRONT
 	//public static final String VERIFY_LINK = "http://localhost:8080/appettit-web/rest/usuarios/verifyMailLink/";
-	public static final String VERIFY_LINK = "https://appetit.brazilsouth.cloudapp.azure.com/appettit-web/rest/usuarios/verifyMailLink/";
+	public static final String VERIFY_LINK = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/verifyMailLink/";
 	
 	// LINK DE REDIRECCION PARA IR AL FRONT HACIA LA VENTANA DE CAMBIO DE PASS
 	//public static final String FRONT_PASS_CHANGE_LINK = "http://localhost:3000/change-pass/";
