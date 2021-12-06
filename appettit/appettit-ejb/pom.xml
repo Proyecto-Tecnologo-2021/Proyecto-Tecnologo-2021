@@ -173,6 +173,11 @@
             <scope>provided</scope>
         </dependency>
 
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-client</artifactId>
+    <version>3.0.2.Final</version>
+</dependency>
 
 <!-- https://mvnrepository.com/artifact/com.lowagie/itext -->
 <dependency>
