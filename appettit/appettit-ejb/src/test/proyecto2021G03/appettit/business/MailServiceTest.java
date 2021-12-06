@@ -31,9 +31,9 @@ public class MailServiceTest extends TestCase {
         mailServiceI.iUsuarioService = this.mockIUsuarioService;
     }
 
-/*    @Test
+   @Test
     public void testSendMail() {
-        DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
+/*         DireccionDTO direccionDTO = new DireccionDTO(3L, "alias", "calle", "1234", "apartamento", "referencias", null, "-34.8844477,-56.1922389", 3);
         List<DireccionDTO> direccionesDto = new ArrayList<DireccionDTO>();
         direccionesDto.add(direccionDTO);
         ClienteDTO clienteDTO = new ClienteDTO(1L, "nombre", "usename", "pwd", "1234", "mail@mail.com", "token", false, direccionesDto, null);
@@ -43,6 +43,6 @@ public class MailServiceTest extends TestCase {
             mailServiceI.sendMail("mail@mail.com", "link");
         } catch (AppettitException e) {
             e.printStackTrace();
-        }
-    }*/
+        }*/
+    }
 }
