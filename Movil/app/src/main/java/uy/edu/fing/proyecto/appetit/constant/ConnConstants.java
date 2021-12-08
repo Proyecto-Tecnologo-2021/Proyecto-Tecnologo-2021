@@ -1,7 +1,7 @@
 package uy.edu.fing.proyecto.appetit.constant;
 
-//https://appetit.brazilsouth.cloudapp.azure.com:8443/
-//https://appetit.brazilsouth.cloudapp.azure.com:8443/
+//https://appetit.eastus.cloudapp.azure.com:8443/
+
 
 
 public class ConnConstants {
@@ -19,38 +19,38 @@ public class ConnConstants {
     final public static String GET_COTIZACION = "https://cotizaciones-brou.herokuapp.com/api/currency/{date}";
 
     //USUARIO
-    final public static String API_USRLOGIN_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/loginMobile";
-    final public static String API_USRLOGINFIREBASE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/loginFireBase";
-    final public static String API_ADDCLIENT_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios";
-    final public static String API_ADDCLIENTADDRERSS_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/agregarDireccion";
-    final public static String API_DELCLIENTADDRERSS_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/eliminarDireccion/{id}";
-    final public static String API_UPDCLIENTE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/usuarios/editar/{id}";
+    final public static String API_USRLOGIN_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/loginMobile";
+    final public static String API_USRLOGINFIREBASE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/loginFireBase";
+    final public static String API_ADDCLIENT_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios";
+    final public static String API_ADDCLIENTADDRERSS_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/agregarDireccion";
+    final public static String API_DELCLIENTADDRERSS_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/eliminarDireccion/{id}";
+    final public static String API_UPDCLIENTE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/editar/{id}";
 
     //MENUS
-    final public static String API_GETMENUS_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu";
-    final public static String API_GETMENUSPOINT_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu/getZona/{point}";
-    final public static String API_GETMENU_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenu/{id_restaurante}/{id}";
-    final public static String API_GETMENUSRESTAURANTE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenu/{id_restaurante}";
+    final public static String API_GETMENUS_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu";
+    final public static String API_GETMENUSPOINT_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu/getZona/{point}";
+    final public static String API_GETMENU_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenu/{id_restaurante}/{id}";
+    final public static String API_GETMENUSRESTAURANTE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenu/{id_restaurante}";
 
     //PROMOS
-    final public static String API_GETPROMOS_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/promo";
-    final public static String API_GETPROMOSPOINT_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/promo/getZona/{point}";
-    final public static String API_GETPROMO_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/promo/getPromo/{id_restaurante}/{id}";
-    final public static String API_GETPROMOSRESTAURANTE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/promo/getPromo/{id_restaurante}";
+    final public static String API_GETPROMOS_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/promo";
+    final public static String API_GETPROMOSPOINT_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/promo/getZona/{point}";
+    final public static String API_GETPROMO_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/promo/getPromo/{id_restaurante}/{id}";
+    final public static String API_GETPROMOSRESTAURANTE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/promo/getPromo/{id_restaurante}";
 
     //MENUS=PROMO
-    final public static String API_GETMENUSPROMOPOINT_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu/getZonaAll/{point}";
-    final public static String API_GETMENUSPROMORESTAURANTE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenuAll/{id_restaurante}";
+    final public static String API_GETMENUSPROMOPOINT_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu/getZonaAll/{point}";
+    final public static String API_GETMENUSPROMORESTAURANTE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/menu/getMenuAll/{id_restaurante}";
 
     //RESTAURANTE
-    final public static String API_GETRESTAURANTE_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/restaurante/listar/{id}";
-    final public static String API_GETRESTAURANTES_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/restaurante/getZona/{point}";
+    final public static String API_GETRESTAURANTE_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/restaurante/listar/{id}";
+    final public static String API_GETRESTAURANTES_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/restaurante/getZona/{point}";
 
     //PEDIDOS
-    final public static String API_GETPEDIDOSPORCLIENTEID_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/listarpedidos2/{id}";
-    final public static String API_ADDPEDIDO_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/pedido2";
-    final public static String API_GETPEDIDOID_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/listar/{id}";
-    final public static String API_PUTCALIFICARPEDIDO_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/calificar/";
-    final public static String API_PUTRECLAMARPEDIDO_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/reclamar";
-    final public static String API_PUTCALIFICARPEDIDOUPD_URL = "https://appetit.brazilsouth.cloudapp.azure.com:8443/appettit-web/rest/pedido/calificarUPD/";
+    final public static String API_GETPEDIDOSPORCLIENTEID_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/listarpedidos2/{id}";
+    final public static String API_ADDPEDIDO_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/pedido2";
+    final public static String API_GETPEDIDOID_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/listar/{id}";
+    final public static String API_PUTCALIFICARPEDIDO_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/calificar/";
+    final public static String API_PUTRECLAMARPEDIDO_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/reclamar";
+    final public static String API_PUTCALIFICARPEDIDOUPD_URL = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/pedido/calificarUPD/";
 }
