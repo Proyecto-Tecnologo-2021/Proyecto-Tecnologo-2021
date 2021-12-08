@@ -22,21 +22,30 @@ import proyecto2021G03.appettit.util.Constantes;
 public class NotificacionService implements INotificacionService {
 
 	static Logger logger = Logger.getLogger(NotificacionService.class);
-
+	Client cliente = null;
+	
+	
+	public NotificacionService(Client client) {
+	    this.cliente = client;
+	}
+	
+	public NotificacionService() {
+	}
 	
 	@Override
 	@Asynchronous
 	public void enviarNotificacionFirebase(String destinatario, String titulo, String mensaje) throws AppettitException {
 		try {
-			Client cliente = ClientBuilder.newClient();
-			System.out.println("ANTES");
+			if (cliente == null) {
+				cliente = ClientBuilder.newClient();	
+			}
+			
+			
 			WebTarget target = cliente.target(Constantes.FIREBASE_FCM_URL);
-			System.out.println("ANTES2");
 			NotificacionDTO notificacion = NotificacionDTO.builder()
 					.title(titulo)
 					.body(mensaje)
 					.build();
-			System.out.println("ANTES3");
 			NotificacionFirebaseDTO notificacionFirebase = NotificacionFirebaseDTO.builder()
 					.to(destinatario)
 					.notification(notificacion)

@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -79,8 +80,8 @@ public class HomeAdministradorBean implements Serializable {
 	String fechaHora;
 	AdministradorDTO administradorDTO;
 	Long id_restaurante;
-	FacesContext facesContext;
-	HttpSession session;
+	//FacesContext facesContext;
+	//HttpSession session;
 	LocalDateTime fechaHasta = LocalDateTime.now();;
 	LocalDateTime fechaDesde = fechaHasta.minusDays(7); 
 
@@ -105,9 +106,9 @@ public class HomeAdministradorBean implements Serializable {
 	public void init() {
 		try {
 
-			facesContext = FacesContext.getCurrentInstance();
+			//facesContext = FacesContext.getCurrentInstance();
 			//ExternalContext externalContext = facesContext.getExternalContext();
-			session = (HttpSession) facesContext.getExternalContext().getSession(true);
+			//session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
 			usrSession.getAdministradorReg();
 			
@@ -169,6 +170,9 @@ public class HomeAdministradorBean implements Serializable {
 	
 	public UsuarioDTO getUserSession() {
 		UsuarioDTO usuarioDTO = null;
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		
 		try {
 			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
 		} catch (Exception e) {

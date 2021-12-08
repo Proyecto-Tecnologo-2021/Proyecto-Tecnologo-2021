@@ -39,6 +39,7 @@ public class DepartamentoService implements IDepartamentoService {
 		try {
 			return departamentoConverter.fromEntity(departamentoDAO.crear(departamento));
 		} catch (Exception e) {
+			System.out.println("CREAR DEPARTAMENTO:" + e.getMessage());
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}
