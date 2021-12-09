@@ -39,9 +39,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: pwd; ls; cd appettit; ls; cd appettit-ejb; ls; cd target; ls; cd site; ls; cd jacoco; ls;
+        run: pwd; ls; cd appettit; ls; cd appettit-ejb; ls; cd target; ls; cd site; ls; cd jacoco; ls; pwd;
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: pwd; ls; cd appettit; mvn -B test verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021 -Dsonar.coverage.jacoco.xmlReportPaths=/appettit-ejb/target/site/jacoco/jacoco.xml;
+        run: pwd; ls; cd appettit; mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021 -Dsonar.coverage.jacoco.xmlReportPaths=appettit-ejb/target/site/jacoco/jacoco.xml;
