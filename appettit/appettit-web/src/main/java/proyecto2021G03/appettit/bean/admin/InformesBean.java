@@ -60,7 +60,6 @@ import proyecto2021G03.appettit.business.IUsuarioService;
 import proyecto2021G03.appettit.dto.AdministradorDTO;
 import proyecto2021G03.appettit.dto.DashInformeDTO;
 import proyecto2021G03.appettit.dto.UsuarioDTO;
-import proyecto2021G03.appettit.exception.AppettitException;
 import proyecto2021G03.appettit.util.Constantes;
 
 @Named("beanAdminInformes")
@@ -195,7 +194,7 @@ public class InformesBean implements Serializable {
 				}
 
 				nominforme = tinforme + "_" + getFechaHora(range.get(0).atStartOfDay(), "yyymmdd") +"-" + getFechaHora(range.get(1).atStartOfDay(), "yyymmdd");
-			} catch (AppettitException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage().trim());
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));

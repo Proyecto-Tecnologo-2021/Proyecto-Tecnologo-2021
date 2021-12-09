@@ -800,7 +800,8 @@ public class EstadisticasDAO implements IEstadisticasDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public DashTotalDTO listarVentasPorFecha(Long id, LocalDateTime fechaDesde, LocalDateTime fechaHasta,
-			Integer periodo) {
+			Integer periodo){
+		
 		Map<String, Double> valores = new HashMap<String, Double>();
 		Double actual = 0D;
 		Double anterior = 0D;
@@ -1316,6 +1317,12 @@ List<DashMenuDTO> tendencias = new ArrayList<DashMenuDTO>();
 							+ " u.id_imagen, "
 							+ " u.telefono, "
 							+ " d.calle || ' ' || d.numero || (case d.apartamento is null when true then '' else ', ' ||d.apartamento end) "
+							+ " order by "
+							+ " case SUM(p.total) is null " 
+							+ " when true then 0 "
+							+ " else SUM(p.total) "
+							+ " end desc "
+							
 							+ "");
 		
 		consulta.setMaxResults(top);

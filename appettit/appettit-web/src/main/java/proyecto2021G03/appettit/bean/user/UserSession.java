@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -127,6 +126,7 @@ public class UserSession implements IUserSession {
 		try {
 			//externalContext.invalidateSession();
 			session.removeAttribute(Constantes.LOGINUSUARIO);
+			session.invalidate();
 			
 			Map<String, Object> properties = new HashMap<>();
 			properties.put("maxAge", 0);

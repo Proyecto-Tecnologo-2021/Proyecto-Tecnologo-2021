@@ -3,6 +3,8 @@ package proyecto2021G03.appettit.dao;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.HibernateException;
+
 import proyecto2021G03.appettit.dto.DashCalificacionResDTO;
 import proyecto2021G03.appettit.dto.DashGeoDTO;
 import proyecto2021G03.appettit.dto.DashInformeDTO;

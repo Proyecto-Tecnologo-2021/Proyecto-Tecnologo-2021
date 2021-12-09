@@ -1,4 +1,4 @@
-name: Build
+name: SonarCloud
 on:
   push:
     branches: 
@@ -30,8 +30,18 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: mvn Verify; mvn verify;
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: pwd; ls; cd appettit; mvn verify;
+      - name: Chequeo folders
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: pwd; ls; cd appettit; ls; cd appettit-ejb; ls; cd target; ls; cd site; ls; cd jacoco; ls; pwd;
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: pwd; cd appettit; mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021;
+        run: pwd; ls; cd appettit; mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021 -Dsonar.coverage.jacoco.xmlReportPaths=/home/runner/work/Proyecto-Tecnologo-2021/Proyecto-Tecnologo-2021/appettit/appettit-ejb/target/site/jacoco/jacoco.xml -Dsonar.junit.reportsPath=/home/runner/work/Proyecto-Tecnologo-2021/Proyecto-Tecnologo-2021/appettit/appettit-ejb/target/surefire-reports -Dsonar.java.coveragePlugin=jacoco;

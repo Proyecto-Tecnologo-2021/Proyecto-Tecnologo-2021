@@ -93,8 +93,8 @@ public class HomeRestauranteBean implements Serializable {
 	String fechaHora;
 	RestauranteDTO restauranteDTO;
 	Long id_restaurante;
-	FacesContext facesContext;
-	HttpSession session;
+	//FacesContext facesContext;
+	//HttpSession session;
 	LocalDateTime fechaHasta = LocalDateTime.now();;
 	LocalDateTime fechaDesde = fechaHasta.minusDays(7);; 
 
@@ -120,9 +120,9 @@ public class HomeRestauranteBean implements Serializable {
 		try {
 			abierto = false;
 			
-			facesContext = FacesContext.getCurrentInstance();
+			//facesContext = FacesContext.getCurrentInstance();
 			//ExternalContext externalContext = facesContext.getExternalContext();
-			session = (HttpSession) facesContext.getExternalContext().getSession(true);
+			//session = (HttpSession) facesContext.getExternalContext().getSession(true);
 			
 			usrSession.getRestauranteReg();
 			
@@ -190,12 +190,10 @@ public class HomeRestauranteBean implements Serializable {
 
 			}
 
-		} catch (AppettitException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage().trim());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage().trim(), null));
-		} catch (Exception e) {
-			logger.error(e.getMessage().trim());
 		}
 
 	}
@@ -213,6 +211,9 @@ public class HomeRestauranteBean implements Serializable {
 
 	public UsuarioDTO getUserSession() {
 		UsuarioDTO usuarioDTO = null;
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+		
 		try {
 			usuarioDTO = (UsuarioDTO) session.getAttribute(Constantes.LOGINUSUARIO);
 		} catch (Exception e) {

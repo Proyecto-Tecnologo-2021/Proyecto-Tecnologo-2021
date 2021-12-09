@@ -15,7 +15,7 @@ public class Constantes {
 	public static final String LOGINUSUARIO = "LOGINUSUARIO";
 	public static final String URL_HOME = "/appettit-web";
 	
-	public static final String REDIRECT_URI = "https://appetit.brazilsouth.cloudapp.azure.com:3000/";
+	public static final String REDIRECT_URI = "https://appetit.eastus.cloudapp.azure.com:3000/";
 	//public static final String REDIRECT_URI = "/appettit-web/FalseLogin.xhtml";
 	public static final String REDIRECT_RESTAURANTE_HOME_URI = "/appettit-web/restaurante/home.xhtml";
 	public static final String REDIRECT_ADMINISTRADOR_HOME_URI = "/appettit-web/admin/home.xhtml";
@@ -44,9 +44,9 @@ public class Constantes {
 
 	// LINK DE REDIRECCION PARA ENVIAR EN EL MAIL, ENVIA AL SERVICIO Q VERIFICA EL TOKEN Y REDIRIGE AL FRONT
 	//public static final String VERIFY_LINK = "http://localhost:8080/appettit-web/rest/usuarios/verifyMailLink/";
-	public static final String VERIFY_LINK = "https://appetit.brazilsouth.cloudapp.azure.com/appettit-web/rest/usuarios/verifyMailLink/";
+	public static final String VERIFY_LINK = "https://appetit.eastus.cloudapp.azure.com:8443/appettit-web/rest/usuarios/verifyMailLink/";
 	
 	// LINK DE REDIRECCION PARA IR AL FRONT HACIA LA VENTANA DE CAMBIO DE PASS
 	//public static final String FRONT_PASS_CHANGE_LINK = "http://localhost:3000/change-pass/";
-	public static final String FRONT_PASS_CHANGE_LINK = "https://appetit.brazilsouth.cloudapp.azure.com:3000/change-pass/";
+	public static final String FRONT_PASS_CHANGE_LINK = "https://appetit.eastus.cloudapp.azure.com:3000/change-pass/";
 }
