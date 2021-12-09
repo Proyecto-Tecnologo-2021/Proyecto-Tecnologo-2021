@@ -28,9 +28,7 @@ public class NotificacionService implements INotificacionService {
 	public NotificacionService(Client client) {
 	    this.cliente = client;
 	}
-	
-	public NotificacionService() {
-	}
+
 	
 	@Override
 	@Asynchronous
