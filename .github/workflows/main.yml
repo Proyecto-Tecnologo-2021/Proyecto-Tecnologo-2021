@@ -30,7 +30,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: mvn Verify
+      - name: mvn Verify; mvn verify;
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -44,4 +44,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: pwd; ls; cd appettit; mvn -B test verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021;
+        run: pwd; ls; cd appettit; mvn -B test verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Proyecto-Tecnologo-2021_Proyecto-Tecnologo-2021 -Dsonar.coverage.jacoco.xmlReportPaths=appettit/appettit-ejb/target/site/jacoco/jacoco.xml;
