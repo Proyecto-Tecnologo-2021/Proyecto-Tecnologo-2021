@@ -60,6 +60,7 @@ public class NotificacionService implements INotificacionService {
 				throw new AppettitException("Error al enviar notificación por Firebase.", AppettitException.ERROR_GENERAL);
 			}
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new AppettitException(e.getLocalizedMessage(), AppettitException.ERROR_GENERAL);
 		}
 	}

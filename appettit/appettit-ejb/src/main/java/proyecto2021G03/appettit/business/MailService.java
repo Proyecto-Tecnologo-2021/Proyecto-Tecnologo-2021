@@ -1,18 +1,23 @@
 package proyecto2021G03.appettit.business;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import proyecto2021G03.appettit.exception.AppettitException;
+import java.util.Properties;
 
-import proyecto2021G03.appettit.util.Constantes;
 import javax.ejb.EJB;
-import javax.mail.*;
+import javax.ejb.Stateless;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.ejb.Stateless;
 import javax.mail.internet.MimeMultipart;
-import java.util.Properties;
+
+import proyecto2021G03.appettit.exception.AppettitException;
+import proyecto2021G03.appettit.util.Constantes;
 
 @Stateless
 public class MailService implements IMailService {
@@ -83,7 +88,8 @@ public class MailService implements IMailService {
 			Transport.send(message);
 			//CONTROL
 			System.out.println("El mail se envio correctamente!");
-		} catch (MessagingException | AppettitException e) {
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
